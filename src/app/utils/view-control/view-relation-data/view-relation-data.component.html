@@ -1,0 +1,33 @@
+<ng-container *ngFor="let item of values;let last =last">
+    <ng-container *ngIf="!item.isSecureText">
+        <a [routerLink]="relationLink+relatedId" target="_blank" *ngIf="serviceAccess">
+            {{item.value}}
+            <span *ngIf="!last">,</span>
+        </a>
+        <span *ngIf="!serviceAccess">
+            {{item.value}}
+        </span>
+    </ng-container>
+</ng-container><br>
+<ng-container *ngFor="let item of values;let last =last">
+    <ng-container *ngIf="item.isSecureText">
+        <ng-container *ngIf="showPassword">
+            <a [routerLink]="relationLink+relatedId" target="_blank" *ngIf="serviceAccess">
+                {{item.value}}
+                <span *ngIf="!last">,</span>
+            </a>
+            <span *ngIf="!serviceAccess">
+                {{item.value}}
+            </span>
+
+        </ng-container>
+
+        <ng-container *ngIf="!showPassword">
+            **********
+        </ng-container>
+    </ng-container>
+</ng-container>
+<button type="button" *ngIf="isSecureTextPresent" class="btn btn-sm btn-link p-0 mb-1 ml-3"
+    (click)="showPassword=!showPassword;$event.stopPropagation();">
+    {{showPassword?'Hide':'Show'}}
+</button>

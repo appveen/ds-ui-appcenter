@@ -1,0 +1,91 @@
+@import 'src/assets/scss/bootstrap/_functions.scss';
+@import 'src/assets/scss/bootstrap/_variables.scss';
+
+.picker-overlay{
+    position: relative;
+    width: 320px;
+    overflow: hidden;
+    &.floating{
+        z-index: 10;
+        position: absolute;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16);
+        background: #fff;
+        margin-bottom: 30px;
+    }
+}
+.date-grid{
+    height: 211px;   
+}
+.day{
+    width: 38px;
+}
+.date{
+    width: 43px;
+    height: 43px;
+    //line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    &.disabled{
+        color: rgba(0,0,0,0.2) !important;
+    }
+    &:not(.disabled):hover{
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.16);
+    }
+}
+.month{
+    width: 63px;
+    height: 63px;
+    line-height: 63px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+    &:hover{
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.16);
+    }
+}
+.year{
+    width: 84px;
+    height: 84px;
+    line-height: 84px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+    &:hover{
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.16);
+    }
+}
+.time {
+  height: 40px;
+}
+.time-select{
+    font-size: 13px;
+    background: #fff;
+    border: 0;
+    outline: 0;
+}
+.calender{
+    width: 320px;
+    height: 325px;
+    overflow: hidden;
+    .page{
+        //width: 254px;
+        //height: 297px;
+        transition: 0.25s;
+        &.show{
+            right: 0;
+            transition: 0.25s;
+        }
+      .month-dates {
+        text-transform: uppercase;
+        color: $gray-medium;
+      }
+      .options {
+        height: 40px;
+      }
+    }
+}

@@ -1,0 +1,34 @@
+<div class="font-weight-bold value-wrapper">
+  <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:definition.value}"></ng-container>
+  <ng-container *ngIf="!definition.properties.password">
+    <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">From</span>
+      <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:oldVal}"></ng-container>
+    </div>
+    <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">Created</span>
+      <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
+    </div>
+    <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">To</span>
+      <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #values let-definition="definition" let-value="value" let-type="type">
+  <ng-container *ngIf="!definition.properties.password"></ng-container>
+  <ng-container *ngIf="value">
+    <span class="value-width"
+      *ngIf="!definition.properties.email && !isenrichTextWithLinkRequired(value)">{{value}}</span>
+    <span *ngIf="!definition.properties.email && isenrichTextWithLinkRequired(value) "
+      [innerHTML]="enrichTextWithLink(value)"></span>
+    <a [attr.href]="'mailto:'+value" *ngIf="definition.properties.email">
+      <span class="fa fa-envelope mr-2"></span>
+      <span class="text">{{value}}</span>
+    </a>
+  </ng-container>
+  <ng-container *ngIf="!value">
+    <span class="text-muted">N.A.</span>
+  </ng-container>
+</ng-template>

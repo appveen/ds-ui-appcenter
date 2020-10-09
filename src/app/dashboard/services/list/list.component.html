@@ -1,0 +1,351 @@
+<div class="list-wrapper d-flex flex-column w-100 bg-light">
+  <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
+  <div class="d-flex align-items-center justify-content-between pr-3 border-bottom header">
+    <div class="title d-flex align-items-center w-50" *ngIf="schema">
+      <span class="odp-record mr-2 text-primary ml-2"></span>
+      <span class="text m-0 font-weight-bold">{{schema?.name}}</span>
+    </div>
+    <div class="actions w-50 d-flex justify-content-end ignore-outside" *ngIf="schema">
+      <!--<button id="columnsBtn" class="btn btn-link ignore-outside" *ngIf="totalRecords > 0" (click)="showColumnOptions=true;">
+          <span class="fa fa-cog mr-2 ignore-outside"></span>
+          <span class="text ignore-outside">Columns</span>
+        </button>-->
+      <!--<button id="uploadDataBtn" type="button" class="btn btn-link mr-3" *ngIf="hasPermission('POST') || hasPermission('PUT')"
+          [routerLink]="['/src/services/',schema._id,'filemapper']">
+          <span class="fa fa-upload mr-2"></span>
+          <span class="text">Upload</span>
+        </button>-->
+      <div class="btn-group">
+        <button type="button" class="btn btn-success active" *ngIf="hasPermission('POST') || hasPermission('PUT')"
+          [routerLink]="['/~/services/',schema._id,'filemapper']">
+          <span class="fas fa-cloud-upload-alt text-white"></span>
+        </button>
+        <button id="addDataBtn" type="button" class="btn btn-success d-flex align-items-center text-white"
+          *ngIf="hasPermission('POST')" [routerLink]="['/~/services/',schema._id,'manage']">
+          <span class="fas fa-plus mr-2"></span>
+          <span>Add Data</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex align-items-center justify-content-between pr-3 pl-2 list-options"
+    [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
+    <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center hover" (click)="selectAllRecords()" *ngIf="!listGrid?.showLoading">
+        <odp-round-check [checked]="checkAll" [white]="true" (checkedChange)="selectAllRecords()"></odp-round-check>
+        <strong class="text-primary ml-2">Select all </strong>
+      </div>
+      <button id="clearFiltersBtn" type="button" class="btn btn-link" *ngIf="hasFilters" (click)="clearFilters()">
+        <span class="fa fa-times mr-2"></span>
+        <span class="text">Clear filters</span>
+      </button>
+      <button id="clearSortBtn" type="button" class="btn btn-link" *ngIf="hasSort" (click)="clearSort()">
+        <span class="fa fa-times mr-2"></span>
+        <span class="text">Clear sort</span>
+      </button>
+      <button id="exportBtn" type="button" class="btn btn-link" *ngIf="recordChecked && hasPermission()"
+        (click)="exportData()">
+        <span class="fa fa-download mr-2"></span>
+        <span class="text">Export ({{recordChecked}})</span>
+      </button>
+      <button id="exportAllBtn" type="button" class="btn btn-link" *ngIf="!recordChecked && hasPermission()"
+        (click)="exportData()">
+        <span class="fa fa-download mr-2"></span>
+        <span class="text">Export All</span>
+      </button>
+      <button id="deleteRecordBtn" type="button" class="btn btn-link"
+        *ngIf="recordCheckedForDelete && hasPermission('DELETE')" (click)="workflowAlert()">
+        <span class="odp-trash mr-2"></span>
+        <span class="text">Delete ({{recordCheckedForDelete}})</span>
+      </button>
+      <button id="_viewBtn" type="button" class="btn btn-link" *ngIf="recordChecked && recordChecked==1"
+        (click)="view()">
+        <span class="fa fa-eye mr-2"></span>
+        <span class="text">View</span>
+      </button>
+      <button type="button" class="btn btn-link"
+        *ngIf="recordChecked && recordChecked==1 && hasPermission('PUT') && canEdit" (click)="edit()" id="editButton">
+        <span class="odp-edit mr-2"></span>
+        <span class="text">Edit</span>
+      </button>
+      <button type="button" class="btn btn-link" *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit"
+        (click)="bulkEdit()" id="bulkEditButton">
+        <span class="odp-edit mr-2"></span>
+        <span class="text">Bulk Edit ({{recordChecked}})</span>
+      </button>
+    </div>
+    <div class="d-flex align-items-center">
+      <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold" *ngIf="selectedSavedView"
+        (click)="resetFilter();">
+        <span class="fas fa-redo fa-flip-horizontal"></span>
+        <span class="pl-2">Reset Filter</span>
+      </div>
+      <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
+        <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
+      </div>
+      <div class="bg-white p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside">
+        <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
+          (click)="showSaveViewDropDown=!showSaveViewDropDown">
+          <div class="ignore-outside">
+            <span class="fa fa-search text-gray-medium mr-1 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
+            <span class="fa fa-search text-primary mr-1 ignore-outside" *ngIf="selectedSavedView?.name"></span>
+            <span class="ignore-outside"
+              [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{ selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
+          </div>
+          <div class="ml-auto ignore-outside">
+            <span class="fas fa-angle-down text-primary ignore-outside"></span>
+          </div>
+        </div>
+        <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside"
+          *ngIf="showSaveViewDropDown" odpClickOutside (outside)="showSaveViewDropDown = false">
+          <div class="py-2 px-3 w-100 text-secondary filter-list-type d-flex align-items-center ignore-outside"
+            [ngClass]="{'border-bottom': !showSearchSavedView}">
+            <span class="mr-2 pr-2 border-right ignore-outside hover" *ngIf="!showSearchSavedView"
+              (click)="showPrivateViews=false;filterSavedViews()" [ngClass]="{'text-primary': !showPrivateViews}">
+              <strong>Everyone</strong>
+            </span>
+            <span *ngIf="!showSearchSavedView" class="ignore-outside hover"
+              [ngClass]="{'text-primary': showPrivateViews}" (click)="showPrivateViews=true;filterSavedViews()">
+              <strong>Only Me</strong>
+            </span>
+            <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchSavedView"
+              (click)="showSearchSavedView = false;savedViewSearchTerm='';filterSavedViews()"></span>
+            <div class="ml-auto hover ignore-outside" *ngIf="!showSearchSavedView && savedViews.length > 0"
+              (click)="showSearchSavedView = true">
+              <span class="fas fa-search text-muted ignore-outside"></span>
+            </div>
+            <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
+              <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside" [(ngModel)]="savedViewSearchTerm"
+                placeholder="Search save view" (keyup.enter)="filterSavedViews()" odpAutoFocus>
+              <span class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+            </div>
+          </div>
+          <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
+            <div *ngFor="let filter of savedViews"
+              class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
+              (mouseenter)="filter.showOptions = true" (mouseleave)="filter.showOptions = false">
+              <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
+              <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
+              <span class="hover text-truncate filterNameWidth"
+                (click)="selectSavedView(filter);showSaveViewDropDown=false"
+                [odpTruncated]="filter.name">{{ filter.name }}</span>
+              <span *ngIf="!filter.showOptions"
+                class="text-secondary ml-auto position-absolute un-pos">{{ filter.user }}</span>
+              <span *ngIf="!filter.showOptions"
+                class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
+              <div *ngIf="filter.showOptions" class="ml-auto d-flex align-items-center hover" [@slideIn]>
+                <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
+                <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
+                <div class="left-radius position-relative hover"
+                  [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
+                  (click)="changeFilterType(filter, 'private')">
+                  <span class="fas fa-unlock-alt position-absolute icon-pos"
+                    [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
+                </div>
+                <div class="right-radius bg-white position-relative hover mr-2"
+                  [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
+                  (click)="changeFilterType(filter, 'public')">
+                  <span class="fas fa-globe position-absolute icon-pos"
+                    [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noFilters>
+            <div class="text-secondary p-3">No filters are defined for this service yet</div>
+          </ng-template>
+        </div>
+      </div>
+      <div class="p-1 filter-icon position-relative hover"
+        [ngClass]="{'full-br': !advanceFilter, 'half-br': advanceFilter, 'bg-white': !selectedSavedView?.name || advanceFilter, 'bg-primary': selectedSavedView?.name && !advanceFilter, 'disabled': apiCallsPending}"
+        (click)="advanceFilter=!advanceFilter">
+        <span *ngIf="!advanceFilter" class="fas fa-filter position-absolute"
+          [ngClass]="{'text-primary': !selectedSavedView?.name, 'text-white': selectedSavedView?.name}"></span>
+        <div *ngIf="selectedSavedView?.name" class="bg-white position-absolute sm-circle"></div>
+        <span *ngIf="advanceFilter" class="fas fa-times text-muted position-absolute"></span>
+      </div>
+    </div>
+  </div>
+  <div class="no-record text-center mx-2 mt-2 bg-white rounded" *ngIf="!apiCallsPending && totalRecords==0">
+    <div class="no-records-img mx-auto"></div>
+    <h4 class="text-muted">This data service does not have any records, yet. <span *ngIf="hasPermission('POST')">You
+        could get started by <a [routerLink]="['/~/services/',schema._id,'manage']">adding data</a>.</span>
+    </h4>
+  </div>
+  <odp-list-filters *ngIf="advanceFilter" [allColumns]="definition" [allFilters]="savedViews"
+    (filterCleared)="selectedSavedView = null;" (refine)="selectSavedView($event)">
+  </odp-list-filters>
+
+  <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
+    [ngClass]="{'has-records':totalRecords>0}">
+    <div class="data-container p-0 w-100" [ngClass]="{'border-top': advanceFilter}" *ngIf="totalRecords>0"
+      odpClickOutside (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
+      <odp-list-ag-grid #listGrid *ngIf="definition && definition.length >0" [schema]="schema" [columns]="definition"
+        [selectAll]="selectAll" [applySavedView]="applySavedView" (removedSavedView)="removedSavedView($event)"
+        (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)"
+        (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
+        (rightClick)="onRightClick($event)" (scroll)="showContextMenu = false"></odp-list-ag-grid>
+      <div class="  d-flex flex-column  position-absolute  context-menu" *ngIf="showContextMenu"
+        [ngStyle]="getPosition()">
+        <!-- [ngStyle]="getPosition()" (contextmenu)="false"> -->
+
+        <ng-container *ngIf="recordChecked<2">
+
+          <button class="btn btn-link d-flex w-100" (click)="exportData(selectedRow.data._id)">
+            <span class="fa fa-download mr-2 mt-1"></span> <span>Export</span>
+          </button>
+          <button class="btn btn-link d-flex w-100" (click)="view(selectedRow.data._id)">
+            <span class="fa fa-eye mr-2 mt-1"></span> <span>View</span>
+          </button>
+          <button class="btn btn-link d-flex w-100" *ngIf="hasPermission('PUT') && canEdit"
+            (click)="edit(selectedRow.data._id)">
+            <span class="odp-edit mr-2 mt-1"></span><span>Edit</span>
+          </button>
+          <button class="btn btn-link d-flex w-100" *ngIf="hasPermission('POST')"
+            (click)="cloneRecord(selectedRow.data._id)">
+            <span class="fa fa-copy mr-2 mt-1"></span><span>Clone</span></button>
+          <button class="btn btn-link d-flex   w-100" *ngIf="hasPermission('DELETE')"
+            (click)="workflowAlert(selectedRow.data._id)">
+            <span class="odp-trash mt-1 mr-2"></span> <span>Delete</span></button>
+        </ng-container>
+        <ng-container *ngIf="recordChecked >1">
+          <button id="exportBtn" type="button" class="btn btn-link d-flex w-100"
+            *ngIf="recordChecked && hasPermission()" (click)="exportData()">
+            <span class="fa fa-download mr-2 mt-1"></span>
+            <span class="text">Export ({{recordChecked}})</span>
+          </button>
+          <button type="button" class="btn btn-link d-flex w-100"
+            *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit" (click)="bulkEdit()" id="bulkEditButton">
+            <span class="odp-edit mr-2 mt-1"></span>
+            <span class="text">Bulk Edit ({{recordChecked}})</span>
+          </button>
+          <button id="deleteRecordBtn" type="button" class="btn btn-link d-flex w-100"
+            *ngIf="recordCheckedForDelete && hasPermission('DELETE')" (click)="workflowAlert()">
+            <span class="odp-trash mr-2 mt-1"></span>
+            <span class="text">Delete ({{recordCheckedForDelete}})</span>
+          </button>
+
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="list default-loader d-flex justify-content-center w-100" *ngIf="apiCallsPending">
+    <div class="align-self-center text-center">
+      <span class="fa fa-spinner fa-pulse fa-3x"></span>
+      <div class="text-secondary mt-2">Processing...</div>
+    </div>
+  </div>
+</div>
+<ng-template #confirmDeleteModal>
+  <div class="modal-header alert">
+    <h4 class="modal-title text-danger">{{ deleteModal.title }}</h4>
+    <button id="deleteModalCloseBtn" type="button" class="btn no-focus close" aria-label="Close"
+      (click)="confirmDeleteModalRef.close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center">{{ deleteModal.message }}</p>
+  </div>
+  <div class="modal-footer">
+    <button id="deleteModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
+      (click)="confirmDeleteModalRef.close(false)">No</button>
+    <button id="deleteModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
+      (click)="confirmDeleteModalRef.close(true)">Yes</button>
+  </div>
+</ng-template>
+
+<ng-template #workflowModal id="_workflowModal">
+  <div class="modal-header bg-dark p-2">
+    <h4 class="modal-title text-white">Delete record</h4>
+    <button id="workflowModalCloseBtn" type="button" class="btn no-focus close" aria-label="Close"
+      (click)="workflowModalRef.close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-0 d-flex flex-column">
+    <div class="d-flex flex-column bg-light font-weight-bold">
+      <div class="d-flex align-items-start px-3 pt-3">
+        <span *ngIf="workflowModalOptions.operation == 'POST'" class="text-primary d-flex align-items-center mr-2">
+          <span class="odp-plus-circle mr-1"></span>
+          <span>Create:</span>
+        </span>
+        <span *ngIf="workflowModalOptions.operation == 'PUT'" class="text-warning d-flex align-items-center mr-2">
+          <span class="odp-edit fa-lg mr-1"></span>
+          <span>Edit:</span>
+        </span>
+        <span *ngIf="workflowModalOptions.operation == 'DELETE'" class="text-danger d-flex align-items-center mr-2">
+          <span class="odp-trash mr-1"></span>
+          <span>Delete:</span>
+        </span>
+        <span class="text-dark word-break">{{workflowModalOptions._id}}</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between p-3">
+        <span class="d-flex align-items-center">
+          <span class="text-secondary mr-1">Submitted by</span>
+          <span *ngIf="workflowModalOptions.requestedBy.length <= 52">{{workflowModalOptions.requestedBy}}</span>
+          <span *ngIf="workflowModalOptions.requestedBy.length > 52" class="text-truncate requestedBy high-zIndex"
+            [ngbTooltip]="workflowModalOptions.requestedBy" placement="top">{{workflowModalOptions.requestedBy}}</span>
+        </span>
+        <span *ngIf="workflowModalOptions.operation == 'PUT'" class="d-flex align-items-center">
+          <span class="text-secondary mr-1">Field(s) affected</span>
+          <span>{{workflowModalOptions.fields}}</span>
+        </span>
+      </div>
+    </div>
+    <div class="d-flex flex-column p-3">
+      <div class="d-flex">
+        <label for="comments" class="font-weight-bold m-0">Attachments:</label>
+        <div class="d-flex flex-column align-items-start pl-3 w-100">
+          <input #workflowFileUploadInput class="d-none" type="file" name="workflowFileUpload" id="workflowFileUpload"
+            (change)="uploadWorkflowFile($event)">
+          <button class="btn btn-link p-0" (click)="workflowFileUploadInput.click()">
+            <span class="fa fa-paperclip mr-1"></span>
+            <span class="text">Add</span>
+          </button>
+          <div class="d-flex align-items-center justify-content-between w-100"
+            *ngFor="let file of workflowFilesList;let fileIndex=index;">
+            <div class="d-flex align-items-center">
+              <span class="text-primary text-truncate fileName-width" [ngbTooltip]="file.name"
+                placement="top">{{file.name}}</span>
+              <small class="text-secondary ml-2">({{file.size|filesize}})</small>
+            </div>
+            <button class="btn btn-sm btn-link text-danger" (click)="removeWorkflowFile(fileIndex)">Remove</button>
+          </div>
+        </div>
+      </div>
+      <label for="comments" class="text-secondary">Comments</label>
+      <textarea id="comments" class="form-control" [ngClass]="{'is-invalid':requiredError}"
+        placeholder="Comments are required to delete this documents" [formControl]="respondControl"
+        odpAutoFocus></textarea>
+      <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-outline-primary min-width-control" id="workflowModalCancelBtn"
+          (click)="workflowModalRef.close(false)">Cancel</button>
+        <button class="btn btn-success min-width-control" id="workflowModalSubmitBtn"
+          (click)="closeModal()">Submit</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #clearFilterModal>
+  <div class="modal-header alert">
+    <h4 class="modal-title text-danger">Warning</h4>
+    <button id="clearModalCloseBtn" type="button" class="btn no-focus  close" aria-label="Close"
+      (click)="clearFilterModalRef.close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center">Current filters will be applied and other filters will be removed?</p>
+  </div>
+  <div class="modal-footer">
+    <button id="clearModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
+      (click)="clearFilterModalRef.close(false)">
+      No
+    </button>
+    <button id="clearModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
+      (click)="clearFilterModalRef.close(true)">Yes
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,10 @@
+@import 'src/assets/scss/bootstrap/_functions.scss';
+@import 'src/assets/scss/bootstrap/_variables.scss';
+
+button:focus{
+    outline: none !important;
+    .switch{
+        border-radius: 12px;
+        box-shadow: 0px 0px 5px $primary;
+    }
+}

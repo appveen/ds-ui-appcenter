@@ -1,0 +1,56 @@
+<div class="default-loader d-flex justify-content-center h-100 w-100"
+  *ngIf=" showLazyLoader">
+  <div class="align-self-center text-center">
+    <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+    <div class="text-secondary mt-2">Processing...</div>
+  </div>
+</div>
+<div class="bookmark-container d-flex flex-column">
+  <div class="header d-flex align-items-center justify-content-between pr-3 bg-light border-bottom w-100">
+    <div class="title d-flex align-items-center ml-2">
+      <span class="odp-bookmark mr-2 text-primary"></span>
+      <span class="text m-0 font-weight-bold">Bookmarks</span>
+    </div>
+  </div>
+  <div class="bookmark-body mx-2 mt-2 bg-white rounded">
+    <ng-container *ngIf="bookMarkId">
+      <div class="d-flex url-action justify-content-end">
+        <button class="btn btn-link font-weight-bold" type="button" routerLink="/~/bookmark">Back</button>
+        <button class="btn btn-link font-weight-bold" type="button" (click)="newTab()">Open in New Tab</button>
+        <button class="btn btn-link font-weight-bold" type="button" (click)="refresh()">Refresh</button>
+      </div>
+      <iframe [src]=bookMarkUrl frameborder="0" class="iFrame" id="iFrame"></iframe>
+    </ng-container>
+    <ng-container *ngIf="!bookMarkId">
+      <div *ngIf="totalRecords>0" class="search-wrapper position-relative m-3">
+        <span class="fa fa-search text-dark position-absolute"></span>
+        <input type="text" [(ngModel)]="searchData" class="search-box border" placeholder="Search for Bookmarks" (ngModelChange)="search($event)">
+      </div>
+      <div class="bookmark-cards" (scroll)="loadMore($event)" [ngClass]="{'no-records':totalRecords==0}">
+        <div *ngFor="let item of bookmarkList"
+          class="bookmark-card border rounded ml-3 mt-3 d-flex flex-column hover float-left"
+          [ngClass]="{'border-primary box-shadow-primary':item.hover,'box-shadow-dark':!item.hover}"
+          (mouseover)="item.hover=true" (mouseout)="item.hover=false" (click)="openBookMark(item)">
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <span class="text-dark">&nbsp;</span>
+            <span *ngIf="item.options!='FRAME'" class="fa fa-external-link-alt fa-sm text-warning p-2"
+              ngbTooltip="External Link"></span>
+          </div>
+          <div class="d-flex align-items-center px-3">
+            <img class="favicon rounded-circle mr-2" [src]="item.faviconUrl">
+            <span class="text-dark font-weight-bold">{{item.name}}</span>
+          </div>
+          <p class="text-primary text-truncate p-3" [odpTruncated]="item.url">{{item.url}}</p>
+          <div class="d-flex flex-column mt-auto p-3">
+            <span class="font-weight-bold text-dark font-13">By {{item.createdByName}}</span>
+            <small class="text-muted mt-1">{{item._metadata.lastUpdated | date:'dd/MM/yyyy hh:mm'}}</small>
+          </div>
+        </div>
+        <ng-container *ngIf="totalRecords==0 && !showLazyLoader">
+          <div class="no-records-img mx-auto"></div>
+          <h4 class="text-muted text-center">No Bookmark record, yet.</h4>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>

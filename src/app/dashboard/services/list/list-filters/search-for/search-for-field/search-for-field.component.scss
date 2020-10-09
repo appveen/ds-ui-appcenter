@@ -1,0 +1,72 @@
+@import 'src/assets/scss/bootstrap/_functions.scss';
+@import 'src/assets/scss/bootstrap/_variables.scss';
+
+.label-text {
+  width: 125px;
+}
+
+.col-name-dd {
+  min-width: 156px;
+  min-height: 32px;
+  max-height: 32px;
+  border-radius: 4px;
+}
+
+.col-filter {
+  min-width: 528px;
+  min-height: 33px;
+  max-height: 33px;
+  border: 1px solid $border;
+  border-radius: 6px;
+  overflow: hidden;
+  .filter-txt {
+    font-family: inherit;
+    border: none !important;
+    &-disabled {
+      border: none;
+      background-color: #f6f6f6;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.row-content {
+  .new-row {
+    opacity: 0;
+  }
+  &:hover .new-row {
+    opacity: 1;
+    cursor: pointer;
+  }
+}
+
+.options-dd {
+  .angle-pos {
+    left: 88%;
+    pointer-events: none;
+  }
+  select {
+    -webkit-appearance: button;
+    outline: none;
+    padding-left: 10px;
+    width: 130px;
+    height: 35px;
+    color: $capiot-blue;
+    border: none;
+    font-weight: bold;
+    background-color: $gray-light-1;
+    option {
+      font-weight: bold;
+    }
+  }
+}
+
+.date-picker {
+  &-from {
+    border-right: 1px solid $border;
+  }
+}
+.custom-select{
+  min-height: 32px;
+}

@@ -1,0 +1,376 @@
+<div class="d-flex flex-column w-100 h-100">
+    <div class="d-flex">
+        <div class="sidenav-odp bg-white" [ngClass]="{'hide':!showSideNav}">
+            <div class="logo-holder border-bottom border-right bg-white d-flex align-items-center"
+                [ngClass]="{'logo bg-dark':!(selectedApp.logo && selectedApp.logo.full)}">
+                <img class="customer-logo" *ngIf="selectedApp.logo && selectedApp.logo.full"
+                    [src]="selectedApp.logo.full" alt="Logo">
+            </div>
+            <div class="search-control position-relative border-right">
+                <span class="fa fa-search position-absolute"></span>
+                <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
+            </div>
+            <div class="icons-holder d-flex justify-content-between border-right">
+                <div class="icon-block d-flex justify-content-center align-items-center position-relative"
+                    (click)="toggleMenu('dataService')" (mouseover)="mainMenu.dataService.hover=true"
+                    (mouseout)="mainMenu.dataService.hover=false"
+                    [ngClass]="{'text-primary bg-white border':mainMenu.dataService.hover && !mainMenu.dataService.active,'bg-primary text-white':mainMenu.dataService.active}">
+                    <span class="odp-record"></span>
+                </div>
+                <div class="icon-block d-flex justify-content-center align-items-center position-relative"
+                    (click)="toggleMenu('workflow')" (mouseover)="mainMenu.workflow.hover=true"
+                    (mouseout)="mainMenu.workflow.hover=false"
+                    [ngClass]="{'text-primary bg-white border':mainMenu.workflow.hover && !mainMenu.workflow.active,'bg-primary text-white':mainMenu.workflow.active}">
+                    <span class="odp-workflow"></span>
+                    <span class="red-dot fa fa-sm fa-circle position-absolute" *ngIf="notificationList.length>0"></span>
+                </div>
+                <div class="icon-block d-flex justify-content-center align-items-center position-relative"
+                    (click)="toggleMenu('partner')" (mouseover)="mainMenu.partner.hover=true"
+                    (mouseout)="mainMenu.partner.hover=false"
+                    [ngClass]="{'text-primary bg-white border':mainMenu.partner.hover && !mainMenu.partner.active,'bg-primary text-white':mainMenu.partner.active}">
+                    <span class="odp-flows"></span>
+                </div>
+                <div class="icon-block d-flex justify-content-center align-items-center position-relative"
+                    (click)="toggleMenu('bookmark')" (mouseover)="mainMenu.bookmark.hover=true"
+                    (mouseout)="mainMenu.bookmark.hover=false"
+                    [ngClass]="{'text-primary bg-white border':mainMenu.bookmark.hover && !mainMenu.bookmark.active,'bg-primary text-white':mainMenu.bookmark.active}">
+                    <span class="odp-bookmark"></span>
+                </div>
+
+            </div>
+            <div
+                class="menu-label pl-3 text-primary font-weight-bold d-flex align-items-center justify-content-start border-bottom border-right">
+                {{activeMenu?.label}}
+            </div>
+            <div class="menu-list border-right">
+                <ng-container *ngIf="activeMenuKey=='dataService'">
+                    <div class="text-muted ml-2 my-1">Starred</div>
+                    <div *ngIf="activeMenu?.pinnedDs?.length<1" class="mb-1  staredContainer">
+                        <div class="d-flex flex-column p-3  justify-content-center align-items-center">
+                            <span class="fa fa-star text-primary p-2"></span>
+                            <span class="font-bold p-1 font-sm-12">Starred items</span>
+                            <span class="text-muted font-sm-12 ml-3">Star dataservices for quickly access your
+                                favorites</span>
+                        </div>
+                    </div>
+                    <!-- Pinned Ds -->
+                    <div class="menu-list-item d-flex align-items-center justify-content-between"
+                        (click)="loadDataService(item._id)" (mouseover)="item.hover=true" (mouseout)="item.hover=false"
+                        *ngFor="let item of activeMenu.pinnedDs"
+                        [ngClass]="{'bg-primary text-white hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
+                        <div class="d-flex align-items-center">
+                            <div class="list-item-icon d-flex align-items-center">
+                                <span class="odp-record"></span>
+                            </div>
+                            <div class="list-item-label d-flex align-items-center text-truncate"
+                                [odpTruncated]="item.name">{{item.name}}</div>
+                        </div>
+                        <span class="fa fa-star mr-1 pinning-star" [ngClass]="{'text-white': item._id === activeId}"
+                            (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
+                    </div>
+                    <!-- Pinned Ds -->
+                    <hr class="m-0">
+                    <div class="text-muted ml-2 my-1">Others</div>
+
+                    <div class="menu-list-item d-flex  align-items-center justify-content-between"
+                        (click)="loadDataService(item._id)"
+                        *ngFor="let item of activeMenu.records | serviceSearch:searchText"
+                        [ngClass]="{'bg-primary text-white hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
+                        <div class="d-flex align-items-center">
+                            <div class="list-item-icon d-flex align-items-center">
+                                <span class="odp-record"></span>
+                            </div>
+                            <div class="list-item-label d-flex align-items-center text-truncate"
+                                [odpTruncated]="item.name">{{item.name}}</div>
+                        </div>
+                        <span class="fa fa-star mr-1 pinning-star" *ngIf="activeMenu.pinnedDs.length<5"
+                            [ngClass]="{'text-white': item._id === activeId}"
+                            (click)="addToStaredList(item._id);$event.stopPropagation();"></span>
+                        <span class="fa fa-star texr-white mr-1 pinning-star" ngbTooltip="You can only pin upto 5 data services" *ngIf="activeMenu.pinnedDs.length>=5"
+                            [ngClass]="{'text-white': item._id === activeId}" (click)="$event.stopPropagation();"></span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activeMenuKey=='partner'">
+                    <div class="menu-list-item d-flex align-items-center justify-content-between hover"
+                        [ngClass]="{'bg-primary text-white': activeId === null,'bg-light text-secondary': activeId !== null}"
+                        (click)="loadPartnerInteractions()">
+                        <div class="d-flex align-items-center">
+                            <div class="list-item-icon d-flex align-items-center">
+                                <span class="odp-flows"></span>
+                            </div>
+                            <div class="list-item-label d-flex align-items-center text-truncate">All Interactions</div>
+                        </div>
+                    </div>
+                    <div class="menu-list-item d-flex align-items-center justify-content-between hover"
+                        *ngFor="let item of activeMenu.records | serviceSearch:searchText"
+                        (click)="loadPartnerInteractions(item)"
+                        [ngClass]="{'bg-primary text-white':item._id === activeId,'bg-light text-secondary':item._id !== activeId}">
+                        <div class="d-flex align-items-center">
+                            <div class="list-item-icon d-flex align-items-center">
+                                <span class="odp-flows"></span>
+                            </div>
+                            <div class="list-item-label d-flex align-items-center text-truncate"
+                                [odpTruncated]="item.name">{{item.name}}</div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activeMenuKey=='bookmark'">
+                    <div class="menu-list-item d-flex align-items-center justify-content-between"
+                        (click)="loadBookmark(item._id)"
+                        *ngFor="let item of activeMenu.records | serviceSearch:searchText"
+                        [ngClass]="{'bg-primary text-white':item._id === activeId,'bg-light text-secondary':item._id !== activeId}">
+                        <div class="d-flex align-items-center">
+                            <div class="list-item-icon d-flex align-items-center">
+                                <span class="odp-bookmark"></span>
+                            </div>
+                            <div class="list-item-label d-flex align-items-center text-truncate"
+                                [odpTruncated]="item.name">{{item.name}}</div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activeMenuKey=='workflow'">
+                    <ng-container *ngFor="let item of activeMenu?.records | serviceSearch:searchText">
+                        <div *ngIf="item?.name" class="menu-list-item d-flex align-items-center justify-content-between"
+                            (click)="loadWorkflow(item?._id)"
+                            [ngClass]="{'bg-primary text-white':item?._id === activeId,'bg-white text-secondary':item?._id !== activeId}">
+                            <div class="d-flex align-items-center">
+                                <div class="list-item-icon d-flex align-items-center">
+                                    <span class="odp-workflow"></span>
+                                </div>
+                                <div class="list-item-label d-flex align-items-center text-truncate"
+                                    [odpTruncated]="item?.name">{{item?.name}}</div>
+                            </div>
+                            <div class=" text-white d-flex align-items-center justify-content-center mr-2"
+                                [ngClass]="{'text-white':activeId == item?._id}">
+                                <small>{{item?.count}}</small>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <div *ngIf="!activeMenu.records || activeMenu.records.length==0"
+                    class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+                    <div class="d-flex align-items-center">
+                        <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="full-height d-flex flex-column w-100 bg-light" [@routerTransition]="getState(o)">
+            <div class="top-header d-flex align-items-center justify-content-between pr-3 bg-white">
+                <div class="left-side d-flex align-items-center">
+                    <div class="sidenav-toggler d-flex align-items-center justify-content-center bg-primary text-white hover"
+                        (click)="showSideNav=!showSideNav">
+                        <span class="fa fa-bars"></span>
+                    </div>
+                    <div class="d-flex align-items-center ml-3">
+                        <span class="text-muted">{{activeMenu.label}}&nbsp;/&nbsp;</span>
+                        <span class="text-dark">{{selectedName}}</span>
+                    </div>
+                </div>
+                <div class="right-side d-flex align-items-center">
+                    <div class="notification mr-3 position-relative" odpClickOutside
+                        (outside)="toggleNotification=false">
+                        <div class="notification-icon d-flex align-items-center justify-content-center border rounded hover"
+                            [ngClass]="{'bg-primary text-white':newNotifications,'text-secondary':!newNotifications}"
+                            (click)="toggleNotification=!toggleNotification">
+                            <span class="fa-bell" [ngClass]="{'fa':newNotifications,'far':!newNotifications}"></span>
+                        </div>
+                        <div *ngIf="toggleNotification"
+                            class="notification-dropdown d-flex flex-column position-absolute border bg-white">
+                            <div class="notification-dropdown-header d-flex align-items-center px-3">
+                                <span class="font-weight-bold">Notifications</span>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item" *ngIf="!hasNotifications">
+                                    <span class="text-muted">No Notifications</span>
+                                </div>
+                                <ng-container *ngFor="let item of fileTransfersList">
+                                    <div *ngIf="item.status != 'Uploaded' && item.status != 'SheetSelect'"
+                                        class="list-group-item d-flex flex-column">
+                                        <div class="d-flex align-items-center w-100 justify-content-between">
+                                            <div class="d-flex align-items-center grey-medium w-100 mb-2">
+                                                <span class="odp-record mr-2"></span>
+                                                <span class="text ds-name">{{item.name}}</span>
+                                                <span class="fa fa-circle fa-xs mx-1"></span>
+                                                <span class="text">{{item.type}}</span>
+                                                <span class="fa fa-circle fa-xs mx-1"></span>
+                                                <span class="time">{{getTimeInEnglish(item._metadata.createdAt)}}</span>
+                                            </div>
+                                            <span *ngIf="item._delete" class="fa fa-spinner fa-pulse"></span>
+                                            <button *ngIf="canClearNotification(item)" type="button"
+                                                class="btn btn-link btn-sm p-0 text-secondary"
+                                                (click)="deleteFileTransfers(item)">Clear</button>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-start">
+                                                <div class="status-circle d-flex align-items-center justify-content-center"
+                                                    [ngClass]="{'bg-success':isSuccess(item),
+                                                    'bg-primary':isIntermediate(item),
+                                                    'bg-warning':isPartialSuccess(item),
+                                                    'bg-danger':isError(item)}">
+                                                    <span *ngIf="isSuccess(item)" class="odp-check text-white"></span>
+                                                    <span *ngIf="isPartialSuccess(item)"
+                                                        class="odp-check text-white"></span>
+                                                    <span *ngIf="isError(item)" class="odp-times text-white"></span>
+                                                    <span *ngIf="isIntermediate(item) && !isError(item)"
+                                                        class="odp-cloud-upload text-white"></span>
+                                                    <span *ngIf="isPending(item)" class="odp-clock text-white"></span>
+                                                </div>
+                                                <div class="ml-2 d-flex flex-column">
+                                                    <ng-container *ngIf="item.type == 'import'">
+                                                        <span
+                                                            *ngIf="item.status == 'Completed' || item.status=='Created'">
+                                                            <!-- <span class="font-weight-bold">Import
+                                                                Successfull!&nbsp;</span><br>
+                                                            <span class="font-sm-12">{{item.createdCount}} Records
+                                                                Imported.</span> -->
+                                                            {{item.fileName}} was imported successfully.
+                                                        </span>
+                                                        <span *ngIf="item.status == 'Validating'">
+                                                            <!-- <span class="font-weight-bold">Please wait!&nbsp;</span> -->
+                                                            {{item.fileName}} is currently being validated. You will
+                                                            be notified when this is completed.
+                                                        </span>
+                                                        <span *ngIf="item.status == 'Importing'">
+                                                            <!-- <span class="font-weight-bold">Please wait!&nbsp;</span> -->
+                                                            The uploaded file is currently being imported. You will
+                                                            be notified when import is completed.
+                                                        </span>
+                                                        <span *ngIf="isIntermediate(item) && !isError(item)">
+                                                            <!-- <span class="font-weight-bold">Validated!&nbsp;</span>
+                                                            Please click on Review to continue Import process. -->
+                                                            {{item.fileName}} is validated and is now ready to be
+                                                            reviewed for import.
+                                                        </span>
+                                                        <span *ngIf="item.status == 'Uploaded'">
+                                                            <span class="font-weight-bold">Uploaded!&nbsp;</span>
+                                                            Please click on Review to continue Import process.
+                                                        </span>
+                                                        <span *ngIf="item.status == 'Error'">
+                                                            {{item.fileName}} cannot be processed as all the records are invalid.
+                                                        </span>
+                                                        <!-- <span *ngIf="item.errorCount>99">
+                                                            {{item.fileName}} cannot be processed as it has more than
+                                                            100
+                                                            errors.
+                                                        </span> -->
+                                                        <div class="d-flex mt-2">
+                                                            <span *ngIf="item.fileName"
+                                                                class="text-muted mr-1 file-label">
+                                                                Uploaded File:
+                                                            </span>
+                                                            <span class="text-primary file-name text-truncate"
+                                                                [odpTruncated]="item.fileName">{{item.fileName}}</span>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.type == 'export'">
+                                                        <span *ngIf="item.status == 'Completed'">
+                                                            Exported {{item.totalRecords}} records, your file is ready
+                                                            to download.
+                                                        </span>
+                                                        <span *ngIf="isPending(item)">
+                                                            Exporting {{item.totalRecords}} records, You will be
+                                                            notified when your file is ready to download.
+                                                        </span>
+                                                        <div class="d-flex mt-2">
+                                                            <span *ngIf="item.fileName"
+                                                                class="text-muted mr-1 file-label">
+                                                                Exported File:
+                                                            </span>
+                                                            <span class="text-primary file-name text-truncate"
+                                                                (click)="downloadFile(item);toggleNotification=false"
+                                                                [odpTruncated]="item.fileName">{{item.fileName}}</span>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!item._delete" class="d-flex align-items-center">
+                                                &nbsp;
+                                                <ng-container *ngIf="item.type == 'import'">
+                                                    <button *ngIf="item.status == 'Validated' || item.status == 'Error'"
+                                                        type="button" class="btn btn-link pr-0"
+                                                        (click)="navigateToFileMapper(item);toggleNotification=false">Review</button>
+                                                    <button *ngIf="item.status == 'Uploaded'" type="button"
+                                                        class="btn btn-link pr-0"
+                                                        (click)="navigateToSheetSelect(item);toggleNotification=false">Review</button>
+                                                </ng-container>
+                                                <ng-container *ngIf="item.type == 'export'">
+                                                    <button *ngIf="item.status == 'Completed'" type="button"
+                                                        class="btn btn-link pr-0"
+                                                        (click)="downloadFile(item);toggleNotification=false">Download</button>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="current-app d-flex align-items-center hover rounded border mr-3"
+                        (click)="toggleAppOptions()">
+                        <div class="current-app-thumbnail d-flex align-items-center justify-content-center mr-2"
+                            ngbTooltip="Switch App" placement="bottom">
+                            <img *ngIf="selectedApp.logo && selectedApp.logo.thumbnail"
+                                [src]="selectedApp.logo.thumbnail" alt="Logo">
+                            <odp-app-icon class="pt-1" *ngIf="!selectedApp.logo || !selectedApp.logo.thumbnail"
+                                color="aaa" size="24"></odp-app-icon>
+                        </div>
+                        <div class="current-app-name text-dark" ngbTooltip="Current App" placement="bottom">
+                            {{selectedApp._id}}
+                        </div>
+                        <div *ngIf="multipleApps" class="ml-auto mr-2">
+                            <span class="fas fa-angle-down text-primary"></span>
+                        </div>
+                    </div>
+                    <div class="user-details d-flex align-items-center hover rounded border ignore-outside"
+                        (click)="showProfileOptions=!showProfileOptions">
+                        <div
+                            class="user-icon-holder border rounded-circle d-flex align-items-center justify-content-center mx-2">
+                            <span class="fa fa-user text-muted"></span>
+                        </div>
+                        <div class="user-name text-truncated">{{name}}</div>
+                        <span class="user-options-icon fa fa-cog text-primary ml-2"></span>
+                    </div>
+                    <div *ngIf="showProfileOptions" class="user-details-dropdown position-absolute bg-white rounded"
+                        [ignore]="['.user-details']" odpClickOutside (outside)="showProfileOptions=false">
+                        <div *ngIf="authType && authType === 'local'" class="user-details-item px-3 d-flex align-items-center"
+                            (click)="showProfileOptions=false;toggleChangePassword=true;">
+                            <span class="fa fa-shield-alt mr-2"></span>
+                            <span class="text">Change Password</span>
+                        </div>
+                        <div class="user-details-item px-3 d-flex align-items-center"
+                            (click)="showProfileOptions=false;logout()">
+                            <span class="odp-exit-right mr-2 text-danger"></span>
+                            <span class="text">Logout</span>
+                        </div>
+                        <div class="user-details-footer border-top d-flex flex-column">
+                            <div class="powered-by position-relative">
+                                <small class="text-primary font-weight-bold position-absolute">v{{version}}</small>
+                            </div>
+                            <!-- <div class="info px-3 pb-2 text-right d-flex align-items-end justify-content-end">
+                                <small class="text-muted">v{{version}}</small>
+                            </div> -->
+                        </div>
+                        <div class="last-login d-flex flex-column px-2">
+                            <span class="text-muted">Last Login:</span>
+                            <span class="text-secondary">{{lastLogin | date:'yyyy MMM dd, HH:mm:ss'}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body position-relative">
+                <router-outlet #o="outlet"></router-outlet>
+                <div class="default-loader d-flex justify-content-center h-100 w-100" *ngIf="showLazyLoader">
+                    <div class="align-self-center text-center">
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+                        <div class="text-secondary mt-2">Processing...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<odp-app-switcher *ngIf="showAppOptions" [activeApp]="selectedApp" (activeAppChange)="onAppChange($event)"
+    (cancel)="showAppOptions=false"></odp-app-switcher>
+<odp-change-password *ngIf="toggleChangePassword" [(toggleModal)]="toggleChangePassword"></odp-change-password>

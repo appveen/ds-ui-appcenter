@@ -1,0 +1,35 @@
+<ng-container [ngSwitch]="controlType">
+  <ng-container *ngSwitchCase="'text'">
+    <odp-view-text [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-text>
+  </ng-container>
+  <ng-container *ngSwitchCase="'number'">
+    <odp-view-number [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-number>
+  </ng-container>
+  <ng-container *ngSwitchCase="'boolean'">
+    <odp-view-boolean [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-boolean>
+  </ng-container>
+  <ng-container *ngSwitchCase="'date'">
+    <odp-view-date [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-date>
+  </ng-container>
+  <ng-container *ngSwitchCase="'file'">
+    <odp-view-file [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-file>
+  </ng-container>
+  <ng-container *ngSwitchCase="'relation'">
+    <odp-view-relation [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-relation>
+  </ng-container>
+  <ng-container *ngSwitchCase="'longText'">
+    <odp-view-long-text [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-long-text>
+  </ng-container>
+  <ng-container *ngSwitchCase="'richText'">
+    <odp-view-rich-text [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-rich-text>
+  </ng-container>
+  <ng-container *ngSwitchCase="'map'">
+    <odp-view-map [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-map>
+  </ng-container>
+  <ng-container *ngSwitchCase="'user'">
+    <odp-view-user [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-user>
+  </ng-container>
+  <ng-container *ngSwitchCase="'secureText'">
+    <odp-view-secure-text [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue" [workflowDoc]="workflowDoc"></odp-view-secure-text>
+  </ng-container>
+</ng-container>

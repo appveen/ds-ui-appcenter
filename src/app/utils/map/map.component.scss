@@ -1,0 +1,32 @@
+.map{
+    width: 640px;
+    height: 300px;
+}
+.searchInput{
+    margin-top: 10px;
+    margin-left: 10px;
+    height: 29px !important;
+    width: 460px;
+    border: 0 !important;
+    color: rgb(86, 86, 86);
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    border-radius: 2px;
+    text-indent: 10px;
+}
+button{
+    margin: 10px;
+    height: 29px !important;
+    border: 0;
+    padding: 0 10px;
+    color: rgb(86, 86, 86);
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-family: Roboto, Arial, sans-serif;
+}
+button:hover{
+    cursor: pointer;
+    background-color: rgb(216, 216, 216);
+}

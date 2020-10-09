@@ -1,0 +1,28 @@
+<div class="d-flex flex-column value-wrapper">
+  <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:definition.value}"></ng-container>
+  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">From</span>
+    <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:oldVal}"></ng-container>
+  </div>
+  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">To</span>
+    <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
+  </div>
+  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">Created</span>
+    <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
+  </div>
+</div>
+
+<ng-template #values let-definition="definition" let-value="value">
+  <div class="d-flex align-items-center">
+    <ng-container *ngIf="value">
+      <span class="fa fa-check-circle mr-2 text-primary"></span>
+      <span class="font-weight-bold">Yes</span>
+    </ng-container>
+    <ng-container *ngIf="!value">
+      <span class="fa fa-times-circle mr-2 text-muted"></span>
+      <span class="font-weight-bold">No</span>
+    </ng-container>
+  </div>
+</ng-template>

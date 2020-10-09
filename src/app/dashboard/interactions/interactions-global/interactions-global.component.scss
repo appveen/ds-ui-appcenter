@@ -1,0 +1,235 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.header {
+  .large-text {
+    font-size: 22px;
+  }
+}
+
+.no-records {
+  height: calc(100vh - 40px);
+  .header {
+    min-height: 48px;
+    max-height: 48px;
+    .title {
+      font-size: 16px;
+    }
+  }
+  .interaction-body{
+    height: calc(100vh - 104px);
+  }
+}
+.filter-options {
+  .filter-label {
+    min-width: 120px;
+    max-width: 120px;
+  }
+  .date-picker {
+    min-height: 32px;
+    max-height: 32px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .type-btn {
+    min-width: 70px;
+    max-width: 70px;
+    min-height: 32px;
+    max-height: 32px;
+    background: $white;
+    color: $secondary;
+    overflow: hidden;
+    &:hover {
+      cursor: pointer;
+    }
+    div.type-from {
+      color: #1cad49;
+    }
+    div.type-to {
+      color: $dark;
+    }
+    &.active {
+      div.type-from {
+        color: $white;
+        background: #1cad49;
+      }
+      span.fa-caret-right {
+        color: #1cad49;
+      }
+      div.type-to {
+        color: $white;
+        background: $dark !important;
+      }
+    }
+    .fa-caret-right {
+      left: 33px;
+    }
+    .file-type,
+    .api-type {
+      min-width: 34px;
+      max-width: 34px;
+      min-height: 32px;
+      max-height: 32px;
+    }
+  }
+  .status-btn {
+    min-width: 60px;
+    max-width: 120px;
+    min-height: 32px;
+    max-height: 32px;
+    color: $secondary;
+    &:hover {
+      cursor: pointer;
+    }
+    .small-circle {
+      min-width: 12px;
+      max-width: 12px;
+      min-height: 12px;
+      max-height: 12px;
+      .smaller-circle {
+        min-width: 6px;
+        max-width: 6px;
+        min-height: 6px;
+        max-height: 6px;
+      }
+    }
+    &.status-failed {
+      background: $white;
+      .small-circle {
+        background: linear-gradient(#fb7958, #f71c1c);
+      }
+      &.active {
+        .small-circle {
+          background: $white;
+          .smaller-circle {
+            background: linear-gradient(#fb7958, #f71c1c);
+          }
+        }
+        color: $white;
+        background: linear-gradient(#fb7958, #f71c1c);
+      }
+    }
+    &.status-success {
+      background: $white;
+      .small-circle {
+        background: linear-gradient(#77d459, #43b870);
+      }
+      &.active {
+        .small-circle {
+          background: $white;
+          .smaller-circle {
+            background: linear-gradient(#77d459, #43b870);
+          }
+        }
+        color: $white;
+        background: linear-gradient(#77d459, #43b870);
+      }
+    }
+    &.status-progress {
+      background: $white;
+      .small-circle {
+        background: linear-gradient(#fccd54, #fab36f);
+      }
+      &.active {
+        .small-circle {
+          background: $white;
+          .smaller-circle {
+            background: linear-gradient(#fccd54, #fab36f);
+          }
+        }
+        color: $white;
+        background: linear-gradient(#fccd54, #fab36f);
+      }
+    }
+    &.status-queued {
+      background: $white;
+      .small-circle {
+        background: linear-gradient($primary, $primary-dark);
+      }
+      &.active {
+        .small-circle {
+          background: $white;
+          .smaller-circle {
+            background: linear-gradient($primary, $primary-dark);
+          }
+        }
+        color: $white;
+        background: linear-gradient($primary, $primary-dark);
+      }
+    }
+  }
+  .type-ahead {
+    .fa-plus-circle {
+      top: 10px;
+      left: 10px;
+    }
+    .partner-search {
+      min-height: 32px;
+      max-height: 32px;
+      min-width: 300px;
+      max-width: 300px;
+      text-indent: 20px;
+    }
+  }
+  .partner-badge {
+    max-width: 150px;
+    &:hover {
+      cursor: pointer;
+      text-decoration: line-through;
+    }
+  }
+  .direction-btn {
+    min-width: 100px;
+    max-width: 100px;
+    min-height: 32px;
+    max-height: 32px;
+    border-radius: 16px;
+    background: $white;
+    &.in-btn {
+      .fa-arrow-circle-down {
+        color: $vibrant-green;
+      }
+      &.active {
+        background: $vibrant-green;
+        &:focus,
+        &:active {
+          outline: none;
+        }
+        .fa-arrow-circle-down,
+        .text {
+          color: $white;
+        }
+      }
+    }
+    &.out-btn {
+      .fa-arrow-circle-up {
+        color: $vibrant-blue;
+      }
+      &.active {
+        background: $vibrant-blue;
+        &:focus,
+        &:active {
+          outline: none;
+        }
+        .fa-arrow-circle-up,
+        .text {
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+.body {
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
+  min-height: calc(100vh - 150px);
+  // min-width: calc(100vw - 245px);
+  .highlighted {
+    background-color: #fff9e5;
+  }
+  .default-cur {
+    cursor: default;
+  }
+}

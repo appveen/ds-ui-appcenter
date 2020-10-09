@@ -1,0 +1,267 @@
+<div class="d-flex align-items-start position-relative p-3">
+    <div class="node-symbol d-flex align-items-center justify-content-center position-absolute border text-white {{node?.meta?.flowType}}-node"
+        [ngClass]="{'start-node':startNode,'timer':flowData?.timer?.enabled}">
+        <span *ngIf="node?.meta?.sourceType=='FILE'" class="odp-file"></span>
+        <span *ngIf="node?.meta?.sourceType=='REST'" class="odp-api"></span>
+        <span *ngIf="node?.meta?.formatType=='dataService'" class="odp-dataservice"></span>
+        <span *ngIf="node?.meta?.formatType=='nanoService'" class="odp-nanoservice"></span>
+    </div>
+    <div *ngIf="logData?.name" class="node-name position-absolute text-muted">{{logData?.name}}</div>
+    <div *ngIf="node?.meta?.sourceType=='FILE'"
+        class="node-type border position-absolute rounded bg-light px-1 text-muted">FILE</div>
+    <div *ngIf="node?.meta?.sourceType=='REST'"
+        class="node-type border position-absolute rounded bg-light px-1 text-muted">API</div>
+    <div *ngIf="node?.meta?.formatType=='dataService'"
+        class="node-type border position-absolute rounded bg-light px-1 text-muted">DATASERVICE</div>
+    <div *ngIf="node?.meta?.formatType=='nanoService'"
+        class="node-type border position-absolute rounded bg-light px-1 text-muted">NANOSERVICE</div>
+    <div class="spacer"></div>
+    <ng-container *ngIf="logData">
+        <div class="node-info pr-3">
+            <div class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="odp-clock text-secondary"></span>
+                </div>
+                <div class="label text-truncate">Invocation Time</div>
+                <div class="value">
+                    <ng-container *ngIf="logData?.createTimestamp">
+                        {{logData?.createTimestamp | date: 'MMM dd yyyy, HH:mm:ss'}}
+                    </ng-container>
+                    <ng-container *ngIf="!logData?.createTimestamp">N.A.</ng-container>
+                </div>
+            </div>
+            <div class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="odp-clock text-secondary"></span>
+                </div>
+                <div class="label text-truncate">Completed Time</div>
+                <div class="value">
+                    <ng-container *ngIf="logData?.completedTimestamp">
+                        {{logData?.completedTimestamp | date: 'MMM dd yyyy, HH:mm:ss'}}
+                    </ng-container>
+                    <ng-container *ngIf="!logData?.completedTimestamp">N.A.</ng-container>
+                </div>
+            </div>
+            <div *ngIf="duration" class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="odp-timer text-secondary"></span>
+                </div>
+                <div class="label text-truncate">Duration</div>
+                <div class="value">{{duration}}</div>
+            </div>
+            <div *ngIf="node.meta.sourceType === 'REST' || node.meta.blockType === 'PROCESS'"
+                class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="odp-api text-secondary"></span>
+                </div>
+                <div class="label text-truncate">URL endpoint</div>
+                <div class="value">
+                    <ng-container *ngIf="endpoint">
+                        {{endpoint}}
+                    </ng-container>
+                    <ng-container *ngIf="!endpoint">N.A.</ng-container>
+                </div>
+            </div>
+            <div *ngIf="node.meta.sourceType === 'REST' || node.meta.blockType === 'PROCESS'"
+                class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="text-secondary" [ngClass]="{'odp-check-circle':statusSuccess,
+                    'odp-times-circle':!statusSuccess}"></span>
+                </div>
+                <div class="label text-truncate">Status Code</div>
+                <div class="value">
+                    <ng-container *ngIf="logData?.statusCode">
+                        <span class="font-weight-bold" [ngClass]="{'text-success':statusSuccess,
+                        'text-danger':!statusSuccess}">{{logData?.statusCode}}</span>
+                    </ng-container>
+                    <ng-container *ngIf="!logData?.statusCode">N.A.</ng-container>
+                </div>
+            </div>
+            <div *ngIf="(node.meta.sourceType === 'REST' || node.meta.blockType === 'PROCESS') && !statusSuccess"
+                class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="text-secondary odp-comment"></span>
+                </div>
+                <div class="label text-truncate">Error Message</div>
+                <div class="value">
+                    <span class="font-weight-bold text-danger">{{errorMessage}}</span>
+                </div>
+            </div>
+            <ng-container *ngIf="node.meta.sourceType === 'FILE'">
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-file text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">File Name</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.metadata?.fileName">
+                            <a target="_blank" [href]="agentFileHref">{{logData?.metadata?.fileName}}</a>
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.metadata?.fileName">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-key text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">File Password</div>
+                    <div class="value">
+                        <ng-container *ngIf="agentFilePassword">
+                            <span class="text">{{agentFilePassword}}</span>
+                            <button class="btn btn-link p-0 ml-2" (click)="copyPassword()">
+                                <span class="odp-copy"></span>
+                            </button>
+                        </ng-container>
+                        <ng-container *ngIf="!agentFilePassword">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-file text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">File Size</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.metadata?.size">
+                            {{logData?.metadata?.size}} Bytes
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.metadata?.size">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-file text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">File Extension</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.metadata?.fileSuffix">
+                            {{logData?.metadata?.fileSuffix}}
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.metadata?.fileSuffix">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-file text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">File Location</div>
+                    <div class="value">
+                        <ng-container *ngIf="location">
+                            {{location}}
+                        </ng-container>
+                        <ng-container *ngIf="!location">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-file text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">File CheckSum</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.metadata?.md5CheckSum">
+                            {{logData?.metadata?.md5CheckSum}}
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.metadata?.md5CheckSum">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-partners text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">Agent Name</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.agent?.name">
+                            {{logData?.agent?.name}}
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.agent?.name">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-partners text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">Agent ID</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.agent?.agentID">
+                            {{logData?.agent?.agentID}}
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.agent?.agentID">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-partners text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">Agent IP</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.agent?.IPAddress">
+                            {{logData?.agent?.IPAddress}}
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.agent?.IPAddress">N.A.</ng-container>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="odp-partners text-secondary"></span>
+                    </div>
+                    <div class="label text-truncate">Agent MAC Address</div>
+                    <div class="value">
+                        <ng-container *ngIf="logData?.agent?.MACAddress">
+                            {{logData?.agent?.MACAddress}}
+                        </ng-container>
+                        <ng-container *ngIf="!logData?.agent?.MACAddress">N.A.</ng-container>
+                    </div>
+                </div>
+                <div *ngIf="showErrorInNode" class="d-flex align-items-center mb-2 data-row">
+                    <div class="icon-holder">
+                        <span class="fa fa-exclamation-circle text-danger"></span>
+                    </div>
+                    <div class="label text-truncate">Error</div>
+                    <div class="value  error-message text-danger">{{showErrorInNode}}</div>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!logData">
+        <div *ngIf="showErrorMessage" class="node-info pr-3 d-flex align-items-center mt-3">
+            <span class="fa fa-exclamation-circle fa-2x text-danger mr-2"></span>
+            <!-- <span class="text-muted mr-2">Error:</span> -->
+            <span class="text-muted">{{interactionData.errorMessage}}</span>
+        </div>
+        <div *ngIf="showLogMissing" class="node-info pr-3 d-flex align-items-center mt-3">
+            <span class="fa fa-exclamation-circle fa-2x text-warning mr-2"></span>
+            <!-- <span class="text-muted mr-2">Warning:</span> -->
+            <span class="text-muted">Interaction Log Missing.</span>
+        </div>
+        <div *ngIf="showLogPending" class="node-info pr-3 d-flex align-items-center mt-3">
+            <!-- <span class="fa fa-info-circle fa-2x text-dark pending mr-2"></span> -->
+            <span class="fa fa-spinner fa-pulse fa-lg text-dark mr-2"></span>
+            <!-- <span class="text-muted mr-2">Warning:</span> -->
+            <span class="text-muted">Interaction still in Process.</span>
+        </div>
+        <div *ngIf="showDidNotExecute" class="node-info pr-3 d-flex align-items-center mt-3">
+            <span class="fa fa-info-circle fa-2x text-dark mr-2"></span>
+            <!-- <span class="text-muted mr-2">Info:</span> -->
+            <span class="text-muted">Did not run due to error in one of the previous step.</span>
+        </div>
+        <div *ngIf="showNoNeedToExecute" class="node-info pr-3 d-flex align-items-center mt-3">
+            <span class="fa fa-info-circle fa-2x text-dark mr-2"></span>
+            <!-- <span class="text-muted mr-2">Info:</span> -->
+            <span class="text-muted">Did not run because no error occured.</span>
+        </div>
+    </ng-container>
+    <div class="debug-info">
+        <div *ngIf="logData?.inputFileName || logData?.outputFileName" class="d-flex flex-column bg-light rounded p-3">
+            <div class="text-dark mb-2">Debug Info</div>
+            <div *ngIf="logData?.inputFileName" class="d-flex align-items-center">
+                <span class="odp-file mr-2"></span>
+                <span class="label mr-2">Input File</span>
+                <a target="_blank" [href]="logData?.inputFileHREF">{{logData?.inputFileName}}</a>
+            </div>
+            <div *ngIf="logData?.outputFileName" class="d-flex align-items-center">
+                <span class="odp-file mr-2"></span>
+                <span class="label mr-2">Output File</span>
+                <a target="_blank" [href]="logData?.outputFileHREF">{{logData?.outputFileName}}</a>
+            </div>
+        </div>
+    </div>
+</div>

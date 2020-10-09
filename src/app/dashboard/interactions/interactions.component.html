@@ -1,0 +1,205 @@
+<!--NEW CODE-->
+<div class="default-loader d-flex justify-content-center align-items-center w-100" id="loader" *ngIf="config.showLazyLoader">
+    <div class="align-self-center text-center">
+        <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+        <div class="text-secondary mt-2">Processing...</div>
+    </div>
+</div>
+<div class="d-flex flex-column bg-light" *ngIf="!config.showLazyLoader">
+    <div class="d-flex m-3">
+        <div class="mr-2 hover">
+            <odp-partner-icon size="22" color="0082C9" class="mt-1"></odp-partner-icon>
+        </div>
+        <div class="mr-2 text-primary hover">
+            {{ partner.partnerName }}
+        </div>
+        <div class="mx-2 font-lg text-primary">
+         <span class="fas fa-angle-right"></span>
+        </div>
+        <div class="ml-2 text-secondary">Home</div>
+        <!--<div class="ml-auto">
+            <odp-search-box (enteredText)="searchFlows($event)" (reset)="resetFlowSearch()" [tooltipDir]="'left'" [placeholder]="'Search Mircoflows'"></odp-search-box>
+        </div>-->
+    </div>
+    <div class="d-flex partner-info-box bg-white m-3">
+        <div class="d-flex p-3 w-75">
+            <div class="partner-icon-box border d-flex align-items-center justify-content-center">
+                <odp-partner-icon size="80" color="bdbdbd" class="mt-1"></odp-partner-icon>
+            </div>
+            <div class="d-flex flex-column ml-4 justify-content-center">
+                <h2>{{partner.partnerName}}</h2>
+                <div class="font-sm text-secondary partner-desc">{{ partner.partnerDesc ? partner.partnerDesc : ''}}</div>
+            </div>
+        </div>
+        <div class="ml-auto w-25 border-left p-3 d-flex align-items-center justify-content-center">
+            <div class="health-circle d-flex align-items-center justify-content-center" [ngStyle]="{backgroundColor: healthColor}">
+                <span class="odp-heartbeat text-white"></span>
+            </div>
+            <div class="d-flex flex-column ml-2">
+                <strong>{{ partner.agentName }}</strong>
+                <div><span class="text-secondary">Health:</span> {{ partner.agentHealth }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="integration-filter d-flex mx-5 position-relative" *ngIf="partner.allFlows.length > 0">
+        <strong>Integrations</strong>
+        <div class="ml-auto d-flex text-primary font-sm-12 align-items-center hover ignore-outside" (click)="toggleDropdown = !toggleDropdown">
+            <strong class="mr-2 ignore-outside">{{ IntegrationName }}</strong>
+            <span class="fas fa-sm fa-chevron-down ignore-outside"></span>
+        </div>
+        <ul class="position-absolute" *ngIf="toggleDropdown" odpClickOutside (outside)="toggleDropdown = false" [ignore]="['.ignore-outside']">
+            <li (click)="selectIntegration()" class="integration-dd hover">
+                <span>All Integrations</span>
+            </li>
+            <li *ngFor="let integration of partner.allFlows" class="d-flex flex-column integration-dd hover" (click)="selectIntegration(integration)">
+                <span>{{ integration.name }}</span>
+            </li>
+        </ul>
+    </div>
+    <div class="flows bg-white mx-3 my-2 d-flex" [ngStyle]="toggleExpand(i)" *ngFor="let flow of partner.allFlows | filterIntegration: IntegrationName; let i = index;">
+        <div class="d-flex flex-column w-25 p-3 border-right hover" (click)="getFlowInteractions(flow)">
+            <strong class="">{{flow.name}}</strong>
+            <div class="d-flex" [ngClass]="{'mt-3': flow.isExpanded, 'mt-2': !flow.isExpanded}">
+                <strong class="ver-badge font-xs">{{ 'V' + flow.ver }}</strong>
+                <strong class="font-xs ml-1" [ngClass]="{'status-badge-success': flow.status === 'Active' , 'status-badge-stopped': flow.status === 'Stopped'}">{{ flow.status }}</strong>
+            </div>
+            <div class="text-secondary font-sm-12" [ngClass]="{'mt-4': flow.isExpanded}" *ngIf="flow.isExpanded">{{ flow.description }}</div>
+        </div>
+        <div class="p-3 position-relative border-right" [ngClass]="{'w-75': flow.isExpanded, 'w-50': !flow.isExpanded}">
+            <div class=""><strong>Interactions</strong></div>
+            <div class="d-flex" *ngIf="!flow.isExpanded">
+                <div class="total flow-count d-flex flex-column text-default-color">
+                    <strong>{{ getCount(flow.name, 'total') }}</strong>
+                    <div class="font-sm-12">Total</div>
+                </div>
+                <div class="success flow-count d-flex flex-column text-success">
+                    <strong>{{ getCount(flow.name, 'success') }}</strong>
+                    <div class="font-sm-12">Success</div>
+                </div>
+                <div class="fail flow-count d-flex flex-column text-danger">
+                    <strong>{{ getCount(flow.name, 'error') }}</strong>
+                    <div class="font-sm-12">Failed</div>
+                </div>
+                <div class="pending flow-count d-flex flex-column text-default-color">
+                    <strong>{{ getCount(flow.name, 'queued') }}</strong>
+                    <div class="font-sm-12">Queued</div>
+                </div>
+                <div class="pending flow-count d-flex flex-column text-warning">
+                    <strong>{{ getCount(flow.name, 'pending') }}</strong>
+                    <div class="font-sm-12">Progress</div>
+                </div>
+                <div class="pending flow-count d-flex flex-column text-warning">
+                    <strong>{{ getCount(flow.name, 'unknown') }}</strong>
+                    <div class="font-sm-12">Unknown</div>
+                </div>
+            </div>
+            <span class="position-absolute hover odp-expand fa-sm text-secondary odp-expand-pos1" (click)="toggleExpand(i, $event)" *ngIf="flow.isExpanded"></span>
+            <div class="mt-2 d-flex hover" *ngIf="flow.isExpanded">
+                <div (click)="showDatedd = !showDatedd" class="ignore-outside">
+                    <strong class="text-primary font-sm-12 mr-1 ignore-outside">{{ currentMonth }}</strong>
+                    <span class="odp-angle-down fa-xs text-primary mt-1 ignore-outside"></span>
+                </div>
+                <div class="ml-auto d-flex count-container" *ngIf="flow.isExpanded && !noDataForChart">
+                    <div class="mr-2 d-flex flex-column count-box all p-1">
+                        <strong>{{ getCount(flow.name, 'total') }}</strong>
+                        <span class="font-sm-12">Total</span>
+                    </div>
+                    <div class="mr-2 d-flex flex-column count-box success-box p-1">
+                        <strong>{{ getCount(flow.name, 'success') }}</strong>
+                        <span class="font-sm-12">Successful</span>
+                    </div>
+                    <div class="mr-2 d-flex flex-column count-box errored p-1">
+                        <strong>{{ getCount(flow.name, 'error') }}</strong>
+                        <span class="font-sm-12">Failed</span>
+                    </div>
+                    <div class="mr-2 d-flex flex-column count-box pending-box p-1">
+                        <strong>{{ getCount(flow.name, 'pending') }}</strong>
+                        <span class="font-sm-12">Pending</span>
+                    </div>
+                    <div class="mr-2 d-flex flex-column count-box pending-box p-1">
+                        <strong>{{ getCount(flow.name, 'queued') }}</strong>
+                        <span class="font-sm-12">Queued</span>
+                    </div>
+                </div>
+            </div>
+            <div class="position-absolute border dateMnth-dd hover" *ngIf="flow.isExpanded && showDatedd" odpClickOutside (outside)="showDatedd = false" [ignore]="['.ignore-outside']">
+                <div *ngFor="let date of monthYearFilter; let di = index" class="p-2 ignore-outside" (click)="filterInteractionData(filterDate(di), flow, i)">
+                    <span class="ignore-outside">{{ filterDate(di) }}</span>
+                </div>
+            </div>
+            <div id="{{'chartDiv-' + i}}" [ngClass]="{'chart-height': flow.isExpanded && !noDataForChart, 'h-100': !flow.isExpanded && noDataForChart}"></div>
+            <div class="mt-2 d-flex align-items-center" *ngIf="flow.isExpanded && !noDataForChart">
+                <div class="mr-3">Latest Streak</div>
+                <div class="d-flex" *ngIf="streaks(flow); else noFlows">
+                    <div *ngFor="let streak of flow.latestStreak; let i = index" class="mr-2">
+                        <div *ngIf="streak.status === 'SUCCESS'" class="position-relative" [ngClass]="{'fas fa-circle fa-xs text-success': streak.status === 'SUCCESS'}" (mouseover)="streak.hover = true; $event.stopPropagation();" (mouseleave)="streak.hover = false">
+                            <ng-container *ngTemplateOutlet="streakTooltip; context:{streak:streak}"></ng-container>
+                        </div>
+                        <div *ngIf="streak.status === 'PENDING'" class="position-relative" [ngClass]="{'fas fa-circle fa-xs text-warning': streak.status === 'PENDING'}" (mouseover)="streak.hover = true; $event.stopPropagation()" (mouseleave)="streak.hover = false">
+                            <ng-container *ngTemplateOutlet="streakTooltip; context:{streak:streak}"></ng-container>
+                        </div>
+                        <div *ngIf="streak.status === 'ERROR'" class="position-relative" [ngClass]="{'fas fa-circle fa-xs text-danger': streak.status === 'ERROR'}" (mouseover)="streak.hover = true; $event.stopPropagation()" (mouseleave)="streak.hover = false">
+                            <ng-container *ngTemplateOutlet="streakTooltip; context:{streak:streak}"></ng-container>
+                        </div>
+                    </div>
+                    <div class="ml-3">
+                       <span class="font-sm-12">Last:</span>
+                       <strong class="text-primary">
+                           {{ flow.latestStreak[flow.latestStreak.length - 1] ? flow.latestStreak[flow.latestStreak.length - 1].txnId : '' }}
+                       </strong>
+                    </div>
+                    <div class="ml-1 font-sm-12" *ngIf="flow.latestStreak[flow.latestStreak.length - 1]" [ngStyle]="{'padding-top': '2px'}">
+                        <span class="fas fa-circle fa-xs text-secondary mr-1"></span>
+                        <span class="font-sm-12 text-secondary">{{ flow.latestStreak[flow.latestStreak.length - 1]. timeStamp|date: 'medium' }}</span>
+                    </div>
+                </div>
+                <div class="ml-auto" *ngIf="flow.isExpanded && !noDataForChart">
+                    <button class="btn btn-md btn-primary" (click)="getFlowInteractions(flow)">
+                        <span class="mr-2">Open</span>
+                        <span>&rarr;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-2 h-100 d-flex justify-content-center align-items-center text-secondary font-sm" *ngIf="flow.isExpanded && noDataForChart">
+                No flow data found for last 30 days.
+            </div>
+        </div>
+        <div class="w-25 d-flex flex-column p-3 position-relative" *ngIf="!flow.isExpanded">
+            <div class="mb-2">Latest Streak</div>
+            <div class="d-flex" *ngIf="streaks(flow); else noFlows">
+                <div *ngFor="let streak of flow.latestStreak; let i = index" class="mr-2">
+                    <div *ngIf="streak.status === 'SUCCESS'" class="position-relative" [ngClass]="{'fas fa-circle fa-xs text-success': streak.status === 'SUCCESS'}" (mouseover)="streak.hover = true; $event.stopPropagation();" (mouseleave)="streak.hover = false">
+                        <ng-container *ngTemplateOutlet="streakTooltip; context:{streak:streak}"></ng-container>
+                    </div>
+                    <div *ngIf="streak.status === 'PENDING'" class="position-relative" [ngClass]="{'fas fa-circle fa-xs text-warning': streak.status === 'PENDING'}" (mouseover)="streak.hover = true; $event.stopPropagation()" (mouseleave)="streak.hover = false">
+                        <ng-container *ngTemplateOutlet="streakTooltip; context:{streak:streak}"></ng-container>
+                    </div>
+                    <div *ngIf="streak.status === 'ERROR'" class="position-relative" [ngClass]="{'fas fa-circle fa-xs text-danger': streak.status === 'ERROR'}" (mouseover)="streak.hover = true; $event.stopPropagation()" (mouseleave)="streak.hover = false">
+                        <ng-container *ngTemplateOutlet="streakTooltip; context:{streak:streak}"></ng-container>
+                    </div>
+                </div>
+            </div>
+            <span class="position-absolute hover odp-expand fa-sm text-secondary odp-expand-pos2" (click)="toggleExpand(i, $event)" *ngIf="!flow.isExpanded"></span>
+        </div>
+    </div>
+</div>
+
+<ng-template #noFlows>
+    <span class="text-secondary font-sm">
+        No flows run for last 10 days
+    </span>
+</ng-template>
+
+<ng-template #streakTooltip let-streak="streak">
+    <div class="streak-tooltip bg-white position-absolute d-flex flex-column p-1" *ngIf="streak.hover">
+        <div class="mb-2 mf-heading p-2 text-truncate font-normal" [ngStyle]="getHeaderbgColor(streak.status)">{{streak.txnId}}</div>
+        <div class="font-sm d-flex mb-2 text-dark">
+            <span class="odp-microflow fa-lg"></span>
+            <strong>{{ streak.mfName }}</strong>
+        </div>
+        <div class="font-sm-12 d-flex align-items-center text-dark">
+            <span class="odp-clock fa-sm-12 mr-2"></span>
+            <span>{{ streak.timeStamp|date: 'dd-MM-yyyy hh:mm:ss' }}</span>
+        </div>
+    </div>
+</ng-template>

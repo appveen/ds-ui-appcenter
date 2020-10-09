@@ -1,0 +1,34 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+svg {
+  position: static;
+  left: 0;
+  top: 0;
+}
+.cls-1,
+.cls-2,
+.cls-3,
+.cls-4{
+  fill: none;
+  stroke-linejoin:round;
+}
+.cls-4{
+    stroke-linecap: round;
+}
+
+.active {
+  line,
+  polygon {
+    stroke: $black !important;
+  }
+  .cls-1 {
+    fill: lighten($border, 10);
+  }
+  .cls-2 {
+    fill: $white;
+  }
+  .cls-3 {
+    fill: lighten($capiot-blue, 10);
+  }
+}

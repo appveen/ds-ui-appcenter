@@ -1,0 +1,21 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.search-box {
+  width: 300px !important;
+  input {
+    width: 300px !important;
+    background-color: $light;
+    text-indent: 10px;
+    padding: 0.25rem 0.75rem 0.25rem 0.12rem;
+    border-radius: 20px;
+    &:active,
+    &:focus {
+      background-color: $white;
+    }
+  }
+  .info,
+  .fa-times-circle {
+    right: 10px;
+  }
+}

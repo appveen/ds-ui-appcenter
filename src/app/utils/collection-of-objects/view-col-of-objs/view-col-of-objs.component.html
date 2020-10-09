@@ -1,0 +1,36 @@
+<button class="viewBtn btn btn-link p-0" (click)="viewItem($event)">View</button>
+
+<ng-template #viewModal>
+    <ng-container *ngIf="!!parentContext">
+        <div class="modal-header bg-light">
+            <strong>
+                View {{ parentContext.collectionFieldName }}
+                &nbsp;
+                <span *ngIf="parentContext.historyMode === 'old'">[OLD]</span>
+                <span *ngIf="parentContext.historyMode === 'new'">[NEW]</span>
+            </strong>
+            <div class="paginationControls">
+                <button class="btn btn-link btn-sm" [disabled]="selectedRowIndex === 0" (click)="goToPreviousItem()">
+                    <span class="fa fa-angle-left"></span>
+                </button>
+                <span class="steps-info text-secondary">
+                    {{ selectedRowIndex + 1 }} of {{ arrayValues.length }}
+                </span>
+                <button class="btn btn-link btn-sm" [disabled]="selectedRowIndex >= arrayValues.length - 1"
+                    (click)="goToNextItem()">
+                    <span class="fa fa-angle-right"></span>
+                </button>
+            </div>
+        </div>
+        <div class="modal-body scrollBox">
+            <odp-view-control *ngFor="let def of expandedDefinitions[selectedRowIndex].definition" [definition]="def"
+                [value]="expandedDefinitions[selectedRowIndex].value">
+            </odp-view-control>
+        </div>
+        <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" (click)="viewModalRef.close()">
+                Close
+            </button>
+        </div>
+    </ng-container>
+</ng-template>

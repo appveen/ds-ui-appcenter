@@ -1,0 +1,6 @@
+<div>
+        <ng-container *ngIf="searchFieldValue">
+            <span class="text-primary" target="_blank" placement="top">{{searchFieldValue}}</span>
+        </ng-container>
+        <span *ngIf="!searchFieldValue" class="text-muted">N.A.</span>
+    </div>

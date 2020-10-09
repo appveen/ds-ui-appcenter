@@ -1,0 +1,11 @@
+.grid-container {
+    display: grid;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.buttonsRow {
+    min-height: 32px;
+    align-items: center;
+    justify-content: end;
+}

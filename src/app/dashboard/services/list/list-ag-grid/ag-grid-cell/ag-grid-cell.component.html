@@ -1,0 +1,109 @@
+<div (contextmenu)="onRightClick()">
+    <ng-container *ngIf="value   || type === 'Checkbox' || type === 'Array' || type === 'Object' || type === 'Boolean'">
+        <ng-container *ngIf="type === 'Identifier'">
+            <a [routerLink]="['/~/services/',serviceId,'view',data._id]">{{value}}</a>
+        </ng-container>
+        <ng-container *ngIf="type === 'Checkbox'">
+            <div class="d-flex align-items-center mt-1">
+                <div class="round-check d-flex align-items-center justify-content-center border hover"
+                    [ngClass]="{'bg-primary border-primary':checked,'bg-light':!checked}">
+                    <span *ngIf="checked" class="fa fa-check text-white"></span>
+                </div>
+                <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"
+                    [ngClass]="{'ml-2': data._metadata.workflow}"></div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="type === 'Array'">
+            <div class="">
+                {{value?value.length : '0'}} records
+            </div>
+        </ng-container>
+        <ng-container *ngIf="type === 'Object'">
+            <div class="">
+                {{keysCount}} fields
+            </div>
+        </ng-container>
+        <ng-container *ngIf="type === 'String' && !properties.longText && !properties.richText && !properties.password">
+            <span *ngIf="value && isenrichTextWithLinkRequired" [innerHTML]="textWithLink"></span>
+            <span class="wrapper" *ngIf="value && !isenrichTextWithLinkRequired">{{value}}</span>
+            <span *ngIf="!value" class="text-muted">N.A.</span>
+        </ng-container>
+        <div *ngIf="type === 'String' && properties.password" class="d-flex align-items-center">
+            <ng-container *ngIf="value && value.value">
+                <ng-container *ngIf="!showPassword">
+                    **********
+                </ng-container>
+                <ng-container *ngIf="showPassword">
+                    {{value.value}}
+                </ng-container>
+                <button type="button" class="btn btn-sm btn-link p-0 ml-2"
+                    (click)="showPassword=!showPassword;$event.stopPropagation();">
+                    {{showPassword?'Hide':'Show'}}
+                </button>
+            </ng-container>
+        </div>
+        <ng-container *ngIf="type === 'String' && properties.longText && !properties.richText">
+            <a  [routerLink]="['/~/services',serviceId,'view',id]">View</a>
+        </ng-container>
+        <ng-container *ngIf="type === 'String' && !properties.longText && properties.richText">
+            <a  [routerLink]="['/~/services',serviceId,'view',id]">View</a>
+        </ng-container>
+        <ng-container *ngIf="type === 'Number' && !properties.currency">
+            <ng-container *ngIf="value || value === 0">
+                {{value}}
+            </ng-container>
+            <span *ngIf="!value && value !== 0" class="text-muted">N.A.</span>
+        </ng-container>
+        <ng-container *ngIf="type === 'Number' && properties.currency">
+            <span *ngIf="currencyType == 'INR'">&#8377;</span>
+            <span *ngIf="currencyType == 'USD'">&#36;</span>
+            <span *ngIf="currencyType == 'EUR'">&#8364;</span>
+            <span *ngIf="currencyType == 'GBP'">&#163;</span>
+            <span class="pl-2">{{value}}</span>
+        </ng-container>
+        <ng-container *ngIf="type === 'Date'">
+            <ng-container *ngIf="properties.dateType != 'date'">
+                {{value | date:'MMM d, y, H:mm:ss'}}
+            </ng-container>
+            <ng-container *ngIf="properties.dateType == 'date'">
+                {{value | date:'mediumDate'}}
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="type === 'Boolean'">
+            <span *ngIf="value" class="text-muted">
+                <span class="fa fa-check-circle text-primary"></span>
+                <span class="text ml-1">Yes</span>
+            </span>
+            <span *ngIf="!value" class="text-muted">
+                <span class="fa fa-times-circle"></span>
+                <span class="text ml-1">No</span>
+            </span>
+        </ng-container>
+        <ng-container *ngIf="type === 'Relation'">
+            <odp-relation-view [definition]="definition" [data]="data"></odp-relation-view>
+        </ng-container>
+        <ng-container *ngIf="type === 'User'">
+            <odp-user-view [definition]="definition" [data]="data"></odp-user-view>
+        </ng-container>
+        <ng-container *ngIf="type === 'File' && value">
+            <odp-file-view [definition]="definition" [value]="value"></odp-file-view>
+        </ng-container>
+        <ng-container *ngIf="type === 'Geojson'">
+            <a [attr.href]="url" class="text-truncate high-zIndex" target="_blank"
+                placement="top">{{formattedAddress}}</a>
+        </ng-container>
+    </ng-container>
+    <ng-container
+        *ngIf="data && data._id && !value && type !== 'Checkbox' && type !== 'Boolean' && type !== 'Number' && type !== 'Array' && type !== 'Object'">
+        <span class="text-muted">N.A.</span>
+    </ng-container>
+    <ng-container *ngIf="type==='Number' && (value==undefined || value == null)">
+        <span class="text-muted">N.A</span>
+    </ng-container>
+    <ng-container *ngIf="type==='Number' && value===0">
+        <span>{{value}}</span>
+    </ng-container>
+</div>
+<ng-container *ngIf="!data || !data._id">
+    <span class="fa fa-pulse fa-spinner"></span>
+</ng-container>

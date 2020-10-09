@@ -1,0 +1,41 @@
+<input
+    *ngIf="field==='odpTxnId' || field==='remoteTxnId' || field === 'flowData.partnerName' || field === 'flowData.flowName'"
+    type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
+<input *ngIf="field==='createTimestamp' || field==='completedTimestamp'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value"
+    (ngModelChange)="onChange($event)">
+<select *ngIf="field==='flowData.inputType'" class="border rounded bg-white w-100" [(ngModel)]="value"
+    (ngModelChange)="onChange($event)">
+    <option value="">--All--</option>
+    <option value="FILE-FILE">File - File</option>
+    <option value="FILE-API">File - API</option>
+    <option value="API-FILE">API - File</option>
+    <option value="API-API">API - API</option>
+</select>
+<select *ngIf="field==='status'" class="border rounded bg-white w-100" [(ngModel)]="value"
+    (ngModelChange)="onChange($event)">
+    <option value="">--All--</option>
+    <option value="SUCCESS">Successful</option>
+    <option value="PENDING">Pending</option>
+    <option value="ERROR">Failed</option>
+    <option value="UNKNOWN">Unknown</option>
+    <option value="QUEUED">Queued</option>
+</select>
+
+<ng-template #clearFilterModal>
+    <div class="modal-header">
+        <h4 class="modal-title text-danger">Clear Advance Filter</h4>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">Advance Filters will be removed and this filters will be applied?</p>
+    </div>
+    <div class="modal-footer d-flex">
+        <button type="button" id="clearModalCancelBtn" class="btn btn-dark btn-min-width mr-3 ml-auto"
+            (click)="clearFilterModalRef.close(false)">
+            Cancel
+        </button>
+        <button type="button" id="clearModalClearBtn" class="btn btn-primary btn-min-width"
+            (click)="clearFilterModalRef.close(true)">
+            Ok
+        </button>
+    </div>
+</ng-template>

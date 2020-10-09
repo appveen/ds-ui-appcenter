@@ -1,0 +1,341 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.customer-logo {
+  min-width: 216px;
+  max-width: 216px;
+  max-height: 72px;
+  margin-left: 8px;
+}
+.sidenav-odp {
+  min-width: 232px;
+  max-width: 232px;
+  margin-right: 0;
+  transition: 0.25s;
+  &.hide {
+    margin-left: -232px;
+  }
+  .search {
+    .fa-search {
+      right: 10px;
+      top: 12px;
+    }
+    input {
+      height: 32px;
+    }
+  }
+  .logo-holder {
+    min-width: 232px;
+    max-width: 232px;
+    min-height: 88px;
+    max-height: 88px;
+    overflow: hidden;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .icons-holder {
+    min-width: 232px;
+    max-width: 232px;
+    min-height: 32px;
+    max-height: 32px;
+    padding: 0px 20px;
+    .icon-block {
+      min-width: 32px;
+      max-width: 32px;
+      min-height: 32px;
+      max-height: 32px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      color: $border;
+      &.active {
+        background: $primary;
+        color: $white;
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .menu-label {
+    min-height: 32px;
+    max-height: 32px;
+  }
+}
+
+.full-height {
+  min-height: calc(100vh);
+  max-height: calc(100vh);
+  overflow-y: auto;
+}
+
+.pinning-star{
+  display: none;
+}
+.menu-list {
+  min-height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  .menu-list-item {
+    min-height: 32px;
+    max-height: 32px;
+    padding-left: 8px;
+    &:not(.text-white):hover {
+      cursor: pointer;
+      background:#ECECEC !important;
+      .pinning-star{
+        display: block
+      }
+
+    }
+    &:hover{
+      .pinning-star{
+        display: block;
+        color: #3498db;
+      }
+    }
+    .list-item-icon {
+      min-height: 32px;
+      max-height: 32px;
+      min-width: 32px;
+      max-width: 32px;
+    }
+    .list-item-label {
+      min-width: 156px;
+      max-width: 156px;
+    }
+    .type {
+      // width: 22px;
+      // height: 22px;
+      border-radius: 20%;
+    }
+  }
+}
+// .menu-list-item :hover .pinning-star{
+//   display: block;
+// }
+.top-header {
+  min-height: 40px;
+  max-height: 40px;
+  font-size: 13px;
+  .sidenav-toggler {
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+  }
+  .user-details {
+    min-width: 192px;
+    max-width: 192px;
+    min-height: 32px;
+    max-height: 32px;
+    overflow: hidden;
+    &:hover {
+      background: $light;
+    }
+    .user-icon-holder {
+      min-width: 24px;
+      max-width: 24px;
+      min-height: 24px;
+      max-height: 24px;
+      overflow: hidden;
+    }
+    .user-name {
+      min-width: 122px;
+      max-width: 122px;
+    }
+  }
+  .user-details-dropdown {
+    min-width: 160px;
+    max-width: 160px;
+    min-height: 150px;
+    max-height: 150px;
+    // min-height: 176px;
+    // max-height: 176px;
+    z-index: 1042;
+    right: 31px;
+    top: 38px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+    .user-details-item {
+      min-height: 40px;
+      max-height: 40px;
+      &:hover {
+        cursor: pointer;
+        background: $light;
+      }
+    }
+    .user-details-footer {
+      min-height: 34px;
+      max-height: 34px;
+      .powered-by,
+      .info {
+        min-height: 32px;
+        max-height: 32px;
+      }
+      .powered-by {
+        background-size: 134px;
+        background-position: 10px;
+        background-repeat: no-repeat;
+        small {
+          font-size: 8px;
+          top: 2px;
+          right: 4px;
+        }
+      }
+    }
+  }
+}
+.sub-header {
+  min-height: 48px;
+  max-height: 48px;
+}
+
+.red-dot {
+  top: 4px;
+  right: 4px;
+  font-size: 7px;
+  border: 1px solid $light;
+  border-radius: 6px;
+  color: #dd5151;
+}
+
+.current-app {
+  min-width: 230px;
+  max-width: 230px;
+  min-height: 32px;
+  max-height: 32px;
+  &:hover {
+    background: $light;
+  }
+  .current-app-thumbnail {
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    overflow: hidden;
+    transition: 0.25s;
+    img {
+      min-width: 26px;
+      max-width: 26px;
+      min-height: 26px;
+      max-height: 26px;
+      overflow: hidden;
+    }
+  }
+}
+.username-holder {
+  max-width: 90px;
+}
+.search-control {
+  input {
+    min-width: 231px;
+    max-width: 231px;
+    min-height: 48px;
+    max-height: 48px;
+    background: transparent;
+    text-indent: 36px;
+    font-size: 12px;
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      color: $border;
+    }
+  }
+  .fa-search {
+    left: 16px;
+    top: 19px;
+    font-size: 12px;
+    color: $border;
+  }
+}
+
+.user-options {
+  min-height: 40px;
+  max-height: 40px;
+  .user-icon {
+    min-width: 24px;
+    max-width: 24px;
+    min-height: 24px;
+    max-height: 24px;
+  }
+  .user-name {
+    font-size: 13px;
+  }
+}
+
+.notification {
+  .notification-icon {
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
+  }
+  .notification-dropdown {
+    z-index: 10;
+    overflow: hidden;
+    min-width: 400px;
+    left: -190px;
+    top: 40px;
+    box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.14);
+    border-radius: 16px;
+    &:after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid #fff;
+      margin-top: -10px;
+      position: fixed;
+      margin-left: 195px;
+    }
+    .notification-dropdown-header {
+      min-height: 38px;
+      max-height: 38px;
+    }
+    .list-group {
+      max-height: 385px;
+      overflow-y: auto;
+    }
+    .ds-name {
+      max-width: 180px;
+      word-break: break-all;
+    }
+    .fa-circle {
+      font-size: 5px;
+    }
+    .grey-medium {
+      color: $gray-medium;
+    }
+    .file-label {
+      min-width: 90px;
+    }
+    .file-name {
+      min-width: 136px;
+      max-width: 136px;
+    }
+    .status-circle {
+      min-width: 40px;
+      max-width: 40px;
+      min-height: 40px;
+      max-height: 40px;
+      border-radius: 20px;
+      background: #b5b8bc;
+    }
+  }
+}
+
+.last-login {
+  font-size: 11px;
+}
+.staredContainer{
+  min-width: 206px;
+  max-width: 206px;
+  min-height: 112px;
+  max-height: 112px;
+  background: #F4F5F5 0% 0% no-repeat padding-box;
+  border-radius: 16px;
+  opacity: 1;
+  margin-left: 12px;
+}

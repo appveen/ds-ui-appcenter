@@ -1,0 +1,53 @@
+<div class="header p-2 d-flex align-items-center">
+    <span class="text-warning mr-2">{{auditList?.length || '0'}}</span>
+    <span class="text-primary">Workflows</span>
+</div>
+<div class="audit-list p-2">
+    <div class="audit-list-item" *ngFor="let item of auditList ;let i = index">
+        <div class="d-flex align-items-center">
+            <span class="status" [ngClass]="getBGClass(item)"></span>
+            <span class="ml-2 font-sm d-flex align-items-center">
+                <span class="font-sm" [ngClass]="getTextClass(item)">{{item.action}}</span>
+                <span class="text-secondary mx-2">&bull;</span>
+                <span class="text-secondary">{{ getLastActiveTime(item.timestamp) }}</span>
+            </span>
+        </div>
+        <div class="border-line ml-2">
+            <div class="d-flex align-items-center justify-content-between p-2">
+                <div class="d-flex align-items-center">
+                    <div class="thumbnail text-white d-flex align-items-center justify-content-center">
+                        {{getInitals(item.name)}}
+                    </div>
+                    <div class="font-sm text-dark ml-2 text-truncate" [ngbTooltip]="item.name" placement="top">
+                        {{item.name}}
+                    </div>
+                </div>
+                <div class="attachments d-flex align-items-center" (click)="toggleAttachments(i)">
+                    <span class="fa fa-paperclip text-info mr-2"></span>
+                    <span class="text-dark">{{item.attachments?.length}}</span>
+                </div>
+            </div>
+            <div *ngIf="toggleAttachment[i]" class="file-board rounded bg-white ml-3">
+                <ng-container *ngFor="let file of item.attachments">
+                    <div class="file-items hover">
+                        <a [href]="file.href" class="download-anchor" target="_blank">
+                            <div class="p-2 d-flex align-items-center">
+                                <span class="file-badge text-white bg-primary text-center">{{ getFileType(file) }}</span>
+                                <span class="file-name text-truncate ml-2 text-dark">
+                                    <span>{{file.metadata.filename}}</span>
+                                </span>
+                                <span class="ml-auto d-flex">
+                                    <span class="fa fa-download text-primary font-sm mt-1"></span>
+                                    <span class="text-muted font-13">({{ file.length|filesize }})</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="comment-section p-2 bg-white my-2 mx-3 rounded">
+                {{item.remarks?item.remarks:'N.A'}}
+            </div>
+        </div>
+    </div>
+</div>

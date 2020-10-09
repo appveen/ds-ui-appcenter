@@ -1,0 +1,32 @@
+<ng-container [ngSwitch]="controlType">
+  <ng-container *ngSwitchCase="'text'">
+    <odp-text-type [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-text-type>
+  </ng-container>
+  <ng-container *ngSwitchCase="'number'">
+    <odp-number-type [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-number-type>
+  </ng-container>
+  <ng-container *ngSwitchCase="'boolean'">
+    <odp-boolean-type [control]="control" [definition]="definition" [first]="first"></odp-boolean-type>
+  </ng-container>
+  <ng-container *ngSwitchCase="'date'">
+    <odp-date-type [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-date-type>
+  </ng-container>
+  <ng-container *ngSwitchCase="'file'">
+    <odp-file-type [control]="control" [definition]="definition" [first]="first" [arrayDefinition]="arrayDefinition"></odp-file-type>
+  </ng-container>
+  <ng-container *ngSwitchCase="'relation'">
+    <odp-relation-type [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-relation-type>
+  </ng-container>
+  <ng-container *ngSwitchCase="'longText'">
+    <odp-long-text [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-long-text>
+  </ng-container>
+  <ng-container *ngSwitchCase="'richText'">
+    <odp-rich-text [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-rich-text>
+  </ng-container>
+  <ng-container *ngSwitchCase="'map'">
+    <odp-map [control]="control" [definition]="definition" [first]="first" [edit]="true" (keyupEvent)="onKeyup($event)"></odp-map>
+  </ng-container>
+  <ng-container *ngSwitchCase="'user'">
+    <odp-user-type [control]="control" [definition]="definition" [first]="first" (keyupEvent)="onKeyup($event)"></odp-user-type>
+  </ng-container>
+</ng-container>

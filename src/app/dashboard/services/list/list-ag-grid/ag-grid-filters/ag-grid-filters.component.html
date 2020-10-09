@@ -1,0 +1,45 @@
+<input *ngIf="(type==='String' && !longText && !richText || type==='Identifier')" type="text"
+    class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
+<input *ngIf="type==='Number'" type="number" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+    (textChange)="onChange($event)">
+<input *ngIf="type==='File'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+    (textChange)="onChange($event)">
+<input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+    (textChange)="onChange($event)">
+<input *ngIf="type==='Date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value"
+    (change)="onChange($event.target.value)">
+<!-- <input *ngIf="type==='Date' && dateType==='date' " type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
+<!-- <input *ngIf="type==='Date' && (definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated')" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
+<input *ngIf="type==='Date' && dateType!=='date' && definition.dataKey !=='_metadata.createdAt' && definition.dataKey !=='_metadata.lastUpdated'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
+<input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+    (textChange)="onChange($event)">
+<input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+    (textChange)="onChange($event)">
+<select *ngIf="type==='Boolean'" class="border rounded bg-white w-100" [(ngModel)]="value"
+    (ngModelChange)="onChange($event)">
+    <option value="">--All--</option>
+    <option value="true">Yes</option>
+    <option value="false">No</option>
+</select>
+
+<ng-template #clearFilterModal>
+    <div class="modal-header alert">
+        <h4 class="modal-title text-danger">Warning</h4>
+        <button id="clearModalCloseBtn" type="button" class="close" aria-label="Close"
+            (click)="clearFilterModalRef.close(false)">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">Current filters will be applied and other filters will be removed?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="clearModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
+            (click)="clearFilterModalRef.close(false)">
+            No
+        </button>
+        <button id="clearModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
+            (click)="clearFilterModalRef.close(true)">Yes
+        </button>
+    </div>
+</ng-template>

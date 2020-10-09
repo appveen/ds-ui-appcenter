@@ -1,0 +1,63 @@
+<!-- <div class="file-control clearfix" id="_fileType">
+  <span class="text float-left mt-1 mr-3">{{selectedFileName}}</span>
+  <div *ngIf="!definition.properties.readonly" class="file-button hover text-primary-dark float-left mr-2 mt-1" (click)="file.click()">
+    <span class="icon odp-upload"></span>
+    <span class="text">Upload file</span>
+  </div>
+  <div *ngIf="control.value" (click)="removeFile()" class="text-primary-dark">
+    <span class="far fa-times-circle ml-4 mt-2" placement="right" ngbTooltip="Remove File"></span>
+  </div>
+  <div *ngIf="progress && progress!=100" class="float-left">
+    <odp-progress [progress]="progress" color="#aaa"></odp-progress>
+  </div>
+</div> -->
+<div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="showLazyLoader">
+  <div class="align-self-center text-center">
+    <span class="fa fa-spinner fa-pulse fa-3x"></span>
+    <div class="text-secondary mt-2"><strong>Uploading...</strong></div>
+  </div>
+</div>
+<div class="position-relative d-flex align-items-center" *ngIf="!showLazyLoader">
+  <label [attr.for]="definition.path" class="btn btn-sm btn-default d-flex align-items-center m-0 p-0"
+    [ngClass]="{'border-danger w-100':requiredError}">
+    <button type="button" class="btn btn-link d-flex align-items-center p-0"
+      [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled"
+      [ngClass]="{'text-danger':requiredError}" (click)="file.click()">
+      <ng-container *ngIf="!selectedFileName">
+        <span class="fa fa-upload mr-2"></span>
+        <span class="text">Upload file</span>
+      </ng-container>
+      <ng-container *ngIf="selectedFileName">
+        <span class="fa fa-file mr-2"></span>
+        <span class="text file-control-wrapper px-4 text-truncate high-zIndex" [ngbTooltip]="selectedFileName"
+          placement="top">{{selectedFileName}}</span>
+      </ng-container>
+    </button>
+    <input [attr.id]="definition.path" class="invisible position-absolute" #file type="file"
+      (change)="uploadFile($event)"
+      [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled">
+  </label>
+  <div
+    *ngIf="control.value && !arrayDefinition?.properties?.readonly && !definition?.properties?.readonly && !control.disabled"
+    (click)="removeFile()" class="text-da">
+    <span class="far fa-times-circle high-zIndex" placement="right" ngbTooltip="Remove File"></span>
+  </div>
+  <button type="button" class="btn btn-link py-0" *ngIf="control.value" (click)="downloadFile($event)">
+    <span class="fa fa-download"></span>
+  </button>
+
+
+  <div *ngIf="progress && progress!=100" class="progress-circle">
+    <odp-progress [progress]="progress" color="#3498db"></odp-progress>
+  </div>
+  <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
+    [ngClass]="{'bg-error':requiredError}">
+    <ng-container *ngIf="!definition.properties.errorMessage">
+      <div *ngIf="requiredError">
+        {{definition.properties.label ? definition.properties.label : definition.properties.name}} is required</div>
+    </ng-container>
+    <ng-container *ngIf="definition.properties.errorMessage">
+      <div *ngIf="requiredError">{{definition.properties.errorMessage}}</div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,386 @@
+<div class="d-flex flex-column w-100 h-100 bg-light position-relative">
+    <div class="header d-flex flex-column rounded m-3 bg-white p-2">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <span class="large-text text-secondary">Interactions</span>
+                <span class="d-flex align-items-center mx-3">
+                    <span [ngClass]="{'text-danger':toggleLiveFeed,'text-muted':!toggleLiveFeed}"
+                        class="fa fa-rss mr-2"></span>
+                    <span [ngClass]="{'text-dark':toggleLiveFeed,'text-muted':!toggleLiveFeed}"
+                        class="font-weight-bold font-sm">{{liveFeedTxt}}</span>
+                    <span (click)="liveFeed()"
+                        [ngClass]="{'fa-pause-circle text-dark':toggleLiveFeed,'fa-play-circle text-danger':!toggleLiveFeed}"
+                        class="fa ml-2 hover"></span>
+                </span>
+            </div>
+            <div class="d-flex align-items-center justify-content-end">
+                <button (click)="resetFilters()" *ngIf="showResetFilter"
+                    class="btn btn-link text-danger mr-3 font-weight-bold" type="button">
+                    <span class="fa fa-undo-alt mr-2"></span>
+                    <span class="text">Reset Filters</span>
+                </button>
+                <button (click)="existingFilterChk()" class="btn btn-link mr-3 font-weight-bold" type="button">
+                    <span class="fa fa-sliders-h mr-2"></span>
+                    <ng-container *ngIf="toggleFilter">
+                        <span class="text">Hide Filter Options</span>
+                        <span class="fa fa-angle-up ml-2"></span>
+                    </ng-container>
+                    <ng-container *ngIf="!toggleFilter">
+                        <span class="text">Show Filter Options</span>
+                        <span class="fa fa-angle-down ml-2"></span>
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="toggleFilter" class="d-flex flex-column border-top filter-options mt-2">
+            <!--<div class="d-flex flex-column border-top filter-options mt-2">-->
+            <div class="d-flex align-items-center py-3">
+                <span class="font-weight-bold text-dark">Filters</span>
+            </div>
+            <div class="d-flex align-items-start pl-3">
+                <div class="d-flex flex-column w-50">
+                    <div class="d-flex mb-3">
+                        <div class="filter-label text-secondary font-weight-bold">Duration</div>
+                        <div class="filter-value d-flex flex-column w-100">
+                            <div class="d-flex align-items-center">
+                                <button (click)="toggleFromDate = true; $event.stopPropagation();"
+                                    class="date-picker border d-flex align-items-center justify-content-between border rounded mr-3 w-50 px-2 bg-white position-relative ignore-outside"
+                                    type="button" odpClickOutside (outside)="toggleFromDate = false">
+                                    <div class="d-flex align-items-center ignore-outside">
+                                        <span class="fa fa-calendar mr-2 text-primary ignore-outside"></span>
+                                        <!--31 December 2018 00:00-->
+                                        <span
+                                            class="timestamp font-sm ignore-outside">{{ startDate | date: 'd MMM y hh:mm'}}</span>
+                                    </div>
+                                    <span class="fa fa-angle-down text-primary ignore-outside"></span>
+                                    <odp-date-picker (togglePickerChange)="toggleFromDateP($event)"
+                                        *ngIf="toggleFromDate" [(from)]="startDate"
+                                        [options]="{floating:true,buttons:true}" [togglePicker]="toggleFromDate">
+                                    </odp-date-picker>
+                                </button>
+                                <button (click)="toggleToDate = !toggleToDate; $event.stopPropagation();"
+                                    class="date-picker border d-flex align-items-center justify-content-between border rounded mr-3 w-50 px-2 bg-white position-relative ignore-outside"
+                                    type="button">
+                                    <div class="d-flex align-items-center">
+                                        <span class="fa fa-calendar mr-2 text-primary"></span>
+                                        <span class="timestamp font-sm">{{ endDate | date: 'd MMM y hh:mm'}}</span>
+                                    </div>
+                                    <span class="fa fa-angle-down text-primary"></span>
+                                    <odp-date-picker (togglePickerChange)="toggleToDateP($event)" *ngIf="toggleToDate"
+                                        [(from)]="endDate" [options]="{floating:true,buttons:true}"
+                                        [togglePicker]="toggleToDate"></odp-date-picker>
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <div class="text">Last:&nbsp;</div>
+                                <button (click)="updateTime(1, 'hr')" class="btn btn-sm btn-link" type="button">1 hr
+                                </button>
+                                <button (click)="updateTime(8, 'hr')" class="btn btn-sm btn-link" type="button">8 hrs
+                                </button>
+                                <button (click)="updateTime(24, 'hr')" class="btn btn-sm btn-link" type="button">24
+                                    hrs
+                                </button>
+                                <button (click)="updateTime(7, 'day')" class="btn btn-sm btn-link" type="button">7
+                                    days
+                                </button>
+                                <button (click)="updateTime(30, 'day')" class="btn btn-sm btn-link" type="button">30
+                                    days
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div class="filter-label text-secondary font-weight-bold">Status</div>
+                        <div class="filter-value d-flex flex-column w-100">
+                            <div class="d-flex align-items-center">
+                                <button (click)="failedCheckbox.click()" [ngClass]="{'active':failedCheckbox.checked}"
+                                    class="status-btn status-failed d-flex align-items-center border rounded mr-3"
+                                    type="button">
+                                    <span
+                                        class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                        <span class="smaller-circle rounded-circle"></span>
+                                    </span>
+                                    <span class="text font-sm">Failed</span>
+                                    <input #failedCheckbox (change)="calcFilters()" class="d-none" type="checkbox">
+                                </button>
+                                <button (click)="successfulCheckbox.click()"
+                                    [ngClass]="{'active':successfulCheckbox.checked}"
+                                    class="status-btn status-success d-flex align-items-center border rounded mr-3"
+                                    type="button">
+                                    <span
+                                        class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                        <span class="smaller-circle rounded-circle"></span>
+                                    </span>
+                                    <span class="text font-sm">Successful</span>
+                                    <input #successfulCheckbox (change)="calcFilters()" class="d-none" type="checkbox">
+                                </button>
+                                <button (click)="progressCheckbox.click()"
+                                    [ngClass]="{'active':progressCheckbox.checked}"
+                                    class="status-btn status-progress d-flex align-items-center border rounded mr-3"
+                                    type="button">
+                                    <span
+                                        class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                        <span class="smaller-circle rounded-circle"></span>
+                                    </span>
+                                    <span class="text font-sm">Progress</span>
+                                    <input #progressCheckbox (change)="calcFilters()" class="d-none" type="checkbox">
+                                </button>
+                                <button (click)="unknownCheckbox.click()" [ngClass]="{'active':unknownCheckbox.checked}"
+                                    class="status-btn status-progress d-flex align-items-center border rounded mr-3"
+                                    type="button">
+                                    <span
+                                        class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                        <span class="smaller-circle rounded-circle"></span>
+                                    </span>
+                                    <span class="text font-sm">Unknown</span>
+                                    <input #unknownCheckbox (change)="calcFilters()" class="d-none" type="checkbox">
+                                </button>
+                                <button (click)="queuedCheckbox.click()" [ngClass]="{'active':queuedCheckbox.checked}"
+                                    class="status-btn status-queued d-flex align-items-center border rounded mr-3"
+                                    type="button">
+                                    <span
+                                        class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                        <span class="smaller-circle rounded-circle"></span>
+                                    </span>
+                                    <span class="text font-sm">Queued</span>
+                                    <input #queuedCheckbox (change)="calcFilters()" class="d-none" type="checkbox">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-50">
+                    <div class="d-flex mb-3">
+                        <div class="filter-label text-secondary font-weight-bold">Direction</div>
+                        <div class="filter-value d-flex flex-column w-100">
+                            <div class="d-flex">
+                                <button (click)="inboundCheckbox.click()" [ngClass]="{'active':inboundCheckbox.checked}"
+                                    class="direction-btn in-btn d-flex align-items-center border mr-3 hover"
+                                    type="button">
+                                    <span class="fa fa-arrow-circle-down fa-rotate-45 mr-2"></span>
+                                    <span class="text">Inbound</span>
+                                    <input #inboundCheckbox (change)="calcFilters()" class="d-none" name="flowDirection"
+                                        type="checkbox">
+                                </button>
+                                <button (click)="outboundCheckbox.click()"
+                                    [ngClass]="{'active':outboundCheckbox.checked}"
+                                    class="direction-btn out-btn d-flex align-items-center border mr-3 hover"
+                                    type="button">
+                                    <span class="fa fa-arrow-circle-up fa-rotate-45 mr-2"></span>
+                                    <span class="text">Outbound</span>
+                                    <input #outboundCheckbox (change)="calcFilters()" class="d-none"
+                                        name="flowDirection" type="checkbox">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <!--<div class="filter-label text-secondary font-weight-bold">Partners</div>
+                        <div class="filter-value d-flex flex-column w-100">
+                            <div class="d-flex">
+                                <div class="type-ahead position-relative">
+                                    <span class="fa fa-plus-circle text-primary position-absolute"></span>
+                                    <input type="text" class="form-control partner-search"
+                                        #partnerTypeAhead="ngbTypeahead" placeholder="Search and Add Partners"
+                                        [ngbTypeahead]="searchPartner" [resultFormatter]="formatter"
+                                        [inputFormatter]="formatter" (selectItem)="selectPartner($event)">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap">
+                                <button *ngFor="let item of selectedPartners;let i=index"
+                                    class="partner-badge btn btn-link mr-2 d-flex align-items-center justify-content-between p-2 border-0 text-truncate"
+                                    (click)="removePartner(i)">
+                                    {{item.name}}
+                                </button>
+                            </div>
+                        </div>-->
+                        <div class="filter-label text-secondary font-weight-bold">Type</div>
+                        <div class="filter-value d-flex flex-column w-100">
+                            <div class="d-flex align-items-center">
+                                <button (click)="fileToFileCheckbox.click()"
+                                    [ngClass]="{'active':fileToFileCheckbox.checked}"
+                                    class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                                    ngbTooltip="File to File" type="button">
+                                    <div class="file-type type-from d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-paperclip"></span>
+                                    </div>
+                                    <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                                    <div
+                                        class="file-type type-to d-flex align-items-center justify-content-center pl-1">
+                                        <span class="fa fa-paperclip"></span>
+                                    </div>
+                                    <input #fileToFileCheckbox (change)="fileToFile()" class="d-none" name="type"
+                                        type="checkbox">
+                                </button>
+                                <button (click)="fileToApiCheckbox.click()"
+                                    [ngClass]="{'active':fileToApiCheckbox.checked}"
+                                    class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                                    ngbTooltip="File to API" type="button">
+                                    <div class="file-type type-from d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-paperclip"></span>
+                                    </div>
+                                    <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                                    <div class="api-type type-to d-flex align-items-center justify-content-center pl-1">
+                                        <span class="fa fa-plug fa-rotate-90"></span>
+                                    </div>
+                                    <input #fileToApiCheckbox (change)="fileToApi()" class="d-none" name="type"
+                                        type="checkbox">
+                                </button>
+                                <button (click)="apiToApiCheckbox.click()"
+                                    [ngClass]="{'active':apiToApiCheckbox.checked}"
+                                    class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                                    ngbTooltip="API to API" type="button">
+                                    <div class="api-type type-from d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-plug fa-rotate-90"></span>
+                                    </div>
+                                    <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                                    <div class="api-type type-to d-flex align-items-center justify-content-center pl-1">
+                                        <span class="fa fa-plug fa-rotate-90"></span>
+                                    </div>
+                                    <input #apiToApiCheckbox (change)="apiToApi()" class="d-none" name="type"
+                                        type="checkbox">
+                                </button>
+                                <button (click)="apiToFileCheckbox.click()"
+                                    [ngClass]="{'active':apiToFileCheckbox.checked}"
+                                    class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                                    ngbTooltip="API to File" type="button">
+                                    <div class="api-type type-from d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-plug fa-rotate-90"></span>
+                                    </div>
+                                    <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                                    <div
+                                        class="file-type type-to d-flex align-items-center justify-content-center pl-1">
+                                        <span class="fa fa-paperclip"></span>
+                                    </div>
+                                    <input #apiToFileCheckbox (change)="apiToFile()" class="d-none" name="type"
+                                        type="checkbox">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row-reverse mt-5">
+                        <button (click)="applyFilters()" class="btn btn-primary" type="button">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="px-3 pb-2 d-flex align-items-center">
+        <div class="d-flex align-items-center hover" (click)="selectAllRcrds()">
+            <odp-round-check [checked]="checkAll" [white]="true"></odp-round-check>
+            <strong class="text-primary ml-2">Select all</strong>
+        </div>
+        <button id="clearFiltersBtn" type="button" class="btn btn-link pr-0" *ngIf="hasFilters"
+            (click)="clearInlineFilter()">
+            <span class="fa fa-times mr-2"></span>
+            <span class="text">Clear filters</span>
+        </button>
+        <div id="redownloadAllBtn" class="btn btn-link py-0 px-3" *ngIf="recordChecked" (click)="redownloadAll()">
+            <span class="fa fa-download mr-2"></span>
+            <span class="text">Redownload ({{recordChecked}})</span>
+        </div>
+        <span class="text-secondary ml-auto">Showing {{records.length}} of {{allIConfig.totalRecords}}</span>
+    </div>
+    <div class="body items bg-white mx-2 rounded">
+        <div (loadData)="loadMore()" (sortModelChange)="sortModelChange($event)" [columns]="columnDefs"
+            class="data-grid" odpDataGrid>
+            <div class="data-grid-header">
+                <div class="data-grid-row">
+                    <div *ngFor="let col of columnDefs" [attr.id]="col.dataKey"
+                        class="data-grid-cell head-cell d-flex align-items-center"
+                        [ngClass]="{'no-move no-grip no-sort': col.type==='Checkbox'}">
+                        {{col.properties.label ? col.properties.label : col.properties.name}}
+                    </div>
+                </div>
+                <div class="data-grid-row">
+                    <div *ngFor="let col of columnDefs" class="data-grid-cell">
+                        <!-- <odp-interaction-grid-filter (filterModelChange)="filterChange($event)" [definition]="col"
+                            [filterModel]="filterModel" class="w-100">
+                        </odp-interaction-grid-filter> -->
+                    </div>
+                </div>
+            </div>
+            <div class="data-grid-body">
+                <div *ngFor="let data of records" [ngClass]="{'selected':data._checked, 'highlighted': data.newRcrd}"
+                    class="data-grid-row default-cur">
+                    <div (dblclick)="viewInteraction(data)" *ngFor="let col of columnDefs"
+                        class="data-grid-cell no-padding d-flex align-items-center">
+                        <odp-interaction-data-view [data]="data" [definition]="col" class="w-100">
+                        </odp-interaction-data-view>
+                    </div>
+                </div>
+                <div *ngIf="allIConfig.totalRecords === 0" class="data-grid-row">
+                    No Records
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="allIConfig.showLazyLoader" class="list default-loader d-flex justify-content-center h-100 w-100">
+        <div class="align-self-center text-center">
+            <span class="fa fa-spinner fa-pulse fa-3x"></span>
+            <div class="text-secondary mt-2">Processing...</div>
+        </div>
+    </div>
+</div>
+
+<!--<div *ngIf="allIConfig.totalRecords === 0" class="no-records d-flex flex-column bg-light">
+    <div class="header d-flex align-items-center justify-content-between pr-3 bg-light border-bottom w-100">
+        <div class="title d-flex align-items-center ml-2">
+            <span class="odp-workflow mr-2 text-primary"></span>
+            <span class="text m-0 font-weight-bold">Interactions</span>
+        </div>
+    </div>
+    <div class="interaction-body d-flex flex-column mx-2 mt-2 bg-white rounded">
+        <div class="text-center">
+            <div class="no-records-img mx-auto"></div>
+            <h4 class="text-muted">No Interactions record, yet.</h4>
+        </div>
+    </div>
+</div>-->
+
+<ng-template #clearFilterModal>
+    <div class="modal-header alert">
+        <h4 class="modal-title text-danger">Warning</h4>
+        <button (click)="clearFilterModalRef.close(false)" aria-label="Close" class="close" id="clearModalCloseBtn"
+            type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">Current filters will be applied and other filters will be removed?</p>
+    </div>
+    <div class="modal-footer">
+        <button (click)="clearFilterModalRef.close(false)" class="btn btn-secondary px-4 btn-min-width"
+            id="clearModalCancelBtn" type="button">
+            No
+        </button>
+        <button (click)="clearFilterModalRef.close(true)" class="btn btn-danger px-4 btn-min-width"
+            id="clearModalYesBtn" type="button">Yes
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #redownloadModal>
+    <div class="modal-header alert">
+        <h4 class="modal-title text-primary">Info</h4>
+        <button (click)="redownloadModalRef.close(false)" aria-label="Close" class="close" id="redownloadCloseBtn"
+            type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">Re-download will only happen for interactions that failed because the agent was unable to
+            download the output file</p>
+    </div>
+    <div class="modal-footer">
+        <button (click)="redownloadModalRef.close(false)" class="btn btn-secondary px-4 btn-min-width"
+            id="redownloadCancelBtn" type="button">
+            No
+        </button>
+        <button (click)="redownloadModalRef.close(true)" class="btn btn-danger px-4 btn-min-width" id="redownloadYesBtn"
+            type="button">Yes
+        </button>
+    </div>
+</ng-template>

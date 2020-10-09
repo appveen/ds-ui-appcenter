@@ -1,0 +1,92 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.main-container {
+  min-height: calc(100vh - 45px);
+  overflow: hidden;
+  .flow-container {
+    border-radius: 6px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    .ver-badge {
+      height: 16px;
+      width: 24px;
+      border-radius: 4px;
+      background-color: $vibrant-blue;
+      color: $white;
+      display: inline-block;
+      text-align: center;
+      padding-top: 1px;
+    }
+    .status-badge-success {
+      @extend .ver-badge;
+      width: 48px;
+      background-color: $green;
+    }
+    .status-badge-stopped {
+      @extend .status-badge-success;
+      background-color: $red;
+    }
+    .count-container {
+      top: 35px;
+      right: 0;
+      .count-box {
+        height: 48px;
+        width: 96px;
+        border-radius: 4px;
+        color: $white;
+      }
+      .all {
+        @extend .count-box;
+        background-image: linear-gradient(to right, #80D0C7, #0093E9);
+      }
+      .success-box {
+        @extend .count-box;
+        background-image: linear-gradient(to right, #B2F43F, #16A085);
+      }
+      .errored {
+        @extend .count-box;
+        background-image: linear-gradient(to right, #FFC187, #F71C1C);
+      }
+      .pending-box {
+        @extend .count-box;
+        background-image: linear-gradient(to right, #FEE140, #FAB370);
+      }
+    }
+    .sub-heading {
+      left: 26%;
+      top: 10px;
+    }
+    .date-container {
+      top: 35px;
+      left: 26%;
+    }
+    .dateMnth-dd {
+      left: 26%;
+      top: 55px;
+      background-color: $white;
+      max-height: 150px;
+      z-index: 150;
+      overflow-y: auto;
+      box-shadow: 0 3px 5px rgba($black, 0.1);
+      span.ignore-outside {
+        &:hover {
+          color: $primary;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .body {
+    overflow-y: auto;
+    min-height: 300px;
+    max-height: 500px;
+    .highlighted {
+      background-color: #fff9e5;
+    }
+    .default-cur {
+      cursor: default;
+    }
+  }
+}
+

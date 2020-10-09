@@ -1,0 +1,159 @@
+<div class="column-container py-3 px-2 border-bottom align-items-center w-100 hover "
+    (dragover)="dragOverEvent($event)">
+    <div class="propName pr-3 d-flex align-items-center">
+        <odp-field-type [definition]="definition"></odp-field-type>
+        <div class="text-truncate ml-2"
+            [odpTruncated]="definition?.properties?.label ? definition?.properties?.label :definition?.properties?.name">
+            {{definition?.properties?.label ? definition?.properties?.label :definition?.properties?.name}}
+        </div>
+        <sup placement="top" ngbTooltip="Required" *ngIf="definition.properties.required"
+            class="text-danger high-zIndex">
+            <small class="fa fa-asterisk"></small>
+        </sup>
+        <small class="fa fa-info-circle ml-2 text-info mt-1 hover high-zIndex"
+            *ngIf="definition.properties._description" placement="top"
+            [ngbTooltip]="definition.properties._description"></small>
+    </div>
+
+
+
+    <input type="text" class="colDiv p-2 rounded" *ngIf="definition?.type!=='Array' && definition?.type!=='Object' && definition.type !=='Relation' && 
+        definition?.type!=='User' && !definition?.properties?.password"
+        [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
+        [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)" (selectItem)="selectData($event)"
+        [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter" (dragenter)="dragEnterEvent($event)"
+        (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
+
+    <!-- secure text type handling -->
+
+    <input type="text" class="colDiv p-2 rounded" *ngIf="definition?.type!=='Array' && definition?.type ==='Object' && definition.type !=='Relation' && 
+        definition?.type!=='User' && definition?.properties?.password"
+        [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
+        [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)"
+        (selectItem)="selectSecureTextData($event)" [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+        (dragenter)="dragEnterEvent($event)" (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
+
+
+    <!-- secure text type handling -->
+
+    <!-- Group type handling -->
+    <div class=" d-flex colDivSmall dotted align-items-center px-2 rounded "
+        [ngClass]="{'bg-blue':form.dirty,'bg-light':!form.dirty}" (click)="loadColumnMapping()"
+        *ngIf=" definition?.type==='Object' && !definition.properties.relatedTo &&  definition?.type!=='User' && !definition?.properties?.password">
+        <span class="objIcon mr-1 " *ngIf="!form.dirty"></span>
+        <span class="objIcon1 mr-1" *ngIf="form.dirty"></span>
+        <span [ngClass]="{'text-dark':!form.dirty,'text-white':form.dirty}">Object</span>
+        <span [ngClass]="{'text-dark':!form.dirty,'text-white':form.dirty}" class="fa fa fa-angle-right ml-1"></span>
+    </div>
+    <!-- Group type handling -->
+
+
+    <!-- Relation type handling -->
+    <input type="text" class="colDiv p-2 rounded" *ngIf="definition.properties.relatedTo "
+        [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
+        [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)"
+        (selectItem)="selectDataRel($event)" [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+        (dragenter)="dragEnterEvent($event)" (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
+
+    <!-- Relation type handling -->
+
+    <!-- User type handling -->
+    <input type="text" class="colDiv p-2 rounded" *ngIf=" definition?.type==='User'"
+        [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
+        [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)"
+        (selectItem)="selectDataRel($event)" [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+        (dragenter)="dragEnterEvent($event)" (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
+
+    <!-- User type handling -->
+
+
+    <div class="d-flex flex-column p-3 w-100" *ngIf="definition?.type === 'Array'">
+        <div class="d-flex align-items-center justify-content-between" *ngFor="let val of form.value; let i =index">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="mr-2 text-muted">{{i+1}}</div>
+                <div class="fa fa-bars text-muted mr-2"></div>
+                <input type="text" class="colDivArray rounded p-2 mb-2"
+                    [ngClass]="{'border bg-white font-bold text-dark':tempArray[i]}"
+                    *ngIf="definition.definition['0'].type !== 'Object'  && definition.definition['0'].type !=='User' && definition.definition['0'].type !=='Relation'"
+                    (blur)="showInput=false" [ngbTypeahead]="search"
+                    placeholder="Type name (You can also drag and drop)" [(ngModel)]='tempArray[i]'
+                    [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+                    (selectItem)="selectArrayData($event,i)" (dragenter)="dragEnterEvent($event)"
+                    (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event,i)">
+
+
+
+                <!-- Secure text handling -->
+                <input type="text" class="colDivArray rounded p-2 mb-2"
+                    [ngClass]="{'border bg-white font-bold text-dark':tempArray[i]}"
+                    *ngIf="definition.definition['0'].type === 'Object'  && definition.definition['0'].type !=='User' && definition?.definition['0']?.properties?.password"
+                    (blur)="showInput=false" [ngbTypeahead]="search"
+                    placeholder="Type name (You can also drag and drop)" [(ngModel)]='tempArray[i]'
+                    [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+                    (selectItem)="selectArraySTData($event,i)" (dragenter)="dragEnterEvent($event)"
+                    (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event,i)">
+
+
+                <!-- Secure text handling -->
+
+
+                <!-- user type handling -->
+                <input type="text" class="colDivArray rounded p-2 mb-2"
+                    [ngClass]="{'border bg-white font-bold text-dark':tempArray[i]}"
+                    *ngIf="definition.definition['0'].type === 'User'" (blur)="showInput=false" [ngbTypeahead]="search"
+                    placeholder="Type name (You can also drag and drop)" [(ngModel)]='tempArray[i]'
+                    [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+                    (selectItem)="selectArrayDataRel($event,i)" (dragenter)="dragEnterEvent($event)"
+                    (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event,i)">
+
+
+                <!-- user type handling -->
+
+
+                <!-- Relation type handling -->
+                <input type="text" class="colDivArray rounded p-2 mb-2"
+                    [ngClass]="{'border bg-white font-bold text-dark':tempArray[i]}"
+                    *ngIf="definition.definition['0'].properties.relatedTo" (blur)="showInput=false"
+                    [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)"
+                    [(ngModel)]='tempArray[i]' [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+                    (selectItem)="selectArrayDataRel($event,i)" (dragenter)="dragEnterEvent($event)"
+                    (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event,i)">
+
+                <!-- Relation type handling -->
+                <div class=" d-flex colDivSmall dotted align-items-center px-2 rounded mb-2"
+                    [ngClass]="{'bg-blue':form.dirty,'bg-light':!form.get([i]).dirty}"
+                    *ngIf="definition.definition['0'].type === 'Object'  && !definition.definition['0'].properties.relatedTo &&  !definition.definition['0'].properties?.password"
+                    (click)="tempIndex= i ;loadColumnMapping()">
+                    <span class="objIcon mr-1" *ngIf="!form.get([i]).dirty"></span>
+                    <span class="objIcon1 mr-1" *ngIf="form.get([i]).dirty"></span>
+
+                    <span
+                        [ngClass]="{'text-dark':!form.get([i]).dirty,'text-white':form.get([i]).dirty}">Object[{{i}}]</span>
+                    <span [ngClass]="{'text-dark':!form.get([i]).dirty,'text-white':form.get([i]).dirty}"
+                        class="fa fa fa-angle-right  ml-1"></span>
+
+                </div>
+                <span class=" text-secondary index-value hover mb-2" *ngIf="tempArray[i]">{{tempArray[i]?.position}}</span>
+
+                <span class="fa fa-times text-secondary times-ClearArray hover mb-2 ml-4" *ngIf="tempArray[i]"
+                    (click)="clearMappingArray(i)" ngbTooltip="Remove mapping"></span>
+                <span class="fa fa-plus text-muted ml-2 mb-2" (click)="addControl()"></span>
+            </div>
+            <span class="fa fa-times text-muted ml-auto" *ngIf="form.value.length>1" (click)="removeControl(i)"></span>
+        </div>
+    </div>
+
+    <span class=" text-secondary index-value hover " *ngIf="model ">{{indexValue}}</span>
+    <span class="fa fa-times times-Clear text-secondary" *ngIf="model" (click)="clearMapping()" ngbTooltip="Remove mapping"></span>
+</div>
+
+<div class="column-modal child-Mapping position-fixed" *ngIf="showObjectMapping">
+    <odp-column-mapping [defnitionArray]="definition?.definition" [parentDef]="definition"
+        *ngIf="definition?.type!=='Array'" (emitData)="closeColumnMapping()" [form]="form" [mappingData]="mappingData"
+        [schemaName]="schemaName"></odp-column-mapping>
+
+    <odp-column-mapping [defnitionArray]="definition?.definition[0].definition" *ngIf="definition?.type==='Array'"
+        (emitData)="closeColumnMapping()" [form]="form.get([tempIndex])" [parentDef]="definition"
+        [mappingData]="mappingData" [schemaName]="schemaName"></odp-column-mapping>
+
+</div>

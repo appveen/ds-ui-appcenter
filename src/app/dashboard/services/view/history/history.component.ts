@@ -1,0 +1,188 @@
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { CommonService } from 'src/app/service/common.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'odp-history',
+  templateUrl: './history.component.html',
+  styleUrls: ['./history.component.scss']
+})
+export class HistoryComponent implements OnInit, OnDestroy {
+
+  @Input() toggle: boolean;
+  @Output() toggleChange: EventEmitter<boolean>;
+  @Input() serviceId: string;
+  @Input() documentId: string;
+  @Output() auditAvailable: EventEmitter<any>;
+  @Output() selectedAudit: EventEmitter<any>;
+  @Output() compare: EventEmitter<any>;
+  auditConfig: any;
+  auditList: Array<any>;
+  auditCount: number;
+  activeAudit: any;
+  subscriptions: {
+    [key: string]: Subscription
+  };
+  wfDataMap: {
+    [key: string]: Promise<any>;
+  };
+  constructor(private commonService: CommonService) {
+    const self = this;
+    self.auditConfig = {
+      count: 10,
+      page: 1
+    };
+    self.toggleChange = new EventEmitter();
+    self.auditAvailable = new EventEmitter();
+    self.selectedAudit = new EventEmitter();
+    self.compare = new EventEmitter();
+    self.subscriptions = {};
+    self.auditList = [];
+    self.wfDataMap = {};
+  }
+
+  ngOnInit() {
+    const self = this;
+    self.getAuditCount(true);
+    self.getAudit();
+  }
+
+  ngOnDestroy() {
+    const self = this;
+    Object.keys(self.subscriptions).forEach(key => {
+      if (self.subscriptions[key]) {
+        self.subscriptions[key].unsubscribe();
+      }
+    });
+  }
+
+  getAudit() {
+    const self = this;
+    self.auditConfig.filter = {};
+    self.auditConfig.filter['data._id'] = self.documentId;
+    self.auditConfig.sort = '-timeStamp';
+    self.subscriptions['getAudit'] =
+      self.commonService.get('mon', `/appCenter/${self.serviceId}/audit`, self.auditConfig).subscribe((data: Array<any>) => {
+        if (data.length > 0) {
+          data.forEach(e => {
+            self.getUserForAudit(e);
+            self.getWFData(e);
+            self.auditList.push(e);
+          });
+          self.selectedAudit.emit(self.auditList[0]);
+        }
+      }, err => {
+        self.commonService.errorToast(err, 'Unable to get audit data , Please try again later.');
+      });
+  }
+
+  getAuditCount(first?: boolean) {
+    const self = this;
+    self.subscriptions['getAuditCount'] =
+      self.commonService.get('mon', `/appCenter/${self.serviceId}/audit/count`, {
+        filter: { 'data._id': self.documentId }
+      }).subscribe((res: number) => {
+        self.auditCount = res;
+        if (first && self.auditCount > 0) {
+          self.auditAvailable.emit(true);
+        }
+      }, err => {
+        self.commonService.errorToast(err, 'Unable to get audit data , Please try again later.');
+      });
+  }
+
+  getWFData(auditData: any) {
+    const self = this;
+    const options = {
+      select: 'audit',
+      filter: {
+        documentId: self.documentId,
+        serviceId: self.serviceId,
+        app: self.commonService.app._id,
+        status: 'Approved',
+        'data.old._metadata.version.document': auditData.data._version - 1
+      }
+    };
+    if (auditData.data._version === 1) {
+      options.filter['operation'] = 'POST';
+      delete options.filter['data.old._metadata.version.document'];
+    }
+    if (!self.wfDataMap[auditData.data._version]) {
+      self.wfDataMap[auditData.data._version] = self.commonService.get('wf', '', options).toPromise();
+    }
+    self.wfDataMap[auditData.data._version].then(data => {
+      if (data && data.length > 0 && data[0].audit) {
+        data[0].audit.forEach(item => self.getUserForWFAudit(item));
+        auditData.wfData = data[0].audit;
+      }
+    }).catch(err => {
+      self.commonService.errorToast(err, 'Unable to fetch Workflow Audit for Document version: ' + auditData.data._version);
+    });
+  }
+
+  loadMore(event) {
+    const self = this;
+    if (event.target.clientHeight + event.target.scrollTop === event.target.scrollHeight && self.auditCount > self.auditList.length) {
+      self.auditConfig.page = self.auditConfig.page + 1;
+      self.getAudit();
+      self.getAuditCount();
+    }
+  }
+
+  search(filter) {
+    const self = this;
+    self.auditConfig.page = 1;
+    self.auditConfig.filter = filter;
+    self.auditList = [];
+    self.getAudit();
+    self.getAuditCount();
+  }
+
+  clearSearch() {
+    const self = this;
+    self.auditConfig.page = 1;
+    self.auditConfig.filter = null;
+    self.auditList = [];
+    self.getAudit();
+    self.getAuditCount();
+  }
+
+  getUserForAudit(audit) {
+    const self = this;
+    self.commonService.getUserByFilter(audit.user).then((res) => {
+      if (res && res.length > 0 && res[0].basicDetails && res[0].basicDetails.name) {
+        audit.name = res[0].basicDetails.name;
+      } else {
+        audit.name = audit.user;
+      }
+    }).catch(err => {
+      self.commonService.errorToast(err, 'Unable to find User: ' + audit.user);
+    });
+  }
+
+  getUserForWFAudit(wfAudit) {
+    const self = this;
+    self.commonService.getUserByFilter(wfAudit.id).then((res) => {
+      if (res && res.length > 0 && res[0].basicDetails && res[0].basicDetails.name) {
+        wfAudit.name = res[0].basicDetails.name;
+      } else {
+        wfAudit.name = wfAudit.id;
+      }
+    }).catch(err => {
+      self.commonService.errorToast(err, 'Unable to find User: ' + wfAudit.id);
+    });
+  }
+
+  showDifference(auditData: any) {
+    const self = this;
+    self.selectedAudit.emit(auditData);
+    self.compare.emit(auditData);
+    self.close();
+  }
+
+  close() {
+    const self = this;
+    self.toggle = false;
+    self.toggleChange.emit(false);
+  }
+}

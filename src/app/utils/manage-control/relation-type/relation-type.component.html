@@ -1,0 +1,28 @@
+<div class="relation-control-wrapper position-relative">
+    <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError}"
+        [ngModel]="selectedValue" type="text" [ngbTypeahead]="search" [inputFormatter]="formatter"
+        #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
+        (focus)="itemSelected = true" [disabled]="definition.properties.readonly || control.disabled" (keyup)="onEnter($event)"
+        (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
+
+    <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
+        [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
+        (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
+        [disabled]="definition.properties.readonly || control.disabled">
+        <option *ngIf="!definition.properties.required" value="">---select---</option>
+        <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
+    </select>
+
+    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
+        [ngClass]="{'bg-error':requiredError}">
+        <ng-container *ngIf="!definition.properties.errorMessage">
+            <div *ngIf="requiredError">
+                {{definition.properties.label ? definition.properties.label : definition.properties.name}} is required
+            </div>
+        </ng-container>
+        <ng-container *ngIf="definition.properties.errorMessage">
+            <div *ngIf="requiredError">{{definition.properties.errorMessage}}</div>
+        </ng-container>
+    </div>
+
+</div>

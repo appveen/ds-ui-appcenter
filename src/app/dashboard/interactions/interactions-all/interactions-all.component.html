@@ -1,0 +1,101 @@
+<div class="w-100 h-100 bg-light">
+    <div class="header d-flex align-items-center justify-content-between border-bottom border-top">
+        <div class="title d-flex align-items-center">
+            <span class="odp-flows mx-2 text-primary"></span>
+            <span class="text-dark font-weight-bold">Interactions</span>
+            <button type="button" class="btn btn-primary btn-sm ml-3" (click)="syncData()">
+                <span class="fa fa-sync mr-2"></span>
+                <span class="text">Sync Data</span>
+            </button>
+        </div>
+        <div class="d-flex align-items-center justify-content-end">
+            <button (click)="resetAdvanceFilters()" *ngIf="advanceFilterQuery"
+                class="btn btn-link text-danger mr-3 font-weight-bold" type="button">
+                <span class="fa fa-undo-alt mr-2"></span>
+                <span class="text">Reset Filters</span>
+            </button>
+            <button class="btn btn-link mr-3 font-weight-bold" type="button"
+                (click)="advanceFilterToggle=!advanceFilterToggle">
+                <span class="fa fa-sliders-h mr-2"></span>
+                <ng-container *ngIf="advanceFilterToggle">
+                    <span class="text">Hide Filter Options</span>
+                    <span class="fa fa-angle-up ml-2"></span>
+                </ng-container>
+                <ng-container *ngIf="!advanceFilterToggle">
+                    <span class="text">Show Filter Options</span>
+                    <span class="fa fa-angle-down ml-2"></span>
+                </ng-container>
+            </button>
+            <button type="button" class="btn btn-primary mr-3 ignore-outside" (click)="showColumns=!showColumns">
+                <span class="fa fa-cog"></span>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="showColumns" class="column-list position-absolute bg-white rounded p-3" odpClickOutside
+        (outside)="showColumns=false">
+        <span class="font-weight-bold text-primary">Columns</span>
+        <div class="d-flex mt-2 hover" *ngFor="let item of columns"
+            (click)="toggleColumn(item.key,!isColumnVisible(item.key))">
+            <odp-round-check class="ignore-outside" [checked]="isColumnVisible(item.key)">
+            </odp-round-check>
+            <span class="text ml-2">{{item.label}}</span>
+        </div>
+    </div>
+    <odp-interactions-advance-filter *ngIf="advanceFilterToggle" [(toggleFilter)]="advanceFilterToggle"
+        [(filterQuery)]="advanceFilterQuery" [(filterData)]="advanceFilterData"
+        (filterQueryChange)="applyAdvanceFilters($event)">
+    </odp-interactions-advance-filter>
+    <div class="sub-header px-3 d-flex align-items-center border-bottom">
+        <div class="d-flex align-items-center hover" (click)="selectAll=!selectAll">
+            <odp-round-check [white]="true" [(checked)]="selectAll"></odp-round-check>
+            <strong class="text-primary ml-2">Select all</strong>
+        </div>
+        <button *ngIf="hasFilters" id="clearFiltersBtn" type="button" class="btn btn-link"
+            (click)="clearInlineFilters()">
+            <span class="fa fa-times mr-2"></span>
+            <span class="text">Clear Filters</span>
+        </button>
+        <button *ngIf="hasSort" id="clearSortBtn" type="button" class="btn btn-link" (click)="clearSort()">
+            <span class="fa fa-times mr-2"></span>
+            <span class="text">Clear Sort</span>
+        </button>
+        <button *ngIf="reDownloadCount>0" id="triggerReDownloadBtn" type="button" class="btn btn-link"
+            (click)="triggerReDownload()">
+            <span class="fa fa-download mr-2"></span>
+            <span class="text">Re-Download ({{reDownloadCount}})</span>
+        </button>
+        <span class="text-secondary ml-auto" *ngIf="loadedCount">Showing {{loadedCount}} of {{filteredCount}}</span>
+    </div>
+    <div class="body bg-white w-100">
+        <ag-grid-angular #agGrid *ngIf="columnDefs" class="ag-theme-balham w-100 body" [columnDefs]="columnDefs"
+            rowSelection="multiple" rowMultiSelectWithClick="true" rowDeselection="true" rowModelType="infinite"
+            [datasource]="dataSource" [floatingFilter]="true" cacheBlockSize="30"
+            (rowDoubleClicked)="rowDoubleClicked($event)" (rowSelected)="rowSelected($event)"
+            (sortChanged)="sortChanged($event)" (filterModified)="filterModified($event)"
+            (columnResized)="columnResized($event)" (columnVisible)="columnVisible($event)" (gridReady)="gridReady($event)" [overlayNoRowsTemplate]="noRowsTemplate">
+        </ag-grid-angular>
+    </div>
+</div>
+
+
+<ng-template #reDownloadModal>
+    <div class="modal-header">
+        <h4 class="modal-title">Trigger Re-Download</h4>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">
+            Re-download will only happen for the interactions that the agent was unable to
+            download the output file.
+        </p>
+    </div>
+    <div class="modal-footer d-flex">
+        <button type="button" id="reDownloadCancelBtn" class="btn btn-dark btn-min-width mr-3 ml-auto"
+            (click)="reDownloadModalRef.close(false)">
+            Cancel
+        </button>
+        <button type="button" id="reDownloadYesBtn" class="btn btn-primary btn-min-width"
+            (click)="reDownloadModalRef.close(true)">
+            Re-Download
+        </button>
+    </div>
+</ng-template>

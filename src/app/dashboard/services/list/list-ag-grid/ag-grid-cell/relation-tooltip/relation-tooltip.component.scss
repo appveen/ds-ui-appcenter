@@ -1,0 +1,25 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+:host {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 1s;
+  max-width: 300px;
+}
+
+:host.ag-tooltip-hiding {
+  opacity: 0;
+}
+
+.custom-tooltip div {
+  margin: 5px;
+  white-space: nowrap;
+}
+
+.custom-tooltip div .label {
+  font-weight: bold;
+  display: inline-block;
+  min-width: 120px;
+}

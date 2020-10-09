@@ -1,0 +1,21 @@
+
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.status {
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 14px;
+    max-height: 14px;
+    border-radius: 50%;
+    vertical-align: middle;
+    &.active {
+      background-color: $green;
+    }
+    &.pending {
+      background-color: #FBA200;
+    }
+    &.stopped {
+      background-color: $red;
+    }
+  }

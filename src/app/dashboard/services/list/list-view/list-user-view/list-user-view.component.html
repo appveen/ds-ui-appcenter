@@ -1,0 +1,19 @@
+<div>
+    <ng-container *ngIf="valueExist">
+        <a *ngIf="definition?.properties?.relatedViewFields && definition?.properties?.relatedViewFields.length>0;
+            else noTooltip" class="high-zIndex" target="_blank" [ngbTooltip]="relationData" placement="top">{{searchFieldValue}}</a>
+    </ng-container> 
+    <span *ngIf="!valueExist" class="text-muted">N.A.</span>
+  </div>
+  
+  <ng-template #noTooltip>
+    <a  target="_blank">{{searchFieldValue}}</a>
+  </ng-template>
+  <ng-template #relationData>
+    <div class="d-flex flex-column">
+      <div class="d-flex" *ngFor="let field of definition?.properties?.relatedViewFields">
+        <div class="w-50 text-left text-truncate">{{field.name}}</div>
+        <div class="w-50 text-left text-truncate">:&nbsp;{{getValue(definition.dataKey+'.'+field.key,data)}}</div>
+      </div>
+    </div>
+  </ng-template>

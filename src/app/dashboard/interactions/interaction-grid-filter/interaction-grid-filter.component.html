@@ -1,0 +1,13 @@
+<input *ngIf="type==='odpTxnId' || type==='remoteTxnId' || type === 'partnerName' || type === 'FlowName'" type="text"
+  class="border rounded bg-white w-100" [ngModel]="value" (ngModelChange)="onChange($event)">
+<input *ngIf="type==='Time'" type="date" class="border rounded bg-white w-100" [ngModel]="value"
+  (ngModelChange)="onChange($event)">
+<select *ngIf="type==='Status'" class="border rounded bg-white w-100" [ngModel]="value"
+  (ngModelChange)="onChange($event)">
+  <option value="">--All--</option>
+  <option value="SUCCESS">Successful</option>
+  <option value="PENDING">Pending</option>
+  <option value="ERROR">Failed</option>
+  <option value="UNKNOWN">Unknown</option>
+  <option value="QUEUED">Queued</option>
+</select>

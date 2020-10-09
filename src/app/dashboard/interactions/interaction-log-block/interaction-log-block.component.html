@@ -1,0 +1,117 @@
+<div class="bg-light main-container">
+  <div class="d-flex p-3">
+    <div class="mr-2 hover">
+      <odp-partner-icon size="22" color="0082C9" class="mt-1"></odp-partner-icon>
+    </div>
+    <div class="mr-2 text-primary hover" (click)="allFlows()">
+      {{ is.partnerName }}
+    </div>
+    <div class="mx-2 font-lg text-primary">
+      <span class="fas fa-angle-right"></span>
+    </div>
+    <div class="ml-2 text-secondary">Home</div>
+  </div>
+  <div class="d-flex position-relative bg-white m-4 flow-container">
+    <div class="w-25 border-right d-flex flex-column p-3">
+      <div>{{ is.flowDetails.name }}</div>
+      <div class="d-flex mt-3">
+        <strong class="ver-badge font-xs">{{ 'V' + is.flowDetails.ver }}</strong>
+        <strong class="font-xs ml-1"
+          [ngClass]="{'status-badge-success': is.flowDetails.status === 'Active' , 'status-badge-stopped': is.flowDetails.status === 'Stopped'}">{{ is.flowDetails.status }}</strong>
+      </div>
+    </div>
+    <div class="position-absolute sub-heading">Transactions</div>
+    <div class="d-flex position-absolute date-container hover ignore-outside"
+      (click)="showDatedd = !showDatedd; is.byPassIndex = true;">
+      <strong class="text-primary font-sm-12 mr-1 ignore-outside">{{ currentMonth }}</strong>
+      <span class="odp-angle-down fa-xs text-primary mt-1 ignore-outside"></span>
+    </div>
+    <div class="position-absolute border dateMnth-dd hover ignore-outside" *ngIf="showDatedd" odpClickOutside
+      (outside)="showDatedd = false;" [ignore]="['.ignore-outside']">
+      <div *ngFor="let date of monthYearFilter; let di = index" class="p-2 ignore-outside"
+        (click)="filterInteractionData(di)">
+        <span class="ignore-outside">{{ filterDate(di) }}</span>
+      </div>
+    </div>
+    <div class="d-flex count-container position-absolute mb-4">
+      <div class="mr-2 d-flex flex-column count-box all p-1">
+        <strong>{{ getCount(is.flowDetails.name, 'total') }}</strong>
+        <span class="font-sm-12">Total</span>
+      </div>
+      <div class="mr-2 d-flex flex-column count-box success-box p-1">
+        <strong>{{ getCount(is.flowDetails.name, 'success') }}</strong>
+        <span class="font-sm-12">Successful</span>
+      </div>
+      <div class="mr-2 d-flex flex-column count-box errored p-1">
+        <strong>{{ getCount(is.flowDetails.name, 'error') }}</strong>
+        <span class="font-sm-12">Failed</span>
+      </div>
+      <div class="mr-2 d-flex flex-column count-box pending-box p-1">
+        <strong>{{ getCount(is.flowDetails.name, 'pending') }}</strong>
+        <span class="font-sm-12">Pending</span>
+      </div>
+    </div>
+    <div id="chartDiv" class="w-75 mt-5" style="height: 340px"></div>
+  </div>
+  <div class="d-flex align-items-center">
+    <div class="m-3"><strong>Interactions</strong></div>
+    <div class="d-flex align-items-center hover" (click)="selectAllRcrds()">
+      <odp-round-check [checked]="checkAll" [white]="true"></odp-round-check>
+      <strong class="text-primary ml-2">Select all</strong>
+    </div>
+    <div id="redownloadAllBtn" class="btn btn-link py-0 px-3" *ngIf="recordChecked" (click)="redownloadAll()">
+      <span class="fa fa-download mr-2"></span>
+      <span class="text">Redownload ({{recordChecked}})</span>
+    </div>
+  </div>
+  <div class="m-3">
+    <div class="body items bg-white mt-2 rounded">
+      <!--<div class="data-grid" odpDataGrid [columns]="columnDefs" (loadData)="loadMore()" (sortModelChange)="sortModelChange($event)">-->
+      <div class="data-grid" odpDataGrid [columns]="columnDefs">
+        <div class="data-grid-header">
+          <div class="data-grid-row">
+            <div [attr.id]="col.dataKey" *ngFor="let col of columnDefs"
+              class="data-grid-cell head-cell d-flex align-items-center"
+              [ngClass]="{'no-move no-grip no-sort': col.type==='Checkbox'}">
+              {{col.properties.label ? col.properties.label : col.properties.name}}
+            </div>
+          </div>
+        </div>
+        <div class="data-grid-body">
+          <div class="data-grid-row default-cur border-bottom" *ngFor="let data of is.filteredLogs"
+            [ngClass]="{'selected':data._checked, 'highlighted': data.newRcrd}">
+            <div *ngFor="let col of columnDefs" class="data-grid-cell no-padding d-flex align-items-center"
+              (dblclick)="viewInteraction(data)">
+              <!--            <div *ngFor="let col of columnDefs" class="data-grid-cell no-padding d-flex align-items-center">-->
+              <odp-interaction-data-view class="w-100" [definition]="col" [data]="data">
+              </odp-interaction-data-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #redownloadModal>
+  <div class="modal-header alert">
+    <h4 class="modal-title text-primary">Info</h4>
+    <button (click)="redownloadModalRef.close(false)" aria-label="Close" class="close" id="redownloadCloseBtn"
+      type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center">Re-download will only happen for interactions that failed because the agent was unable to
+      download the output file</p>
+  </div>
+  <div class="modal-footer">
+    <button (click)="redownloadModalRef.close(false)" class="btn btn-secondary px-4 btn-min-width"
+      id="redownloadCancelBtn" type="button">
+      No
+    </button>
+    <button (click)="redownloadModalRef.close(true)" class="btn btn-danger px-4 btn-min-width" id="redownloadYesBtn"
+      type="button">Yes
+    </button>
+  </div>
+</ng-template>

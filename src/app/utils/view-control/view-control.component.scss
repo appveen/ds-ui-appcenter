@@ -1,0 +1,25 @@
+.field-wrapper{
+    min-height: 22px;
+    .label-wrapper{
+        .label-width{
+            min-width: 150px;
+            max-width: 150px;
+            .text{
+                max-width: 145px;
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                word-break: break-word;
+                // white-space: nowrap;
+            }
+        }
+    }
+    .input-wrapper{
+            min-width: 300px;
+            max-width: 300px;
+    }
+}
+
+.last-control {
+    margin-bottom: 55px;
+}

@@ -1,0 +1,7 @@
+{
+  "/": {
+    "target": "https://bifrost.odp.appveen.com/",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

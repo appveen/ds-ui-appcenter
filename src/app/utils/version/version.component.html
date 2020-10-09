@@ -1,0 +1,543 @@
+<div class="version-control p-2 mb-3" *ngIf="newValue">
+  <ng-container *ngIf="type == 'password'">
+    <ng-container *ngIf="oldValue">
+      <span class="text-primary-dark">Secure Text Updated</span>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <span class="text-primary-dark">Secure Text Created</span>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='text'">
+    <ng-container *ngIf="oldValue">
+      <div class="text-danger">
+        <span class="text-secondary">from&nbsp;</span><br>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+        <ng-container *ngFor="let data of oldValue">
+          <span>{{data}}</span><br>
+        </ng-container>
+        <!-- <span>{{oldValue}}</span> -->
+      </div>
+      <div class="text-success">
+        <span class="text-secondary">to&nbsp;</span><br>
+        <span *ngIf="newValue.length==0" class="text-secondary">No Items&nbsp;</span>
+        <ng-container *ngFor="let data of newValue">
+          <span>{{data}}</span><br>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <div class="text-success">
+        <span class="text-secondary">Created&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <span>{{data}}</span><br>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='boolean'">
+    <ng-container *ngIf="oldValue">
+      <div class="text-danger">
+        <span class="text-secondary">from&nbsp;</span><br>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+        <ng-container *ngFor="let data of oldValue">
+          <span *ngIf="data==true">yes</span>
+          <span *ngIf="data==false">No</span><br>
+        </ng-container>
+        <!-- <span>{{oldValue}}</span> -->
+      </div>
+      <div class="text-success">
+        <span class="text-secondary">to&nbsp;</span><br>
+        <span *ngIf="newValue.length==0" class="text-secondary">No Items&nbsp;</span>
+        <ng-container *ngFor="let data of newValue">
+          <!-- <span>{{data}}</span><br> -->
+          <span *ngIf="data==true">yes</span>
+          <span *ngIf="data==false">No</span><br>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <div class="text-success">
+        <span class="text-secondary">Created&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <span *ngIf="data==true">yes</span>
+          <span *ngIf="data==false">No</span><br>
+          <!-- <span>{{data}}</span><br> -->
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='textarea'">
+    <ng-container *ngIf="oldValue">
+      <div class="text-danger">
+        <span class="tex text-secondary">from&nbsp;</span><br>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let data of oldValue">
+          <span class="old" [innerHTML]="data"></span><br>
+        </ng-container>
+        <!-- <span class="old" [innerHTML]="oldValue"></span> -->
+      </div>
+      <div class="text-success">
+        <span class="text text-secondary">to&nbsp;</span><br>
+        <span *ngIf="newValue.length==0" class="text-secondary">No Items&nbsp;</span>
+        <ng-container *ngFor="let data of newValue">
+          <span class="old" [innerHTML]="data"></span><br>
+        </ng-container>
+        <!-- <span class="new" [innerHTML]="newValue"></span> -->
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <div class="text-success">
+        <span class="text text-secondary">Created&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <span class="old" [innerHTML]="data"></span><br>
+        </ng-container>
+        <!-- <span class="new" [innerHTML]="newValue"></span> -->
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='relation'">
+    <ng-container *ngIf="oldValue">
+      <div class="text-danger">
+        <span class="text text-secondary">from &nbsp;</span><br>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+        <ng-container *ngFor="let data of oldValue">
+          <span class="old">
+            <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]" class="text-danger">{{data._id}}</a>
+          </span><br>
+        </ng-container>
+
+      </div>
+      <div class="text-success">
+        <span class="text text-secondary">to&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <span class="new">
+            <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]" class="text-success">{{data._id}}</a>
+          </span><br>
+        </ng-container>
+        <!-- <span class="new">
+          <a target="_blank" class="text-success" [routerLink]="['/~',definition.properties.relatedTo,'view',relation.new['_id']]">{{relation.new[definition.properties.relatedSearchField]}}</a>
+        </span> -->
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <div class="text-success">
+        <span class="text text-secondary">Created&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <span class="old">
+            <a target="_blank" class="text-success" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]">{{data._id}}</a>
+          </span><br>
+        </ng-container>
+        <!-- <span class="new">
+          <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',relation.new['_id']]">
+            {{getRelation(relation.new[definition.properties.relatedSearchField])}}
+          </a>
+        </span> -->
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='number'">
+    <ng-container *ngIf="oldValue!=null">
+      <div class="text-danger">
+        <span class="text-secondary">from&nbsp;</span>
+        <br>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let value of oldValue">
+          <ng-container *ngIf="definition.properties.currency">
+            <span class="mr-2">
+              <ng-container *ngIf="definition.properties.currency=='INR'">&#8377;</ng-container>
+              <ng-container *ngIf="definition.properties.currency=='EUR'">&#8364;</ng-container>
+              <ng-container *ngIf="definition.properties.currency=='USD'">&#36;</ng-container>
+            </span>
+            <span class="text">{{value|number:'1.2'}}</span>
+          </ng-container>
+          <span class="text" *ngIf="!definition.properties.currency">{{value}}</span><br>
+        </ng-container>
+      </div>
+      <div class="text-success">
+        <span class="text-secondary">to&nbsp;</span>
+        <br>
+        <span *ngIf="newValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let value of newValue">
+          <ng-container *ngIf="definition.properties.currency">
+            <span class="mr-2">
+              <ng-container *ngIf="definition.properties.currency=='INR'">&#8377;</ng-container>
+              <ng-container *ngIf="definition.properties.currency=='EUR'">&#8364;</ng-container>
+              <ng-container *ngIf="definition.properties.currency=='USD'">&#36;</ng-container>
+            </span>
+            <span class="text">{{value|number:'1.2'}}</span>
+          </ng-container>
+          <span class="text" *ngIf="!definition.properties.currency">{{value}}</span><br>
+        </ng-container>
+        <!-- <span>{{newValue}}</span> -->
+      </div>
+    </ng-container>
+    <ng-container *ngIf="oldValue == null">
+      <div class="text-success">
+        <span class="text-secondary">Created&nbsp;</span>
+        <br>
+        <ng-container *ngFor="let value of newValue">
+          <ng-container *ngIf="definition.properties.currency">
+            <span class="mr-2">
+              <ng-container *ngIf="definition.properties.currency=='INR'">&#8377;</ng-container>
+              <ng-container *ngIf="definition.properties.currency=='EUR'">&#8364;</ng-container>
+              <ng-container *ngIf="definition.properties.currency=='USD'">&#36;</ng-container>
+            </span>
+            <span class="text">{{value|number:'1.2'}}</span>
+          </ng-container>
+          <span class="text" *ngIf="!definition.properties.currency">{{value}}</span><br>
+          <br>
+        </ng-container>
+        <!-- <span>{{newValue}}</span> -->
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='date'">
+    <ng-container *ngIf="oldValue">
+      <div class="text-danger">
+        <span class="text-secondary">from&nbsp;</span>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let data of oldValue">
+          <span *ngIf="definition.properties.dateType=='datetime-local'">{{data | date: 'dd-MMM-yyyy hh:mm:ss a'}}</span>
+          <span *ngIf="definition.properties.dateType=='date'">{{data | date: 'dd-MMM-yyyy'}}</span><br>
+        </ng-container>
+        <!-- <span *ngIf="definition.properties.dateType=='datetime-local'">{{oldValue | date: 'dd-MMM-yyyy hh:mm:ss a'}}</span>
+        <span *ngIf="definition.properties.dateType=='date'">{{oldValue | date: 'dd-MMM-yyyy'}}</span> -->
+      </div>
+      <div class="text-success">
+        <span class="text-secondary">to&nbsp;</span><br>
+        <span *ngIf="newValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let data of newValue">
+          <span *ngIf="definition.properties.dateType=='datetime-local'">{{data | date: 'dd-MMM-yyyy hh:mm:ss a'}}</span>
+          <span *ngIf="definition.properties.dateType=='date'">{{data | date: 'dd-MMM-yyyy'}}</span><br>
+        </ng-container>
+        <!-- <span *ngIf="definition.properties.dateType=='datetime-local'">{{newValue | date: 'dd-MMM-yyyy hh:mm:ss a'}}</span>
+        <span *ngIf="definition.properties.dateType=='date'">{{newValue | date: 'dd-MMM-yyyy'}}</span> -->
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <div class="text-success">
+        <span class="text-secondary">Created&nbsp;</span>
+        <!-- <span *ngIf="definition.properties.dateType=='datetime-local'">{{newValue | date: 'dd-MMM-yyyy hh:mm:ss a'}}</span> -->
+        <br>
+        <ng-container *ngFor="let data of newValue">
+          <span *ngIf="definition.properties.dateType=='datetime-local'">{{data | date: 'dd-MMM-yyyy hh:mm:ss a'}}</span>
+          <span *ngIf="definition.properties.dateType=='date'">{{data | date: 'dd-MMM-yyyy'}}</span><br>
+        </ng-container>
+        <!-- <span *ngIf="definition.properties.dateType=='date'">{{newValue | date: 'dd-MMM-yyyy'}}</span> -->
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='file'">
+    <ng-container *ngIf="oldValue ">
+      <div class="text-danger">
+        <span class="text-secondary">from&nbsp;</span><br>
+        <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let data of oldValue">
+          <button class="btn btn-link text-danger" (click)="downloadFile(data.filename)">{{data?.metadata?.filename}}</button><br>
+        </ng-container>
+        <!-- <button class="btn btn-link text-danger" (click)="downloadFile(oldValue.filename)">{{oldValue?.filename}}</button> -->
+      </div>
+      <div class="text-success">
+        <span class="text-secondary">to&nbsp;</span><br>
+        <span *ngIf="newValue.length==0" class="text-secondary">No Items&nbsp;</span>
+
+        <ng-container *ngFor="let data of newValue">
+          <button class="btn btn-link text-success" (click)="downloadFile(data.filename)">{{data?.metadata?.filename}}</button><br>
+        </ng-container>
+        <!-- <button class="btn btn-link text-success" (click)="downloadFile(newValue.filename)">{{newValue?.filename}}</button> -->
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!oldValue">
+      <div class="text-success">
+        <span class="text-secondary">Created &nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <button class="btn btn-link text-success" (click)="downloadFile(data.filename)">{{data?.metadata?.filename}}
+          </button><br>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="type=='Geojson'">
+    <ng-container *ngIf="oldValue">
+      <div class="text-danger">
+        <span class="text-secondary">From&nbsp;</span><br>
+        <ng-container *ngFor="let data of oldValue">
+          <div class="d-flex">
+            <div class="d-flex ">
+              <div class="field-wrapper d-flex align-items-start mt-3">
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.userInput" class=" p-2 mt-2 history-value">
+                    {{data.userInput}}
+                  </div>
+                  <div *ngIf="!data.userInput" class=" p-2 mt-2 history-value">
+                    --
+                  </div>
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.formattedAddress" class=" p-2 mt-2 history-value">
+                    {{data.formattedAddress}}
+                  </div>
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data?.town" class=" p-2 mt-2 history-value">
+                    {{data?.town}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data?.state" class=" p-2 mt-2 history-value">
+                    {{data?.state}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.country" class=" p-2 mt-2 history-value">
+                    {{data?.country}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data.pincode" class=" p-2 mt-2 history-value">
+                    {{data.pincode}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data?.geometry?.coordinates[1]" class=" p-2 mt-2 history-value">
+                    {{data?.geometry?.coordinates[1]}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data?.geometry?.coordinates[0]" class=" p-2 mt-2 history-value">
+                    {{data?.geometry?.coordinates[0]}}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- <div class="">
+                  <div #mapEle class="map border rounded"></div>
+                </div> -->
+          </div>
+        </ng-container>
+      </div>
+      <div class="text-success">
+        <span class="text-secondary">To&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <div class="d-flex">
+            <div class="d-flex ">
+              <div class="field-wrapper d-flex align-items-start mt-3">
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.userInput" class=" p-2 mt-2 history-value">
+                    {{data.userInput}}
+                  </div>
+                  <div *ngIf="!data.userInput" class=" p-2 mt-2 history-value">
+                    --
+                  </div>
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.formattedAddress" class=" p-2 mt-2 history-value">
+                    {{data.formattedAddress}}
+                  </div>
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data?.town" class=" p-2 mt-2 history-value">
+                    {{data?.town}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data?.state" class=" p-2 mt-2 history-value">
+                    {{data?.state}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.country" class=" p-2 mt-2 history-value">
+                    {{data?.country}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data.pincode" class=" p-2 mt-2 history-value">
+                    {{data.pincode}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data?.geometry?.coordinates[1]" class=" p-2 mt-2 history-value">
+                    {{data?.geometry?.coordinates[1]}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data?.geometry?.coordinates[0]" class=" p-2 mt-2 history-value">
+                    {{data?.geometry?.coordinates[0]}}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- <div class="">
+                    <div #mapEle class="map border rounded"></div>
+                  </div> -->
+          </div>
+        </ng-container>
+      </div>
+
+    </ng-container>
+    <ng-container *ngIf="!oldValue ">
+      <div class="text-success">
+        <span class="text-secondary">Created&nbsp;</span><br>
+        <ng-container *ngFor="let data of newValue">
+          <div class="d-flex">
+            <div class="d-flex ">
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.userInput" class="text-success p-2 mt-2 history-value">
+                    {{data.userInput}}
+                  </div>
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.formattedAddress" class="text-success p-2 mt-2 history-value">
+                    {{data.formattedAddress}}
+                  </div>
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data?.town" class="text-success p-2 mt-2 history-value">
+                    {{data?.town}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data?.state" class="text-success p-2 mt-2 history-value">
+                    {{data?.state}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data.country" class="text-sucess p-2 mt-2 history-value">
+                    {{data?.country}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data.pincode" class="text-sucess p-2 mt-2 history-value">
+                    {{data.pincode}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+                  <div *ngIf="data?.geometry?.coordinates[1]" class="text-success p-2 mt-2 history-value">
+                    {{data?.geometry?.coordinates[1]}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="field-wrapper d-flex align-items-start  mt-3">
+
+                <div class="d-flex flex-column font-weight-bold input-wrapper">
+
+                  <div *ngIf="data?.geometry?.coordinates[0]" class="text-success p-2 mt-2 history-value">
+                    {{data?.geometry?.coordinates[0]}}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- <div class="">
+              <div #mapEle class="map border rounded"></div>
+            </div> -->
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+  <!-- <ng-container *ngIf="type=='Object'">
+    <ng-container>
+        <div class="d-flex flex-column pt-3">
+           
+            <div class="d-flex" *ngFor="let val of newValue;">
+                <ng-container *ngFor="let def of definition.definition;">
+                    <div class="array-control-wrapper">
+                        <odp-view-separator [definition]="getDefinitionWithValue(def,val)" [value]="val"></odp-view-separator>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+  </ng-container> -->
+
+</div>

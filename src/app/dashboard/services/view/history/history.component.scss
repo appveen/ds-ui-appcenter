@@ -1,0 +1,42 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.version-list {
+  position: absolute;
+  top: 80px;
+  height: 436px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+  z-index: 8;
+  .workflow-content {
+    width: 0px;
+    height: 434px;
+    overflow: hidden;
+    transition: 0.2s;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    &.show {
+      width: 480px;
+    }
+  }
+  .version-list-content {
+    height: 390px;
+    overflow: auto;
+    width: 400px;
+    direction: rtl;
+    .version-data {
+      width: 400px;
+      direction: ltr;
+      &:hover {
+        cursor: pointer;
+        background: $light;
+      }
+      .version-number {
+        width: 50px;
+        overflow: hidden;
+      }
+    }
+    .max-card {
+      width: 400px;
+    }
+  }
+}

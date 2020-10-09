@@ -1,0 +1,19 @@
+<div class="map-control-wrapper">
+    <div #map class="map border rounded" [ngClass]="{'d-flex align-items-center justify-content-center':noAPIKey}">
+        <span *ngIf="noAPIKey" class="text-muted">Please ask your Administrator to configure Google API key</span>
+    </div>
+</div>
+
+
+<div [ngClass]="{'d-none':noAPIKey}">
+    <input [ngClass]="{'d-none':!edit}" #searchInput class="searchInput" type="text" [attr.id]="definition.path"
+        (keyup)="onKeyup($event)" [disabled]="control.disabled">
+    <button id="placeMarker" [ngClass]="{'d-none':!edit ,'active':markerPlaced}" #placeMarkerBtn
+        (click)="placeMarker()" ngbTooltip="Place marker" [disabled]="control.disabled">
+        <span class="fa fa-map-marker-alt text-primary-dark"></span>
+    </button >
+    <button id="removeMarker" [ngClass]="{'d-none':!edit }" #removeMarkerBtn
+        (click)="removeMarker()" ngbTooltip="Remove marker" [disabled]="control.disabled">
+        <span class="fa fa-times text-danger"></span>
+    </button>
+</div>

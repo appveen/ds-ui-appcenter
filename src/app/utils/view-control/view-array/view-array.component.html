@@ -1,0 +1,42 @@
+<ng-container *ngIf="controlType == 'others'">
+    <div class="d-flex flex-column pt-3">
+        <div class="d-flex" *ngIf="arrayValues.length==0">No Items</div>
+        <div class="d-flex mb-3" *ngFor="let val of arrayValues;let index = index">
+            <odp-view-separator [definition]="getDefinitionWithValue(definition,val,index)" [value]="val">
+            </odp-view-separator>
+        </div>
+    </div>
+    <odp-array-version [oldValue]='oldVal' [newValue]='newVal' [definition]='definition' *ngIf="oldVal || newVal"
+        [workflowDoc]="workflowDoc" [controlType]="controlType"></odp-array-version>
+</ng-container>
+<!-- <p>{{ oldVal| json}}</p>
+<p>{{ newVal| json}}</p> -->
+
+<ng-container *ngIf="controlType == 'map'">
+    <div class="d-flex flex-column pt-3">
+        <div class="d-flex">
+           
+                <label class="font-weight-bold text-secondary" [ngStyle]="getLabelWidth(def)" [attr.for]="def.path"
+                    *ngFor="let def of getMapDefinition(0);">{{def.properties.label ? def.properties.label : def.properties.name}}</label>
+            
+        </div>
+        <div class="d-flex" *ngFor="let val of arrayValues;let index = index">
+            <ng-container *ngFor="let def of getMapDefinition(index);">
+                <div class="array-control-wrapper">
+                    <odp-view-separator [definition]="getMapDefValue(def,val,index)" [value]="val">
+                    </odp-view-separator>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <odp-array-version [oldValue]='oldVal' [newValue]='newVal' [definition]='definition' *ngIf="oldVal || newVal"
+        [workflowDoc]="workflowDoc" [controlType]="controlType"></odp-array-version>
+
+</ng-container>
+<ng-container *ngIf="controlType == 'object'">
+    <odp-view-collection-of-objects-grid [collectionFieldName]="collectionFieldName" [definition]="definition">
+    </odp-view-collection-of-objects-grid>
+    <odp-array-version [oldValue]="oldVal" [newValue]="newVal" [collectionFieldName]="collectionFieldName"
+        [definition]="definition" *ngIf="oldVal || newVal" [workflowDoc]="workflowDoc" [controlType]="controlType">
+    </odp-array-version>
+</ng-container>

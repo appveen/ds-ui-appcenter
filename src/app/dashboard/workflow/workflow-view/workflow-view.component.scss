@@ -1,0 +1,36 @@
+@import 'src/assets/scss/bootstrap/_functions.scss';
+@import 'src/assets/scss/bootstrap/_variables.scss';
+.icon-8{
+    min-width: 8px;
+    max-width: 8px;
+    min-height: 8px;
+    max-height: 8px;
+    display: inline-block;
+}
+.icon-10{
+    min-height: 13px;
+    max-width: 10px;
+    min-width: 10px;
+    max-height: 13px;
+    display: inline-block;
+
+}
+.submitted-icon{
+    min-width: 14px;
+    max-width: 14px;
+    max-height: 14px;
+    min-height: 12px;
+    display: inline-block;
+}
+
+.icon-12{
+    min-width: 12px;
+    max-width: 12px;
+    min-height: 12px;
+    max-height: 12px;
+  }
+
+  .font-xsm{
+      font-size: 10px;
+  }
+  

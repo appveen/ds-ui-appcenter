@@ -1,0 +1,25 @@
+<div>
+    <ng-container *ngIf="searchFieldValue">
+        <ng-container *ngIf="!isSecureText">
+            <a *ngIf="serviceAccess" [routerLink]="['/~/services/',serviceId,'view', documentId]"
+                target="_blank">{{searchFieldValue}}</a>
+            <span *ngIf="!serviceAccess">{{searchFieldValue}}</span>
+        </ng-container>
+        <ng-container *ngIf="isSecureText">
+            <ng-container *ngIf="!showPassword">
+                **********
+            </ng-container>
+            <ng-container *ngIf="showPassword">
+                <a *ngIf="serviceAccess" [routerLink]="['/~/services/',serviceId,'view', documentId]"
+                    target="_blank">{{searchFieldValue}}</a>
+                <span *ngIf="!serviceAccess">{{searchFieldValue}}</span>
+            </ng-container>
+            <button type="button" class="btn btn-sm btn-link p-0 ml-2"
+                (click)="showPassword=!showPassword;$event.stopPropagation();">
+                {{showPassword?'Hide':'Show'}}
+            </button>
+        </ng-container>
+    </ng-container>
+
+    <span *ngIf="!searchFieldValue" class="text-muted">N.A.</span>
+</div>

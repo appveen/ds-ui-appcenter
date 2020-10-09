@@ -1,0 +1,18 @@
+<!-- <div class="custom-control custom-checkbox">
+  <input type="checkbox" class="custom-control-input" [attr.id]="definition.path" [formControl]="control">
+  <label class="custom-control-label" [attr.for]="definition.path"></label>
+</div> -->
+<button type="button" class="border-0 p-0 bg-white" (keyup.enter)="booleanControl.click()">
+  <label class="switch m-0" [attr.for]="controlId">
+    <input type="checkbox" #booleanControl [formControl]="control" [attr.id]="controlId"  [disabled]="definition.readonly || control.disabled">
+    <span class="slider round"></span>
+  </label>
+</button>
+<div class="text-danger font-weight-bold">
+  <ng-container *ngIf="!definition.properties.errorMessage">
+    <small *ngIf="control.hasError('required') && control.touched">{{definition.label}} is required</small>
+  </ng-container>
+  <ng-container *ngIf="definition.properties.errorMessage">
+    <small *ngIf="control.hasError('required') && control.touched">{{definition.properties.errorMessage}}</small>
+  </ng-container>
+</div>

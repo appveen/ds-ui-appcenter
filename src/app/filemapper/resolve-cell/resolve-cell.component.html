@@ -1,0 +1,10 @@
+<!-- <button type="button" class="btn btn-link text-warning py-0">Resolve</button> -->
+<div class="d-flex align-items-center" *ngIf="data.sNo!='Original'">
+    <div class="custom-control custom-radio">
+        <input #customRadio type="radio" [name]="dataKey" [id]="id" class="custom-control-input" [checked]="data._selected" (change)="updateList($event)">
+        <label class="custom-control-label" [attr.for]="id">&nbsp;</label>
+    </div>
+    <button *ngIf="customRadio.checked" ngbTooltip="Clear" type="button" class="btn btn-link text-danger py-0 px-1" (click)="customRadio.checked = false;uncheck()">
+        <span class="fa fa-times"></span>
+    </button>
+</div>

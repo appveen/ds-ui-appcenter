@@ -1,0 +1,48 @@
+<div [@toggleOverlay]="state" class="overlay" (click)="onCancel()"></div>
+<div class="app-switcher-window d-flex flex-column justify-content-start align-items-center">
+  <div class="d-flex align-items-center p-3 position-relative hover" (click)="onCancel()">
+    <div class="active-app d-flex align-items-center position-absolute">
+      <odp-app-icon color="aaa" class="mr-2 pt-1" size="24"></odp-app-icon>
+      <span class="pl-1">{{ activeApp._id }}</span>
+      <span class="text-primary ml-auto pt-1 fas fa-angle-down"></span>
+    </div>
+    <input type="text" class="form-control search-box" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
+    <span class="fas fa-search position-absolute text-muted srch-pos" [ngClass]="{'d-none': searchBox.value}"></span>
+  </div>
+  <div class="d-flex flex-wrap justify-content-center">
+    <div class="app-card d-flex flex-column my-3 mx-4" *ngFor="let app of appList|filterApp: searchTerm;let appIndex = index;" 
+      (click)="selectApp(app)">
+      <div class="app-thumbnail d-flex align-items-center justify-content-center bg-light hover" [ngClass]="{'border-primary-light':activeApp._id == app._id}">
+        <img *ngIf="app.logo && app.logo.thumbnail" [src]="app.logo.thumbnail" alt="Logo">
+        <odp-app-icon *ngIf="!app.logo || !app.logo.thumbnail" color="aaa"></odp-app-icon>
+      </div>
+      <div class="app-name text-center mt-2">{{app._id}}</div>
+    </div>
+  </div>
+</div>
+<!-- <div class="app-switcher-window d-flex flex-column justify-content-start align-items-center rounded bg-light" odpClickOutside [ignore]="['.current-app']" (outside)="onCancel()"> -->
+  <!-- <div class="d-flex align-items-center p-3 position-relative hover" (click)="onCancel()">
+      <div class="active-app d-flex align-items-center position-absolute">
+        <odp-app-icon color="aaa" class="mr-2 pt-1" size="24"></odp-app-icon>
+        <span class="pl-1">{{ activeApp._id }}</span>
+        <span class="text-primary ml-auto pt-1 fas fa-angle-down"></span>
+      </div>
+      <input type="text" class="form-control search-box" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
+      <span class="fas fa-search position-absolute text-muted srch-pos" [ngClass]="{'d-none': searchBox.value}"></span>
+    </div> -->
+  <!-- <div class="search-box w-100">
+      <span class="fa fa-search position-absolute text-muted"></span>
+      <input type="text" class="border-0" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
+  </div>
+  <div class="app-list w-100">
+    <div class="app-list-item d-flex align-items-center justify-content-start hover px-1"
+      *ngFor="let app of appList|filterApp: searchTerm;let appIndex = index;"
+      [ngClass]="{'active font-weight-bold bg-white':activeApp._id == app._id}" (click)="selectApp(app)">
+      <div class="app-thumbnail d-flex align-items-center justify-content-center bg-white rounded">
+        <img *ngIf="app.logo && app.logo.thumbnail" [src]="app.logo.thumbnail" alt="Logo">
+        <odp-app-icon class="mt-1" *ngIf="!app.logo || !app.logo.thumbnail" color="aaa"></odp-app-icon>
+      </div>
+      <div class="app-name ml-2 font-sm">{{app._id}}</div>
+    </div>
+  </div>
+</div> -->

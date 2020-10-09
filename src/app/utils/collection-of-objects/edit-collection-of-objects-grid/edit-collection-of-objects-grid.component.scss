@@ -1,0 +1,77 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.grid-container {
+    display: grid;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.buttonsRow {
+    height: 32px;
+
+    * {
+      user-select: none;
+    }
+
+    .selectAll {
+        padding-left: 13px;
+    }
+}
+
+
+.field-wrapper {
+  min-height: 36px;
+  .label-wrapper {
+    .label-width {
+      min-width: 200px;
+      max-width: 200px;
+      .text {
+        max-width: 170px;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+        // white-space: nowrap;
+      }
+    }
+  }
+  .input-wrapper {
+    min-width: 360px;
+    max-width: 360px;
+  }
+}
+
+
+.scrollBox {
+    height: calc(100vh - 185px);
+    overflow: auto;
+}
+
+.modal-header {
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-footer {
+  border-top: 1px solid #ccc;
+}
+
+.modal-header, .modal-body, .modal-footer {
+  z-index: 2;
+}
+
+.custom-backdrop {
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  z-index:1;
+  background: black;
+  opacity: 0.5;
+
+  &.show {
+    display: block;
+  }
+}

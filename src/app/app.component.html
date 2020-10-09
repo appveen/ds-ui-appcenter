@@ -1,0 +1,39 @@
+<router-outlet odpShortcut></router-outlet>
+<odp-loading *ngIf="commonService.loading || navigating"></odp-loading>
+<div class="session-expire overlay align-items-center justify-content-center" [ngClass]="{'show':sessionExpired}">
+</div>
+<div class="session-expire align-items-center justify-content-center" [ngClass]="{'show':sessionExpired}">
+    <div role="document" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header alert">
+                <h4 class="modal-title">Session</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Your session has expired, please login again.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-min-width px-4" type="button" (click)="logoutUser()" odpAutoFocus>Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="odp-tooltiptext" class="odp-tooltiptext"></div>
+
+<ng-template #sessionTierAlertModal>
+    <div class="modal-body p-4">
+        <div class="circle bg-dark">
+            <span class="fas fa-exclamation text-white"></span>
+        </div>
+        <p class="text-dark font-weight-bold text-center">Session Expire Alert</p>
+        <p class="text-secondary text-center">{{sessionExpireMsg}}</p>
+        <!-- <input *ngIf="authType && authType=='local'" type="password" [(ngModel)]="userPwd" placeholder="Password" class="form-control"> -->
+    </div>
+    <div class="modal-footer p-3 bg-light">
+        <button type="button" class="btn btn-min-width btn-link text-dark w-50 mx-3" (click)="sessionTierAlertModalRef.close(false)" id="sContinueNo">Cancel</button>
+        <!-- <button *ngIf="authType && authType=='local'" type="button" class="btn btn-min-width btn-primary w-50 mx-3"
+            (click)="extendSession()" id="sContinueYes" [disabled]="!userPwd || userPwd.length < 8">
+            Extend
+        </button> -->
+        <button type="button" class="btn btn-min-width btn-primary w-50 mx-3" (click)="extendSession()" id="sContinueYes">Extend</button>
+    </div>
+</ng-template>

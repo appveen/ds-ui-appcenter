@@ -1,0 +1,165 @@
+<div class="d-flex align-self-center"
+  [ngClass]="{'mt-2': searchForColumn.length === 0, 'mt-4': searchForColumn.length > 0}">
+  <div class="text-gray-medium label-text mt-2">
+    <strong>Search for </strong>
+  </div>
+  <div class="d-flex flex-column align-items-start">
+    <div *ngIf="searchForColumn.length > 0" [sortablejs]="searchForColumn">
+      <div class="d-flex align-items-center row-content mb-2" *ngFor="let item of searchForColumn; let i = index">
+        <div class="fas fa-bars text-muted mr-2 hover"></div>
+        <div class="input-group col-name-dd mr-2">
+          <select class="custom-select" [(ngModel)]="item.fieldName" (change)="updateType($event, i)">
+            <optgroup label="Workflow Columns">
+              <ng-container *ngFor="let col of combinedColumns;">
+                <option *ngIf="!col.serviceCol" [value]="col.fieldName">{{ col.headerName }}</option>
+              </ng-container>
+            </optgroup>
+            <optgroup label="Data Columns">
+              <ng-container *ngFor="let col of combinedColumns;">
+                <option *ngIf="col.serviceCol" [value]="col.fieldName">{{ col.headerName }}</option>
+              </ng-container>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- For data type text  -->
+        <div class="col-filter mr-2 d-flex"
+          *ngIf="item.fieldType === 'String' || item.fieldType === 'Identifier'  || item.fieldType === 'Relation'">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <select [(ngModel)]="item.filterType" (change)="searchDataUpdated()">
+              <option *ngFor="let option of textOptions" [value]="option.value">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+          <input type="text" class="w-100 p-2 filter-txt font-sm" [(ngModel)]="item.filterValue"
+            (blur)="searchDataUpdated()">
+        </div>
+         <!-- For data type  secure text  -->
+         <div class="col-filter mr-2 d-flex"
+         *ngIf="item.fieldType === 'secureText' ">
+         <div class="options-dd d-flex align-items-center text-primary position-relative">
+           <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+           <select [(ngModel)]="item.filterType" (change)="searchDataUpdated()">
+             <option *ngFor="let option of textOptions" [value]="option.value">
+               {{option.name}}
+             </option>
+           </select>
+         </div>
+         <input type="text" class="w-100 p-2 filter-txt font-sm" [(ngModel)]="item.filterValue"
+           (blur)="searchDataUpdated()">
+       </div>
+        <!-- For data type Number  -->
+        <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'Number' ">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <select [(ngModel)]="item.filterType" (change)="searchDataUpdated()">
+              <option *ngFor="let option of numbOptions" [value]="option.value">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+          <input type="number" class="w-100 p-2 filter-txt font-sm" [(ngModel)]="item.filterValue"
+            (blur)="searchDataUpdated()">
+        </div>
+
+        <!-- for data type boolean -->
+        <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType ==='Boolean'">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <!-- <select [(ngModel)]="item.filterType" (change)="updateBooleanValue(item)"> -->
+            <select (change)="setSelectValue(item, selectBooleanValue.value,true)" #selectBooleanValue
+              [(ngModel)]="item.filterValue">
+              <option *ngFor="let option of booleanOptions" [value]="option.value">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'Date'">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <select [(ngModel)]="item.filterType" (change)="searchDataUpdated()">
+              <option *ngFor="let option of dateOptions" [value]="option.value">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+          <div class="d-flex align-items-center w-100">
+            <div class="d-flex align-items-center mr-3 w-50 h-100 px-2 bg-white"
+              [ngClass]="{'date-picker-from': item.filterType === 'inRange'}"
+              (click)="item.toggleFromDate = true; item.toggleToDate = false; $event.stopPropagation();">
+              <div class="d-flex align-items-center">
+                <span class="fa fa-calendar mr-2 text-primary"></span>
+                <span class="text-primary">{{getDateText(item.filterType)}}</span>
+              </div>
+              <span class="timestamp font-sm ml-auto mr-auto">{{ item.fromDate ? ( item.fromDate | date: 'd MMM y') :
+                '' }}</span>
+              <span class="fas fa-angle-down text-primary"></span>
+              <odp-date-picker *ngIf="item.toggleFromDate" [togglePicker]="item.toggleFromDate"
+                (togglePickerChange)="item.toggleFromDate = $event" [from]="startDate"
+                (fromChange)="setStartDate($event, item)" [options]="{floating:true,buttons:true,type:'date'}">
+              </odp-date-picker>
+            </div>
+            <div *ngIf="item.filterType === 'inRange'"
+              class="date-picker d-flex align-items-center w-50 h-100 px-2 bg-white"
+              (click)="item.toggleToDate = true; item.toggleFromDate = false; $event.stopPropagation();">
+              <div class="d-flex align-items-center">
+                <span class="fa fa-calendar mr-2 text-primary"></span>
+                <span class="text-primary">To</span>
+              </div>
+              <span
+                class="timestamp font-sm ml-auto mr-auto">{{ item.toDate ? (item.toDate | date: 'd MMM y') : '' }}</span>
+              <span class="fas fa-angle-down text-primary"></span>
+              <odp-date-picker *ngIf="item.toggleToDate" [togglePicker]="item.toggleToDate"
+                (togglePickerChange)="item.toggleToDate = $event" [from]="endDate"
+                (fromChange)="setEndDate($event, item)" [options]="{floating:true,buttons:true,type:'date'}">
+              </odp-date-picker>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'requestSelect'">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+              <option *ngFor="let option of requestedByList" [value]="option._id">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'respondSelect'">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+              <option *ngFor="let option of respondedByList" [value]="option._id">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'statusSelect'">
+          <div class="options-dd d-flex align-items-center text-primary position-relative">
+            <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+              <!-- <option value="">All</option> -->
+              <option *ngFor="let option of statusOptions" [value]="option.value">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
+          <!-- <input type="text" class="w-100 p-2 filter-txt-disabled text-secondary font-sm" [value]="selectValue.value" disabled> -->
+        </div>
+
+        <div class="fas fa-times text-danger hover mr-3" (click)="removeRow(i)"></div>
+        <div class="fas fa-plus text-primary new-row" (click)="addColForSearch()"></div>
+      </div>
+    </div>
+    <button class="pl-0 text-primary font-sm btn btn-link" (click)="addColForSearch()">
+      <strong><span class="fas fa-lg fa-plus-circle mr-2"></span> Select Field</strong>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,356 @@
+/* You can add global styles to this file, and also import other style files */
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+
+:root {
+  --box-shadow: 0 3px 5px rgba($black, 0.15);
+}
+
+.min-width-control {
+  min-width: 150px;
+}
+
+.is-invalid {
+  background-color: rgba($danger, 0.1);
+}
+
+.bg-primary-0-1{
+  background: rgba($primary, 0.1) !important;
+}
+
+.value-wrapper {
+  min-width: 300px;
+  max-width: 300px;
+  word-break: break-all;
+}
+.fa-rotate-45 {
+  transform: rotate(45deg);
+}
+
+.history-value {
+  background: #ffecb3;
+}
+
+.modal-content {
+  overflow: hidden;
+  .circle {
+    width: 75px;
+    height: 75px;
+    border-radius: 50px;
+    text-align: center;
+    line-height: 75px;
+    font-size: 32px;
+    margin: 20px auto;
+  }
+}
+.conflict-modal {
+  .conflict-mod {
+    height: 500px;
+  }
+}
+
+.large-modal {
+  .modal-dialog {
+    max-width: 1160px !important;
+  }
+}
+
+.preview-window {
+  .modal-dialog {
+    min-width: calc(100vw - 56px);
+    min-height: calc(100vh - 56px);
+    .modal-content {
+      min-height: calc(100vh - 56px);
+    }
+  }
+}
+
+/* odp-tooltip text */
+.odp-tooltiptext {
+  visibility: hidden;
+  width: auto;
+  min-width: 120px;
+  max-width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the odp-tooltip text */
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+  &.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  bottom: 100px;
+}
+
+/* odp-tooltip arrow */
+.odp-tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.font-13 {
+  font-size: 13px;
+}
+.font-xl {
+  font-size: 18px;
+}
+.font-lg {
+  font-size: 16px;
+}
+.font-normal {
+  font-size: 14px;
+}
+.font-sm-12 {
+  font-size: 12px;
+}
+.font-xs {
+  font-size: 10px;
+}
+.font-bold {
+  font-weight: bold;
+}
+
+.chk-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 0;
+  margin-left: 5px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.chk-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: $gray-400;
+}
+
+/* On mouse-over, add a grey background color */
+.chk-container:hover input ~ .checkmark {
+  background-color: $gray-500;
+}
+
+/* When the checkbox is checked, add a blue background */
+.chk-container input:checked ~ .checkmark {
+  background-color: $capiot-blue-dark;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.chk-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.chk-container .checkmark:after {
+  left: 7px;
+  top: 4px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.btn:not(.btn-link) {
+  min-height: 32px;
+  max-height: 32px;
+  &.btn-sm {
+    min-height: 26px;
+    max-height: 26px;
+  }
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
+/*---- ODP AG-GRID START ----*/
+.ag-theme-balham {
+  font-family: "Lato";
+  font-size: 13px;
+  .ag-root {
+    border: 0;
+  }
+  .ag-header {
+    background: #fff;
+    .ag-header-row:last-child{
+      .ag-header-cell{
+        border-top: 0;
+      }
+    }
+  }
+  .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right){
+    border-style: dashed !important;
+  }
+  .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left){
+    border-style: dashed !important;
+  }
+  .ag-floating-filter-button {
+    display: none;
+  }
+}
+
+/*---- ODP AG-GRID END ----*/
+
+/*---- ODP DATA GRID START ----*/
+
+.data-grid {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: "Lato";
+  .data-grid-cell {
+    min-width: 200px;
+    max-width: 200px;
+    max-height: 32px;
+    min-height: 32px;
+    padding: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    position: relative;
+    &.hide {
+      display: none !important;
+    }
+  }
+  .data-grid-header {
+    display: flex;
+    flex-direction: column;
+    max-height: 62px;
+    overflow: hidden;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid #ddd;
+    .grid-filters {
+      .data-grid-cell {
+        background: #efefef;
+        padding-top: 0px;
+      }
+    }
+    .head-cell {
+      background: #fff;
+    }
+  }
+  .data-grid-header,
+  .data-grid-body {
+    .data-grid-row {
+      display: flex;
+      align-items: center;
+      .data-grid-cell.head-cell {
+        color: #bdbdbd;
+        border-bottom: 0px;
+        .utility-icons {
+          transition: 0.25s;
+          min-width: 58px;
+          min-height: 32px;
+          position: absolute;
+          right: -36px;
+          .move-col,
+          .resize-col {
+            opacity: 0;
+          }
+        }
+        &:hover {
+          .utility-icons {
+            right: 0;
+            .move-col,
+            .resize-col {
+              opacity: 1;
+            }
+            .resize-col {
+              cursor: col-resize;
+            }
+            .move-col {
+              cursor: move;
+            }
+          }
+        }
+      }
+      .data-grid-cell:not(.head-cell):not(.no-padding) {
+        padding-top: 4px;
+      }
+      .data-grid-cell:not(.head-cell) {
+        &.checkbox-cell {
+          border-right: 1px dashed $border;
+        }
+      }
+      &.full-row {
+        .data-grid-cell {
+          min-width: unset;
+          max-width: unset;
+        }
+      }
+    }
+  }
+  .data-grid-body {
+    overflow: auto;
+    .data-grid-row {
+      &:first-child {
+        .data-grid-cell {
+          border-top: 0px;
+        }
+      }
+      &:not(.selected):hover {
+        background: #f2f2f2;
+        .data-grid-cell {
+          background: #f2f2f2;
+        }
+      }
+    }
+  }
+}
+/*---- ODP DATA GRID END ----*/
+
+
+.pac-container{
+  z-index: 1071;
+}

@@ -1,0 +1,51 @@
+<div class="field-wrapper d-flex align-items-start px-3" [ngClass]="{'mt-3':!first}" [formGroup]="form">
+  <div class="mark-enable d-flex">
+    <div *ngIf="markEnable && canEnable" class="custom-control custom-checkbox">
+      <input type="checkbox" class="custom-control-input" [id]="checkboxKey" [(ngModel)]="toggleEnable"
+        [ngModelOptions]="{standalone: true}">
+      <label class="custom-control-label" [attr.for]="checkboxKey">&nbsp;</label>
+    </div>
+  </div>
+  <div class="label-wrapper d-flex align-items-start">
+    <label class="label-width d-flex align-items-start mb-0 text-secondary font-weight-bold">
+      <span class="text"
+        [odpTruncated]="definition.properties.label ? definition.properties.label : definition.properties.name"
+        [ngClass]="{'text-muted':!toggleEnable}">{{definition.properties.label ? definition.properties.label : definition.properties.name}}</span>
+      <sup placement="top" ngbTooltip="Required" *ngIf="definition.properties.required" class="text-danger high-zIndex">
+        <small class="fa fa-asterisk"></small>
+      </sup>
+      <small class="fa fa-info-circle ml-2 text-info mt-1 hover high-zIndex" *ngIf="definition.properties._description"
+        placement="top" [ngbTooltip]="definition.properties._description"></small>
+      <small class="fa fa-info-circle ml-2 text-info mt-1 hover high-zIndex"
+        *ngIf="definition.type==='Array'&&definition?.definition[0].properties._description" placement="top"
+        [ngbTooltip]="definition?.definition[0].properties._description"></small>
+    </label>
+  </div>
+  <ng-container *ngIf="definition.type!='Object' && definition.type!='Array'">
+    <odp-form-control [markEnable]="markEnable" [control]="form.get(definition.key)" [definition]="definition"
+      [first]="first"></odp-form-control>
+  </ng-container>
+  <button type="button" class="btn btn-link pl-0 add-new"
+    *ngIf="definition.type=='Array' && definition.definition[0].type !== 'Object' && !definition?.properties?.readonly"
+    (click)="arrayControlRef.addNew()">
+    <span class="fa fa-plus-circle mr-2"></span>
+    <span class="text">Add new</span>
+  </button>
+</div>
+
+<div class="field-wrapper d-flex align-items-start px-3" [formGroup]="form" *ngIf="definition.type=='Object'">
+  <div class="spacer border-right align-self-stretch" [ngStyle]="spacing(definition.level+1)"></div>
+  <div class="d-flex flex-column w-100">
+    <ng-container *ngFor="let def of definition.definition;let i = index;">
+      <odp-manage-control [markEnable]="markEnable" [form]="objectForm" [definition]="def"></odp-manage-control>
+    </ng-container>
+  </div>
+</div>
+
+<div class="field-wrapper d-flex align-items-start px-3" [formGroup]="form" *ngIf="definition.type=='Array'">
+  <div class="spacer border-right align-self-stretch" [ngStyle]="spacing(definition.level+1, 'arr')"></div>
+  <div class="d-flex flex-column w-100">
+    <odp-array-control #arrayControl [markEnable]="markEnable" [form]="arrayForm"
+      [definition]="definition.definition[0]" [arrayDefinition]="definition"></odp-array-control>
+  </div>
+</div>

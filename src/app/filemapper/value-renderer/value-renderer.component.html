@@ -1,0 +1,37 @@
+<div [ngClass]="{'text-muted':definition?.properties?.createOnly}"
+    [ngbTooltip]="definition?.properties?.createOnly?'Create only field will be ignored while updating the document':''">
+    <ng-container *ngIf="type === 'String'">
+        <span *ngIf="value" [ngClass]="{'font-weight-bold':textBold,'text-danger':textDanger}">{{value}}</span>
+        <span *ngIf="!value" class="text-muted">N.A.</span>
+    </ng-container>
+    <ng-container *ngIf="type === 'Number'">
+        <span *ngIf="value !== null">{{value}}</span>
+        <span *ngIf="value == null" class="text-muted">N.A.</span>
+    </ng-container>
+    <ng-container *ngIf="type === 'Array'">
+        <div class="">
+            {{value.length}} records
+        </div>
+    </ng-container>
+    <ng-container *ngIf="type === 'Date'">
+        <ng-container *ngIf="value">
+            <ng-container *ngIf="dateType != 'date'">
+                {{value | date:'medium'}}
+            </ng-container>
+            <ng-container *ngIf="dateType == 'date'">
+                {{value | date:'mediumDate'}}
+            </ng-container>
+        </ng-container>
+        <span *ngIf="!value" class="text-muted">N.A.</span>
+    </ng-container>
+    <ng-container *ngIf="type === 'Boolean'">
+        <span *ngIf="value" class="text-muted">
+            <span class="fa fa-check-circle text-primary"></span>
+            <span class="text ml-1">Yes</span>
+        </span>
+        <span *ngIf="!value" class="text-muted">
+            <span class="fa fa-times-circle"></span>
+            <span class="text ml-1">No</span>
+        </span>
+    </ng-container>
+</div>

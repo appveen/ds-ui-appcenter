@@ -1,0 +1,157 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.view-interaction {
+  background-color: #eee;
+  .txn-header {
+    min-height: 40px;
+    max-height: 40px;
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    .remoteTxnId {
+      //display: inline-block;
+      max-width: 500px;
+    }
+  }
+  .view-content {
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    overflow-y: auto;
+    .source-type {
+      padding-left: 80px;
+    }
+    span.source-type {
+      font-weight: 100;
+    }
+    .starter-type {
+      border-bottom: 1px solid $green;
+    }
+    .process-type {
+      border-bottom: 1px solid $capiot-blue;
+    }
+    .end-type {
+      border-bottom: 1px solid $black;
+    }
+    .input-file {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      background-color: $green;
+      left: 40px;
+      top: 15px;
+    }
+    .output-file {
+      @extend .input-file;
+      border-radius: 5px;
+      background-color: $black;
+    }
+    .process-file {
+      @extend .input-file;
+      height: 35px;
+      top: 12px;
+      border-radius: 5px;
+      background-color: $capiot-blue;
+      -webkit-clip-path: polygon(
+        50% 0%,
+        100% 25%,
+        100% 75%,
+        50% 100%,
+        0% 75%,
+        0% 25%
+      );
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    .source-content {
+      padding: 0 100px 0 180px;
+      .label-width {
+        min-width: 150px;
+        max-width: 150px;
+      }
+    }
+  }
+  .content-status {
+    min-height: 44px;
+    max-height: 44px;
+  }
+  .row-data-height {
+    min-height: 60px;
+  }
+  .loc-width {
+    max-width: 315px;
+  }
+  .val-width {
+    min-width: 250px;
+  }
+  .process-width {
+    max-width: 200px;
+  }
+  .checksum-width,
+  .agentId-width,
+  .file-loc-width {
+    min-width: 150px;
+    max-width: 150px;
+  }
+  .err-symbol-color {
+    color: $border;
+  }
+  .err-msg-color {
+    color: $gray-medium;
+  }
+  .err-max-width {
+    max-width: 500px;
+    min-width: 500px;
+  }
+  .debug-info {
+    min-width: 500px;
+    max-width: 500px;
+    border-radius: 6px;
+  }
+}
+
+.block-data {
+  min-height: 160px;
+}
+.request-blocks {
+  .block-data {
+    &.border-top {
+      border-color: #0082c9 !important;
+      // border-color: #7fc0e4 !important;
+    }
+  }
+}
+
+.response-blocks {
+  .block-data {
+    &.border-top {
+      border-color: #1cad49 !important;
+    }
+  }
+}
+
+.error-blocks {
+  .block-data {
+    &.border-top {
+      border-color: #dd5151 !important;
+    }
+  }
+}
+.audit-note {
+  margin-left: 130px;
+  margin-bottom: 30px;
+  .audit-table {
+    .audit-table-row {
+      &:not(:last-child) {
+        border-bottom: 1px solid $border;
+      }
+      .audit-table-cell {
+        padding: 4px;
+        &.message {
+          width: 540px;
+        }
+        &.timestamp {
+          width: 174px;
+        }
+      }
+    }
+  }
+}

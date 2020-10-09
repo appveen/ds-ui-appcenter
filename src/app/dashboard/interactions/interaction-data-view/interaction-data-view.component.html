@@ -1,0 +1,69 @@
+<ng-container *ngIf="type === 'Checkbox'">
+  <div class="d-flex align-items-center">
+    <odp-round-check [(checked)]="data._checked"></odp-round-check>
+    <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"
+      [ngClass]="{'ml-2': data._metadata.workflow}"></div>
+  </div>
+</ng-container>
+<ng-container *ngIf="type === 'Type'">
+  <span *ngIf="!inputType && !outputType" class="text-muted">N.A.</span>
+  <div *ngIf="inputType && outputType" class="d-flex align-items-center">
+    <div *ngIf="inputType === 'FILE'" class="text-success mr-2">
+      <div class="fas fa-paperclip"></div>
+    </div>
+    <div *ngIf="inputType === 'API'" class="text-success mr-2">
+      <div class="fas fa-plug fa-rotate-90"></div>
+    </div>
+    <div class="fas fa-lg fa-caret-right text-muted mr-2"></div>
+    <div *ngIf="outputType === 'FILE'">
+      <div class="fas fa-paperclip"></div>
+    </div>
+    <div *ngIf="outputType === 'API'">
+      <div class="fas fa-plug fa-rotate-90"></div>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="type === 'odpTxnId'">
+  <span *ngIf="!odpTxnId" [ngbTooltip]="" class="text-muted">N.A.</span>
+  <span *ngIf="odpTxnId" [ngbTooltip]="odpTxnId" placement="top">{{odpTxnId}}</span>
+</ng-container>
+<ng-container *ngIf="type === 'remoteTxnId'">
+  <span *ngIf="!remoteTxnId" [ngbTooltip]="" class="text-muted">N.A.</span>
+  <span *ngIf="remoteTxnId" [ngbTooltip]="remoteTxnId" placement="top">{{remoteTxnId}}</span>
+</ng-container>
+<ng-container *ngIf="type === 'partnerName'">
+  <span *ngIf="!partner" class="text-muted">N.A.</span>
+  <span *ngIf="partner">{{partner}}</span>
+</ng-container>
+<ng-container *ngIf="type === 'FlowName'">
+  <span *ngIf="!flowName">N.A.</span>
+  <div *ngIf="flowDirection === 'Inbound' && flowName" class="d-flex align-items-center">
+    <div class="fa fa-arrow-circle-down fa-lg fa-rotate-45 text-success mr-2"></div>
+    <div class="text-secondary">{{flowName}}</div>
+  </div>
+  <div *ngIf="flowDirection === 'Outbound' && flowName" class="d-flex align-items-center">
+    <div class="fa fa-arrow-circle-up fa-lg fa-rotate-45 text-primary mr-2"></div>
+    <div class="text-secondary">{{flowName}}</div>
+  </div>
+</ng-container>
+<ng-container *ngIf="type === 'Status'">
+  <span *ngIf="!flowStatus">N.A.</span>
+  <div *ngIf="flowStatus" class="d-flex align-items-center">
+    <div class="fas fa-circle mr-2"
+      [ngClass]="{'text-success': flowStatus === 'SUCCESS', 'text-danger': flowStatus === 'ERROR', 'text-warning': flowStatus === 'PENDING' || flowStatus === 'UNKNOWN','text-primary':flowStatus === 'QUEUED'}">
+    </div>
+    <div class="text-secondary" *ngIf="flowStatus === 'SUCCESS'">Successful</div>
+    <div class="text-secondary" *ngIf="flowStatus === 'ERROR'">Failed</div>
+    <div class="text-secondary" *ngIf="flowStatus === 'PENDING'">Pending</div>
+    <div class="text-secondary" *ngIf="flowStatus === 'UNKNOWN'">Unknown</div>
+    <div class="text-secondary" *ngIf="flowStatus === 'QUEUED'">Queued</div>
+  </div>
+</ng-container>
+<ng-container *ngIf="type === 'Time'">
+  <span *ngIf="!createdTime">N.A.</span>
+  <span *ngIf="createdTime">{{createdTime|date:'y MMM d, h:mm a'}}</span>
+</ng-container>
+<ng-container *ngIf="type === 'Duration'">
+  <span *ngIf="!duration">N.A.</span>
+  <span *ngIf="duration">{{ duration }}</span>
+</ng-container>

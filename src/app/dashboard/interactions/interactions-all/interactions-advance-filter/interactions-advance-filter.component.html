@@ -1,0 +1,216 @@
+<div class="d-flex flex-column border-bottom filter-options p-3 bg-white">
+    <div class="d-flex align-items-center justify-content-between py-3">
+        <h5 class="font-weight-bold text-dark">Filters</h5>
+        <button type="button" class="btn btn-link" (click)="close()">
+            <span class="fa fa-times mr-2"></span>
+            <span class="text">Close</span>
+        </button>
+    </div>
+    <div class="d-flex align-items-start pl-3">
+        <div class="d-flex flex-column">
+            <div class="d-flex mb-3">
+                <div class="filter-label text-secondary font-weight-bold">Start Time</div>
+                <div class="filter-value d-flex flex-column w-100">
+                    <div class="d-flex align-items-center">
+                        <div class="native-date-control position-relative mr-3">
+                            <!-- <span class="fa fa-calendar text-primary position-absolute"></span> -->
+                            <input type="datetime-local" name="fromDate" id="fromDate"
+                                class="date-picker border rounded" (ngModelChange)="calcFilters()"
+                                [(ngModel)]="filterData.fromDate">
+                        </div>
+                        <div class="native-date-control position-relative">
+                            <!-- <span class="fa fa-calendar text-primary position-absolute"></span> -->
+                            <input type="datetime-local" name="toDate" id="toDate" class="date-picker border rounded"
+                                (ngModelChange)="calcFilters()" [(ngModel)]="filterData.toDate">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-2">
+                        <div class="text">Last:&nbsp;</div>
+                        <button (click)="quickTime(1)" class="btn btn-sm btn-link" type="button">
+                            1 Hr
+                        </button>
+                        <button (click)="quickTime(6)" class="btn btn-sm btn-link" type="button">
+                            6 Hrs
+                        </button>
+                        <button (click)="quickTime(24)" class="btn btn-sm btn-link" type="button">
+                            1 Day
+                        </button>
+                        <button (click)="quickTime(168)" class="btn btn-sm btn-link" type="button">
+                            1 Week
+                        </button>
+                        <button (click)="quickTime(720)" class="btn btn-sm btn-link" type="button">
+                            1 Month
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="filter-label text-secondary font-weight-bold">Status</div>
+                <div class="filter-value d-flex flex-column w-100">
+                    <div class="d-flex align-items-center">
+                        <button (click)="failedCheckbox.click()" [ngClass]="{'active':failedCheckbox.checked}"
+                            class="status-btn status-failed d-flex align-items-center border rounded mr-3"
+                            type="button">
+                            <span
+                                class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                <span class="smaller-circle rounded-circle"></span>
+                            </span>
+                            <span class="text font-sm">Failed</span>
+                            <input #failedCheckbox (change)="calcFilters()" class="d-none" type="checkbox" name="status"
+                                value="ERROR" [(ngModel)]="filterData.status[0]">
+                        </button>
+                        <button (click)="successfulCheckbox.click()" [ngClass]="{'active':successfulCheckbox.checked}"
+                            class="status-btn status-success d-flex align-items-center border rounded mr-3"
+                            type="button">
+                            <span
+                                class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                <span class="smaller-circle rounded-circle"></span>
+                            </span>
+                            <span class="text font-sm">Successful</span>
+                            <input #successfulCheckbox (change)="calcFilters()" class="d-none" type="checkbox"
+                                name="status" value="SUCCESS" [(ngModel)]="filterData.status[1]">
+                        </button>
+                        <button (click)="progressCheckbox.click()" [ngClass]="{'active':progressCheckbox.checked}"
+                            class="status-btn status-progress d-flex align-items-center border rounded mr-3"
+                            type="button">
+                            <span
+                                class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                <span class="smaller-circle rounded-circle"></span>
+                            </span>
+                            <span class="text font-sm">Progress</span>
+                            <input #progressCheckbox (change)="calcFilters()" class="d-none" type="checkbox"
+                                name="status" value="PENDING" [(ngModel)]="filterData.status[2]">
+                        </button>
+                        <button (click)="unknownCheckbox.click()" [ngClass]="{'active':unknownCheckbox.checked}"
+                            class="status-btn status-progress d-flex align-items-center border rounded mr-3"
+                            type="button">
+                            <span
+                                class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                <span class="smaller-circle rounded-circle"></span>
+                            </span>
+                            <span class="text font-sm">Unknown</span>
+                            <input #unknownCheckbox (change)="calcFilters()" class="d-none" type="checkbox"
+                                name="status" value="UNKNOWN" [(ngModel)]="filterData.status[3]">
+                        </button>
+                        <button (click)="queuedCheckbox.click()" [ngClass]="{'active':queuedCheckbox.checked}"
+                            class="status-btn status-queued d-flex align-items-center border rounded mr-3"
+                            type="button">
+                            <span
+                                class="small-circle rounded-circle d-flex align-items-center justify-content-center mr-2">
+                                <span class="smaller-circle rounded-circle"></span>
+                            </span>
+                            <span class="text font-sm">Queued</span>
+                            <input #queuedCheckbox (change)="calcFilters()" class="d-none" type="checkbox" name="status"
+                                value="QUEUED" [(ngModel)]="filterData.status[4]">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column ml-4">
+            <div class="d-flex mb-3">
+                <div class="filter-label text-secondary font-weight-bold">Direction</div>
+                <div class="filter-value d-flex flex-column w-100">
+                    <div class="d-flex">
+                        <button (click)="inboundCheckbox.click()" [ngClass]="{'active':inboundCheckbox.checked}"
+                            class="direction-btn in-btn d-flex align-items-center border mr-3 hover" type="button">
+                            <span class="fa fa-arrow-circle-down fa-rotate-45 mr-2"></span>
+                            <span class="text">Inbound</span>
+                            <input #inboundCheckbox (change)="calcFilters()" class="d-none" name="direction"
+                                type="checkbox" value="INBOUND" [(ngModel)]="filterData['flowData.direction'][0]">
+                        </button>
+                        <button (click)="outboundCheckbox.click()" [ngClass]="{'active':outboundCheckbox.checked}"
+                            class="direction-btn out-btn d-flex align-items-center border mr-3 hover" type="button">
+                            <span class="fa fa-arrow-circle-up fa-rotate-45 mr-2"></span>
+                            <span class="text">Outbound</span>
+                            <input #outboundCheckbox (change)="calcFilters()" class="d-none" name="direction"
+                                type="checkbox" value="OUTBOUND" [(ngModel)]="filterData['flowData.direction'][1]">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex mb-3 mt-4 pt-2">
+                <div class="filter-label text-secondary font-weight-bold">Type</div>
+                <div class="filter-value d-flex flex-column w-100">
+                    <div class="d-flex align-items-center">
+                        <button (click)="fileToFileCheckbox.click()" [ngClass]="{'active':fileToFileCheckbox.checked}"
+                            class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                            ngbTooltip="File to File" type="button">
+                            <div class="file-type type-from d-flex align-items-center justify-content-center">
+                                <span class="fa fa-paperclip"></span>
+                            </div>
+                            <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                            <div class="file-type type-to d-flex align-items-center justify-content-center pl-1">
+                                <span class="fa fa-paperclip"></span>
+                            </div>
+                            <input #fileToFileCheckbox (change)="calcFilters()" class="d-none" name="type"
+                                type="checkbox" [(ngModel)]="filterData.type[0]">
+                        </button>
+                        <button (click)="fileToApiCheckbox.click()" [ngClass]="{'active':fileToApiCheckbox.checked}"
+                            class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                            ngbTooltip="File to API" type="button">
+                            <div class="file-type type-from d-flex align-items-center justify-content-center">
+                                <span class="fa fa-paperclip"></span>
+                            </div>
+                            <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                            <div class="api-type type-to d-flex align-items-center justify-content-center pl-1">
+                                <span class="fa fa-plug fa-rotate-90"></span>
+                            </div>
+                            <input #fileToApiCheckbox (change)="calcFilters()" class="d-none" name="type"
+                                type="checkbox" [(ngModel)]="filterData.type[1]">
+                        </button>
+                        <button (click)="apiToApiCheckbox.click()" [ngClass]="{'active':apiToApiCheckbox.checked}"
+                            class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                            ngbTooltip="API to API" type="button">
+                            <div class="api-type type-from d-flex align-items-center justify-content-center">
+                                <span class="fa fa-plug fa-rotate-90"></span>
+                            </div>
+                            <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                            <div class="api-type type-to d-flex align-items-center justify-content-center pl-1">
+                                <span class="fa fa-plug fa-rotate-90"></span>
+                            </div>
+                            <input #apiToApiCheckbox (change)="calcFilters()" class="d-none" name="type" type="checkbox"
+                                [(ngModel)]="filterData.type[2]">
+                        </button>
+                        <button (click)="apiToFileCheckbox.click()" [ngClass]="{'active':apiToFileCheckbox.checked}"
+                            class="type-btn d-flex align-items-center border rounded mr-3 position-relative p-0"
+                            ngbTooltip="API to File" type="button">
+                            <div class="api-type type-from d-flex align-items-center justify-content-center">
+                                <span class="fa fa-plug fa-rotate-90"></span>
+                            </div>
+                            <span class="fa fa-caret-right position-absolute fa-lg"></span>
+                            <div class="file-type type-to d-flex align-items-center justify-content-center pl-1">
+                                <span class="fa fa-paperclip"></span>
+                            </div>
+                            <input #apiToFileCheckbox (change)="calcFilters()" class="d-none" name="type"
+                                type="checkbox" [(ngModel)]="filterData.type[3]">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end mt-5">
+        <button (click)="resetFilters()" class="btn btn-link mr-3" type="button">Reset</button>
+        <button (click)="applyFilters()" class="btn btn-primary" type="button">Apply</button>
+    </div>
+</div>
+
+<ng-template #clearFilterModal>
+    <div class="modal-header">
+        <h4 class="modal-title text-danger">Clear Inline Filter</h4>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">Inline Filters will be removed and this filters will be applied?</p>
+    </div>
+    <div class="modal-footer d-flex">
+        <button type="button" id="clearModalCancelBtn" class="btn btn-dark btn-min-width mr-3 ml-auto"
+            (click)="clearFilterModalRef.close(false)">
+            Cancel
+        </button>
+        <button type="button" id="clearModalClearBtn" class="btn btn-primary btn-min-width"
+            (click)="clearFilterModalRef.close(true)">
+            Ok
+        </button>
+    </div>
+</ng-template>

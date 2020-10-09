@@ -1,0 +1,85 @@
+<div class="container">
+    <div class="row">
+        <div class="offset-2 col-sm-4">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h3>Basic Details</h3>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="">Username</label>
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control form-control-sm" name="username" [(ngModel)]="user.username" readonly>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-bordered">
+                            <tr class="thead-dark text-white">
+                                <th colspan="2">Permissions</th>
+                            </tr>
+                            <tr *ngFor="let row of permissions">
+                                <th>{{row.label}}</th>
+                                <td *ngIf="row.value">
+                                    <button class="btn btn-success btn-min-width">
+                                        Yes
+                                    </button>
+                                </td>
+                                <td *ngIf="!row.value">
+                                    <button class="btn btn-danger btn-min-width">
+                                        No
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h3>Change Password</h3>
+                    </div>
+                    <form [formGroup]="passwordForm" (submit)="changePassword(passwordForm.value)">
+                        <div class="form-group">
+                            <label for="">Old Password</label>
+                            <div class="input-group">
+                                <input [type]="cp ? 'text' : 'password'" class="form-control form-control-sm" formControlName="oldpassword">
+                                <span class="input-group-addon" (click)="cp=!cp">
+                                    <span class="fa" [ngClass]="{'fa-eye-slash':cp,'fa-eye':!cp}"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">New Password</label>
+                            <div class="input-group">
+                                <input [type]="np ? 'text' : 'password'" class="form-control form-control-sm" formControlName="newpassword">
+                                <span class="input-group-addon" (click)="np=!np">
+                                    <span class="fa" [ngClass]="{'fa-eye-slash':np,'fa-eye':!np}"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Confirm Password</label>
+                            <div class="input-group">
+                                <input [type]="cfp ? 'text' : 'password'" class="form-control form-control-sm" formControlName="confirmpassword">
+                                <span class="input-group-addon" (click)="cfp=!cfp">
+                                    <span class="fa" [ngClass]="{'fa-eye-slash':cfp,'fa-eye':!cfp}"></span>
+                                </span>
+                            </div>
+                            <small class="text-danger" *ngIf="passwordForm.controls.confirmpassword.touched && passwordForm.controls.confirmpassword.hasError('match')">Passwords do not match</small>
+                        </div>
+                        <div *ngIf="passwordChange.message" class="form-group">
+                            <label [ngClass]="{'text-danger':!passwordChange.status,'text-success':passwordChange.status}">{{passwordChange.message}}</label>
+                        </div>
+                        <div *ngIf="passwordChange.loading" class="form-group text-center">
+                                <span class="fa fa-spinner fa-pulse fa-2x"></span>
+                            </div>
+                        <button type="submit" [disabled]="!passwordForm.valid || passwordChange.loading" class="btn btn-success btn-min-width">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

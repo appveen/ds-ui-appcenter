@@ -1,0 +1,20 @@
+
+.column-container{
+    min-width: 535px;
+    max-width: 590px;
+    min-height: 56px;
+    max-height: 56px;
+}
+.mapping{
+    max-height: calc(100vh - 273px);
+    overflow-y: auto;
+}
+.objIcon{
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 14px;
+    max-height: 14px;
+}
+.text-child{
+    color:#352EE9;
+}

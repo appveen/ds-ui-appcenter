@@ -1,0 +1,10 @@
+<div class="buttonsRow d-flex">
+    <button *ngIf="hasFilters" type="button" class="btn btn-link" (click)="clearFilters()">
+        <span class="fa fa-times mr-2"></span>
+        <span class="text">Clear Filters</span>
+    </button>
+</div>
+<div class="grid-container" [ngStyle]="gridStyle">
+    <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [frameworkComponents]="frameworkComponents">
+    </ag-grid-angular>
+</div>

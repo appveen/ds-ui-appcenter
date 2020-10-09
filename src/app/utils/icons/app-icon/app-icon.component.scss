@@ -1,0 +1,27 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+svg {
+    position: static;
+    left: 0;
+    top: 0;
+  }
+
+.one,
+.four {
+  fill: none;
+}
+.two {
+  fill: #ececec;
+}
+.active {
+  .one {
+    stroke: $dark;
+  }
+  .two {
+    fill: $light;
+  }
+  .four {
+    stroke: $capiot-blue;
+  }
+}

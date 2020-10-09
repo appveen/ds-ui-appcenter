@@ -1,0 +1,31 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.resultCard {
+  min-width: 500px;
+  max-width: 500px;
+  min-height: 72px;
+  max-height: 72px;
+  border-radius: 10px;
+}
+
+.sub-heading {
+  line-height: 1;
+}
+
+.round-check-max {
+  min-width: 40px;
+  max-width: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  border-radius: 20px;
+  .fa {
+    font-size: 16px;
+  }
+}
+
+.total-count {
+  min-width: 500px;
+  max-width: 500px;
+  border-radius: 10px;
+}

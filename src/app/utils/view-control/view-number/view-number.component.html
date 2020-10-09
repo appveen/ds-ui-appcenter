@@ -1,0 +1,32 @@
+<div class="font-weight-bold value-wrapper">
+  <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:definition.value}"></ng-container>
+  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">From</span>
+    <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:oldVal}"></ng-container>
+  </div>
+  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2" *ngIf="oldVal">To</span>
+    <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
+  </div>
+  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2" *ngIf="oldVal">Created</span>
+    <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
+  </div>
+</div>
+
+<ng-template #values let-definition="definition" let-value="value">
+  <ng-container *ngIf="value!=null">
+    <ng-container *ngIf="definition.properties.currency">
+      <span class="mr-2">
+        <ng-container *ngIf="definition.properties.currency=='INR'">&#8377;</ng-container>
+        <ng-container *ngIf="definition.properties.currency=='EUR'">&#8364;</ng-container>
+        <ng-container *ngIf="definition.properties.currency=='USD'">&#36;</ng-container>
+      </span>
+      <span class="text">{{value |number:'1.2'}}</span>
+    </ng-container>
+    <span class="text" *ngIf="!definition.properties.currency">{{value}}</span>
+  </ng-container>
+  <ng-container *ngIf="value == null">
+    <span class="text-muted">N.A.</span>
+  </ng-container>
+</ng-template>

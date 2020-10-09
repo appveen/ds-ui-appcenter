@@ -1,0 +1,22 @@
+<div class="rich-text-wrapper p-2 border">
+
+  <div *ngIf="definition.value && hasContent(definition.value)" [innerHTML]="getContent(definition.value)"></div>
+  <ng-container *ngIf="!definition.value || !hasContent(definition.value)">
+    <span class="text-muted font-weight-bold">N.A.</span>
+  </ng-container>
+  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">From</span>
+    <span [innerHTML]="getContent(oldVal)"></span>
+  </div>
+  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">Created</span>
+    <span [innerHTML]="getContent(newVal)"></span>
+  </div>
+  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">To</span>
+    <span [innerHTML]="getContent(newVal)" *ngIf="newVal"></span>
+    <ng-container *ngIf="!newVal">
+      <span class="text-muted font-weight-bold">N.A.</span>
+    </ng-container>
+  </div>
+</div>

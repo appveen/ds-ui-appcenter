@@ -1,0 +1,14 @@
+<div class="date-filter-picker bg-white rounded border p-3 ignore-outside">
+    <div class="form-group">
+        <select #dateFilter class="border rounded bg-white w-100" [(ngModel)]="dateFilterType">
+            <option value="equals">Equals</option>
+            <option value="inRange">In Range</option>
+            <option value="lessThan">Greater Than</option>
+            <option value="greaterThan">Lesser Than</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="datetime-local" class="border rounded bg-white w-100" name="fromDate" id="fromDate" [(ngModel)]="fromDate">
+        <input *ngIf="dateFilter.value === 'inRange'" class="border rounded bg-white w-100 mt-2" type="datetime-local" name="toDate" id="toDate" [(ngModel)]="toDate">
+    </div>
+</div>

@@ -1,0 +1,21 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.heading {
+  min-height: 38px;
+}
+.workflow-wrapper {
+  min-height: calc(100vh - 60px);
+  max-height: calc(100vh - 60px);
+}
+.header {
+  min-height: 48px;
+  max-height: 48px;
+  .title {
+    font-size: 16px;
+  }
+}
+.workflow-body {
+  min-height: calc(100vh - 104px);
+  max-height: calc(100vh - 104px);
+}

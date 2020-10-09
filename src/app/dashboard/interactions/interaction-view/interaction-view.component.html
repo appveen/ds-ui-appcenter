@@ -1,0 +1,159 @@
+<div class="default-loader d-flex justify-content-center h-100 w-100" *ngIf="apiCallsPending">
+  <div class="align-self-center text-center">
+    <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+    <div class="text-secondary mt-2">Processing...</div>
+  </div>
+</div>
+<div class="view-interaction d-flex flex-column p-2">
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center" (click)="interactions()">
+        <div class="mr-2 hover">
+          <span class="odp-flows text-primary"></span>
+        </div>
+        <div class="mr-2 text-primary hover">
+          Interactions
+        </div>
+      </div>
+      <span class="fas fa-angle-right mr-2 text-secondary"></span>
+      <div class="mr-2">
+        {{ interactionData?.flowData?.partnerName || 'Partner Name'}}
+      </div>
+      <span class="fas fa-angle-right mr-2 text-secondary"></span>
+      <div class="mr-2">
+        {{ interactionData?.flowData?.flowName || 'Flow Name'}}
+      </div>
+      <span class="fas fa-angle-right mr-2 text-secondary"></span>
+      <div class="text-secondary">
+        {{ interactionData.odpTxnId }}
+      </div>
+    </div>
+    <button type="button" class="btn btn-link p-0" (click)="interactions()">
+      <span class="fa fa-angle-left mr-2"></span>
+      <span class="text">Back</span>
+    </button>
+  </div>
+  <div class="d-flex align-items-center justify-content-between bg-white p-2 w-100 txn-header font-sm mb-3">
+    <div class="d-flex align-items-center">
+      <strong class="txnId mr-2">TxnId:&nbsp;</strong>
+      <span class="text-secondary text-truncate">{{interactionData.odpTxnId}}</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <strong class="txnId mr-2">Remote TxnId:</strong>
+      <div class="text-secondary text-truncate">{{interactionData.remoteTxnId}}</div>
+    </div>
+    <div class="d-flex align-items-center ml-2">
+      <div class="fa fa-lg fa-rotate-45 mr-1" [ngClass]="{'fa-arrow-circle-up text-primary':interactionData.direction === 'OUTBOUND',
+        'fa-arrow-circle-down text-success':interactionData.direction === 'INBOUND'}">
+      </div>
+      <div class="text-secondary">{{interactionData.direction}}</div>
+    </div>
+  </div>
+  <div class="d-flex flex-column view-content bg-white">
+    <div class="content-status border-bottom d-flex align-items-center justify-content-between px-3 py-2" [ngClass]="{'border-success': interactionData.status === 'SUCCESS',
+      'border-warning': interactionData.status === 'PENDING' || interactionData.status === 'UNKNOWN',
+      'border-danger': interactionData.status === 'ERROR',
+      'border-primary': interactionData.status === 'QUEUED'}">
+      <div class="d-flex align-items-center">
+        <span class="fas fa-circle mr-2" [ngClass]="{'text-danger': interactionData.status === 'ERROR',
+          'text-success': interactionData.status === 'SUCCESS',
+          'text-warning': interactionData.status === 'PENDING' || interactionData.status === 'UNKNOWN',
+          'text-primary': interactionData.status === 'QUEUED'}"></span>
+        <div *ngIf="interactionData.status" class="text-secondary">
+          {{getStatus(interactionData.status)}}
+        </div>
+        <div *ngIf="refreshing" class="py-1 ml-3">
+          <span class="fa fa-pulse fa-spinner"></span>
+        </div>
+        <button *ngIf="!refreshing" type="button" class="btn btn-primary btn-sm ml-3" (click)="refresh()">
+          <span class="fa fa-sync mr-2"></span>
+          <span class="text">Sync</span>
+        </button>
+      </div>
+      <div class="d-flex align-items-center">
+        <span class="d-flex align-items-center mr-3" *ngIf="interactionData.createTimestamp">
+          <span class="text-muted mr-2">Invocation Time:</span>
+          <span class="text-secondary">{{interactionData.createTimestamp|date: 'MMM dd yyyy, HH:mm:ss'}}</span>
+        </span>
+        <span class="d-flex align-items-center" *ngIf="interactionData.completedTimestamp">
+          <span class="text-muted mr-2">Completion Time:</span>
+          <div *ngIf="interactionData.status === 'SUCCESS' || interactionData.status === 'ERROR'"
+            class="text-secondary">{{interactionData.completedTimestamp|date: 'MMM dd yyyy, HH:mm:ss'}}</div>
+          <div *ngIf="!(interactionData.status === 'SUCCESS' || interactionData.status === 'ERROR')" class="text-muted">
+            &nbsp;-</div>
+        </span>
+      </div>
+    </div>
+    <div class="px-3 py-2 mb-4 font-normal">
+      <strong>Track Transaction</strong>
+    </div>
+    <div class="request-blocks">
+      <ng-container *ngFor="let node of requestBlocks;let i=index">
+        <div class="block-data border-top">
+          <odp-node-info [node]="node" [nodeList]="requestBlocks" [index]="i" [flowData]="interactionData?.flowData"
+            [interactionData]="interactionData" [logData]="getLogData(node)"></odp-node-info>
+        </div>
+      </ng-container>
+    </div>
+    <div class="response-blocks">
+      <ng-container *ngFor="let node of responseBlocks;let i=index">
+        <div class="block-data border-top">
+          <odp-node-info [node]="node" [nodeList]="responseBlocks" [requestNodeList]="requestBlocks" [index]="i"
+            [flowData]="interactionData?.flowData" [interactionData]="interactionData" [logData]="getLogData(node)">
+          </odp-node-info>
+        </div>
+      </ng-container>
+    </div>
+    <div class="error-blocks">
+      <ng-container *ngFor="let node of errorBlocks;let i=index">
+        <div class="block-data border-top">
+          <odp-node-info [node]="node" [nodeList]="errorBlocks" [requestNodeList]="requestBlocks"
+            [responseNodeList]="responseBlocks" [index]="i" [flowData]="interactionData?.flowData"
+            [interactionData]="interactionData" [logData]="getLogData(node)"></odp-node-info>
+        </div>
+      </ng-container>
+    </div>
+    <!-- <div *ngFor="let block of interactionData.blocks" class="d-flex flex-column row-data-height">
+      <div *ngIf="block?.meta?.blockType === 'OUTPUT'" class="py-2 position-relative">
+        <ng-template [ngIf]="blockExist(block.sequenceNo) === 'Did not run due to error in last step'">
+          <div class="d-flex align-items-center mt-4 mb-3 source-content">
+            <div>
+              <span class="fas fa-circle fa-2x"></span>
+            </div>
+            <div class="ml-2 err-msg-color">Did not run due to error in last step</div>
+            <div class="ml-auto" *ngIf="metaDataPresent()">
+              <button class="btn btn-dark" (click)="redownloadMeta()">Re-download File</button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template
+          [ngIf]="blockExist(block.sequenceNo) === interactionData.errorMessage && interactionData.errorMessage && block?.meta?.blockType === 'OUTPUT'">
+          <div class="d-flex align-items-center mt-4 mb-3 source-content d-flex">
+            <div>
+              <span class="fas fa-circle fa-2x text-danger"></span>
+            </div>
+            <div class="ml-2 err-msg-color text-truncate err-max-width" [odpTruncated]="interactionData.errorMessage">
+              Error: {{ interactionData.errorMessage ? interactionData.errorMessage : 'Unknown error' }}</div>
+            <div class="ml-auto" *ngIf="metaDataPresent()">
+              <button class="btn btn-dark" (click)="redownloadMeta()">Re-download File</button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div> -->
+    <div *ngIf="interactionData.statusAudit && interactionData.statusAudit.length >0"
+      class="audit-note d-flex flex-column align-self-start border mt-3 rounded">
+      <div class="font-weight-bold p-2">Audit Status</div>
+      <div class="d-flex flex-column audit-table border-top">
+        <div class="d-flex audit-table-row bg-light">
+          <div class="audit-table-cell message text-secondary font-weight-bold border-right">Message</div>
+          <div class="audit-table-cell timestamp text-secondary font-weight-bold">Timestamp</div>
+        </div>
+        <div *ngFor="let audit of interactionData.statusAudit" class="d-flex audit-table-row">
+          <div class="audit-table-cell message border-right">{{ audit.message }}</div>
+          <div class="audit-table-cell timestamp">{{ audit.timestamp | date: 'MMM dd yyyy, HH:mm:ss' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

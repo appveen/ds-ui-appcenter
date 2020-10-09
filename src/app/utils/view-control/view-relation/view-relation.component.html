@@ -1,0 +1,156 @@
+<div class="font-weight-bold value-wrapper">
+  <ng-container *ngIf="definition.value">
+    <!-- <ng-container *ngFor="let item of values;let last =last">
+      <ng-container *ngIf="!item.isSecureText">
+        <a [routerLink]="relationLink+relatedId" target="_blank" *ngIf="serviceAccess">
+          {{item.value}}
+          <span *ngIf="!last">,</span>
+        </a>
+        <span *ngIf="!serviceAccess">
+          {{item.value}}
+        </span>
+      </ng-container>
+    </ng-container><br>
+    <ng-container *ngFor="let item of values;let last =last">
+      <ng-container *ngIf="item.isSecureText">
+        <ng-container *ngIf="showPassword">
+          <a [routerLink]="relationLink+relatedId" target="_blank" *ngIf="serviceAccess">
+            {{item.value}}
+            <span *ngIf="!last">,</span>
+          </a>
+          <span *ngIf="!serviceAccess">
+            {{item.value}}
+          </span>
+
+        </ng-container>
+
+        <ng-container *ngIf="!showPassword">
+          **********
+        </ng-container>
+      </ng-container>
+    </ng-container> -->
+    <odp-view-relation-data [definition]="definition" [value]=defVal></odp-view-relation-data>
+  </ng-container>
+  <ng-container *ngIf="!definition.value">
+    <span class="text-muted">N.A.</span>
+  </ng-container>
+
+  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">From</span>
+    <odp-view-relation-data [definition]="definition" [value]=oldVal></odp-view-relation-data>
+    <!-- <ng-container *ngFor="let item of oldValues;let last =last">
+      <ng-container *ngIf="!item.isSecureText">
+        <a [routerLink]="relationLink+oldVal._id" target="_blank" *ngIf="serviceAccess">
+          {{item.value}}
+          <span *ngIf="!last">,</span>
+        </a>
+        <span *ngIf="!serviceAccess">
+          {{item.value}}
+        </span>
+      </ng-container>
+    </ng-container><br>
+    <ng-container *ngFor="let item of oldValues;let last =last">
+      <ng-container *ngIf="item.isSecureText">
+        <ng-container *ngIf="showPassword">
+          <a [routerLink]="relationLink+oldVal._id" target="_blank" *ngIf="serviceAccess">
+            {{item.value}}
+            <span *ngIf="!last">,</span>
+          </a>
+          <span *ngIf="!serviceAccess">
+            {{item.value}}
+          </span>
+
+        </ng-container>
+
+        <ng-container *ngIf="!showPassword">
+          **********
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <button type="button" *ngIf="isSecureTextPresent" class="btn btn-sm btn-link p-0 mb-1 ml-3"
+      (click)="showPassword=!showPassword;$event.stopPropagation();">
+      {{showPassword?'Hide':'Show'}}
+    </button> -->
+  </div>
+  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2" >To</span>
+    <odp-view-relation-data [definition]="definition" [value]=newVal *ngIf="newVal"></odp-view-relation-data>
+    <ng-container *ngIf="!newVal">
+      <span class="text-muted">N.A.</span>
+    </ng-container>
+      <!-- <ng-container *ngFor="let item of newValues;let last =last">
+        <ng-container *ngIf="!item.isSecureText">
+          <a [routerLink]="relationLink+newVal._id" target="_blank" *ngIf="serviceAccess">
+            {{item.value}}
+            <span *ngIf="!last">,</span>
+          </a>
+          <span *ngIf="!serviceAccess">
+            {{item.value}}
+          </span>
+        </ng-container>
+      </ng-container><br>
+      <ng-container *ngFor="let item of newValues;let last =last">
+        <ng-container *ngIf="item.isSecureText">
+          <ng-container *ngIf="showPassword">
+            <a [routerLink]="relationLink+newVal._id" target="_blank" *ngIf="serviceAccess">
+              {{item.value}}
+              <span *ngIf="!last">,</span>
+            </a>
+            <span *ngIf="!serviceAccess">
+              {{item.value}}
+            </span>
+
+          </ng-container>
+
+          <ng-container *ngIf="!showPassword">
+            **********
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <button type="button" *ngIf="isSecureTextPresent" class="btn btn-sm btn-link p-0 mb-1 ml-3"
+        (click)="showPassword=!showPassword;$event.stopPropagation();">
+        {{showPassword?'Hide':'Show'}}
+      </button> -->
+  </div>
+  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+    <span class="text-secondary mr-2">Created</span>
+    <odp-view-relation-data [definition]="definition" [value]=newVal></odp-view-relation-data>
+
+      <!-- <ng-container *ngFor="let item of newValues;let last =last">
+        <ng-container *ngIf="!item.isSecureText">
+          <a [routerLink]="relationLink+newVal._id" target="_blank" *ngIf="serviceAccess">
+            {{item.value}}
+            <span *ngIf="!last">,</span>
+          </a>
+          <span *ngIf="!serviceAccess">
+            {{item.value}}
+          </span>
+        </ng-container>
+      </ng-container><br>
+      <ng-container *ngFor="let item of newValues;let last =last">
+        <ng-container *ngIf="item.isSecureText">
+          <ng-container *ngIf="showPassword">
+            <a [routerLink]="relationLink+newVal._id" target="_blank" *ngIf="serviceAccess">
+              {{item.value}}
+              <span *ngIf="!last">,</span>
+            </a>
+            <span *ngIf="!serviceAccess">
+              {{item.value}}
+            </span>
+
+          </ng-container>
+
+          <ng-container *ngIf="!showPassword">
+            **********
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <button type="button" *ngIf="isSecureTextPresent" class="btn btn-sm btn-link p-0 mb-1 ml-3"
+        (click)="showPassword=!showPassword;$event.stopPropagation();">
+        {{showPassword?'Hide':'Show'}}
+      </button> -->
+  </div>
+</div>

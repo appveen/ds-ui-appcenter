@@ -1,0 +1,18 @@
+<!--<div class="d-flex align-self-center" [ngClass]="{'mt-2': searchForColumn.length === 0, 'mt-auto': searchForColumn.length > 0 }">-->
+<div class="d-flex align-self-center" [ngClass]="{'mt-2': filterModel.length === 0, 'mt-4': filterModel.length > 0}">
+  <div class="text-gray-medium label-text mt-2">
+    <strong>Search for</strong>
+  </div>
+  <div class="d-flex flex-column align-items-start">
+    <div class="d-flex align-items-center mb-2" *ngFor="let model of filterModel; let i = index">
+      <odp-search-for-field [columns]="allColumns" [filterModel]="filterModel[i]"
+        (filterModelChange)="onFilterModelChange($event,i)">
+      </odp-search-for-field>
+      <div class="fas fa-times text-danger hover mr-3" (click)="removeRow(i)"></div>
+      <div class="fas fa-plus text-primary new-row" (click)="addColForSearch()"></div>
+    </div>
+    <button class="pl-0 text-primary font-sm btn btn-link" (click)="addColForSearch()">
+      <strong><span class="fas fa-lg fa-plus-circle mr-2"></span> Select Field</strong>
+    </button>
+  </div>
+</div>

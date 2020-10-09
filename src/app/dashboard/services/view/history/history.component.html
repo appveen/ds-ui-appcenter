@@ -1,0 +1,101 @@
+<div *ngIf="toggle" class="version-list d-flex bg-white ml-3 rounded border" odpClickOutside (outside)="close()" (mouseleave)="activeAudit=null">
+    <div class="d-flex flex-column">
+        <div class="d-flex p-2">
+            <div class="d-inline font-13 font-weight-bold ignore-outside">
+                <span class="mr-2">{{auditCount}} Results found</span>
+                <span (click)="clearSearch()" class="text-danger btn btn-link btn-sm">
+                    Clear Filter
+                </span>
+            </div>
+            <!-- <div (click)="showDateFilter()" *ngIf="!sliderAnimate" class="d-inline"
+                class="text-primary ignore-outside font-13 font-weight-bold hover">
+                Filters&gt;
+            </div>
+            <div (click)="sliderAnimate=!sliderAnimate;auditList = [];workflowArray=[];showFilters=true;showDatePicker=false"
+                *ngIf="sliderAnimate" class="d-inline"
+                class="text-primary ignore-outside font-13 font-weight-bold hover">
+                &lt; Back
+            </div> -->
+        </div>
+        <div class="version-list-content" (scroll)="loadMore($event)">
+            <ng-container *ngIf="auditList.length>0">
+                <div (click)="showDifference(ver);" *ngFor="let ver of auditList ;let i = index"
+                    (mouseover)="activeAudit=ver" [ngClass]="{'bg-light': activeAudit?._id === ver._id}"
+                    class="version-data d-flex align-item-center px-3 py-2" [id]="i">
+                    <div [ngClass]="{'text-warning':ver?.wfData?.length>0}"
+                        class="align-self-center font-lg text-primary font-weight-bold version-number">
+                        {{ver?.data._version}}
+                    </div>
+                    <div class="d-flex flex-column">
+                        <div [ngbTooltip]="ver?.name" class="font-13 text-dark font-weight-bold text-truncate"
+                            placement="top">
+                            {{ver?.name}}
+                        </div>
+                        <div class="font-sm text-secondary">
+                            <span>{{ver?.timeStamp|date:'dd-MMM-yyyy hh:mm:ss a'}}</span><span
+                                *ngIf="ver?.wfData?.length>0" class="ml-2">&bull;
+                                &nbsp; Workflow</span>
+                        </div>
+                    </div>
+                    <div *ngIf="ver?.wfData?.length>0" class="align-self-center ml-auto text-secondary font-lg">
+                        <span class="fa fa-angle-right"></span>
+                    </div>
+                </div>
+                <!-- <div *ngIf="showFilters"
+                        [@slider]="sliderAnimate ? sliderState['filterModal'] = 'enterFilter': sliderState['filterModal'] = 'leaveFilter'"
+                        class="d-inline">
+                        <div class="d-flex p-4 max-card">
+                            <div class="d-flex font-lg text-primary font-weight-bold mt-2">
+                                <span class="fa fa-calendar"></span>
+                            </div>
+                            <div class="d-inline ml-4">
+                                <div class="d-flex font-13 text-dark font-weight-bold">
+                                    <span class="text-secondary">From</span>
+                                    <span class="ml-2">{{versionFilters.fromDate.label}}</span>
+                                </div>
+                                <div class="d-flex font-sm ">
+                                    <span class="text-secondary">To</span>
+                                    <span class="ml-4 font-weight-bold">{{versionFilters.toDate.label}}</span>
+                                </div>
+                            </div>
+                            <div class="ml-auto text-secondary font-lg mr-3">
+                                <button (click)="showDate()" class="btn btn-sm btn-link" type="button">
+                                    {{showDatePicker ? 'Done' : 'Change'}}
+                                </button>
+                            </div>
+    
+                        </div>
+                        <div class="d-flex p-3">
+                            <button (click)="setTimeFilter(0)" class="btn btn-sm btn-link">Today</button>
+                            <button (click)="setTimeFilter(1)" class="btn btn-sm btn-link">Yesterday</button>
+                            <button (click)="setTimeFilter(2)" class="btn btn-sm btn-link">Last week</button>
+                            <button (click)="setTimeFilter(3)" class="btn btn-sm btn-link">Last 30 days</button>
+                        </div>
+                        <div *ngIf="showDatePicker" class="d-flex justify-content-center ignore-outside">
+                            <odp-date-picker [(from)]="fromValue" [(to)]="toValue" [(togglePicker)]="!extra"
+                                [options]="{floating:false,range:true}"></odp-date-picker>
+                        </div>
+                        <div *ngIf="!showDatePicker" class="user-search px-3 mr-4">
+                            <label for="userSearch">
+                                <strong class="text-secondary font-sm">Version created by:</strong>
+                            </label>
+                            <div class="d-flex">
+                                <input [(ngModel)]="versionFilters.fromDate.user" class="form-control form-control-sm"
+                                    id="userSearch" type="text">
+                            </div>
+                        </div>
+                        <div class="action text-right px-3 py-2 mr-4">
+                            <button (click)="clearVersionFilters()" class="btn btn-link mr-2">Clear</button>
+                            <button (click)="searchVersion();" class="btn btn-sm btn-outline-primary">Search</button>
+                        </div>
+                    </div> -->
+            </ng-container>
+            <div *ngIf="auditList.length==0" class="d-flex p-3 h-50 max-card">
+                <span>No version filter found</span>
+            </div>
+        </div>
+    </div>
+    <div class="workflow-content bg-light" [ngClass]="{'show': activeAudit && activeAudit?.wfData}">
+        <odp-workflow-history [auditList]="activeAudit?.wfData"></odp-workflow-history>
+    </div>
+</div>

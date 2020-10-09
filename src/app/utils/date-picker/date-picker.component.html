@@ -1,0 +1,94 @@
+<div class="picker-overlay" [ngClass]="{'floating': options.floating,'d-none':!togglePicker}" [ngStyle]="style" odpClickOutside (outside)="cancel()">
+  <ng-container *ngIf="options.quickSelect">
+    <div class="quick-select p-2">
+      <span class="btn btn-sm btn-link font-weight-bold p-0 mr-2">Today</span>
+      <span class="btn btn-sm btn-link font-weight-bold p-0 mr-2">Yesterday</span>
+      <span class="btn btn-sm btn-link font-weight-bold p-0 mr-2">This week</span>
+      <span class="btn btn-sm btn-link font-weight-bold p-0">Past 30 days</span>
+    </div>
+    <hr class="m-0">
+  </ng-container>
+  <ng-container *ngIf="options.range">
+    <div class="range mt-3 mx-3">
+      <div class="btn-group w-100">
+        <button id="fromBtn" class="btn btn-outline-primary w-50" [ngClass]="{'active':selectedRange==0}" (click)="changeRange(0)">From</button>
+        <button id="toBtn" class="btn btn-outline-primary w-50" [ngClass]="{'active':selectedRange==1}" (click)="changeRange(1)">To</button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="options.type=='date-time' || options.type=='date'">
+    <div class="calender">
+      <div class="page">
+        <div class="options border-bottom clearfix px-3 d-flex justify-content-around align-items-center">
+          <!--<span class="float-left text-secondary">
+            <small class="font-weight-bold">Date</small>
+          </span>-->
+          <span class="fas fa-caret-left fa-lg hover text-primary" (click)="decreaseMonth()"></span>
+          <span class="ml-auto mr-auto">
+            <select #month class="text-primary time-select font-weight-bold" (change)="selectMonth({key:month.value})">
+              <option [value]="mon.key" *ngFor="let mon of months">{{mon.label}}</option>
+            </select>
+            <select #year class="text-primary time-select font-weight-bold" (change)="selectYear({key:year.value})">
+              <option [value]="year.key" *ngFor="let year of years">{{year.key}}</option>
+            </select>
+          </span>
+          <span class="fas fa-caret-right fa-lg hover text-primary" (click)="increaseMonth()"></span>
+        </div>
+        <div class="month-dates pl-3 pt-2 d-flex justify-content-around">
+          <span class="day float-left" *ngFor="let day of week;let f=first;let l=last">
+            <small class="font-weight-bold">{{day}}</small>
+          </span>
+        </div>
+        <div class="clearfix pl-2" id="_datePicker">
+          <span class="date float-left d-flex justify-content-center align-items-center " *ngFor="let day of dateList;let f=first;let l=last;let i=index"
+            [ngClass]="{'active text-white bg-success':day.today && day.show,'text-secondary':!day.today,'disabled':!day.show}"
+            (click)="$event.stopPropagation();selectDate(day)" id="_day">
+            <small class="font-weight-bold">{{day.label}}</small>
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="options.type=='date-time' || options.type=='time'">
+    <hr class="m-0">
+    <div class="d-flex justify-content-between time clearfix px-3 py-2">
+      <span class="">
+        <select #hour class="text-primary time-select" (change)="changeHour(hour.value)" (click)="$event.stopPropagation();">
+          <option [value]="hr" *ngFor="let hr of hours">{{hr}}</option>
+        </select>
+        <span class="text-secondary">
+          <small class="font-weight-bold">h</small>
+        </span>
+        <span class="text-secondary px-1">
+          <small>:</small>
+        </span>
+        <select #minute class="text-primary time-select" (change)="changeMinute(minute.value)" (click)="$event.stopPropagation();">
+          <option [value]="min" *ngFor="let min of minutes">{{min}}</option>
+        </select>
+        <span class="text-secondary">
+          <small class="font-weight-bold">m</small>
+        </span>
+        <span class="text-secondary px-1">
+          <small>:</small>
+        </span>
+        <select #second class="text-primary time-select" (change)="changeSecond(second.value)" (click)="$event.stopPropagation();">
+          <option [value]="min" *ngFor="let min of minutes">{{min}}</option>
+        </select>
+        <span class="text-secondary">
+          <small class="font-weight-bold">s</small>
+        </span>
+      </span>
+      <span class="text-primary ml-auto">
+        <span class="fas fa-arrow-right mr-2"></span>
+        <small class="font-weight-bold">Current time</small>
+      </span>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="options.buttons">
+    <hr class="m-0">
+    <div class="footer text-right p-3">
+      <button id="cancelBtn" class="btn btn-link mx-4" (click)="$event.stopPropagation();cancel()">Cancel</button>
+      <button id="doneBtn" class="btn btn-outline-primary px-4 btn-min-width" (click)="$event.stopPropagation();done()">Done</button>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,405 @@
+<div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="showLazyLoader">
+  <div class="align-self-center text-center">
+    <span class="fa fa-spinner fa-pulse fa-3x"></span>
+    <div class="text-secondary mt-2">Processing</div>
+  </div>
+</div>
+
+<!-- <div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="showImportLoader">
+  <div class="align-self-center text-center">
+  </div>
+</div> -->
+
+<div class="d-flex flex-column w-100  h-100">
+  <div class="d-flex flex-column w-100 bg-light border-bottom header-1">
+    <div class="d-flex align-items-center justify-content-between p-2">
+      <div class="title d-flex align-items-center w-50">
+        <span class="odp-record fa-lg mr-2 text-primary-dark"></span>
+        <span class="text m-0">{{title}}</span>
+        <div class="float-left badge badge-pill ml-3 badge-primary version">v{{version}}</div>
+      </div>
+      <div class="actions w-50 d-flex justify-content-end" *ngIf="activeStep>0 && activeStep<=3 ">
+        <button class="btn btn-link text-primary mr-3 " (click)="previousStep()"
+          [ngClass]="{'text-secondary':isChildDom,'text-primary':!isChildDom}" [disabled]="isChildDom">
+          <span class="odp-arrow-left text-priary mr-1"></span>Previous</button>
+        <button class="btn  btn-min-width font-weight-bold"
+          [ngClass]="{'btn-secondary':isChildDom || hasBulkInvalidRecords,'btn-primary':!isChildDom}"
+          [disabled]="isChildDom || hasBulkInvalidRecords || resolveOpen" (click)="nextStep()">
+          Next<span class="odp-arrow-right text-white ml-1"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex w-100 bg-white">
+    <div class="d-flex flex-column wizard p-4 bg-light">
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 0}">
+        <div class="d-flex align-items-center">
+          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+            [ngClass]="{'bg-success border-success':activeStep >0,'bg-dark':activeStep ===0} ">
+            <span *ngIf="activeStep > 0" class="fa fa-check text-white"></span>
+            <span *ngIf="activeStep ===0" class="fa fa-angle-right text-white"></span>
+          </div>
+          <span class="text text-secondary">Select File</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 1}">
+        <div class="d-flex align-items-center">
+          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+            [ngClass]="{'bg-success border-success':activeStep >1,'bg-dark':activeStep ===1,'bg-light':'activeStep <1'} ">
+            <span *ngIf="activeStep > 1" class="fa fa-check text-white"></span>
+            <span *ngIf="activeStep ===1" class="fa fa-angle-right text-white"></span>
+          </div>
+          <span class="text text-secondary">File Settings</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 2}">
+        <div class="d-flex align-items-center">
+          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+            [ngClass]="{'bg-success border-success':activeStep >2,'bg-dark':activeStep ===2,'bg-light':'activeStep <2'} ">
+            <span *ngIf="activeStep > 2" class="fa fa-check text-white"></span>
+            <span *ngIf="activeStep ===2" class="fa fa-angle-right text-white"></span>
+          </div>
+          <span class="text text-secondary">Columns Mapping</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 3}">
+        <div class="d-flex align-items-center">
+          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+            [ngClass]="{'bg-success border-success':activeStep >3,'bg-dark':activeStep ===3,'bg-light':'activeStep <3'} ">
+            <span *ngIf="activeStep > 3" class="fa fa-check text-white"></span>
+            <span *ngIf="activeStep ===3" class="fa fa-angle-right text-white"></span>
+          </div>
+          <span class="text text-secondary">Resolve Conflicts</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 4}">
+        <div class="d-flex align-items-center">
+          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+            [ngClass]="{'bg-success border-success':activeStep >4,'bg-dark':activeStep ===5,'bg-light':'activeStep <4'} ">
+            <span *ngIf="activeStep > 4" class="fa fa-check text-white"></span>
+            <span *ngIf="activeStep ===4" class="fa fa-angle-right text-white"></span>
+          </div>
+          <span class="text text-secondary">Import Valid Records</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 5}">
+        <div class="d-flex align-items-center">
+          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+            [ngClass]="{'bg-success border-success':activeStep >5,'bg-dark':activeStep ===5,'bg-light':'activeStep < 5'} ">
+            <span *ngIf="activeStep > 5" class="fa fa-check text-white"></span>
+            <span *ngIf="activeStep ===5" class="fa fa-angle-right text-white"></span>
+          </div>
+          <span class="text text-secondary">Finish</span>
+        </div>
+      </div>
+      <button class="btn btn-outline-danger mt-auto" *ngIf="activeStep<5" (click)="cancel()">Cancel and Exit</button>
+    </div>
+    <div class="d-flex flex-column w-100 h-100  mt-2 position-relative" *ngIf="activeStep==0">
+      <div class="d-flex flex-column">
+        <div class="d-flex ml-3 ">
+          <div class="odp-cloud-upload text-primary mt-1"></div>
+          <span class="text-accent pl-2 ">Upload File</span>
+        </div>
+        <label class="drop-box-logo drop-box   d-flex align-items-center justify-content-center m-3"
+          [ngClass]="{'bg-light-green':ripple}">
+          <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
+          <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="upload-icon " *ngIf="!ripple"></div>
+            <div class="d-flex  justify-content-center   align-items-center bg ripple-div circle-ripple" *ngIf="ripple">
+              <div class="ic-upload-m "></div>
+            </div>
+            <span class="text-primary pt-4 font-weight-bold ">Drag and drop your file here</span>
+          </div>
+        </label>
+        <label class="drop-box-logo d-flex align-items-center justify-content-center m-3 position-fixed w-100 d-1"
+          odpDragAndDrop placement="top" (fileData)="dragAndUpload($event)" (dragover)="dragOver()"
+          (dragleave)="dragOut()">
+        </label>
+        <!-- <label class="d-flex justify-content-between align-items-center small-drop-box p-2" odpDragAndDrop
+          *ngIf="uploadObj.showUploadTag">
+          <div class="d-flex align-items-center ">
+            <div class="fileTypeIcon">
+              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+            </div>
+            <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
+            <span class="text-muted ml-2">{{fileData?.fileName}}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center px-2 tags bg-light spinner-tag"
+            [ngClass]="{'bg-danger1':uploadObj.uploadError }">
+            <div class="d-flex">
+              <div class="spinner mr-2" *ngIf="uploadObj.showUploadSpinner"
+                [ngClass]="{'b-right':uploadObj.uploadProgress >30,'b-bottom':uploadObj.uploadProgress >90 ,'b-right':uploadObj.uploadProgress >50}">
+              </div>
+              <div class="mapper-warning" *ngIf="uploadObj.uploadError"></div>
+              <span class="text-accent text-accent d-flex align-items-center font-sm ml-1"
+                *ngIf="uploadObj.showUploadSpinner">Uploading...</span>
+              <span class="text-danger text-accent d-flex align-items-center font-sm ml-1"
+                *ngIf="!uploadObj.showUploadSpinner">{{uploadObj.errorMsg?uploadObj.errorMsg:uploadError}}</span>
+            </div>
+            <div class="text-muted font-sm" *ngIf="uploadObj.showUploadSpinner">{{uploadObj.uploadProgress }}%</div>
+            <div class="text-accent font-sm" *ngIf="!uploadObj.showUploadSpinner">Re-Upload</div>
+          </div>
+          <span class="text-accent hover" *ngIf="!uploadObj.showUploadTag && !parseObj.showParseTag ">Re-Upload</span>
+        </label> -->
+        <div class="d-flex justify-content-between messsage mx-3">
+          <span class="text-muted font-sm">Supported file types(csv,xslx,xlx)</span>
+          <label class="text-muted font-sm">Having issue ?
+            <span class="text-primary hover">
+              <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
+              Click here </span> to select file using the explorer</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column w-100 h-100 m-2 " *ngIf="activeStep==1">
+      <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex">
+            <!-- <div class="d-flex justify-content-center align-items-center bg-light small-icon-div"> -->
+            <div class="odp-cloud-upload text-primary mt-2"></div>
+            <!-- </div> -->
+            <span class="text-accent pl-2 pt-1">File Settings</span>
+          </div>
+          <!-- <div class="d-flex">
+            <button class="btn btn-link text-priary mr-3 " (click)="back()"><span class="fa fa fa-angle-left text-priary mr-1"></span>Previous</button>
+            <button class="btn btn-primary font-weight-bold" (click)="parseFile()">
+              Nex<span class="fa fa fa-angle-right text-priary ml-1"></span>
+            </button>
+          </div> -->
+        </div>
+        <label class="d-flex justify-content-between align-items-center small-drop-box p-2"
+          [ngClass]="{'bg-light-green':ripple}" odpDragAndDrop (fileData)="dragAndUpload($event)"
+          (dragover)="dragOver()" (dragleave)="dragOut()">
+          <div class="d-flex align-items-center ">
+            <div class="fileTypeIcon">
+              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+            </div>
+            <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
+            <span class="text-muted ml-2">{{fileData?.fileName}}</span>
+          </div>
+          <span class="text-accent hover">Re-Upload</span>
+        </label>
+        <div class="d-flex flex-column ml-4 mt-4">
+          <span class="font-weight-bold ">File Settings</span>
+          <div class="d-flex flex-column ml-3 mt-3">
+            <div class="d-flex w-100 mb-4" *ngIf="fileData.sheets">
+              <div class="label-width text-secondary">Sheet to read</div>
+              <div class="value-width ml-40">
+                <select name="" id="" class="form-control" [(ngModel)]="fileSettings.sheet">
+                  <option *ngFor="let item of fileData?.sheets" class="form-control" [value]="item">{{item}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="d-flex w-100 mb-4">
+              <div class="label-width text-secondary">Rows to skip</div>
+              <div class="value-width text-muted ml-40">Min and max lengths of the value</div>
+            </div>
+            <div class="border-left d-flex flex-column mb-4 ml-4">
+              <div class="ml-2 pl-2 mb-3 mt-2 d-flex flex-column position-relative">
+                <div class="d-flex">
+                  <div class="sub-level-width text-secondary">From the top</div>
+                  <div>
+                    <input class="form-control short ml-20" placeholder="Row Number" type="number" min="0"
+                      [(ngModel)]="fileSettings.topSkip">
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex w-10 ml-2 pl-2 d-flex flex-column position-relative">
+                <div class="d-flex">
+                  <div class="sub-level-width text-secondary">From the bottom</div>
+                  <div class="d-flex flex-row">
+                    <input class="value-width form-control short ml-20" placeholder="Row Number" type="number" min="0"
+                      [(ngModel)]="fileSettings.bottomSkip">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex w-100 mb-4">
+              <div class="label-width text-secondary">Mark first record as header</div>
+              <div class="d-flex align-items-center ml-50 ">
+                <label class="switch accent mb-0 mt-1" for="createSwitch" id="create">
+                  <input type="checkbox" id="createSwitch" [(ngModel)]="fileSettings.headers">
+                  <span class="slider"></span>
+                  <span class="toggler"></span>
+                </label>
+                <span class="text-primary font-bold" *ngIf="fileSettings.headers">Yes</span>
+                <span class="text-primary font-bold" *ngIf="!fileSettings.headers">No</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column w-100 h-100 mx-2 " *ngIf="activeStep==2">
+      <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <div class="d-flex">
+            <div class="odp-cloud-upload text-primary mt-2"></div>
+            <span class="text-accent pl-2 pt-1">Column Mapping</span>
+          </div>
+        </div>
+        <label class="d-flex justify-content-between align-items-center small-drop-box p-2"
+          [ngClass]="{'bg-light-green':ripple}" odpDragAndDrop (fileData)="dragAndUpload($event)"
+          (dragover)="dragOver()" (dragleave)="dragOut()">
+          <div class="d-flex align-items-center ">
+            <div class="fileTypeIcon">
+              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+            </div>
+            <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
+            <span class="text-muted ml-2">{{fileData?.fileName}}</span>
+          </div>
+          <span class="text-accent hover">Re-Upload</span>
+        </label>
+      </div>
+      <div class="d-flex flex-row justify-content-between">
+        <odp-column-mapping [definition]="schema" [tempAttrList]='tempAttrList' [mappingData]="mappingData"
+          [form]="form" [schemaName]="schema.name" (emitDataToParent)="getForm($event)"></odp-column-mapping>
+        <div class="header-list border px-3 bg-light">
+          <div class="text-success d-flex align-items-center font-bold  py-2">
+            <span class="fa fa-file mr-2"></span>
+            <div>{{fileData?.fileName}}</div>         
+           </div>
+          <div class="fileKeyContainer border d-flex align-items-center justify-content-between bg-white px-2 mb-2"
+            *ngFor="let fileKey of mappingData?.headers?.fileKeys" [draggable]="true"
+            (drag)="dragEvent($event,fileKey)">
+            <div class="d-flex align-items-center">
+              <span class="odp-grid mr-2"></span>
+              <div class="text-truncate name-width" [odpTruncated]="fileKey.name">{{fileKey.name}}</div>
+            </div>
+            <span>{{fileKey.position}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column w-100 h-100 px-3 pt-3 overflow" *ngIf="activeStep==3">
+      <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- <div class="d-flex">
+            <div class="d-flex justify-content-center align-items-center bg-light small-icon-div">
+              <div class="odp-cloud-upload text-primary mt-2"></div>
+            </div>
+            <span class="text-accent pl-3 pt-2">Resolve Conflicts</span>
+          </div> -->
+          <div class="d-flex">
+            <div class="odp-cloud-upload text-primary mt-2"></div>
+            <span class="text-accent pl-2 pt-1">Resolve Conflicts</span>
+          </div>
+        </div>
+        <label class="d-flex justify-content-between align-items-center small-drop-box p-2"
+          [ngClass]="{'bg-light-green':ripple}" odpDragAndDrop (fileData)="dragAndUpload($event)"
+          (dragover)="dragOver()" (dragleave)="dragOut()">
+          <div class="d-flex align-items-center ">
+            <div class="fileTypeIcon">
+              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+            </div>
+            <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
+            <span class="text-muted ml-2">{{fileData?.fileName}}</span>
+          </div>
+          <span class="text-accent hover">Re-Upload</span>
+        </label>
+      </div>
+      <odp-validation-result [schema]="schema" [transfersData]="resultObj" [(update)]="createObj.update"
+        (updateChange)="updateChange($event)" [(create)]="createObj.create"
+        (createChange)="createChange($event)" (importData)="createRecords()"></odp-validation-result>
+      <!-- <odp-conflict-resolve [schema]="schema" [resultObj]="resultObj" [mappingData]="mappingData"
+        (emitDataToParent)="getCreateData($event)" [api]="api" (importData)="createRecords()"></odp-conflict-resolve> -->
+    </div>
+    <div class="d-flex flex-column w-100 h-100 px-3 pt-3 overflow" *ngIf="activeStep==4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+          <div class="odp-cloud-upload text-primary mt-2"></div>
+          <span class="text-accent pl-2 pt-1">Importing valid records</span>
+        </div>
+      </div>
+      <div class=" w-100 d-flex justify-content-center align-items-center">
+        <div class="loader ">
+          <div class="d-flex  justify-content-between">
+            <span class="text-success font-bold">{{fileData?.fileName}}</span><span class="text m-0">{{title}}</span>
+          </div>
+          <div class="d-flex pt-4 align-items-center">
+            <div class="d-flex justify-content-center align-items-center bg-success small-icon-div">
+              <span class="odp-record"></span>
+            </div>
+            <div class="gradient position-relative">
+              <div class="gradDup position-absolute" [ngStyle]="progressWidth"></div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center bg-primary small-icon-div">
+              <span class="odp-record"></span>
+            </div>
+          </div>
+          <div class="d-flex flex-row  justify-content-center pt-4 align-items-center ">
+            <div class="spinner-1"></div>
+            <h2>Data import in progress</h2>
+            <!-- <div>Imported 3000/3000 valid records</div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column w-100 h-100 px-3 pt-3 overflow" *ngIf="activeStep==5">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+          <div class="odp-cloud-upload text-primary mt-2"></div>
+          <span class="text-accent pl-2 pt-1">Summary</span>
+        </div>
+      </div>
+      <div class=" w-100 d-flex justify-content-center align-items-center">
+        <div class="loader ">
+          <div class="d-flex  justify-content-between">
+            <span class="text-success font-bold">{{fileData?.fileName}}</span><span class="text m-0">{{title}}</span>
+          </div>
+          <div class="d-flex pt-4 align-items-center">
+            <div class="d-flex justify-content-center align-items-center bg-success small-icon-div">
+              <span class="odp-record"></span>
+            </div>
+            <div class="gradient position-relative">
+              <div class="gradDup position-absolute" [ngStyle]="progressWidth"></div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center small-icon-div"
+              [ngClass]="{'finished':uploading==0,'bg-primary':uploading>0}">
+              <span class="odp-record"></span>
+            </div>
+          </div>
+          <div class="d-flex flex-column pt-4 align-items-center">
+            <h2 class="text-success">Data Import Successful</h2>
+            <div class="mb-3">Imported {{summary?.created + summary?.updated }} / {{resultObj.totalRecords}} valid
+              records</div>
+            <button class="btn btn-primary btn-min-width mt-4" (click)="cancel()">Navigate to {{title}}
+              DataService</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #validationInProgress>
+  <div class="modal-body">
+    <div class="d-flex align-items-center">
+      <span class="odp-cloud-upload mr-2 text-primary"></span>
+      <span class="">Validation In Progress</span>
+    </div>
+    <div class="d-flex flex-column my-3">
+      <p>The uploaded file is currently being validated. You will
+        be notified when validation is completed. You will be redirected to the listing page.</p>
+    </div>
+    <div class="d-flex align-items-center justify-content-end">
+      <button type="button" class="btn btn-primary" (click)="validationInProgressRef.close(true)">Ok</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #importInProgress>
+  <div class="modal-body">
+    <div class="d-flex align-items-center">
+      <span class="odp-cloud-upload mr-2 text-primary"></span>
+      <span class="">Import In Progress</span>
+    </div>
+    <div class="d-flex flex-column my-3">
+      <p>Valid Records are being imported. You will
+        be notified when the process is completed. You will be redirected to the listing page.</p>
+    </div>
+    <div class="d-flex align-items-center justify-content-end">
+      <button type="button" class="btn btn-primary" (click)="importInProgressRef.close(true)">Ok</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,140 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.header {
+  min-height: 40px;
+  max-height: 40px;
+  .title {
+    font-size: 16px;
+    .text-primary {
+      font-size: 16px !important;
+    }
+  }
+  .actions {
+    .text-warning {
+      font-size: 12px;
+    }
+  }
+}
+.sub-header {
+  min-height: 48px;
+  max-height: 48px;
+}
+.form-body {
+  min-height: calc(100vh - 186px);
+  max-height: calc(100vh - 186px);
+  height: calc(100vh - 186px);
+  overflow-y: auto;
+  overflow-x: auto;
+  &.no-steps {
+    min-height: calc(100vh - 128px);
+    max-height: calc(100vh - 128px);
+    height: calc(100vh - 128px);
+  }
+  &.has-actions {
+    min-height: calc(100vh - 242px);
+    max-height: calc(100vh - 242px);
+    height: calc(100vh - 242px) !important;
+  }
+}
+
+.all-steps-dropdown {
+  right: 15px;
+  top: 42px;
+  width: 230px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16);
+  display: none;
+  z-index: 10;
+  outline: 0;
+  max-height: 234px;
+  overflow: auto;
+  .list-group-item {
+    &:not(.active):hover {
+      cursor: pointer;
+      background: $light;
+    }
+  }
+}
+
+.all-actions-dropdown {
+  min-width: 200px;
+  right: 0;
+  top: 0;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16);
+  max-height: 234px;
+  overflow: auto;
+}
+
+.p-0 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.steps-wrapper {
+  min-height: 42px;
+  max-height: 42px;
+  .step-tabs {
+    overflow: hidden;
+    .step-tab {
+      min-width: 150px;
+      max-width: 150px;
+      min-height: 42px;
+      max-height: 42px;
+      border-bottom: 4px solid transparent;
+      transition: 0.25s;
+      &.active {
+        font-weight: bold;
+      }
+      .step-no {
+        min-width: 36px;
+        max-width: 36px;
+        min-height: 42px;
+        max-height: 42px;
+      }
+      .step-name {
+        max-width: 114px;
+      }
+    }
+  }
+  .step-controls {
+    min-width: 134px;
+    max-width: 134px;
+  }
+}
+
+.experience-hooks {
+  min-height: 40px;
+  max-height: 40px;
+  .experience-hooks-title {
+    min-width: 120px;
+    max-width: 120px;
+  }
+  .experience-hooks-buttons {
+    min-width: calc(100vw - 416px);
+    max-width: calc(100vw - 416px);
+    overflow: hidden;
+    .experience-hooks-btn {
+      min-width: 160px;
+      max-width: 160px;
+      min-height: 26px;
+      max-height: 26px;
+      padding: 0;
+    }
+  }
+  .btn-link {
+    padding: 0;
+  }
+}
+
+.requestedBy {
+  max-width: 220px;
+}
+
+.fileName-width {
+  max-width: 150px;
+}
+
+.partial-success {
+  max-height: calc(100vh - 226px);
+  overflow-y: auto;
+}

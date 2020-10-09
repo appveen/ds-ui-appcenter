@@ -1,0 +1,29 @@
+<button [attr.id]="definition.name" class="btn btn-link mr-3 p-0" (click)="onClick($event)"
+    [disabled]="definition.properties.readonly || control.disabled">
+    <span class="fas fa-calendar-alt mr-2" id="selectDate"></span>{{selectedDate}}
+</button>
+<button id="clearBtn{{definition.name}}" class="btn btn-link text-muted p-0" *ngIf="control.value"
+    (click)="clearValue()" [disabled]="definition.properties.readonly || control.disabled">
+    <span class="fas fa-times-circle"></span>
+</button>
+<odp-date-picker *ngIf="showDatePicker" [(togglePicker)]="showDatePicker"
+    [options]="{floating:true,type:fieldType, buttons: true}" [(from)]="setValue"></odp-date-picker>
+
+<div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
+    [ngClass]="{'bg-error':requiredError}">
+    <ng-container *ngIf="!definition.properties.errorMessage">
+        <div *ngIf="requiredError">
+            {{definition.properties.label ? definition.properties.label : definition.properties.name}} is required</div>
+    </ng-container>
+    <ng-container *ngIf="definition.properties.errorMessage">
+        <div *ngIf="requiredError">{{definition.properties.errorMessage}}</div>
+    </ng-container>
+</div>
+<!--
+<div class="date-control-wrapper position-relative">
+    <input class="form-control form-control-sm rounded" [ngClass]="{'is-invalid pr-4':requiredError}" [type]="controlType" (change)="formatDate($event)"
+           [ngModel]="dateHolder" #dateControl [attr.id]="definition.path" (keyup)="onEnter($event)" (focus)="onFocus()">
+    <span #validationErrorsDot="ngbTooltip" (mouseover)="validationErrorsDot.open()" triggers="manual" class="fa fa-xs fa-circle text-danger position-absolute error-exclamation"
+        *ngIf="requiredError" ngbTooltip="{{definition.label}} is required" placement="right"></span>
+</div>
+-->

@@ -1,0 +1,62 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.bookmark-container {
+  background: $gray-200;
+  height: calc(100vh - 40px);
+  .header {
+    min-height: 48px;
+    max-height: 48px;
+    .title {
+      font-size: 16px;
+    }
+  }
+  .url-action {
+    height: 48px;
+  }
+  .iFrame {
+    height: calc(100vh - 85px);
+    width: calc(100vw - 250px);
+    //overflow: auto;
+    margin: 5px;
+    border-radius: 4px;
+    box-shadow: 0 3px rgba(0, 0, 0, 0.5);
+    &-loader {
+      position: absolute;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.4);
+    }
+  }
+  .search-wrapper {
+    .search-box {
+      min-height: 40px;
+      text-indent: 30px;
+      border-radius: 8px;
+      max-width: 720px;
+      width: 100%;
+    }
+    .fa-search {
+      top: 14px;
+      left: 10px;
+    }
+  }
+  .bookmark-cards {
+    height: calc(100vh - 168px);
+    overflow: auto;
+    &.no-records{
+      height: calc(100vh - 104px);
+    }
+    .bookmark-card {
+      min-width: 200px;
+      max-width: 200px;
+      min-height: 264px;
+      max-height: 264px;
+      .favicon{
+        min-width: 16px;
+        max-width: 16px;
+        min-height: 16px;
+        max-height: 16px;
+      }
+    }
+  }
+}

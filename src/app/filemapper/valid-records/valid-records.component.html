@@ -1,0 +1,24 @@
+<div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="apiCallsPending">
+    <div class="align-self-center text-center">
+        <span class="fa fa-spinner fa-pulse fa-3x"></span>
+        <div class="text-secondary mt-2">Processing</div>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="sub-heading font-weight-bold d-flex align-items-center">
+        <span class="text">Validation Summary</span>
+        <span class="text-muted fa fa-angle-right mx-2"></span>
+        <span class="text-success">Valid Records</span>
+    </span>
+    <button class="btn btn-primary  font-weight-bold" (click)="done()">
+        <span class="fa fa fa-angle-left text-priary mr-1"></span>
+        <span class="text">Back</span>
+    </button>
+</div>
+<div class="row m-0 position-relative bg-white child-Mapping">
+    <div class="data-container p-0 w-100">
+        <ag-grid-angular #agGrid *ngIf="columnDef" style="width: 100%; height: 100%;" class="ag-theme-balham border-0"
+            [rowData]="validRecords" [columnDefs]="columnDef" [rowHeight]="32">
+        </ag-grid-angular>
+    </div>
+</div>

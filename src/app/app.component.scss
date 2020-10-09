@@ -1,0 +1,30 @@
+.session-expire{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 999999999;
+    top:0;
+    left: 0;
+    display: none;
+    &.show{
+        display: flex;
+    }
+    &.overlay{
+        background: #ccc;
+        opacity: 0.75;
+    }
+    .message-box{
+        opacity: 1;
+        display: none;
+    }
+}
+
+.modal-footer {
+    justify-content: center
+}
+.fs-18{
+    font-size: 18px;
+}
+.fs-16{
+    font-size: 16px
+}

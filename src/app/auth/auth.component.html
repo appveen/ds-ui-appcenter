@@ -1,0 +1,132 @@
+<div class="login-img-wrapper d-flex w-100 h-100">
+  <div class="login-img d-flex w-100 h-100"></div>
+</div>
+<div class="login-bg">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-3 d-flex h-100">
+      </div>
+      <div class="col">
+        <div class="row">
+          <div class="col-6">
+            <div class="welcome">
+              <div class="title text-white pb-4">
+                Organize. Distribute. Analyze.
+              </div>
+              <p class="text-secondary text-justify">Welcome to data.stack, An intelligent API-first
+                application productivity platform with data at its core. data.stack enables business users to
+                easily organize,
+                analyze and distribute data. For more information, contact
+                <a href="mailto:support@appveen.com">support@appveen.com</a></p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="product clearfix pl-4">
+              <span class="d-inline-block float-left logo"></span>
+              <!-- <span class="d-inline-block float-left px-3 py-2 font-weight-bold name">
+                <div class="title text-uppercase">data.stack</div>
+                <div class="sub-title text-uppercase text-primary">App Center</div>
+              </span> -->
+            </div>
+            <div class="form px-4 mt-5 clearfix">
+              <form [formGroup]="form" (submit)="authTypeChecked?doLogin($event):onSubmit($event)">
+                <div class="form-group" *ngIf="!authTypeChecked">
+                  <div class="text-center text-white">Sign in with your credentials</div>
+                  <input type="text" class="form-control my-3" formControlName="username" id="username" #usernameControl
+                    placeholder="Username" (keyup.enter)="onSubmit($event)" odpAutoFocus>
+                  <div class="d-flex align-items-center justify-content-end">
+                    <!-- <a href="#" class="text-secondary">Forgot your login ID?</a> -->
+                    <button type="button" class="btn btn-primary btn-min-width" (click)="onSubmit($event)"
+                      [disabled]="!usernameControl.value || loader">
+                      <span *ngIf="loader" class="fa fa-spinner fa-pulse mr-2"></span>
+                      <span class="text">Next</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group" *ngIf="authTypeChecked && authType!='azure'">
+                  <div class="text-center mb-3 text-white">Enter password to login</div>
+                  <a href="#" (click)="emptyUsername()" *ngIf="!loader">
+                    <span class="fa fa-angle-left mr-2"></span>
+                    <span class="text-accent">{{username}}</span>
+                  </a>
+                  <span class="mb-3" *ngIf="loader">
+                    <span class="fa fa-angle-left mr-2 text-primary"></span>
+                    <span class="text-accent">{{username}}</span>
+                  </span>
+                  <input type="password" class="form-control my-3" formControlName="password" id="password" #password
+                    placeholder="Password" (keyup.enter)="loginBtn.click()" odpAutoFocus>
+                  <div class="d-flex align-items-center justify-content-end">
+                    <!-- <a href="#" class="text-secondary">Forgot your Password?</a> -->
+                    <button #loginBtn type="submit" class="btn btn-primary btn-min-width"
+                      [disabled]="!password.value || loader">
+                      <span *ngIf="loader" class="fa fa-spinner fa-pulse mr-2"></span>
+                      <span class="text">Login</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group" *ngIf="authTypeChecked && authType=='azure'">
+                  <div class="text-center mb-3 text-white">Azure AD Login</div>
+                  <a href="#" (click)="authTypeChecked = false" class="mb-3" *ngIf="!azureLoginLoader">
+                    <span class="fa fa-angle-left mr-2"></span>
+                    <span class="text-accent">{{username}}</span>
+                  </a>
+                  <span class="mb-3" *ngIf="azureLoginLoader">
+                    <span class="fa fa-angle-left mr-2 text-primary"></span>
+                    <span class="text-accent">{{username}}</span>
+                  </span>
+                  <div class="d-flex align-items-center justify-content-center" *ngIf="azureLoginLoader">
+                    <div class="azure-loader"></div>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-end mt-3">
+                    <button type="button" class="btn btn-primary btn-min-width" (click)="doAzureLogin()"
+                      [disabled]="azureLoginLoader">Login With Azure</button>
+                  </div>
+                </div>
+                <div class="text-danger text-center">
+                  {{message}}&nbsp;
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row footer p-3 w-100">
+      <div class="col-12 text-right">
+        <span class="text-accent mr-3">
+          <a class="text-accent" href="">Need help with login?</a>
+        </span>
+        <span class="text-accent mr-3">
+          <a class="text-accent" href="">Terms &amp; Conditions</a>
+        </span>
+        <span class="text-accent mr-3">
+          <a class="text-accent" href="">Privacy Policy</a>
+        </span>
+        <span class="text-secondary">
+          <small>v{{version}}</small>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #clearSessionModal>
+  <div class="modal-body p-4">
+    <div class="d-flex align-items-center justify-content-center">
+      <span class="fa fa-shield-alt fa-lg"></span>
+    </div>
+    <div class="d-flex flex-column align-items-center my-5 px-4">
+      <p class="font-lg font-weight-bold text-center">Old Session is Active</p>
+      <p class="text-center text-secondary">You already have an active session.
+        <ng-container *ngIf="rbacUserReloginAction === 'allow'">Logging in will invalidate all your previous session.
+        </ng-container>
+        <ng-container *ngIf="rbacUserReloginAction === 'deny'">Please contact you admistrator.</ng-container>
+      </p>
+    </div>
+    <div class="d-flex align-items-center justify-content-end">
+      <button type="button" class="btn btn-link" (click)="clearSessionModalRef.close(false)">Close</button>
+      <button *ngIf="rbacUserReloginAction === 'allow'" type="button" class="btn btn-dark btm-min-width ml-3"
+        (click)="clearSessionModalRef.close(true)">Continue</button>
+    </div>
+  </div>
+</ng-template>

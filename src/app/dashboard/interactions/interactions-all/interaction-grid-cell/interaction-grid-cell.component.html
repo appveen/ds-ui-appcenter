@@ -1,0 +1,58 @@
+<ng-container *ngIf="field === 'flowData.inputType'">
+    <span *ngIf="!value" class="text-muted">N.A.</span>
+    <div *ngIf="value" class="d-flex align-items-center">
+        <div *ngIf="inputType === 'FILE'" class="text-success mr-2">
+            <div class="fas fa-paperclip"></div>
+        </div>
+        <div *ngIf="inputType === 'API'" class="text-success mr-2">
+            <div class="fas fa-plug fa-rotate-90"></div>
+        </div>
+        <div class="fas fa-lg fa-caret-right text-muted mr-2"></div>
+        <div *ngIf="outputType === 'FILE'">
+            <div class="fas fa-paperclip"></div>
+        </div>
+        <div *ngIf="outputType === 'API'">
+            <div class="fas fa-plug fa-rotate-90"></div>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="field === 'odpTxnId'">
+    <span>{{value}}</span>
+</ng-container>
+<ng-container *ngIf="field === 'remoteTxnId'">
+    <span>{{value}}</span>
+</ng-container>
+<ng-container *ngIf="field === 'flowData.partnerName'">
+    <span>{{value}}</span>
+</ng-container>
+<ng-container *ngIf="field === 'flowData.flowName'">
+    <div class="d-flex align-items-center">
+        <div *ngIf="direction === 'Inbound'" class="fa fa-arrow-circle-down fa-lg fa-rotate-45 text-success mr-2"></div>
+        <div *ngIf="direction === 'Outbound'" class="fa fa-arrow-circle-up fa-lg fa-rotate-45 text-default-color mr-2"></div>
+        <div class="text-secondary">{{value}}</div>
+    </div>
+</ng-container>
+<ng-container *ngIf="field === 'status'">
+    <div *ngIf="!rawValue" class="text-muted">N.A.</div>
+    <div *ngIf="rawValue" class="d-flex align-items-center">
+        <div class="fas fa-circle mr-2" [ngClass]="{'text-success': rawValue === 'SUCCESS',
+            'text-danger': rawValue === 'ERROR',
+            'text-warning': rawValue === 'PENDING' || rawValue === 'UNKNOWN',
+            'text-queued':rawValue === 'QUEUED'}">
+        </div>
+        <div class="text-secondary">{{value}}</div>
+        <span *ngIf="reDownloadAvaiable" class="fa fa-file-download text-muted ml-2"
+            ngbTooltip="Re-Download Available"></span>
+    </div>
+</ng-container>
+<ng-container *ngIf="field === 'createTimestamp'">
+    <span>{{value | date:'yyyy MMM dd, HH:mm a'}}</span>
+</ng-container>
+<ng-container *ngIf="field === 'completedTimestamp'">
+    <span *ngIf="showCompletionTime">{{value | date:'yyyy MMM dd, HH:mm a'}}</span>
+    <span *ngIf="!showCompletionTime" class="text-muted">Waiting to Finish</span>
+</ng-container>
+<ng-container *ngIf="field === 'duration'">
+    <span *ngIf="showCompletionTime">{{value}}</span>
+    <span *ngIf="!showCompletionTime" class="text-muted">Waiting to Finish</span>
+</ng-container>

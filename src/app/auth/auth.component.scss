@@ -1,0 +1,65 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.login-img-wrapper{
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    background: #0a0c1c;
+    .login-img{
+        background-position: left;
+        background-size: contain;
+        background-repeat: no-repeat;
+        margin-left: -16%;
+    }
+}
+.login-bg{
+    .welcome{
+        margin-top: 30vh;
+        margin-left: 10vw;
+        >.title{
+            font-size: 26px;
+        }
+    }
+    .product{
+        width: 340px;
+        margin: 0 auto;
+        margin-top: 16vh;
+        .logo{
+            width: 292px;
+            height: 84px;
+            background-size: cover;
+            background-position: left;
+        }
+        .title{
+            font-size: 22px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 4px;
+        }
+        .sub-title{
+            font-size: 14px;
+            margin-top: -4px;
+        }
+    }
+    .form{
+        width: 340px;
+        margin: 0 auto;
+        margin-top: 0px;
+        .title{
+        }
+        form{
+            label{
+                font-size: 14px;
+            }
+            input,button{
+                height: 40px !important;
+                line-height: 16px;
+            }
+        }
+    }
+}
+.footer{
+    position: absolute;
+    bottom:0;
+}

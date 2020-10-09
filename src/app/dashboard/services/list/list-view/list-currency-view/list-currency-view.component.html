@@ -1,0 +1,7 @@
+<ng-container *ngIf="currencyVal">
+  <span *ngIf="currency == 'INR'">&#8377;</span>
+  <span *ngIf="currency == 'USD'">&#36;</span>
+  <span *ngIf="currency == 'EUR'">&#8364;</span>
+  <span *ngIf="currency == 'GBP'">&#163;</span>
+  <span class="pl-2">{{currencyVal}}</span>
+</ng-container>

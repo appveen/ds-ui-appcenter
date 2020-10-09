@@ -1,0 +1,49 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.audit-list {
+  height: 396px;
+  overflow-y: auto;
+  .status {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+  }
+
+  .file-board {
+    width: 408px;
+    .file-items {
+      height: 40px;
+      .file-badge {
+        width: 26px;
+        height: 16px;
+        border-radius: 4px;
+        font-size: 10px;
+      }
+      .file-name {
+        max-width: 300px;
+        font-size: 13px;
+      }
+    }
+  }
+}
+.border-line {
+  min-height: 120px;
+  position: relative;
+  border-left: #fff solid 2px;
+  .thumbnail {
+    width: 32px;
+    height: 32px;
+    background: #ccc;
+    border-radius: 16px;
+  }
+  .comment-section {
+    min-height: 60px;
+    overflow: auto;
+  }
+  .attachments {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

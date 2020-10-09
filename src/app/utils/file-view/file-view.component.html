@@ -1,0 +1,45 @@
+<ng-container *ngIf="filename">
+    <span class="text-primary hover" (click)="previewFile($event)">{{filename}}</span>
+</ng-container>
+<ng-container *ngIf="!filename">
+    <span class="text-muted">N.A.</span>
+</ng-container>
+
+<ng-template #previewModal>
+    <div class="modal-header bg-dark d-flex align-items-center justify-content-between p-0">
+        <div class="title d-flex align-items-center px-3">
+            <span class="text-secondary mr-1">{{definition.properties.name}}</span>
+            <span class="text-white mr-1">:&nbsp;{{filename}}</span>
+        </div>
+        <div class="options d-flex align-items-center text-white">
+            <div class="btn-group">
+                <!-- <button type="button" class="btn btn-dark">
+            <span class="fa fa-print"></span>
+          </button> -->
+                <button type="button" class="btn btn-dark" (click)="downloadFile($event)">
+                    <span class="fa fa-download"></span>
+                </button>
+                <button type="button" class="btn btn-dark" (click)="previewModalRef.close(false)">
+                    <span class="fa fa-times-circle"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="isIMG || isPDF" class="text-center">
+            <pdf-viewer *ngIf="isPDF" [src]="imgPreviewUrl" [original-size]="false" [fit-to-page]="true"
+                [render-text]="true" style="display: block;"></pdf-viewer>
+            <!-- <iframe *ngIf="isPDF" [src]="pdfPreviewUrl" frameborder="0"></iframe> -->
+            <img *ngIf="isIMG" [src]="imgPreviewUrl" width="100%" alt="">
+        </div>
+        <div *ngIf="!(isIMG || isPDF)">
+            <div class="no-preview d-flex flex-column align-items-center">
+                <h5 class="text-secondary my-5">Preview Not Available</h5>
+                <div class="d-flex flex-column align-items-center text-dark hover" (click)="downloadFile($event)">
+                    <span class="fa fa-download"></span>
+                    <p class="">Download</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

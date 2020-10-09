@@ -1,0 +1,58 @@
+<div class="d-flex align-items-center row-content">
+  <div class="fas fa-bars text-muted mr-2 hover"></div>
+  <div class="input-group col-name-dd mr-2">
+    <select class="custom-select" [(ngModel)]="filterModel.dataKey" (change)="onFieldChange()">
+      <option *ngFor="let col of allFields;" [value]="col.dataKey">{{ col.properties.label ? col.properties.label : col.properties.name }}</option>
+    </select>
+  </div>
+  <div class="col-filter mr-2 d-flex">
+    <div class="options-dd d-flex align-items-center text-primary position-relative">
+      <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
+      <select #filterTypeEle [(ngModel)]="filterModel.filterType" (change)="valueChange()">
+        <option *ngFor="let option of filterTypeOptions" [value]="option.value">
+          {{option.name}}
+        </option>
+      </select>
+    </div>
+    <ng-container *ngIf="selectedFieldType !== 'Date' && selectedFieldType !== 'Boolean'">
+      <input *ngIf="selectedFieldType !== 'Number'" type="text" class="w-100 p-2 filter-txt font-sm"
+        [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
+      <input *ngIf="selectedFieldType === 'Number'" type="number" class="w-100 p-2 filter-txt font-sm"
+        [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
+    </ng-container>
+    <input *ngIf="selectedFieldType === 'Boolean'" type="text"
+      class="w-100 p-2 filter-txt-disabled text-secondary font-sm" [value]="filterTypeEle.value" disabled>
+    <div *ngIf="selectedFieldType === 'Date'" class="d-flex align-items-center w-100">
+      <div *ngIf="filterModel.filterType !== 'lessThan'" class="d-flex align-items-center mr-3 w-50 h-100 px-2 bg-white"
+        [ngClass]="{'date-picker-from': filterModel.filterType === 'inRange'}"
+        (click)="toggleFromDate = true; toggleToDate = false; $event.stopPropagation();">
+        <div class="d-flex align-items-center">
+          <span class="fa fa-calendar mr-2 text-primary"></span>
+          <span class="text-primary">{{getDateText(filterModel.filterType)}}</span>
+        </div>
+        <span class="timestamp font-sm ml-auto mr-auto">{{ startDate ? ( startDate | date: 'd MMM y') : '' }}</span>
+        <span class="fas fa-angle-down text-primary"></span>
+        <div class="position-absolute">
+          <odp-date-picker *ngIf="toggleFromDate" [togglePicker]="toggleFromDate"
+                           (togglePickerChange)="toggleFromDate = $event" [from]="startDate" (fromChange)="setStartDate($event)"
+                           [options]="{floating:true,buttons:true,type:dateFieldType}">
+          </odp-date-picker>
+        </div>
+      </div>
+      <div *ngIf="filterModel.filterType === 'inRange' || filterModel.filterType === 'lessThan'" class="date-picker d-flex align-items-center w-50 h-100 px-2 bg-white"
+        (click)="toggleToDate = true; toggleFromDate = false; $event.stopPropagation();">
+        <div class="d-flex align-items-center">
+          <span class="fa fa-calendar mr-2 text-primary"></span>
+          <span class="text-primary">To</span>
+        </div>
+        <span class="timestamp font-sm ml-auto mr-auto">{{ endDate ? (endDate | date: 'd MMM y') : '' }}</span>
+        <span class="fas fa-angle-down text-primary"></span>
+        <div class="position-absolute">
+          <odp-date-picker *ngIf="toggleToDate" [togglePicker]="toggleToDate" (togglePickerChange)="toggleToDate = $event"
+                           [from]="endDate" (fromChange)="setEndDate($event)" [options]="{floating:true,buttons:true,type: dateFieldType}">
+          </odp-date-picker>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
