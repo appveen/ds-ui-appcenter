@@ -364,7 +364,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const self = this;
     self.apiCalls.fetchingCount = true;
     self.commonService
-      .get('api', self.api + '/count')
+      .get('api', self.api + '/utils/count')
       .subscribe(count => {
         self.apiCalls.fetchingCount = false;
         self.totalRecords = count;
@@ -642,7 +642,7 @@ export class ListComponent implements OnInit, OnDestroy {
       self.subscriptions['bulkDelete'] = null;
     }
     self.apiCalls.deleteRequest = true;
-    self.commonService.delete('api', self.api + '/bulkDelete', { ids }).subscribe(res => {
+    self.commonService.delete('api', self.api + '/utils/bulkDelete', { ids }).subscribe(res => {
       self.apiCalls.deleteRequest = false;
       if (res._workflow) {
         self.workflowData = res._workflow;
@@ -905,7 +905,7 @@ export class ListComponent implements OnInit, OnDestroy {
           _id: id
         };
       }
-      let url = self.api + '/export';
+      let url = self.api + '/utils/export';
       const query = [];
       query.push(`timezone=${new Date().getTimezoneOffset()}`);
       if (filter) {

@@ -470,7 +470,7 @@ export class WorkflowDetailViewComponent implements OnInit, AfterViewInit, OnDes
       self.appService.cleanPayload(payload, self.definition, false);
     }
     const operation = self.selectedData.operation;
-    const apiPath = self.appService.serviceAPI + '/simulate?operation=' + operation + '&source=Draft Submitted';
+    const apiPath = self.appService.serviceAPI + '/utils/simulate?operation=' + operation + '&source=Draft Submitted';
     return new Promise((resolve, reject) => {
       self.commonService.post('api', apiPath, payload).subscribe(res => {
         self.appService.fixArrayInPayload(res, self.definition, false);

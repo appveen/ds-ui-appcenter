@@ -371,7 +371,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     const payload = self.appService.cloneObject(self.form.getRawValue());
     payload._id = self.ID;
     self.appService.cleanPayload(payload, self.definition, self.isEdit);
-    const url = self.api + '/simulate?operation=PUT&generateId=false&source=Document Update Request';
+    const url = self.api + '/utils/simulate?operation=PUT&generateId=false&source=Document Update Request';
     return new Promise((resolve, reject) => {
       self.commonService.post('api', url, payload).subscribe(res => {
         self.appService.fixArrayInPayload(res, self.definition, self.isEdit);

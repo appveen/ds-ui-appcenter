@@ -1188,7 +1188,7 @@ export class CommonService {
   getDocumentCount(api: string): Promise<any> {
     const self = this;
     if (!self.documentCountMap[api]) {
-      self.documentCountMap[api] = self.get('api', api + '/count').toPromise();
+      self.documentCountMap[api] = self.get('api', api + '/utils/count').toPromise();
     }
     return self.documentCountMap[api];
   }

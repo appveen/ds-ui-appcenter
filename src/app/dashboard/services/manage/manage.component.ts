@@ -548,7 +548,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       payload._id = self.ID;
     }
     self.appService.cleanPayload(payload, self.definition, self.isEdit);
-    let url = self.api + '/simulate';
+    let url = self.api + '/utils/simulate';
     if (self.isEdit || (self.workflowData && self.workflowData.operation === 'PUT')) {
       url = url + '?operation=PUT&generateId=false&source=Document Update Request';
     } else {
