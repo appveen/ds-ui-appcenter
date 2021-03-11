@@ -547,7 +547,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
     const self = this;
     self.appService.remoteTxnId = event.data.remoteTxnId;
     self.flowService.fromAllInteractions = true;
-    self.router.navigate(['/', this.commonService.app._id, `interactions/${event.data.partnerId}/${event.data.flowId}/${event.data.dataStackTxnId}`]);
+    self.router.navigate(['/', this.commonService.app._id, 'interactions',event.data.partnerId,event.data.flowId,event.data.dataStackTxnId]);
   }
 
   rowSelected(event) {
