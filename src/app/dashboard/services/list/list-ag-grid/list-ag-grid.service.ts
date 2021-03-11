@@ -28,7 +28,7 @@ export class ListAgGridService {
         temp.push(e2.key + '._id');
         temp.push(e2.key + '.' + e2.properties.relatedSearchField);
         e2.properties.relatedViewFields.forEach(item => {
-          if (item.key !== '._id' && item.key !== e2.properties.relatedSearchField) {
+          if (item.key !== '_id' && item.properties.dataPath !== e2.properties.relatedSearchField) {
             temp.push(e2.key + '.' + item.key);
           }
         });
@@ -76,6 +76,8 @@ export class ListAgGridService {
   }
 
   getLastFilterSearchText(columnHeader: string): string {
-    return this.lastFilterSearchText[this.currentServiceId][columnHeader] || null;
+    return !!this.lastFilterSearchText && !!this.lastFilterSearchText[this.currentServiceId]
+      ? this.lastFilterSearchText[this.currentServiceId][columnHeader]
+      : null;
   }
 }
