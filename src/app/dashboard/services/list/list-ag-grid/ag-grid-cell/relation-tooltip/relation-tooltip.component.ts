@@ -19,6 +19,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
   dataKey: string;
   isSecuredField: boolean;
   definition: any;
+
   constructor(private appService: AppService, private commonService: CommonService) {
     const self = this;
     self.values = [];
@@ -83,7 +84,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
     } else if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.password) {
       retValue = {
         name: relsrvcDef.properties.name,
-        value: value.value,
+        value: value?.value,
         isSecuredField: true
       };
     } else if (relsrvcDef?.properties?.richText) {
@@ -115,17 +116,17 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
     } else if (relsrvcDef && relsrvcDef.properties && [relsrvcDef.properties._type, relsrvcDef.properties._typeChanged].includes('File')) {
       retValue = {
         name: relsrvcDef.properties.name,
-        value: value.metadata.filename
+        value: value?.metadata?.filename
       };
     } else if (relsrvcDef && relsrvcDef.type === 'Geojson') {
       retValue = {
         name: relsrvcDef.properties.name,
-        value: value.userInput ? value.userInput : value.formattedAddress,
+        value: value?.userInput ? value.userInput : value?.formattedAddress,
       };
     } else if (relsrvcDef && relsrvcDef.type === 'User') {
       retValue = {
         name: relsrvcDef.properties.name,
-        value: value._id ? value._id : value
+        value: value?._id ? value._id : value
       };
     } else if (relsrvcDef){
       retValue = {
