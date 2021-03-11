@@ -73,10 +73,10 @@ export class IntegrationListComponent implements OnInit {
   loadPartnerInteractions(interactionItem?: any) {
     if (interactionItem && interactionItem._id) {
       this.appService.partnerId = interactionItem._id;
-      this.router.navigate(['/', this.commonService.app._id, `interactions/${interactionItem._id}`]);
+      this.router.navigate(['/', this.commonService.app._id, 'interactions',interactionItem._id]);
     } else {
       this.appService.partnerId = null;
-      this.router.navigate(['/', this.commonService.app._id, `interactions/all`]);
+      this.router.navigate(['/', this.commonService.app._id, 'interactions','all']);
     }
   }
 

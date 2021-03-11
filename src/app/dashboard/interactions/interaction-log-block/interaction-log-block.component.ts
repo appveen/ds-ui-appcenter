@@ -194,7 +194,7 @@ export class InteractionLogBlockComponent implements OnInit, AfterViewInit, OnDe
   viewInteraction(colData) {
     const self = this;
     self.appService.remoteTxnId = colData.remoteTxnId;
-    self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}/${self.is.flow.id}/${colData.dataStackTxnId}`]);
+    self.router.navigate(['/', this.commonService.app._id, 'interactions',self.appService.partnerId,self.is.flow.id,colData.dataStackTxnId]);
   }
 
   selectAllRcrds() {
