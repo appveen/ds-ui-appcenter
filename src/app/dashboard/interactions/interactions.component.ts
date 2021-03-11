@@ -456,9 +456,9 @@ export class InteractionsComponent implements OnInit, OnDestroy {
             res = self.orderBy.transform(res, 'name');
             if (!self.appService.partnerId) {
                 self.appService.partnerId = res[0]['_id'];
-                self.router.navigate(['/', this.commonService.app._id, `interactions/${res[0]['_id']}`]);
+                self.router.navigate(['/', this.commonService.app._id, 'interactions',res[0]['_id']]);
             } else {
-                self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}`]);
+                self.router.navigate(['/', this.commonService.app._id, 'interactions',self.appService.partnerId]);
             }
         });
     }
