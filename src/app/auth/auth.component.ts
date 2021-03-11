@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { AppService } from '../service/app.service';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SessionService } from '../service/session.service';
+import { ShortcutService } from '../shortcut/shortcut.service';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
     clearSessionModalRef: NgbModalRef;
     authType: string;
     azureLoginLoader: boolean;
+
     constructor(private fb: FormBuilder,
         private commonService: CommonService,
         private appService: AppService,
@@ -37,6 +39,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
         private router: Router,
         private titleService: Title,
         private modalService: NgbModal,
+        private shortcutsService: ShortcutService
     ) {
         const self = this;
         self.subscriptions = {};
@@ -52,16 +55,16 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
             self.commonService.apiCalls.componentLoading = false;
             self.version = environment.version;
             self.titleService.setTitle('data.stack: App Center');
-            self.redirectLink = window.location.protocol + '//' + window.location.hostname + '/ba';
+            self.redirectLink = window.location.protocol + '//' + window.location.hostname + '/author';
             self.appService.setFocus.subscribe(val => {
                 if (self.usernameControl && self.usernameControl.nativeElement) {
                     self.usernameControl.nativeElement.focus();
                 }
             });
             self.commonService.apiCalls = {};
-            if (this.commonService.userDetails
-                && this.commonService.userDetails._id) {
-                this.router.navigate(['/~']);
+            if (this.commonService.userDetails && this.commonService.userDetails._id) {
+                const appId = this.commonService.getCurrentAppId(); 
+                this.router.navigate([`/${appId}`]);
             } else {
                 if (self.sessionService.getToken()) {
                     this.commonService.isAuthenticated().then(res => {
@@ -69,7 +72,8 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                             if (this.commonService.noAccess) {
                                 // reject(false);
                             } else {
-                                this.router.navigate(['/~']);
+                                const appId = this.commonService.getCurrentAppId(); 
+                                this.router.navigate([`/${appId}`]);
                                 // resolve(true);
                             }
                         }, err => {
@@ -86,6 +90,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
         } catch (e) {
             throw e;
         }
+        this.shortcutsService.unregisterAllShortcuts();
     }
 
     ngAfterViewInit() {
@@ -105,6 +110,9 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
             Object.keys(self.subscriptions).forEach(e => {
                 self.subscriptions[e].unsubscribe();
             });
+            if (self.clearSessionModalRef) {
+                self.clearSessionModalRef.close();
+            }
         } catch (e) {
             throw e;
         }
@@ -120,16 +128,11 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
             }
             self.message = null;
             self.loader = true;
-            self.subscriptions.onSubmit = self.commonService.get('user', '/authType/' + username).subscribe(res => {
+            self.subscriptions.onSubmit = self.commonService.get('user', '/authType/' + username, { skipAuth: true }).subscribe(res => {
                 self.authTypeChecked = true;
                 self.loader = false;
                 self.appService.fqdn = res.fqdn;
-                if (res.authType === 'azure' && !res.bot) {
-                    self.authType = res.authType;
-                    self.commonService.connectionDetails = res.auth.connectionDetails;
-                } else {
-                    self.authType = 'local';
-                }
+                self.authType = res.bot ? 'local' : res.authType;
                 if (res.rbacUserToSingleSession
                     && res.sessionActive) {
                     self.rbacUserReloginAction = res.rbacUserReloginAction;
@@ -160,14 +163,15 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                 return;
             }
             self.loader = true;
-            self.commonService.login(self.form.value)
+            self.commonService[self.authType === 'local' ? 'login' : 'ldapLogin'](self.form.value)
                 .then(res => {
                     self.commonService.afterAuthentication().then(data => {
                         self.sessionService.isUnauthorizedSession = false;
                         self.loader = false;
                         if (data.status === 200 && !self.commonService.noAccess) {
                             self.commonService.apiCalls.componentLoading = true;
-                            self.router.navigate(['~']);
+                            const appId = this.commonService.getCurrentAppId();
+                            this.router.navigate([appId]);
                         } else {
                             self.message = 'You don\'t have enough permissions';
                             self.commonService.logout(true);
@@ -197,7 +201,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
         const self = this;
         self.form.get('password').disable();
         self.azureLoginLoader = true;
-        self.commonService.azureLogin(self.form.get('username').value).then(async (res) => {
+        self.commonService.azureLogin().then(async (res) => {
             if (res.status === 200) {
                 try {
                     self.commonService.resetUserDetails(res.body);
@@ -207,7 +211,8 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                     if (data.status === 200 && !self.commonService.noAccess) {
                         self.commonService.apiCalls.componentLoading = true;
                         const expireDate = new Date(self.sessionService.getUser(true).expiresIn);
-                        self.router.navigate(['~']);
+                        const appId = this.commonService.getCurrentAppId(); 
+                        this.router.navigate([appId]);
                     } else {
                         self.message = 'You don\'t have enough permissions';
                         self.commonService.logout(true);
@@ -243,6 +248,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                 self.form.reset();
             }
         }, dismiss => {
+            self.authTypeChecked = false;
             self.form.reset();
         });
     }

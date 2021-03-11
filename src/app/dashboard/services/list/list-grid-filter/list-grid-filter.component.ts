@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnDestroy,
-  KeyValueDiffer,
-  KeyValueDiffers
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, KeyValueDiffer, KeyValueDiffers } from '@angular/core';
 import { Definition } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
@@ -18,7 +9,6 @@ import { CommonService } from 'src/app/service/common.service';
   styleUrls: ['./list-grid-filter.component.scss']
 })
 export class ListGridFilterComponent implements OnInit, OnDestroy {
-
   @Input() definition: Definition;
   @Input() filterQuery: any;
   @Output() filterQueryChange: EventEmitter<any>;
@@ -28,9 +18,7 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
   private searchOnlyId: boolean;
   private paths: Array<string>;
   private differ: KeyValueDiffer<string, any>;
-  constructor(private appService: AppService,
-    private commonService: CommonService,
-    private differs: KeyValueDiffers) {
+  constructor(private appService: AppService, private commonService: CommonService, private differs: KeyValueDiffers) {
     const self = this;
     self.subscriptions = {};
     self.relatedDefinition = {};
@@ -62,8 +50,6 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
     });
   }
 
- 
-
   onChange(value) {
     const self = this;
     const temp = {};
@@ -72,12 +58,14 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
       self.paths.push(self.definition.dataKey + '._id');
       self.paths.push(self.definition.dataKey + '.' + self.definition.properties.relatedSearchField);
       temp['$or'] = [];
-      temp['$or'].push(Object.defineProperty({}, self.definition.dataKey + '._id', {
-        value: '/' + value + '/',
-        enumerable: true,
-        configurable: true,
-        writable: true
-      }));
+      temp['$or'].push(
+        Object.defineProperty({}, self.definition.dataKey + '._id', {
+          value: '/' + value + '/',
+          enumerable: true,
+          configurable: true,
+          writable: true
+        })
+      );
       if (!self.searchOnlyId) {
         const tempObj = {};
         const def = self.relatedDef;
@@ -100,21 +88,23 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
       self.paths.push(self.definition.dataKey + '.' + self.definition.properties.relatedSearchField);
       temp['$or'] = [];
 
-      if (self.definition.properties
-        && self.definition.properties.relatedSearchField
-        && self.definition.properties.relatedSearchField !== '_id') {
+      if (
+        self.definition.properties &&
+        self.definition.properties.relatedSearchField &&
+        self.definition.properties.relatedSearchField !== '_id'
+      ) {
         const tempObj = {};
         tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = '/' + value + '/';
         temp['$or'].push(tempObj);
-        console.log(temp);
-      }
-      else {
-        temp['$or'].push(Object.defineProperty({}, self.definition.dataKey + '._id', {
-          value: '/' + value + '/',
-          enumerable: true,
-          configurable: true,
-          writable: true
-        }));
+      } else {
+        temp['$or'].push(
+          Object.defineProperty({}, self.definition.dataKey + '._id', {
+            value: '/' + value + '/',
+            enumerable: true,
+            configurable: true,
+            writable: true
+          })
+        );
       }
     } else if (self.definition.type === 'Geojson') {
       self.paths.push(self.definition.dataKey + '.formattedAddress');
@@ -180,9 +170,12 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
       });
     });
     indexToRemove = indexToRemove.filter((e, i, a) => a.indexOf(e) === i);
-    indexToRemove.sort().reverse().forEach(i => {
-      filterArr.splice(i, 1);
-    });
+    indexToRemove
+      .sort()
+      .reverse()
+      .forEach(i => {
+        filterArr.splice(i, 1);
+      });
     self.filterQuery['$and'] = filterArr;
   }
 
@@ -195,21 +188,24 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
       self.subscriptions['fetchRelatedSchema_' + self.definition.properties.relatedTo] = self.commonService
         .get('sm', '/service/' + self.definition.properties.relatedTo, {
           select: 'definition'
-        }).subscribe(res => {
-          self.searchOnlyId = false;
-          self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
-          if (res.definition) {
-            self.relatedDefinition = JSON.parse(res.definition);
+        })
+        .subscribe(
+          res => {
+            self.searchOnlyId = false;
+            self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
+            if (res.definition) {
+              self.relatedDefinition = res.definition;
+            }
+          },
+          err => {
+            self.searchOnlyId = true;
           }
-        }, err => {
-          self.searchOnlyId = true;
-        });
+        );
     } else {
       self.searchOnlyId = false;
       const temp = self.appService.servicesMap[self.definition.properties.relatedTo];
-      // self.relatedDefinition = JSON.parse(temp.definition);
       if (temp.definition) {
-        self.relatedDefinition = JSON.parse(temp.definition);
+        self.relatedDefinition = temp.definition;
       }
     }
   }
@@ -283,8 +279,8 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
   get relatedDef() {
     const self = this;
     if (self.relatedDefinition && self.definition.properties.relatedSearchField) {
-      const newpath = self.definition.properties.relatedSearchField.split('.').join('.definition.');
-      return self.appService.getValue(newpath, self.relatedDefinition);
+      const newpath = self.definition.properties.relatedSearchField
+      return self.appService.getValueNew(newpath, self.relatedDefinition);
     }
     return null;
   }

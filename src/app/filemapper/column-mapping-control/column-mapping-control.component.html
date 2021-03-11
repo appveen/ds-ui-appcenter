@@ -18,7 +18,7 @@
 
 
     <input type="text" class="colDiv p-2 rounded" *ngIf="definition?.type!=='Array' && definition?.type!=='Object' && definition.type !=='Relation' && 
-        definition?.type!=='User' && !definition?.properties?.password"
+        definition?.type!=='User' && definition?.type!=='Geojson' && !definition?.properties?.password"
         [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
         [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)" (selectItem)="selectData($event)"
         [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter" (dragenter)="dragEnterEvent($event)"
@@ -35,6 +35,17 @@
 
 
     <!-- secure text type handling -->
+
+    <!-- Location type handling -->
+
+    <input type="text" class="colDiv p-2 rounded" *ngIf="definition?.type=='Geojson'"
+        [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
+        [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)"
+        (selectItem)="selectGeojsonData($event)" [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
+        (dragenter)="dragEnterEvent($event)" (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
+
+
+    <!-- Location type handling -->
 
     <!-- Group type handling -->
     <div class=" d-flex colDivSmall dotted align-items-center px-2 rounded "

@@ -5,6 +5,7 @@
         [ngModelOptions]="{standalone: true}">
       <label class="custom-control-label" [attr.for]="checkboxKey">&nbsp;</label>
     </div>
+    <div *ngIf="markEnable && !canEnable" class="check"></div>
   </div>
   <div class="label-wrapper d-flex align-items-start">
     <label class="label-width d-flex align-items-start mb-0 text-secondary font-weight-bold">
@@ -26,7 +27,7 @@
       [first]="first"></odp-form-control>
   </ng-container>
   <button type="button" class="btn btn-link pl-0 add-new"
-    *ngIf="definition.type=='Array' && definition.definition[0].type !== 'Object' && !definition?.properties?.readonly"
+    *ngIf="definition.type=='Array' && definition.definition[0].type !== 'Object' && !definition?.properties?.readonly && form.enabled"
     (click)="arrayControlRef.addNew()">
     <span class="fa fa-plus-circle mr-2"></span>
     <span class="text">Add new</span>
@@ -42,7 +43,8 @@
   </div>
 </div>
 
-<div class="field-wrapper d-flex align-items-start px-3" [formGroup]="form" *ngIf="definition.type=='Array'">
+<div class="field-wrapper d-flex align-items-start" [class.px-3]="definition.level === 0" [formGroup]="form"
+  *ngIf="definition.type=='Array'">
   <div class="spacer border-right align-self-stretch" [ngStyle]="spacing(definition.level+1, 'arr')"></div>
   <div class="d-flex flex-column w-100">
     <odp-array-control #arrayControl [markEnable]="markEnable" [form]="arrayForm"

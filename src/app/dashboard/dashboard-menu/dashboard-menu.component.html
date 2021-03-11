@@ -1,0 +1,14 @@
+<div class="menu-list border-right">
+    <ng-container *ngIf="activeMenuKey=='services'">
+        <odp-service-list></odp-service-list>
+    </ng-container>
+    <ng-container *ngIf="activeMenuKey=='interactions'">
+        <odp-integration-list></odp-integration-list>
+    </ng-container>
+    <ng-container *ngIf="activeMenuKey=='bookmark'">
+        <odp-bookmark-list></odp-bookmark-list>
+    </ng-container>
+    <ng-container *ngIf="activeMenuKey=='workflow'">
+        <odp-workflow-list></odp-workflow-list>
+    </ng-container>
+</div>

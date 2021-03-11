@@ -9,3 +9,12 @@
 .bg-error {
   background-color: #f8dcdc !important;
 }
+
+.timezone-selector {
+  // min-width: 120px;
+  // max-width: 120px;
+  outline: 0;
+  &:hover {
+    text-decoration: underline;
+  }
+}

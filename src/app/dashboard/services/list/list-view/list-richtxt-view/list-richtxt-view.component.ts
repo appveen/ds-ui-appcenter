@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AppService } from 'src/app/service/app.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'odp-list-richtxt-view',
@@ -12,7 +13,11 @@ export class ListRichtxtViewComponent implements OnInit {
   @Input() id;
   serviceId: string;
 
-  constructor(private appService: AppService) {
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+
+  constructor(private appService: AppService, private commonService: CommonService) {
     const self = this;
     self.serviceId = self.appService.serviceId;
   }

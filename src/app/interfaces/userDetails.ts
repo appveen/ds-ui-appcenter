@@ -27,6 +27,8 @@ export interface UserDetails {
     uuid?: string;
     lastLogin?: any;
     bot?: boolean;
+    defaultTimezone?: string;
+    b2BEnable?: boolean;
 }
 
 export interface Auth {

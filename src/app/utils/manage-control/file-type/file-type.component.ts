@@ -96,7 +96,7 @@ export class FileTypeComponent implements OnInit, OnDestroy {
       ev.preventDefault();
     }
     if (self.control.value) {
-      window.open(environment.url.api + self.appService.serviceAPI + '/file/download/' + self.fileId);
+      window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId);
     }
   }
 }

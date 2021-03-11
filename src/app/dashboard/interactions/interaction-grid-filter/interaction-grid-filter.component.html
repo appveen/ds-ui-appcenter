@@ -1,4 +1,4 @@
-<input *ngIf="type==='odpTxnId' || type==='remoteTxnId' || type === 'partnerName' || type === 'FlowName'" type="text"
+<input *ngIf="type==='dataStackTxnId' || type==='remoteTxnId' || type === 'partnerName' || type === 'FlowName'" type="text"
   class="border rounded bg-white w-100" [ngModel]="value" (ngModelChange)="onChange($event)">
 <input *ngIf="type==='Time'" type="date" class="border rounded bg-white w-100" [ngModel]="value"
   (ngModelChange)="onChange($event)">

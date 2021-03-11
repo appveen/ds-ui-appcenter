@@ -96,7 +96,7 @@ export class AppSwitcherComponent implements OnInit, AfterViewInit {
         self.switcherState = 'hidden';
         self.appList = this.commonService.appList;
         self.appList.forEach(app => {
-            if (!app.logo || !app.logo.thumbnail) {
+            if ((!app.logo || !app.logo.thumbnail) && !app.appCenterStyle) {
                 self.getAppDetails(app);
             }
         });

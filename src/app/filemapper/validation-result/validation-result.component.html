@@ -23,9 +23,9 @@
         </div>
         <div class="d-flex align-items-center">
           <span class="mr-2">Valid Records&nbsp;:</span>
-          <span *ngIf="transfersData.valid>0" class="text-primary hover"
-            (click)="showValidRecords=true"><u>{{transfersData.valid}}</u></span>
-          <span *ngIf="transfersData.valid==0" class="text-muted"><u>0</u></span>
+          <span *ngIf="transfersData.validCount>0" class="text-primary hover"
+            (click)="showValidRecords=true"><u>{{transfersData.validCount}}</u></span>
+          <span *ngIf="transfersData.validCount==0" class="text-muted"><u>0</u></span>
         </div>
       </div>
       <div class="d-flex text-primary-dark" *ngIf="!fileCorrupted">
@@ -45,16 +45,16 @@
         </div>
         <div class="d-flex align-items-center">
           <span class="mr-2">Conflicts&nbsp;:</span>
-          <span *ngIf="transfersData.conflicts>0" class="text-primary hover"
-            (click)="showConflictRecords=true"><u>{{transfersData.conflicts}}</u></span>
-          <span *ngIf="transfersData.conflicts==0" class="text-muted"><u>0</u></span>
+          <span *ngIf="transfersData.conflictCount>0" class="text-primary hover"
+            (click)="showConflictRecords=true"><u>{{transfersData.conflictCount}}</u></span>
+          <span *ngIf="transfersData.conflictCount==0" class="text-muted"><u>0</u></span>
         </div>
       </div>
-      <div *ngIf="!fileCorrupted && transfersData.conflicts>0" class="d-flex">
+      <div *ngIf="!fileCorrupted && transfersData.conflictCount>0" class="d-flex">
         <span class="text-muted">Selected for Update&nbsp;:</span>
         <span class="text-primary hover" (click)="showConflictRecords=true"><u>{{selectedConflicts}}</u></span>
       </div>
-      <div class="d-flex text-primary-dark" *ngIf="!fileCorrupted && transfersData.conflicts>0">
+      <div class="d-flex text-primary-dark" *ngIf="!fileCorrupted && transfersData.conflictCount>0">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-outline-primary" ngbDropdownToggle>Action</button>
           <div ngbDropdownMenu>
@@ -72,16 +72,16 @@
         </div>
         <div class="d-flex align-items-center">
           <span class="mr-2">Duplicates&nbsp;:</span>
-          <span *ngIf="transfersData.duplicate>0" class="text-primary hover"
-            (click)="showDuplicateRecords=true"><u>{{transfersData.duplicate}}</u></span>
-          <span *ngIf="transfersData.duplicate==0" class="text-muted"><u>0</u></span>
+          <span *ngIf="transfersData.duplicateCount>0" class="text-primary hover"
+            (click)="showDuplicateRecords=true"><u>{{transfersData.duplicateCount}}</u></span>
+          <span *ngIf="transfersData.duplicateCount==0" class="text-muted"><u>0</u></span>
         </div>
       </div>
-      <div *ngIf="!fileCorrupted && transfersData.duplicate>0" class="d-flex">
+      <div *ngIf="!fileCorrupted && transfersData.duplicateCount>0" class="d-flex">
         <span class="text-muted">Selected&nbsp;:</span>
         <span class="text-primary hover" (click)="showDuplicateRecords=true"><u>{{selectedDuplicates}}</u></span>
       </div>
-      <div class="d-flex text-primary-dark" *ngIf="!fileCorrupted && transfersData.duplicate>0">
+      <div class="d-flex text-primary-dark" *ngIf="!fileCorrupted && transfersData.duplicateCount>0">
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-outline-primary" ngbDropdownToggle>Action</button>
           <div ngbDropdownMenu>

@@ -3,7 +3,9 @@ import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
 import { IDatasource, IGetRowsParams, Column } from 'ag-grid-community';
 import { Subject } from 'rxjs';
-import { debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, map, distinctUntilChanged, take } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { AgGridFiltersComponent } from './ag-grid-filters/ag-grid-filters.component';
 import { environment } from 'src/environments/environment';
@@ -18,7 +20,6 @@ import { ListAgGridService } from './list-ag-grid.service';
   styleUrls: ['./list-ag-grid.component.scss']
 })
 export class ListAgGridComponent implements OnInit, OnDestroy {
-
   @ViewChild('clearFilterModal', { static: false }) clearFilterModal: TemplateRef<ElementRef>;
   @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
   @Input() schema: any;
@@ -44,12 +45,18 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   filterModel: any;
   clearFilterModalRef: NgbModalRef;
   noRowsTemplate;
-  showLoading:boolean;
+  showLoading: boolean;
   private subscription: any;
-  constructor(private elementRef: ElementRef,
+
+  constructor(
+    private elementRef: ElementRef,
     private commonService: CommonService,
     private gridService: ListAgGridService,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private location: Location,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
     const self = this;
     self.columnDefs = [];
     self.selectAll = new EventEmitter();
@@ -69,7 +76,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       expand: true
     };
     self.subscription = {};
-    self.noRowsTemplate ='<span>No records to display</span>';
+    self.noRowsTemplate = '<span>No records to display</span>';
   }
 
   ngOnInit() {
@@ -77,83 +84,137 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.apiEndpoint = '/' + self.schema.app + self.schema.api;
     self.createColumnDefs();
     self.getPrefrences();
-    self.getRecordsCount(true);
-    self.dataSource = {
-      getRows: (params: IGetRowsParams) => {
-        if (!environment.production) {
-          console.log('getRows', params);
+    this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
+      if (!!queryParams) {
+        if (!!queryParams.filter) {
+          this.apiConfig.filter = JSON.parse(queryParams.filter);
         }
-        let definitionList = self.agGrid.columnApi.getAllColumns().filter(e => e.isVisible()).map(e => e.getColDef().refData);
-        const cols = self.agGrid.columnApi.getAllGridColumns();
-        const colToNameFunc = function (col, index) {
-          return {
-            index, colId: col.getId()
-          };
-        };
-        const colNames = cols.map(colToNameFunc);
-        const filteredColms = [];
-        definitionList.forEach(element => {
-          const obj = colNames.find(ele => ele.colId === element.dataKey);
-          if (obj) {
-            filteredColms.push(obj);
-          }
-        });
-        const sc = [];
-        filteredColms.sort((a, b) => a.index - b.index);
-        filteredColms.forEach(ele => {
-          const obj = definitionList.find(element => ele.colId === element.dataKey);
-          if (obj) {
-            sc.push(obj);
-          }
-        });
-        definitionList = sc;
-        self.apiConfig.select = self.gridService.getSelect(definitionList);
-        self.agGrid.api.showLoadingOverlay();
-        self.showLoading =true;
-        self.selectedRecords.emit([]);
-        self.currentRecordsCountPromise.then(count => {
-          if (params.endRow - 30 < self.currentRecordsCount) {
-            self.apiConfig.page = Math.ceil(params.endRow / 30);
-            if (self.subscription['getRecords_' + self.apiConfig.page]) {
-              self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
-            }
-            self.subscription['getRecords_' + self.apiConfig.page] = self.getRecords().subscribe((records: any) => {
-              let loaded = params.endRow;
-              if (loaded > self.currentRecordsCount) {
-                loaded = self.currentRecordsCount;
+        if (!!queryParams.sort) {
+          this.apiConfig.sort = JSON.parse(queryParams.sort);
+        }
+        setTimeout(() => {
+          if (!!queryParams.sort) {
+            const sortModel = [];
+            const sortStr = JSON.parse(queryParams.sort);
+            sortStr.split(',').forEach(item => {
+              let colId = item;
+              let sort = 'asc';
+              if (item.includes('-')) {
+                colId = colId.substr(1, colId.length);
+                sort = 'desc';
               }
-              self.agGrid.api.hideOverlay();
-              self.showLoading=false;
-              // self.agGrid.api.deselectAll();
-              self.recordsInfo.emit({
-                loaded,
-                total: self.currentRecordsCount
+              sortModel.push({ colId, sort });
+            });
+            this.agGrid.api.setSortModel(sortModel);
+          }
+          if (!!queryParams.select) {
+            const select = JSON.parse(queryParams.select);
+            const allColumns = this.agGrid.columnApi.getAllColumns();
+            if (!!select?.length) {
+              this.agGrid.columnApi.setColumnsVisible(allColumns, false);
+              this.agGrid.columnApi.setColumnVisible('_checkbox', true);
+              select.forEach((selectItem, index) => {
+                const column = allColumns.find(col => {
+                  const colId = col.getColId();
+                  return selectItem === colId || selectItem.indexOf(colId + '.') === 0;
+                });
+                if(!!column) {
+                  this.agGrid.columnApi.setColumnVisible(column, true);
+                  this.agGrid.columnApi.moveColumn(column, index);
+                }
               });
-              if (loaded === self.currentRecordsCount) {
-                params.successCallback(records, self.currentRecordsCount);
-              } else {
-                params.successCallback(records);
-              }
-              self.rowSelected(null);
-            }, err => { });
-          } else {
-            self.agGrid.api.hideOverlay();
-            if (self.currentRecordsCount == 0) {
-              self.agGrid.api.showNoRowsOverlay();
+            } else {
+              this.agGrid.columnApi.setColumnsVisible(allColumns, true);
             }
-            params.successCallback([], self.currentRecordsCount);
           }
-        });
+        }, 1000);
       }
-    };
-    self.widthChange.pipe(
-      debounceTime(500)
-    ).subscribe(ev => {
+      self.getRecordsCount(true);
+      self.dataSource = {
+        getRows: (params: IGetRowsParams) => {
+          if (!environment.production) {
+            console.log('getRows', params);
+          }
+          let definitionList = self.agGrid.columnApi
+            .getAllColumns()
+            .filter(e => e.isVisible())
+            .map(e => e.getColDef().refData);
+          const cols = self.agGrid.columnApi.getAllGridColumns();
+          const colToNameFunc = function (col, index) {
+            return {
+              index,
+              colId: col.getId()
+            };
+          };
+          const colNames = cols.map(colToNameFunc);
+          const filteredColms = [];
+          definitionList.forEach(element => {
+            const obj = colNames.find(ele => ele.colId === element.dataKey);
+            if (obj) {
+              filteredColms.push(obj);
+            }
+          });
+          const sc = [];
+          filteredColms.sort((a, b) => a.index - b.index);
+          filteredColms.forEach(ele => {
+            const obj = definitionList.find(element => ele.colId === element.dataKey);
+            if (obj) {
+              sc.push(obj);
+            }
+          });
+          definitionList = sc;
+          self.apiConfig.select = self.gridService.getSelect(definitionList);
+          self.agGrid.api.showLoadingOverlay();
+          self.showLoading = true;
+          self.selectedRecords.emit([]);
+          self.currentRecordsCountPromise.then(count => {
+            if (params.endRow - 30 < self.currentRecordsCount) {
+              self.apiConfig.page = Math.ceil(params.endRow / 30);
+              if (self.subscription['getRecords_' + self.apiConfig.page]) {
+                self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
+              }
+              self.subscription['getRecords_' + self.apiConfig.page] = self.getRecords().subscribe(
+                (records: any) => {
+                  let loaded = params.endRow;
+                  if (loaded > self.currentRecordsCount) {
+                    loaded = self.currentRecordsCount;
+                  }
+                  self.agGrid.api.hideOverlay();
+                  self.showLoading = false;
+                  // self.agGrid.api.deselectAll();
+                  self.recordsInfo.emit({
+                    loaded,
+                    total: self.currentRecordsCount
+                  });
+                  if (loaded === self.currentRecordsCount) {
+                    params.successCallback(records, self.currentRecordsCount);
+                  } else {
+                    params.successCallback(records);
+                  }
+                  self.rowSelected(null);
+                },
+                err => {}
+              );
+            } else {
+              self.agGrid.api.hideOverlay();
+              if (self.currentRecordsCount == 0) {
+                self.agGrid.api.showNoRowsOverlay();
+              }
+              params.successCallback([], self.currentRecordsCount);
+            }
+            if (!!this.apiConfig.filter || !!this.apiConfig.sort || !!this.apiConfig.select) {
+              this.location.go(this.router.url.split('?')[0], this.getFilterUrlParams(this.apiConfig));
+            } else {
+              this.location.go(this.router.url.split('?')[0]);
+            }
+          });
+        }
+      };
+    });
+    self.widthChange.pipe(debounceTime(500)).subscribe(ev => {
       self.setPrefrences(ev);
     });
-    self.applySavedView.pipe(
-      distinctUntilChanged()
-    ).subscribe(data => {
+    self.subscription['applySaviedView'] = self.applySavedView.pipe(distinctUntilChanged()).subscribe(data => {
       try {
         if (data.value) {
           if (typeof data.value === 'string') {
@@ -163,12 +224,15 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           const temp = self.agGrid.api.getFilterModel();
           if (temp && Object.keys(temp).length > 0) {
             self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
-            self.clearFilterModalRef.result.then((close) => {
-              if (close) {
-                self.gridService.selectedSavedView = viewModel;
-                self.configureView(viewModel || {});
-              }
-            }, dismiss => { });
+            self.clearFilterModalRef.result.then(
+              close => {
+                if (close) {
+                  self.gridService.selectedSavedView = viewModel;
+                  self.configureView(viewModel || {});
+                }
+              },
+              dismiss => {}
+            );
           } else {
             self.gridService.selectedSavedView = viewModel;
             self.configureView(viewModel || {});
@@ -204,6 +268,28 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     });
   }
 
+  getFilterUrlParams(config) {
+    let urlParams = '';
+    if (!!config.filter) {
+      urlParams += 'filter=' + JSON.stringify(config.filter);
+    }
+    if (!!config.sort) {
+      urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
+    }
+    if (!!config.select) {
+      const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
+      const compSelect = config.select;
+      let isSame = true;
+      compColumnIds.forEach((item, index) => {
+        isSame = isSame && item === compSelect[index];
+      });
+      if (!isSame) {
+        urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(compSelect);
+      }
+    }
+    return urlParams;
+  }
+
   initRows(nocount?: boolean) {
     const self = this;
     if (!nocount) {
@@ -215,19 +301,22 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   getRecordsCount(first?: boolean) {
     const self = this;
     const filter = self.apiConfig.filter;
-    self.currentRecordsCountPromise = self.commonService.get('api', self.apiEndpoint + '/count', { filter, expand: true }).pipe(
-      map(count => {
-        if (first) {
-          self.totalRecordsCount = count;
-        }
-        self.currentRecordsCount = count;
-        self.recordsInfo.emit({
-          loaded: 0,
-          total: count
-        });
-        return count;
-      })
-    ).toPromise();
+    self.currentRecordsCountPromise = self.commonService
+      .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
+      .pipe(
+        map(count => {
+          if (first) {
+            self.totalRecordsCount = count;
+          }
+          self.currentRecordsCount = count;
+          self.recordsInfo.emit({
+            loaded: 0,
+            total: count
+          });
+          return count;
+        })
+      )
+      .toPromise();
   }
 
   getRecords() {
@@ -244,31 +333,34 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         key: self.schema._id
       }
     };
-    self.commonService.get('user', '/preferences', options).subscribe(prefRes => {
-      try {
-        const colWidth = prefRes.filter(e => e.type === 'column-width');
-        if (colWidth && colWidth.length > 0) {
-          if (colWidth[0] && colWidth[0]._id) {
-            self.colWidthPrefId = colWidth[0]._id;
+    self.commonService.get('user', '/preferences', options).subscribe(
+      prefRes => {
+        try {
+          const colWidth = prefRes.filter(e => e.type === 'column-width');
+          if (colWidth && colWidth.length > 0) {
+            if (colWidth[0] && colWidth[0]._id) {
+              self.colWidthPrefId = colWidth[0]._id;
+            }
+            const widthValues = JSON.parse(colWidth[0].value);
+            if (widthValues && widthValues.length > 0) {
+              widthValues.forEach(item => {
+                self.agGrid.columnApi.setColumnWidth(item.colId, item.width);
+              });
+            }
           }
-          const widthValues = JSON.parse(colWidth[0].value);
-          if (widthValues && widthValues.length > 0) {
-            widthValues.forEach(item => {
-              self.agGrid.columnApi.setColumnWidth(item.colId, item.width);
-            });
-          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
+      },
+      prefErr => {
+        self.commonService.errorToast(prefErr, 'Unable to load preference');
       }
-    }, prefErr => {
-      self.commonService.errorToast(prefErr, 'Unable to load preference');
-    });
+    );
   }
 
   setPrefrences(columns: Array<Column>) {
     const self = this;
-    const colWidth = columns.map((col) => {
+    const colWidth = columns.map(col => {
       return {
         colId: col.getColId(),
         width: col.getActualWidth()
@@ -286,13 +378,16 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     } else {
       response = self.commonService.post('user', '/preferences/', payload);
     }
-    response.subscribe((widthPref) => {
-      if (widthPref._id) {
-        self.colWidthPrefId = widthPref._id;
+    response.subscribe(
+      widthPref => {
+        if (widthPref._id) {
+          self.colWidthPrefId = widthPref._id;
+        }
+      },
+      err => {
+        console.error(err.message, 'unable to save column width preference');
       }
-    }, err => {
-      console.error(err.message, 'unable to save column width preference');
-    });
+    );
   }
 
   configureView(viewModel) {
@@ -316,7 +411,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       }
       if (viewModel.filter && viewModel.filter.length > 0) {
         viewModel.filter.forEach(item => {
-          filters.push(item.filterObject);
+          if(!!Object.keys(item.filterObject).length) {
+            filters.push(item.filterObject);
+          }
         });
       }
       if (viewModel.sort && viewModel.sort.length > 0) {
@@ -392,7 +489,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         (temp as AgGridColumn).filterParams = {
           caseSensitive: true,
           suppressAndOrCondition: true,
-          suppressFilterButton: true,
+          suppressFilterButton: true
         };
       }
       if (e.type === 'Relation') {
@@ -503,11 +600,15 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   }
   columnMoved() {
     const self = this;
-    let definitionList = self.agGrid.columnApi.getAllColumns().filter(e => e.isVisible()).map(e => e.getColDef().refData);
+    let definitionList = self.agGrid.columnApi
+      .getAllColumns()
+      .filter(e => e.isVisible())
+      .map(e => e.getColDef().refData);
     const cols = self.agGrid.columnApi.getAllGridColumns();
     const colToNameFunc = function (col, index) {
       return {
-        index, colId: col.getId()
+        index,
+        colId: col.getId()
       };
     };
     const colNames = cols.map(colToNameFunc);
@@ -529,7 +630,6 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     definitionList = selectedColumns;
     self.apiConfig.select = self.gridService.getSelect(definitionList);
   }
-
 
   cellContextMenu($event) {
     const self = this;

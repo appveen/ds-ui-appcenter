@@ -65,10 +65,10 @@
         **********
       </ng-container>
       <ng-container *ngIf="showPassword">
-        {{value.value}}
+        {{decryptedValue}}
       </ng-container>
       <button type="button" class="btn btn-sm btn-link p-0 ml-2"
-        (click)="showPassword=!showPassword;$event.stopPropagation();">
+        (click)="showDecryptedValue(value);$event.stopPropagation();">
         {{showPassword?'Hide':'Show'}}
       </button>
     </ng-container>
@@ -97,13 +97,13 @@
   </ng-container>
   <ng-container *ngIf="type === 'Date'">
     <ng-container *ngIf="properties.dateType == 'date'">
-      <span class="text-muted" *ngIf="!value">N.A</span>
-      <span class="text-muted" *ngIf="value">{{value |date:'dd-MMM-yyyy'}}</span>
+      <span class="text-muted" *ngIf="!parsedDate">N.A</span>
+      <span class="" *ngIf="parsedDate">{{parsedDate |date:'dd-MMM-yyyy'}} ({{timezoneValue}})</span>
 
     </ng-container>
     <ng-container *ngIf="properties.dateType != 'date'">
-      <span class="text-muted" *ngIf="!value">N.A</span>
-      <span class="text-muted" *ngIf="value">{{value |date:'dd-MMM-yyyy, hh:mm a'}}</span>
+      <span class="text-muted" *ngIf="!parsedDate">N.A</span>
+      <span class="" *ngIf="parsedDate">{{parsedDate |date:'dd-MMM-yyyy, hh:mm a'}} ({{timezoneValue}})</span>
     </ng-container>
   </ng-container>
   <ng-container *ngIf="type === 'Boolean'">

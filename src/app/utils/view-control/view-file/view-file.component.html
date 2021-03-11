@@ -20,9 +20,10 @@
     <span class="text">{{value?.metadata?.filename}}</span>
   </a> -->
   <a href="#" (click)="previewFile($event)" *ngIf="value">
-    <span class="fa fa-download mr-2"></span>
     <span class="text">{{value?.metadata?.filename}}</span>
   </a>
+  <span class="fa fa-download ml-2 hover" *ngIf="value" (click)="downloadFile($event)"></span>
+
   <ng-container *ngIf="!value">
     <span class="text-muted">N.A.</span>
   </ng-container>

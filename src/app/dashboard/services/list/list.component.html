@@ -17,11 +17,11 @@
         </button>-->
       <div class="btn-group">
         <button type="button" class="btn btn-success active" *ngIf="hasPermission('POST') || hasPermission('PUT')"
-          [routerLink]="['/~/services/',schema._id,'filemapper']">
+          [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
           <span class="fas fa-cloud-upload-alt text-white"></span>
         </button>
         <button id="addDataBtn" type="button" class="btn btn-success d-flex align-items-center text-white"
-          *ngIf="hasPermission('POST')" [routerLink]="['/~/services/',schema._id,'manage']">
+          *ngIf="hasPermission('POST')" [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">
           <span class="fas fa-plus mr-2"></span>
           <span>Add Data</span>
         </button>
@@ -75,8 +75,8 @@
       </button>
     </div>
     <div class="d-flex align-items-center">
-      <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold" *ngIf="selectedSavedView"
-        (click)="resetFilter();">
+      <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
+        *ngIf="selectedSavedView || hasFilterFromUrl" (click)="resetFilter();">
         <span class="fas fa-redo fa-flip-horizontal"></span>
         <span class="pl-2">Reset Filter</span>
       </div>
@@ -90,7 +90,8 @@
             <span class="fa fa-search text-gray-medium mr-1 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
             <span class="fa fa-search text-primary mr-1 ignore-outside" *ngIf="selectedSavedView?.name"></span>
             <span class="ignore-outside"
-              [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{ selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
+              [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{
+              selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
           </div>
           <div class="ml-auto ignore-outside">
             <span class="fas fa-angle-down text-primary ignore-outside"></span>
@@ -127,10 +128,10 @@
               <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
               <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
               <span class="hover text-truncate filterNameWidth"
-                (click)="selectSavedView(filter);showSaveViewDropDown=false"
+                (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
                 [odpTruncated]="filter.name">{{ filter.name }}</span>
-              <span *ngIf="!filter.showOptions"
-                class="text-secondary ml-auto position-absolute un-pos">{{ filter.user }}</span>
+              <span *ngIf="!filter.showOptions" class="text-secondary ml-auto position-absolute un-pos">{{ filter.user
+                }}</span>
               <span *ngIf="!filter.showOptions"
                 class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
               <div *ngIf="filter.showOptions" class="ml-auto d-flex align-items-center hover" [@slideIn]>
@@ -169,17 +170,19 @@
   <div class="no-record text-center mx-2 mt-2 bg-white rounded" *ngIf="!apiCallsPending && totalRecords==0">
     <div class="no-records-img mx-auto"></div>
     <h4 class="text-muted">This data service does not have any records, yet. <span *ngIf="hasPermission('POST')">You
-        could get started by <a [routerLink]="['/~/services/',schema._id,'manage']">adding data</a>.</span>
+        could get started by <a [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">adding
+          data</a>.</span>
     </h4>
   </div>
-  <odp-list-filters *ngIf="advanceFilter" [allColumns]="definition" [allFilters]="savedViews"
-    (filterCleared)="selectedSavedView = null;" (refine)="selectSavedView($event)">
+  <odp-list-filters #listFilters *ngIf="advanceFilter" [allColumns]="definition" [allFilters]="allFilters"
+    (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
   </odp-list-filters>
 
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
-    <div class="data-container p-0 w-100" [ngClass]="{'border-top': advanceFilter}" *ngIf="totalRecords>0"
-      odpClickOutside (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
+    <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"
+      *ngIf="totalRecords>0" odpClickOutside (outside)="showContextMenu = false" (click)="closeContextMenu();"
+      (contextmenu)="false">
       <odp-list-ag-grid #listGrid *ngIf="definition && definition.length >0" [schema]="schema" [columns]="definition"
         [selectAll]="selectAll" [applySavedView]="applySavedView" (removedSavedView)="removedSavedView($event)"
         (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)"
@@ -283,9 +286,9 @@
       <div class="d-flex align-items-center justify-content-between p-3">
         <span class="d-flex align-items-center">
           <span class="text-secondary mr-1">Submitted by</span>
-          <span *ngIf="workflowModalOptions.requestedBy.length <= 52">{{workflowModalOptions.requestedBy}}</span>
-          <span *ngIf="workflowModalOptions.requestedBy.length > 52" class="text-truncate requestedBy high-zIndex"
-            [ngbTooltip]="workflowModalOptions.requestedBy" placement="top">{{workflowModalOptions.requestedBy}}</span>
+          <span *ngIf="workflowModalOptions?.requestedBy?.length <= 52">{{workflowModalOptions?.requestedBy}}</span>
+          <span *ngIf="workflowModalOptions?.requestedBy?.length > 52" class="text-truncate requestedBy high-zIndex"
+            [ngbTooltip]="workflowModalOptions?.requestedBy" placement="top">{{workflowModalOptions?.requestedBy}}</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="d-flex align-items-center">
           <span class="text-secondary mr-1">Field(s) affected</span>

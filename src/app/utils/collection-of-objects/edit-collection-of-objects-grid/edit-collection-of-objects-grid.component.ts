@@ -1,7 +1,7 @@
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GridOptions, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
-import { Component, OnInit, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, ViewChild, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 
 import {
   AG_GRID_FOOTER_HEIGHT,
@@ -19,17 +19,20 @@ import { ColOfObjsGridCellComponent } from '../col-of-objs-grid-cell/col-of-objs
 import { FloatingFilterComponent } from '../grid-column-filter/floating-filter/floating-filter.component';
 import { ColumnFilterComponent } from '../grid-column-filter/column-filter/column-filter.component';
 import { AppService } from 'src/app/service/app.service';
+import { ColOfObjsHeaderCellComponent } from '../col-of-objs-header-cell/col-of-objs-header-cell/col-of-objs-header-cell.component';
 
 @Component({
   selector: 'odp-edit-collection-of-objects-grid',
   templateUrl: './edit-collection-of-objects-grid.component.html',
   styleUrls: ['./edit-collection-of-objects-grid.component.scss']
 })
-export class EditCollectionOfObjectsGridComponent implements OnInit {
+export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, OnDestroy {
+
   @Input() formArray: FormArray;
   @Input() definition: any;
   @Input() collectionFieldName: string;
   @Input() showIndexColumn: boolean = false;
+  @Input() isEditable: boolean;
   @ViewChild('editModal', { static: false }) editModal: TemplateRef<HTMLElement>;
   @ViewChild('bulkEditModal', { static: false }) bulkEditModal: TemplateRef<HTMLElement>;
   editModalRef: NgbModalRef;
@@ -46,7 +49,17 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
   bulkEditForm: FormGroup = null;
   frameworkComponents: any;
   showModalBackdrop = false;
+  rowData;
   private addAllowed = true;
+
+  get rowCount() {
+    return this.gridApi?.getDisplayedRowCount() || 0;
+  }
+
+  get isFormArrayValid() {
+    return !!this.formArray && !!this.formArray.controls.length &&
+      !this.formArray.controls.some(control => control.invalid)
+  }
 
   get gridStyle() {
     return {
@@ -77,6 +90,24 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
   ngOnInit() {
     this.flattenDefinition(this.definitionList, this.definition.definition);
     this.prepareTable();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.formArray) {
+      this.rowData = this.formArray.getRawValue().map((v, i) => ({ ...v, __index: i + 1 }))
+      setTimeout(e => {
+        this.onGridSizeChanged()
+      }, 100)
+    }
+  }
+
+  ngOnDestroy() {
+    if (!!this.editModalRef) {
+      this.editModalRef.dismiss();
+    }
+    if (!!this.bulkEditModalRef) {
+      this.bulkEditModalRef.dismiss();
+    }
   }
 
   flattenDefinition(definitionList, definition, parent?) {
@@ -130,6 +161,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
         if (!!selectedNodes && !!selectedNodes.length) {
           index = selectedNodes[selectedNodes.length - 1].rowIndex + 1;
         }
+
         this.formArray.insert(index, formGroupControl);
         this.formArray.markAsDirty();
         this.selectedRowIndex = index;
@@ -258,11 +290,24 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
   }
 
   private getFormObject() {
+    this.makeAttributesReadOnly(this.definition)
     return this.fb.group(this.formService.createForm(this.definition.definition));
   }
 
+
+  makeAttributesReadOnly(definition) {
+    if (definition.properties && definition.properties.readonly) {
+      definition.definition.forEach(element => {
+        element.properties.readonly = true;
+        if (element.type === 'Object') {
+          this.makeAttributesReadOnly(element);
+        }
+      });
+    }
+  }
   private prepareTable() {
     this.frameworkComponents = {
+      customHeaderRenderer: ColOfObjsHeaderCellComponent,
       customCheckboxCellRenderer: GridCheckboxComponent,
       customCellRenderer: ColOfObjsGridCellComponent,
       actionColCellRenderer: EditColOfObjsComponent,
@@ -270,14 +315,26 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
       customFloatingFilterComponent: FloatingFilterComponent,
     };
     const columnDefs: Array<ColDef> = [
-      {
-        headerName: '#',
-        pinned: 'left',
-        sortable: false,
-        cellRenderer: 'customCheckboxCellRenderer',
-        minWidth: 60,
-        maxWidth: 60,
-      },
+      // {
+      //   headerName: '#',
+      //   pinned: 'left',
+      //   sortable: false,
+      //   cellRenderer: 'customCheckboxCellRenderer',
+      //   minWidth: 60,
+      //   maxWidth: 60,
+      // },
+      ...(
+        this.isEditable
+          ? [{
+            headerName: '#',
+            pinned: 'left',
+            sortable: false,
+            cellRenderer: 'customCheckboxCellRenderer',
+            minWidth: 60,
+            maxWidth: 60,
+          },]
+          : []
+      ),
       ...(
         this.showIndexColumn
           ? [{
@@ -289,6 +346,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
           : []
       ),
       ...this.definitionList.map(definition => ({
+        ...(definition.properties.required ? { headerComponent: 'customHeaderRenderer' } : {}),
         headerName: !!definition.properties.label ? definition.properties.label : definition.properties.name,
         field: definition.controlPath,
         sortable: true,
@@ -316,11 +374,10 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
       paginationPageSize: AG_GRID_PAGINATION_COUNT,
       animateRows: true,
       floatingFilter: true,
-      rowData: this.formArray.getRawValue().map((v, i) => ({ ...v, __index: i + 1 })),
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
       onRowDoubleClicked: this.onRowDoubleClick.bind(this),
-      onGridSizeChanged: this.onGridSizeChanged.bind(this),
+      onGridSizeChanged: this.forceResizeColumns.bind(this),
       onSelectionChanged: this.onSelectionChanged.bind(this),
       rowSelection: 'multiple',
       rowDeselection: true,
@@ -328,8 +385,10 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
       defaultColDef: {
         suppressMovable: true,
         suppressMenu: true
-      }
+      },
+      suppressColumnVirtualisation: true
     };
+
   }
 
   private onGridReady(event) {
@@ -377,6 +436,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
   private autoSizeAllColumns() {
     if (!!this.gridApi && !!this.columnApi) {
       setTimeout(() => {
+        const container = document.querySelector('.grid-container');
+        const availableWidth = !!container ? container.clientWidth - 80 : 900;
         const allColumns = this.columnApi.getAllColumns();
         allColumns.forEach(col => {
           this.columnApi.autoSizeColumn(col);
@@ -384,6 +445,10 @@ export class EditCollectionOfObjectsGridComponent implements OnInit {
             col.setActualWidth(AG_GRID_DEFAULT_COLUMN_WIDTH);
           }
         });
+        const occupiedWidth = allColumns.reduce((pv, cv) => (pv + cv.getActualWidth()), -80);
+        if (occupiedWidth < availableWidth) {
+          this.gridApi.sizeColumnsToFit();
+        }
       });
     }
   }

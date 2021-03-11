@@ -1,0 +1,108 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.notification-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: 8px;
+  max-height: 90px;
+  height: 90px;
+  margin: 4px 8px;
+  border-radius: 8px;
+  padding: 12px 20px;
+  user-select: none;
+  cursor: pointer;
+
+  &.unread {
+    background: white;
+
+    &:hover {
+      background: linear-gradient(45deg, white, rgba(white, 0.3));
+
+      &.clear {
+        background: linear-gradient(45deg, white, rgba(red, 0.15));
+      }
+
+      .notification-body .icon-container {
+        box-shadow: inset 0px 0px 10px 10px rgba(black, 0.15);
+      }
+    }
+  }
+
+  .notification-title-section {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: repeat(5, auto) 1fr auto;
+    align-items: center;
+    color: $gray-medium;
+    user-select: none;
+
+    .fa-circle {
+      font-size: 5px;
+    }
+  }
+
+  .notification-body {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 8px;
+
+    .icon-container {
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      min-width: 40px;
+      max-width: 40px;
+      min-height: 40px;
+      max-height: 40px;
+      border-radius: 20px;
+      background: #b5b8bc;
+      transition: box-shadow 200ms ease;
+    }
+
+    .content {
+      display: grid;
+      grid-template-rows: auto auto;
+      row-gap: 8px;
+      align-content: space-between;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .filename {
+        color: $gray-medium;
+      }
+    }
+
+    .clearBtn {
+      background: none;
+      color: $secondary;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 50%;
+      box-shadow: none;
+
+      &:hover {
+        box-shadow: inset 0px 0px 10px 10px rgba(red, 0.15);
+      }
+
+      .icon {
+        display: grid;
+        span {
+          line-height: 0.4;
+          width: fit-content;
+        }
+      }
+    }
+  }
+}

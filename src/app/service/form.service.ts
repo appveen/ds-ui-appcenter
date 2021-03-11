@@ -16,7 +16,7 @@ export class FormService {
     if (key === '_id') {
       definition.type = 'String';
     }
-    if (value && key === '_id') {
+    if (value && key === '_id' && options && options.isEdit) {
       definition.properties.readonly = true;
     }
     if (options && options.isEdit && definition.properties.createOnly) {
@@ -27,8 +27,8 @@ export class FormService {
     if (definition.type === 'Object') {
       const objDef = definition.definition;
       if (options && options.flatten) {
-        Object.keys(objDef).forEach(_key => {
-          temp.push(self.convert(_key, objDef[_key], level + 1, path, value && typeof value === 'object' ? value[_key] : null, options));
+        objDef.forEach(def => {
+          temp.push(self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] : null, options));
         });
       } else {
         temp.push({
@@ -39,13 +39,17 @@ export class FormService {
           properties: definition.properties,
           level: level,
           value: value,
-          definition: Array.prototype.concat.apply([], Object.keys(objDef).map(_key => {
-            return self.convert(_key, objDef[_key], level + 1, path, value && typeof value === 'object' ? value[_key] : null, options);
-          }))
+          definition: Array.prototype.concat.apply(
+            [],
+            objDef.map(def => {
+              return self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] : null, options);
+            })
+          )
         });
       }
     } else if (definition.type === 'Array') {
       const arrDef = definition.definition;
+      const selfObj = arrDef[0];
       const def: any = {
         path: path,
         key: key,
@@ -56,19 +60,21 @@ export class FormService {
         value: value
       };
       if (options && options.flatten) {
-        def.definition = [{
-          path: path + '.#',
-          key: '#',
-          camelCase: camelCase,
-          type: arrDef._self.type,
-          properties: arrDef._self.properties,
-          level: level + 1,
-          value: value,
-          definition: arrDef._self.type === 'Object'
-            || arrDef._self.type === 'Array' ? self.convert('_self', arrDef['_self'], level + 2, path, null, options) : []
-        }];
+        def.definition = [
+          {
+            path: path + '.#',
+            key: '#',
+            camelCase: camelCase,
+            type: selfObj.type,
+            properties: selfObj.properties,
+            level: level + 1,
+            value: value,
+            definition:
+              selfObj.type === 'Object' || selfObj.type === 'Array' ? self.convert('_self', selfObj, level + 2, path, null, options) : []
+          }
+        ];
       } else {
-        def.definition = self.convert('_self', arrDef['_self'], level + 1, path, value, options);
+        def.definition = self.convert('_self', selfObj, level + 1, path, value, options);
       }
       temp.push(def);
     } else {
@@ -89,44 +95,37 @@ export class FormService {
     const self = this;
     const temp = [];
     let definition = schema.definition;
-    if (typeof definition === 'string') {
-      definition = JSON.parse(definition);
-    }
-    Object.keys(definition).forEach(key => {
-      temp.push(self.convert(key, definition[key], 0, null, value ? value[key] : null, options));
+    definition.forEach(def => {
+      temp.push(self.convert(def.key, def, 0, null, value ? value[def.key] : null, options));
     });
     return Array.prototype.concat.apply([], temp);
   }
   parseDefinitionFM(def, parentKey?: string, parentName?: string): Definition[] {
     const self = this;
     let tempArr: Definition[] = [];
-    Object.keys(def).forEach(key => {
+    def.forEach(defObj => {
       const temp: Definition = {};
       temp.show = true;
-      if (key === '_id' && !parentKey) {
-        temp.key = key;
-        temp.dataKey = key;
+      if (defObj.key === '_id' && !parentKey) {
+        temp.key = defObj.key;
+        temp.dataKey = defObj.key;
         temp.type = 'Identifier';
-        // temp.properties = def[key].properties;
-        // temp.properties = { name: 'ID' };
-        temp.properties = { name: def[key].properties.name };
-        temp.properties.type = def[key].type;
+        temp.properties = { name: defObj.properties.name };
+        temp.properties.type = defObj.type;
         temp.definition = [];
         tempArr.unshift(temp);
       } else {
-        if (def[key].type === 'Object') {
-          const tempName = parentName ? parentName + '.' + def[key].properties.name : def[key].properties.name;
-          const tempKey = parentKey ? parentKey + '.' + key : key;
-          // tempArr = tempArr.concat(self.parseDefinition(def[key].definition, key, def[key].properties.name));
-          tempArr = tempArr.concat(self.parseDefinitionFM(def[key].definition, tempKey, tempName));
+        if (defObj.type === 'Object') {
+          const tempName = parentName ? parentName + '.' + defObj.properties.name : defObj.properties.name;
+          const tempKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
+          tempArr = tempArr.concat(self.parseDefinitionFM(defObj.definition, tempKey, tempName));
         } else {
-          temp.key = parentKey ? parentKey + '.' + key : key;
-          temp.dataKey = parentKey ? parentKey + '.' + key : key;
-          temp.type = def[key].type;
-          temp.properties = def[key].properties;
-          temp.properties.name = parentName ? parentName + '.' + temp.properties.name : temp.properties.name;
-          temp.properties.type = def[key].type;
-          temp.definition = def[key].definition ? self.parseDefinitionFM(def[key].definition, temp.key, def[key].properties.name) : [];
+          temp.key = parentKey ? parentKey + '.' + defObj.key : defObj.key;
+          temp.dataKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
+          temp.type = defObj.type;
+          temp.properties = defObj.properties;
+          temp.properties.type = defObj.type;
+          temp.definition = defObj.definition ? self.parseDefinitionFM(defObj.definition, temp.key, defObj.properties.name) : [];
           tempArr.push(temp);
         }
       }
@@ -166,14 +165,13 @@ export class FormService {
   convertSchema(_object, _value?, isEdit?) {
     const self = this;
     const _temp: any = [];
-    for (const _key in _object) {
-      if (_key === '_id') {
-        _temp.unshift(self.convertDefinition(_key, _object[_key], _value, isEdit));
+    _object.forEach(def => {
+      if (def.key === '_id') {
+        _temp.unshift(self.convertDefinition(def.key, def, _value, isEdit));
       } else {
-        _temp.push(self.convertDefinition(_key, _object[_key], _value, isEdit));
+        _temp.push(self.convertDefinition(def.key, def, _value, isEdit));
       }
-
-    }
+    });
     return _temp;
   }
 
@@ -276,8 +274,7 @@ export class FormService {
     _fields.forEach(_def => {
       if (_def.type === 'Object') {
         _control = new FormBuilder().group(self.createForm(_def.definition));
-      }
-      else {
+      } else {
         if (_def.type === 'Array') {
           _control = new FormArray([]);
           if (_def.value) {
@@ -292,29 +289,47 @@ export class FormService {
                 }
                 (<FormArray>_control).push(control);
               } else {
-                (<FormArray>_control).push(new FormControl({ value: element !== null ? element : null, disabled: _def.properties.readonly }));
+                (<FormArray>_control).push(
+                  new FormControl({
+                    value: element !== null ? element : null,
+                    disabled: _def.properties.readonly
+                  })
+                );
               }
+            });
+          }
+          if (_def.properties.readonly) {
+            _def.definition.forEach(element => {
+              element.properties.readonly = true;
             });
           }
         } else {
           if (_def.properties.readonly) {
             _control = new FormControl({
-              value: (_def.value !== null && _def.value !== undefined) ? _def.value : _def.properties.default !== undefined ? _def.properties.default : null,
+              value:
+                _def.value !== null && _def.value !== undefined
+                  ? _def.value
+                  : _def.properties.default !== undefined
+                  ? _def.properties.default
+                  : null,
               disabled: true
             });
           } else {
             if (_def.type === 'Number' || _def.type === 'Boolean') {
-              _control = new FormControl((_def.value !== null && _def.value !== undefined) ? _def.value : _def.properties.default);
+              _control = new FormControl(_def.value !== null && _def.value !== undefined ? _def.value : _def.properties.default);
             } else {
               if (_def.properties.default) {
                 if (_def.properties.relatedTo) {
-                  _control = new FormControl({ _id: _def.value ? _def.value._id : _def.properties.default });
+                  _control = new FormControl({
+                    _id: _def.value ? _def.value._id : _def.properties.default
+                  });
                 } else if (_def.type === 'User') {
-                  _control = new FormControl({ _id: _def.value ? _def.value._id : _def.properties.default });
+                  _control = new FormControl({
+                    _id: _def.value ? _def.value._id : _def.properties.default
+                  });
                 } else {
                   _control = new FormControl(_def.value ? _def.value : _def.properties.default);
                 }
-
               } else {
                 _control = new FormControl(_def.value || null);
               }
@@ -338,8 +353,7 @@ export class FormService {
     _fields.forEach(_def => {
       if (_def.type === 'Object' && !(_def.properties && _def.properties.password)) {
         _control = new FormBuilder().group(self.createMappingForm(_def.definition));
-      }
-      else {
+      } else {
         if (_def.type === 'Array') {
           _control = new FormArray([]);
           if (_def.value) {
@@ -350,35 +364,33 @@ export class FormService {
                 const control = new FormBuilder().group(self.createMappingForm(_def.definition[0].definition));
                 // (<FormGroup>control).patchValue();
                 (<FormArray>_control).push(control);
-              }
-              else if (_def.definition[0].type === 'User') {
+              } else if (_def.definition[0].type === 'User') {
                 const control = new FormBuilder().group({ _id: null });
                 (<FormArray>_control).push(control);
-              }
-              else {
+              } else {
                 (<FormArray>_control).push(new FormControl(null));
               }
             });
-          }
-          else {
+          } else {
             if (_def.definition[0].type === 'array') {
               // has to be implemented
             } else if (_def.definition[0].type === 'Object') {
               const control = new FormBuilder().group(self.createMappingForm(_def.definition[0].definition));
               // (<FormGroup>control).patchValue();
               (<FormArray>_control).push(control);
-            }
-            else if (_def.definition[0].type === 'User') {
+            } else if (_def.definition[0].type === 'User') {
               const control = new FormBuilder().group({ _id: null });
               (<FormArray>_control).push(control);
-            }
-            else {
+            } else {
               (<FormArray>_control).push(new FormControl(null));
             }
           }
         } else {
           if (_def.properties.readonly) {
-            _control = new FormControl({ value: _def.value || null, disabled: true });
+            _control = new FormControl({
+              value: _def.value || null,
+              disabled: true
+            });
           } else {
             if (_def.type === 'Number' || _def.type === 'Boolean') {
               _control = new FormControl(null);
@@ -386,13 +398,11 @@ export class FormService {
               if (_def.properties.default) {
                 if (_def.properties.relatedTo) {
                   _control = new FormControl({ _id: _def.properties.default });
-
                 } else if (_def.type === 'User') {
                   _control = new FormControl({ _id: _def.properties.default });
                 } else {
                   _control = new FormControl(_def.value ? _def.value : _def.properties.default);
                 }
-
               } else {
                 _control = new FormControl(_def.value || null);
               }
@@ -404,23 +414,21 @@ export class FormService {
       _dynamicGroup[_def.key] = _control;
     });
     return _dynamicGroup;
-
   }
 
   patchType(definition: any) {
     if (definition) {
-      if (typeof definition === 'string') {
-        definition = JSON.parse(definition);
-      }
-      Object.keys(definition).forEach(key => {
-        if (key !== '_id') {
-          const def = definition[key];
+      definition.forEach(def => {
+        if (def.key !== '_id') {
           if (def.type === 'Object') {
             if (def.properties.relatedTo) {
               def.type = 'Relation';
               delete def.definition;
             } else if (def.properties.password) {
               def.type = 'String';
+              delete def.definition;
+            } else if (def.properties.dateType) {
+              def.type = 'Date';
               delete def.definition;
             } else {
               this.patchType(def.definition);
@@ -437,15 +445,11 @@ export class FormService {
   }
 
   fixReadonly(definition: any, readonly?: boolean) {
-    if (typeof definition === 'string') {
-      definition = JSON.parse(definition);
-    }
-    Object.keys(definition).forEach(key => {
-      const def = definition[key];
+    definition.forEach(def => {
       if (typeof readonly === 'boolean' && def.properties) {
         def.properties.readonly = readonly;
       }
-      if (key !== '_id' && def.type === 'Object') {
+      if (def.key !== '_id' && def.type === 'Object') {
         this.fixReadonly(def.definition, def.properties.readonly);
       }
     });
@@ -453,7 +457,7 @@ export class FormService {
 }
 
 export function email(control: FormControl) {
-  if ((!control.value || !control.value.trim()) || (control.value && control.value.match(/[\w]+@[a-zA-Z0-9-]{2,}(\.[a-z]{2,})+$/))) {
+  if (!control.value || !control.value.trim() || (control.value && control.value.match(/[\w]+@[a-zA-Z0-9-]{2,}(\.[a-z]{2,})+$/))) {
     return null;
   }
   return { email: true };

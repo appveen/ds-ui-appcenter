@@ -17,10 +17,13 @@ export class InteractionGridCellComponent implements OnInit, ICellRendererAngula
   rawValue: any;
   field: string;
   direction: string;
+  styleClass: string;
   // inputType: string;
   // outputType: string;
   reDownloadAvaiable: boolean;
-  constructor() { }
+  constructor() {
+    this.styleClass = 'text-muted';
+  }
 
   ngOnInit(): void {
   }
@@ -75,26 +78,50 @@ export class InteractionGridCellComponent implements OnInit, ICellRendererAngula
   }
 
   calculateStatus() {
-    const self = this;
-    switch (self.rawValue) {
-      case 'SUCCESS':
-        self.value = 'Successful';
-        break;
-      case 'ERROR':
-        self.value = 'Failed';
-        break;
-      case 'PENDING':
-        self.value = 'Pending';
-        break;
-      case 'QUEUED':
-        self.value = 'Queued';
-        break;
-      case 'UNKNOWN':
-        self.value = 'Unknown';
-        break;
-      default:
-        self.rawValue = 'QUEUED';
-        self.value = 'Queued';
+    if (Array.isArray(this.rawValue)) {
+      if (this.rawValue.indexOf('SUCCESS') > -1) {
+        this.value = 'Successful';
+        this.styleClass = 'text-success';
+      } else if (this.rawValue.indexOf('ERROR') > -1) {
+        this.value = 'Failed';
+        this.styleClass = 'text-danger';
+      } else if (this.rawValue.indexOf('UNKNOWN') > -1) {
+        this.value = 'Unknown';
+        this.styleClass = 'text-warning';
+      } else if (this.rawValue.indexOf('PENDING') > -1) {
+        this.value = 'Pending';
+        this.styleClass = 'text-warning';
+      } else if (this.rawValue.indexOf('QUEUED') > -1) {
+        this.value = 'Queued';
+        this.styleClass = 'text-queued';
+      }
+    } else {
+      switch (this.rawValue) {
+        case 'SUCCESS':
+          this.value = 'Successful';
+          this.styleClass = 'text-success';
+          break;
+        case 'ERROR':
+          this.value = 'Failed';
+          this.styleClass = 'text-danger';
+          break;
+        case 'PENDING':
+          this.value = 'Pending';
+          this.styleClass = 'text-warning';
+          break;
+        case 'QUEUED':
+          this.value = 'Queued';
+          this.styleClass = 'text-queued';
+          break;
+        case 'UNKNOWN':
+          this.value = 'Unknown';
+          this.styleClass = 'text-warning';
+          break;
+        default:
+          this.rawValue = 'QUEUED';
+          this.value = 'Queued';
+          this.styleClass = 'text-queued';
+      }
     }
   }
 

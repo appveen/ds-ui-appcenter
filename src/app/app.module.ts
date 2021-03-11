@@ -37,6 +37,13 @@ import { ReqResInterceptorService } from './service/req-res-interceptor.service'
 import { TruncatedModule } from './utils/truncated/truncated.module';
 import { DomService } from './service/dom.service';
 import { PreferenceService } from './preference.service';
+import { NotificationItemComponent } from './dashboard/notification-item/notification-item.component';
+import { DashboardMenuComponent } from './dashboard/dashboard-menu/dashboard-menu.component';
+import { ServiceListComponent } from './dashboard/dashboard-menu/service-list/service-list.component';
+import { WorkflowListComponent } from './dashboard/dashboard-menu/workflow-list/workflow-list.component';
+import { BookmarkListComponent } from './dashboard/dashboard-menu/bookmark-list/bookmark-list.component';
+import { IntegrationListComponent } from './dashboard/dashboard-menu/integration-list/integration-list.component';
+import { DashboardService } from './dashboard/dashboard.service';
 
 // enableProdMode();
 
@@ -49,6 +56,12 @@ import { PreferenceService } from './preference.service';
     LoadingComponent,
     NoServicesComponent,
     NotFoundComponent,
+    NotificationItemComponent,
+    DashboardMenuComponent,
+    ServiceListComponent,
+    WorkflowListComponent,
+    BookmarkListComponent,
+    IntegrationListComponent,
   ],
   imports: [
     CommonModule,
@@ -93,7 +106,8 @@ import { PreferenceService } from './preference.service';
       multi: true
     },
     DomService,
-    PreferenceService
+    PreferenceService,
+    DashboardService
   ],
   bootstrap: [AppComponent]
 })

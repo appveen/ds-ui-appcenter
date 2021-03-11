@@ -1,12 +1,12 @@
-<div class="workflow-wrapper default-loader d-flex justify-content-center h-100 w-100" *ngIf="loading.workflows">
+<!-- <div class="workflow-wrapper default-loader d-flex justify-content-center h-100 w-100" *ngIf="loading.workflows">
   <div class="align-self-center text-center">
     <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
     <div class="text-secondary mt-2">Processing...</div>
   </div>
-</div>
+</div> -->
 <div class="d-flex flex-column bg-light w-100">
-  <router-outlet *ngIf="!noWorkflow && !loading.workflows"></router-outlet>
-  <div *ngIf="noWorkflow" class="w-100 h-100">
+  <router-outlet></router-outlet>
+  <!-- <div *ngIf="noWorkflow" class="w-100 h-100">
     <div class="header d-flex align-items-center justify-content-between pr-3 bg-light border-bottom w-100">
       <div class="title d-flex align-items-center ml-2">
         <span class="odp-workflow mr-2 text-primary"></span>
@@ -17,5 +17,5 @@
       <div class="no-records-img mx-auto"></div>
       <h4 class="text-muted text-center">No workitem record, yet.</h4>
     </div>
-  </div>
+  </div> -->
 </div>

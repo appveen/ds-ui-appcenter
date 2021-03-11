@@ -17,6 +17,7 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
   @Output() keyupEvent: EventEmitter<KeyboardEvent>;
   @ViewChild('inputControl', { static: false }) inputControl: ElementRef;
   password: string;
+  showPassword:boolean;
   constructor(private formService: FormService) {
     const self = this;
     self.keyupEvent = new EventEmitter<KeyboardEvent>();
@@ -30,9 +31,9 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
     if (self.control.value && self.control.value.value) {
       self.password = self.control.value.value;
     }
-    if(self.definition.properties.required){
+    if (self.definition.properties.required) {
       self.control.setValidators([Validators.required])
-    }else{
+    } else {
       self.control.clearValidators();
     }
   }
@@ -71,12 +72,27 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
 
   get patternError() {
     const self = this;
-    let retValue =false;
-    if(this.control.value && self.control.value.value && this.definition.properties.pattern){
+    let retValue = false;
+    if (this.control.value && self.control.value.value && this.definition.properties.pattern) {
       const regex = new RegExp(this.definition.properties.pattern);
-      if (!self.control.value.value.match(regex)) {
-        retValue =true;
+      let arr = self.control.value.value.match(regex);
+      if (!arr) {
+        retValue = true;
+        this.control.setErrors({ 'invalid': true });
       }
+      else if (arr && (arr[0] != arr.input)) {
+        retValue = true;
+        this.control.setErrors({ 'invalid': true });
+      }
+
+      else {
+        if (self.definition.properties.required) {
+          self.control.setValidators([Validators.required])
+        } else {
+          self.control.clearValidators();
+        }
+      }
+
     }
     return retValue;
   }

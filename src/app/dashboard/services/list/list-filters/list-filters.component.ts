@@ -149,6 +149,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   filterModel: Array<FilterModel>;
   noFilterObject: boolean;
   filterApplied$: Subscription;
+  showSeparateCreateBtn: boolean;
 
   constructor(private ts: ToastrService,
     private appService: AppService,
@@ -183,6 +184,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.showFilterList = false;
     self.filterId = null;
     self.saveOrEditText = '+Save As New View';
+    self.showSeparateCreateBtn = false;
     self.deleteModal = {
       title: 'Delete column',
       message: 'Are you sure you want to delete this column?'
@@ -210,7 +212,6 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     }
   }
 
- 
   search = (text$: Observable<string>) => {
     const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
     const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.inputInstance.isPopupOpen()));
@@ -326,12 +327,13 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.filterPayload.private = true;
     self.placeHolderText = 'Select Filter';
     self.saveOrEditText = '+Save As New View';
+    self.showSeparateCreateBtn = false;
     self.appService.existingFilter = null;
     self.appService.dataKeyForSelectedCols = [];
     self.filterCleared.emit(true);
   }
 
-  applyFilter(close?:boolean) {
+  applyFilter(close?: boolean) {
     const self = this;
     self.createQueryString();
     if ((self.queryObject.sort && self.queryObject.sort.length > 0)
@@ -343,7 +345,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       self.appService.existingFilter = null;
     }
     self.appService.filterName = self.filterPayload.name;
-    self.refine.emit({query:self.queryObject,close});
+    self.refine.emit({ query: self.queryObject, close, refresh: false });
   }
 
   checkFilterName() {
@@ -359,6 +361,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       self.filterId = filterValue._id;
       self.filterCreatedBy = filterValue.createdBy;
       self.saveOrEditText = '+Edit View';
+      self.showSeparateCreateBtn = true;
       if (filterValue.name) {
         self.placeHolderText = filterValue.name;
       }
@@ -374,6 +377,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     } else {
       self.filterId = '';
       self.saveOrEditText = '+Save As New View';
+      self.showSeparateCreateBtn = false;
       self.placeHolderText = 'Select Filter';
       self.filterPayload.name = '';
       self.appService.filterName = '';
@@ -385,7 +389,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       // if (!item.filterObject.hasOwnProperty('$or') && !Array.isArray(item.filterObject)) {
       //   item.dataKey = Object.keys(item.filterObject)[0];
       // } else
-       if (item.filterObject.hasOwnProperty('$or') && Array.isArray(item.filterObject['$or'])) {
+      if (item.filterObject.hasOwnProperty('$or') && Array.isArray(item.filterObject['$or'])) {
         const dk = Object.keys(item.filterObject['$or'][0])[0].split('.');
         item.dataKey = dk[0];
       } else if (Array.isArray(item.filterObject)) {
@@ -423,9 +427,11 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   saveFilter() {
     const self = this;
     if (self.filterPayload.name && self.filterPayload.name.length > 0) {
-      if (self.filterPayload.value['filter'] === null &&
-        self.filterPayload.value['select'] === '' &&
-        self.filterPayload.value['sort'] === '') {
+      if (
+        (!self.queryObject['filter'] || !self.queryObject['filter'].length) &&
+        (!self.selectedColOrder || !self.selectedColOrder.length) &&
+        (!self.sortingColumns || !self.sortingColumns.length)
+      ) {
         self.ts.warning('Filter Appears empty');
       } else {
         self.invalidFilterName = false;
@@ -435,7 +441,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
         let request: Observable<any>;
         if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
           request = self.commonService.put('user', `/filter/${self.filterId}`, self.filterPayload);
-        } else if ((self.filterId && (self.filterCreatedBy !== currentUser._id)) || (self.filterId === null || self.filterId === '')) {
+        } else if ((self.filterId && (self.filterCreatedBy !== currentUser._id)) || (self.filterId === null || self.filterId === '' || self.filterId === undefined)) {
           self.filterId = null;
           request = self.commonService.post('user', '/filter/', self.filterPayload);
         }
@@ -444,19 +450,37 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
           self.applyFilter();
           self.filterId = res._id;
           self.selectFilter(res);
-          self.refine.emit({query:res});
+          self.refine.emit({ query: res, refresh: true });
           self.saveOrEditText = '+Edit View';
+          self.showSeparateCreateBtn = true;
           if (self.filterCreatedBy === currentUser._id) {
             self.ts.success('Filter Saved Successfully');
           } else {
             self.ts.success('New Filter created Successfully');
           }
-        }, err => self.commonService.errorToast);
+        }, err => self.commonService.errorToast(err));
       }
     } else {
       self.invalidFilterName = true;
       return;
     }
+  }
+
+  duplicateView() {
+    this.filterPayload = {
+      serviceId: this.appService.serviceId,
+      name: '',
+      private: true,
+      value: '',
+      app: this.commonService.app._id,
+      createdBy: this.sessionService.getUser(true)._id,
+      type: 'dataService'
+    };
+    this.invalidFilterName = false;
+    this.showSaveDiv = true;
+    this.placeHolderText = 'Select Filter';
+    this.showFilterList = false;
+    this.filterId = null;
   }
 
   ngOnDestroy() {

@@ -13,13 +13,19 @@
   opacity: 0;
 }
 
-.custom-tooltip div {
+.list-item {
   margin: 5px;
-  white-space: nowrap;
-}
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 20px;
 
-.custom-tooltip div .label {
-  font-weight: bold;
-  display: inline-block;
-  min-width: 120px;
+  .label {
+    font-weight: bold;
+  }
+
+  .value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }

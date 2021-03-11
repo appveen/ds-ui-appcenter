@@ -3,7 +3,7 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams, IAfterGuiAttachedParams } from 'ag-grid-community';
 import { AppService } from 'src/app/service/app.service';
 import { Properties, Definition } from 'src/app/interfaces/definition';
-import { ListAgGridService } from '../list-ag-grid.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'odp-ag-grid-cell',
@@ -28,58 +28,68 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
   id: string;
   url: string;
   formattedAddress: string;
-  constructor(private appService: AppService,
-    private gridService: ListAgGridService) {
-    const self = this;
-    self.keysCount = 0;
-    self.data = {};
+  parsedDate: string;
+  timezoneValue: string;
+  showTimezone: boolean;
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  };
+
+  constructor(
+    private appService: AppService,
+    private commonService: CommonService
+  ) {
+    this.keysCount = 0;
+    this.data = {};
   }
 
   ngOnInit() {
-    const self = this;
-    self.init();
+    this.init();
   }
 
   agInit(params: ICellRendererParams): void {
-    const self = this;
-    self.params = params;
-    self.data = params.data || {};
-    self.id = self.data._id;
-    self.value = params.value;
-    self.definition = params.colDef.refData;
-    self.init();
+    this.params = params;
+    this.data = params.data || {};
+    this.id = this.data._id;
+    this.value = params.value;
+    this.definition = params.colDef.refData;
+    this.init();
   }
 
   refresh(params: any): boolean {
-    const self = this;
     return false;
   }
 
   afterGuiAttached(params?: IAfterGuiAttachedParams): void {
-    const self = this;
   }
 
   init() {
-    const self = this;
-    self.type = self.definition.type;
-    self.properties = self.definition.properties;
-    self.currencyType = self.definition.properties.currency;
-    if (!self.value) {
-      self.value = self.appService.getValue(self.definition.dataKey, self.data);
+    this.type = this.definition.type;
+    this.properties = this.definition.properties;
+    this.currencyType = this.definition.properties.currency;
+    if (!this.value) {
+      this.value = this.appService.getValue(this.definition.dataKey, this.data);
     }
-    self.serviceId = self.appService.serviceId;
-    self.isenrichTextWithLinkRequired = self.checkForLink(self.value);
-    self.textWithLink = self.enrichTextWithLink(self.value);
-    if (self.value && typeof self.value === 'object') {
-      self.keysCount = Object.keys(self.value).length;
+    this.serviceId = this.appService.serviceId;
+    this.isenrichTextWithLinkRequired = this.checkForLink(this.value);
+    this.textWithLink = this.enrichTextWithLink(this.value);
+    if (this.value && typeof this.value === 'object') {
+      this.keysCount = Object.keys(this.value).length;
     }
-    if (self.value && self.value.formattedAddress) {
-      self.formattedAddress = self.value.formattedAddress;
-    } else if (self.value && self.value.userInput) {
-      self.formattedAddress = self.value.userInput;
+    if (this.value && this.value.formattedAddress) {
+      this.formattedAddress = this.value.formattedAddress;
+    } else if (this.value && this.value.userInput) {
+      this.formattedAddress = this.value.userInput;
+    } else if (this.value && this.value.rawData) {
+      this.parsedDate = this.appService.getUTCString(this.value.rawData, this.value.tzInfo);
+      this.timezoneValue = this.value.tzInfo;
+      this.showTimezone = true;
+    } else if (this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt') {
+      this.parsedDate = this.value;
+      this.timezoneValue = this.appService.getLocalTimezone();
     }
-    if (self.value && self.value.geometry && self.value.geometry.coordinates) {
-      self.url = `https://www.google.co.in/maps?q=MyLoc@${self.value.geometry.coordinates[1]},${self.value.geometry.coordinates[0]}`;
+    if (this.value && this.value.geometry && this.value.geometry.coordinates) {
+      this.url = `https://www.google.co.in/maps?q=MyLoc@${this.value.geometry.coordinates[1]},${this.value.geometry.coordinates[0]}`;
     }
   }
 
@@ -96,10 +106,9 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
   }
 
   enrichTextWithLink(value: string) {
-    const self = this;
     try {
       const rgxStr = '^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$';
-      if (self.definition.properties.email) {
+      if (this.definition.properties.email) {
         const temp = value.replace(/(.*)([\w]{2,}@[\w]{2,}\.[a-z\.]{2,})(.*)/, '$1<a href="mailto:$2">$2</a>$3');
         return temp;
       } else if (value && value.match(rgxStr)) {
@@ -119,9 +128,8 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
   }
 
   get checked() {
-    const self = this;
-    if (self.params && self.params.node) {
-      return self.params.node.isSelected();
+    if (this.params && this.params.node) {
+      return this.params.node.isSelected();
     }
     return false;
   }

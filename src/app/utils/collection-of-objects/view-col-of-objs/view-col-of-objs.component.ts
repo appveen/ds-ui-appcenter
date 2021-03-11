@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AgRendererComponent } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
@@ -10,7 +10,7 @@ import { AppService } from 'src/app/service/app.service';
   templateUrl: './view-col-of-objs.component.html',
   styleUrls: ['./view-col-of-objs.component.scss']
 })
-export class ViewColOfObjsComponent implements AgRendererComponent {
+export class ViewColOfObjsComponent implements AgRendererComponent, OnDestroy {
   @ViewChild('viewModal', { static: false }) viewModal: TemplateRef<HTMLElement>;
   viewModalRef: NgbModalRef;
   params: ICellRendererParams;
@@ -33,6 +33,12 @@ export class ViewColOfObjsComponent implements AgRendererComponent {
   }
 
   constructor(private ngbModal: NgbModal, private appService: AppService) { }
+
+  ngOnDestroy() {
+    if (!!this.viewModalRef) {
+      this.viewModalRef.dismiss();
+    }
+  }
 
   refresh(): boolean {
     return false;

@@ -27,7 +27,8 @@
             </div>
             <div class="d-flex flex-column ml-4 record-detail">
                 <span class="font-weight-bold text-muted">Requested On</span>
-                <span>{{selectedData._metadata ? (selectedData._metadata.createdAt|date:'dd-MMM-yyyy,hh:mm a'):null}}</span>
+                <span>{{selectedData._metadata ? (selectedData._metadata.createdAt|date:'dd-MMM-yyyy,hh:mm
+                    a'):null}}</span>
             </div>
             <div class="d-flex flex-column ml-4 record-detail">
                 <span class="font-weight-bold text-muted">Type</span>
@@ -57,7 +58,7 @@
                 (click)="showRespondView=true;" [disabled]="showLazyLoader">Remarks</button>
             <button type="button" class="btn btn-link text-danger" *ngIf="canEditDraft" id="discardDraft"
                 (click)="discardDraft()" [disabled]="showLazyLoader">Discard</button>
-          
+
             <button type="button" class="btn btn-primary btn-min-width ml-3 ignore-outside" *ngIf="canRespond"
                 id="canRespond" (click)="showRespondView=true;" [disabled]="showLazyLoader">Respond</button>
             <button type="button" class="btn btn-primary btn-min-width ml-3" *ngIf="canResubmit" id="canResubmit"
@@ -214,9 +215,10 @@
           (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList" [serviceStatus]="schema.status">
         </odp-respond-view> -->
     <odp-workflow-respond-view [approversList]="approversList" *ngIf="showRespondView" [selectedData]='selectedData'
-        [ids]='ids' (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList" [workflowUploadedFiles]="workflowUploadedFiles"
-        [workflowFilesList]="workflowFilesList" [respondControl]="respondControl"
-        [serviceStatus]="schema.status"> </odp-workflow-respond-view>
+        [ids]='ids' (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList"
+        [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
+        [respondControl]="respondControl" [serviceStatus]="schema.status" [workflowApi]="workflowApi">
+    </odp-workflow-respond-view>
 
     <!-- <odp-respond-view *ngIf="showRespondPannel" [records]="records" [presentAudit]="presentAudit"
          [selectedData]="selectedData"

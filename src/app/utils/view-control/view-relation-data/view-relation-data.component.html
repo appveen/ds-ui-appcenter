@@ -1,33 +1,62 @@
-<ng-container *ngFor="let item of values;let last =last">
-    <ng-container *ngIf="!item.isSecureText">
-        <a [routerLink]="relationLink+relatedId" target="_blank" *ngIf="serviceAccess">
-            {{item.value}}
-            <span *ngIf="!last">,</span>
-        </a>
-        <span *ngIf="!serviceAccess">
-            {{item.value}}
-        </span>
-    </ng-container>
-</ng-container><br>
-<ng-container *ngFor="let item of values;let last =last">
-    <ng-container *ngIf="item.isSecureText">
-        <ng-container *ngIf="showPassword">
-            <a [routerLink]="relationLink+relatedId" target="_blank" *ngIf="serviceAccess">
-                {{item.value}}
+<ng-container *ngIf="serviceAccess">
+    <ng-container *ngFor="let item of values;let last =last">
+        <ng-container [ngSwitch]="item.type">
+            <ng-container *ngSwitchCase="'text'">
+                <a [routerLink]="relationLink+relatedId" target="_blank">
+                    {{item.value}}
+                </a>
                 <span *ngIf="!last">,</span>
-            </a>
-            <span *ngIf="!serviceAccess">
-                {{item.value}}
-            </span>
-
+            </ng-container>
+            <ng-container *ngSwitchCase="'date'">
+                <a [routerLink]="relationLink+relatedId" target="_blank">
+                    {{item.value|date:'fullDate'}}
+                </a>
+                <span *ngIf="!last">,</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'datetime'">
+                <a [routerLink]="relationLink+relatedId" target="_blank">
+                    {{item.value|date:'EEEE, MMMM d, y, h:mm:ss a'}}
+                </a>
+                <span *ngIf="!last">,</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'boolean'">
+                <ng-container *ngIf="item.value">
+                    <span class="fa fa-check-circle mr-2 text-primary"></span>
+                    <span class="font-weight-bold">Yes</span>
+                </ng-container>
+                <ng-container *ngIf="!item.value">
+                    <span class="fa fa-times-circle mr-2 text-muted"></span>
+                    <span class="font-weight-bold">No</span>
+                </ng-container>
+                <span *ngIf="!last">,</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'secureText'">
+                <ng-container *ngIf="showPassword">
+                    <a [routerLink]="relationLink+relatedId" target="_blank">
+                        {{item.value}}
+                        <span *ngIf="!last">,</span>
+                    </a>
+                </ng-container>
+                <ng-container *ngIf="!showPassword">
+                    **********
+                </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="'richText'">
+                <a [routerLink]="relationLink+relatedId" target="_blank">
+                    View
+                </a>
+                <odp-view-rich-text [definition]="item.definition" [value]="item.value"></odp-view-rich-text>
+            </ng-container>
         </ng-container>
-
-        <ng-container *ngIf="!showPassword">
-            **********
-        </ng-container>
-    </ng-container>
+    </ng-container><br>
+    <button type="button" *ngIf="isSecureTextPresent" class="btn btn-sm btn-link p-0 mb-1 ml-3"
+        (click)="showPassword=!showPassword;$event.stopPropagation();">
+        {{showPassword?'Hide':'Show'}}
+    </button>
 </ng-container>
-<button type="button" *ngIf="isSecureTextPresent" class="btn btn-sm btn-link p-0 mb-1 ml-3"
-    (click)="showPassword=!showPassword;$event.stopPropagation();">
-    {{showPassword?'Hide':'Show'}}
-</button>
+<ng-container *ngIf="!serviceAccess">
+    <a [routerLink]="relationLink+relatedId" target="_blank">
+       {{relatedId}}
+    </a>
+    
+</ng-container>

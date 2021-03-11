@@ -69,9 +69,9 @@ export class InteractionLogBlockComponent implements OnInit, AfterViewInit, OnDe
         properties: {
           name: 'Order ID'
         },
-        type: 'odpTxnId',
-        key: 'odpTxnId',
-        dataKey: 'odpTxnId',
+        type: 'dataStackTxnId',
+        key: 'dataStackTxnId',
+        dataKey: 'dataStackTxnId',
       },
       {
         show: true,
@@ -112,7 +112,7 @@ export class InteractionLogBlockComponent implements OnInit, AfterViewInit, OnDe
 
   filterDate(index) {
     const self = this;
-    const calculatedIndex = index >= 12 ? index - 12 : index;
+    const calculatedIndex = self.monthYearFilter[index].getMonth();
     return `${self.mnths[calculatedIndex]} ${self.monthYearFilter[index].getFullYear()}`;
   }
 
@@ -188,13 +188,13 @@ export class InteractionLogBlockComponent implements OnInit, AfterViewInit, OnDe
 
   allFlows() {
     const self = this;
-    self.router.navigate([`~/interactions/${self.appService.partnerId}`]);
+    self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}`]);
   }
 
   viewInteraction(colData) {
     const self = this;
     self.appService.remoteTxnId = colData.remoteTxnId;
-    self.router.navigate([`~/interactions/${self.appService.partnerId}/${self.is.flow.id}/${colData.odpTxnId}`]);
+    self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}/${self.is.flow.id}/${colData.dataStackTxnId}`]);
   }
 
   selectAllRcrds() {
@@ -230,7 +230,7 @@ export class InteractionLogBlockComponent implements OnInit, AfterViewInit, OnDe
     failedRecords.forEach((e) => {
       const obj = {
         remoteTxnID: e.remoteTxnId,
-        odpTxnID: e.odpTxnId
+        dataStackTxnId: e.dataStackTxnId
       };
       reqBodyArr.push(obj);
     });

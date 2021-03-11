@@ -1,5 +1,5 @@
 <input
-    *ngIf="field==='odpTxnId' || field==='remoteTxnId' || field === 'flowData.partnerName' || field === 'flowData.flowName'"
+    *ngIf="field==='dataStackTxnId' || field==='remoteTxnId' || field === 'flowData.partnerName' || field === 'flowData.flowName'"
     type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <input *ngIf="field==='createTimestamp' || field==='completedTimestamp'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value"
     (ngModelChange)="onChange($event)">

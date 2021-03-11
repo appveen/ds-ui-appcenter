@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Properties } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from '../../../service/common.service';
 import * as _ from 'lodash';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'odp-view-relation',
@@ -30,9 +29,14 @@ export class ViewRelationComponent implements OnInit {
     relatedServiceDefinition: any;
     isSecureTextPresent: boolean;
 
-    constructor(private appService: AppService,
+    get currentAppId() {
+        return this.commonService?.getCurrentAppId();
+    }
+
+    constructor(
+        private appService: AppService,
         private commonService: CommonService,
-        private ts: ToastrService) {
+    ) {
         const self = this;
         self.values = [];
         self.newValues = [];
@@ -40,13 +44,12 @@ export class ViewRelationComponent implements OnInit {
     }
 
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges() {
         const self = this;
         self.newValues = [];
         self.oldValues = [];
         self.oldValuesList();
         self.newValuesList();
-
     }
     ngOnInit() {
         const self = this;
@@ -58,7 +61,7 @@ export class ViewRelationComponent implements OnInit {
             const properties: Properties = self.definition.properties;
             const srvcIdx = self.appService.fetchedServiceList.findIndex(sid => sid._id === properties.relatedTo);
             self.serviceAccess = srvcIdx !== -1;
-            self.relationLink = `/~/services/${properties.relatedTo}/view/`;
+            self.relationLink = `/${self.currentAppId}/services/${properties.relatedTo}/view/`;
             self.relatedSrvcDef = `/${properties.relatedTo}`
             self.getServiceDetails();
 
@@ -153,7 +156,7 @@ export class ViewRelationComponent implements OnInit {
 
         const self = this;
         let retValue;
-        const relsrvcDef = self.relatedServiceDefinition.attributeList.find(e => e.key === key);
+        const relsrvcDef = self.relatedServiceDefinition.definition.find(e => e.key === key);
         // Relation view field Secure Text
 
         if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.password) {

@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { AppService } from 'src/app/service/app.service';
 import { filter } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'odp-workflow-respond-view',
@@ -51,6 +52,7 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
   @Input() isWorkflowViewPage: boolean;
   @Input() requestedByList: Array<any>;
   @Input() serviceStatus: any;
+  @Input() workflowApi: string;
   @Output() actionResponse: EventEmitter<any>;
 
   dataToRespond: Array<any>;
@@ -70,6 +72,7 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private appService: AppService,
     private ts: ToastrService,
+    private router: Router,
   ) {
     const self = this;
     self.respondAnimation = {};
@@ -93,7 +96,7 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
       'Save & Submit': 'Pending Review',
       Edit: 'Draft'
     };
-    self.dataToRespond=[];
+    self.dataToRespond = [];
 
   }
 
@@ -122,7 +125,9 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
     if (self.selectedData) {
       self.selectedData.audit.forEach(element => {
         self.commonService.getUser(element.id).then(user => {
-          element.userName = user.basicDetails.name;
+          element.userName = user.basicDetails.name ? user.basicDetails.name : element.id;
+        }).catch(err => {
+          element.userName = element.id;
         });
       });
     }
@@ -183,12 +188,12 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
       return;
     }
     const payload = {
-      action: action,
+      action,
       remarks: self.respondControl.value,
       attachments: self.workflowUploadedFiles,
       ids: self.dataToRespond.map(data => data._id)
     };
-    self.subscriptions['respond'] = self.commonService.put('wf', '/action', payload)
+    self.subscriptions['respond'] = self.commonService.put('api', this.workflowApi + '/action', payload)
       .subscribe(res => {
         if (res && res.failed && res.failed.length) {
           self.ts.warning(res.passed.length + ' records passed and ' + res.failed.length + ' records failed');
@@ -217,8 +222,12 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
               self.ts.error(err.error.failed.length + ' records failed');
             }
             // self.ts.error(err.error.message);
+          } else {
+            self.commonService.errorToast(err, 'Unable to respond to the workflow,please try again later');
           }
           self.appService.workflowStatus.emit(true);
+          self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
+
         } else {
           self.commonService.errorToast(err, 'Unable to respond to the workflow,please try again later');
         }
@@ -234,7 +243,8 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
     const indexOfValue = self.workflowFilesList.findIndex(val => val.name === file.name);
     if (indexOfValue < 0) {
       self.showLazyLoader = true;
-      self.subscriptions['uploadFile_' + file.name] = self.commonService.upload('wf', '', formData, false)
+      self.subscriptions['uploadFile_' + file.name] = self.commonService
+        .upload('api', this.appService.serviceAPI, formData, false)
         .subscribe(event => {
           if (event.type === HttpEventType.UploadProgress) {
             // self.processing.progress = Math.floor(event.loaded / event.total * 100);
@@ -272,7 +282,7 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
 
   downloadFile(_id) {
     const self = this;
-    window.open(environment.url.wf + '/file/download/' + _id);
+    window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' +_id);
   }
 
   get canRespond() {

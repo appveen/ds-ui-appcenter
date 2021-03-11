@@ -25,9 +25,9 @@ export class ManageControlComponent implements OnInit, OnDestroy {
         self.canEnable = true;
     }
 
-    ngOnInit() {
+      ngOnInit() {
         const self = this;
-        if (self.definition.key === '_id' || self.definition.properties.unique) {
+        if (self.definition.key === '_id' || self.definition.properties.unique || self.definition.properties.readonly) {
             self.canEnable = false;
         }
         self.checkboxKey = self.definition.path + '_' + Date.now();
@@ -40,10 +40,22 @@ export class ManageControlComponent implements OnInit, OnDestroy {
     spacing(level: number, arr?) {
         return {
             'min-width': (level * 10) + 'px',
-            'margin-right': !arr ? (level * 10) + 'px' : '60px',
+            'margin-right': !arr ? (level === 1 ? 0 : 5) + 'px' : '20px',
             'min-height': '36px',
             'max-height': '100%'
         };
+    }
+
+    enableFieldsIndividually(def, control) {
+        def.definition.forEach(element => {
+            if (element.type !== 'Object') {
+                if (!element.properties.readonly) {
+                    control.get(element.key).enable();
+                }
+            } else {
+                this.enableFieldsIndividually(element, control.get(element.key));
+            }
+        });
     }
 
     get objectForm() {
@@ -64,7 +76,11 @@ export class ManageControlComponent implements OnInit, OnDestroy {
     set toggleEnable(val) {
         const self = this;
         if (val) {
-            self.form.get(self.definition.key).enable();
+            if (this.definition.type === 'Object') {
+                self.enableFieldsIndividually(this.definition, self.form.get(self.definition.key));
+            } else {
+                self.form.get(self.definition.key).enable();
+            }
         } else {
             self.form.get(self.definition.key).reset();
             self.form.get(self.definition.key).disable();

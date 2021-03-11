@@ -13,8 +13,8 @@ import { ListAgGridService } from '../list-ag-grid.service';
   styleUrls: ['./ag-grid-filters.component.scss']
 })
 export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFrameworkComponent<IFloatingFilterParams> {
-
-  @ViewChild('clearFilterModal', { static: false }) clearFilterModal: TemplateRef<ElementRef>;
+  @ViewChild('clearFilterModal', { static: false })
+  clearFilterModal: TemplateRef<ElementRef>;
   api: GridApi;
   column: Column;
   params: IFloatingFilterParams;
@@ -26,13 +26,17 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   clearFilterModalRef: NgbModalRef;
   private relatedDefinition: any;
   private searchOnlyId: boolean;
-  constructor(private element: ElementRef,
+  private columnHeader: string;
+
+  constructor(
+    private element: ElementRef,
     private appService: AppService,
     private commonService: CommonService,
     private gridService: ListAgGridService,
-    private modalService: NgbModal) {
+    private modalService: NgbModal
+  ) {
     const self = this;
-    self.relatedDefinition = {};
+    self.relatedDefinition = [];
     self.filterQueryChange = new EventEmitter();
     self.filterQuery = {
       $and: []
@@ -44,12 +48,13 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   ngOnInit() {
     const self = this;
+    this.gridService.initializeLastFilterSearchText(this.appService.serviceId);
     if (self.definition.properties.relatedTo) {
       self.fetchRelatedSchema();
     }
     self.appService.clearFilterEvent.subscribe(() => {
       self.value = null;
-      self.definition.value = null;
+      this.gridService.setLastFilterSearchText(this.columnHeader, null);
     });
   }
 
@@ -58,8 +63,10 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     self.params = params;
     self.column = params.column;
     self.api = params.api;
-    self.definition = self.column.getColDef().refData;
-    self.value = self.definition.value;
+    const colDef = this.column.getColDef();
+    this.definition = colDef.refData;
+    this.columnHeader = colDef.headerName;
+    this.value = this.gridService.getLastFilterSearchText(this.columnHeader);
   }
 
   onParentModelChanged(parentModel: any, filterChangedEvent?: FilterChangedEvent): void {
@@ -67,26 +74,29 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     const filterModel = self.api.getFilterModel();
     if (Object.getOwnPropertyNames(filterModel).indexOf(self.definition.dataKey) === -1) {
       self.value = null;
-      self.definition.value = self.value;
+      this.gridService.setLastFilterSearchText(this.columnHeader, null);
     }
   }
 
   onChange(value) {
     const self = this;
     let temp = {};
-    self.definition.value = self.value;
+    this.gridService.setLastFilterSearchText(this.columnHeader, this.value);
     if (self.definition.type === 'Relation') {
       temp['$or'] = [];
-      temp['$or'].push(Object.defineProperty({}, self.definition.dataKey + '._id', {
-        value: '/' + value + '/',
-        enumerable: true,
-        configurable: true,
-        writable: true
-      }));
+      temp['$or'].push(
+        Object.defineProperty({}, self.definition.dataKey + '._id', {
+          value: '/' + value + '/',
+          enumerable: true,
+          configurable: true,
+          writable: true
+        })
+      );
       if (!self.searchOnlyId) {
-        const tempObj = {};
+        let tempObj;
         const def = self.relatedDef;
         if (def) {
+          tempObj = {};
           if (def.type === 'Number') {
             tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = value;
           } else if (def.type === 'Date') {
@@ -97,23 +107,29 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
             tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = '/' + value + '/';
           }
         }
-        temp['$or'].push(tempObj);
+        if (tempObj) {
+          temp['$or'].push(tempObj);
+        }
       }
     } else if (self.definition.type === 'User') {
       temp['$or'] = [];
-      if (self.definition.properties
-        && self.definition.properties.relatedSearchField
-        && self.definition.properties.relatedSearchField !== '_id') {
+      if (
+        self.definition.properties &&
+        self.definition.properties.relatedSearchField &&
+        self.definition.properties.relatedSearchField !== '_id'
+      ) {
         const tempObj = {};
         tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = '/' + value + '/';
         temp['$or'].push(tempObj);
       } else {
-        temp['$or'].push(Object.defineProperty({}, self.definition.dataKey + '._id', {
-          value: '/' + value + '/',
-          enumerable: true,
-          configurable: true,
-          writable: true
-        }));
+        temp['$or'].push(
+          Object.defineProperty({}, self.definition.dataKey + '._id', {
+            value: '/' + value + '/',
+            enumerable: true,
+            configurable: true,
+            writable: true
+          })
+        );
       }
     } else if (self.definition.type === 'Geojson') {
       temp[self.definition.dataKey + '.formattedAddress'] = '/' + value + '/';
@@ -144,15 +160,20 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       temp = null;
     }
     if (self.gridService.selectedSavedView) {
-      self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
-      self.clearFilterModalRef.result.then((close) => {
-        if (close) {
-          self.gridService.selectedSavedView = null;
-          self.params.parentFilterInstance(function (instance: IFilterComp) {
-            (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
-          });
-        }
-      }, dismiss => { });
+      self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, {
+        centered: true
+      });
+      self.clearFilterModalRef.result.then(
+        close => {
+          if (close) {
+            self.gridService.selectedSavedView = null;
+            self.params.parentFilterInstance(function (instance: IFilterComp) {
+              (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
+            });
+          }
+        },
+        dismiss => { }
+      );
     } else {
       self.params.parentFilterInstance(function (instance: IFilterComp) {
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
@@ -163,32 +184,39 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   fetchRelatedSchema() {
     const self = this;
-    self.commonService.getService(self.definition.properties.relatedTo).then(res => {
-      if (res.definition) {
-        self.searchOnlyId = false;
-        self.relatedDefinition = JSON.parse(res.definition);
-        self.fixSchema(self.relatedDefinition);
-      }
-    }).catch(err => {
-      self.searchOnlyId = true;
-      console.error('Unable to fetch Related Schema', self.definition.properties.relatedTo);
-    });
+    self.commonService
+      .getService(self.definition.properties.relatedTo)
+      .then(res => {
+        if (res.definition) {
+          self.searchOnlyId = false;
+          self.relatedDefinition = res.definition;
+          self.fixSchema(self.relatedDefinition);
+        }
+      })
+      .catch(err => {
+        self.searchOnlyId = true;
+        console.error('Unable to fetch Related Schema', self.definition.properties.relatedTo);
+      });
   }
 
   fixSchema(parsedDef) {
-    Object.keys(parsedDef).forEach(key => {
-      if (parsedDef[key].properties && parsedDef[key].properties.relatedTo) {
-        parsedDef[key].type = 'Relation';
-        parsedDef[key].properties._typeChanged = 'Relation';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].properties && parsedDef[key].properties.password) {
-        parsedDef[key].type = 'String';
-        parsedDef[key].properties._typeChanged = 'String';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].type === 'Array') {
-        this.fixSchema(parsedDef[key].definition);
-      } else if (parsedDef[key].type === 'Object') {
-        this.fixSchema(parsedDef[key].definition);
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.password) {
+        def.type = 'String';
+        def.properties._typeChanged = 'String';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        this.fixSchema(def.definition);
+      } else if (def.type === 'Object') {
+        this.fixSchema(def.definition);
       }
     });
   }
@@ -263,8 +291,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   get relatedDef() {
     const self = this;
     if (self.relatedDefinition && self.definition.properties.relatedSearchField) {
-      const newpath = self.definition.properties.relatedSearchField.split('.').join('.definition.');
-      return self.appService.getValue(newpath, self.relatedDefinition);
+      const newpath = self.definition.properties.relatedSearchField
+      return self.appService.getValueNew(newpath, self.relatedDefinition);
     }
     return null;
   }

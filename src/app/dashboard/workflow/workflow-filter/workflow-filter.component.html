@@ -30,139 +30,6 @@
           </ng-template>
         </div>
       </div>
-
-
-      <!-- <div class="d-flex align-items-start options p-3">
-        <div class="text-gray-medium label-text">
-          <strong>Type</strong>
-        </div>
-        <div class="d-flex">
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover"
-            [ngClass]="{'checked':filter.createFilter}">
-            <div>
-              <span class="fa fa-plus font-xsm  "></span>
-              <span class="ml-2">New</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id='new' value="true" [checked]='filter.createFilter'
-                (ngModelChange)="filterChange($event,'operation','POST')" [(ngModel)]="filter.createFilter">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.updateFilter}">
-            <div>
-              <span class="fa fa-pencil-alt font-xsm  "></span>
-              <span class="ml-2">Edit</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="edit" value="true" (ngModelChange)="filterChange($event,'operation','PUT')"
-                [(ngModel)]="filter.updateFilter">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.deleteFilter}">
-            <div>
-              <span class="fa fa-trash font-xsm"></span>
-              <span class="ml-2">Delete</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="delete" (ngModelChange)="filterChange($event,'operation','DELETE')"
-                [(ngModel)]="filter.deleteFilter">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-
-        </div>
-      </div> -->
-
-
-      <!-- <div class="d-flex align-items-start options p-3">
-        <div class="text-gray-medium label-text">
-          <strong>Status</strong>
-        </div>
-        <div class="d-flex  flex-wrap">
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover"
-            [ngClass]="{'checked':filter.submitted}">
-            <div class="d-flex align-items-center">
-              <span class="odp-arrow-right text-primary font-sm "></span>
-              <span class="ml-2">Pending Review</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="submitted" value="true"
-                (ngModelChange)="filterChange($event,'status','Pending')" [(ngModel)]="filter.submitted">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.discard}">
-            <div class="d-flex align-items-center">
-              <span class="ml-2">Discard</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="discard" value="true"
-                (ngModelChange)="filterChange($event,'status','Discarded')" [(ngModel)]="filter.discard">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.rework}">
-            <div class="d-flex align-items-center">
-              <span class="odp-rework font-sm text-warning "></span>
-              <span class="ml-2">Rework</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="rework" value="true" (ngModelChange)="filterChange($event,'status','Rework')"
-                [(ngModel)]="filter.rework">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.approved}">
-            <div class="d-flex align-items-center">
-              <span class="odp-check text-success font-xsm  "></span>
-              <span class="ml-2">Approved</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="approved" value="true"
-                (ngModelChange)="filterChange($event,'status','Approved')" [(ngModel)]="filter.approved">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.rejected}">
-            <div class="d-flex align-items-center">
-              <span class="odp-times text-danger font-xsm "></span>
-              <span class="ml-2">Rejected</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="rejected" value="true"
-                (ngModelChange)="filterChange($event,'status','Rejected')" [(ngModel)]="filter.rejected">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-
-          <label class="btn-container d-flex rounded align-items-center justify-content-between px-2 hover ml-2"
-            [ngClass]="{'checked':filter.draft}">
-            <div class="d-flex align-items-center">
-              <span class="far fa-file  font-sm text-dark "></span>
-              <span class="ml-2">Draft</span>
-            </div>
-            <label class="chk-container chk mb-4">
-              <input type="checkbox" id="draft" value="true" (ngModelChange)="filterChange($event,'status','Draft')"
-                [(ngModel)]="filter.draft">
-              <span class="checkmark"></span>
-            </label>
-          </label>
-
-        </div>
-      </div> -->
-
-      <!-- Column -->
       <div class="d-flex align-items-center px-3 pt-3">
         <div class="text-gray-medium label-text">
           <label for="columns">
@@ -183,18 +50,7 @@
       <div class="d-flex m-2 align-items-start pl-2">
         <div class="text-gray-medium label-text"></div>
         <div class="d-flex flex-wrap">
-          <!-- <div *ngFor="let col of defaultColums; let i = index; let last = last;" class="d-flex">
-            <div class=" defaultColumns bg-light d-flex justify-content-center align-items-center mb-2 mr-2">
-              <span class="font-xsm"
-                [odpTruncated]="col?.properties?.label ? col?.properties?.label : col?.properties?.name">{{ col?.properties?.label ? col?.properties?.label : col?.properties?.name }}</span>
-              <div class="remove-col  " >
-                <span class="fas font-xsm fa-lg fa-times ml-2 mb-2"></span>
-              </div>
-            </div>
-          </div> -->
-
           <div class="d-flex drag-boundary  flex-wrap" [sortablejs]="selectedColOrder">
-
             <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex">
               <div
                 class="col-name  d-flex justify-content-between bg-white d-flex justify-content-center align-items-center mb-2"
@@ -212,7 +68,7 @@
       <!-- Column -->
 
       <odp-search-for class="mb-3 pt-3 px-3" [serviceId]="serviceId" (searchForUpdate)="createFilter($event)"
-        [searchForColumn]='searchForColumn' ></odp-search-for>
+        [searchForColumn]='searchForColumn'></odp-search-for>
 
       <div class="d-flex options p-3" *ngIf="selectedColOrder.length">
         <div class="text-gray-medium label-text">
@@ -224,7 +80,7 @@
             <div class="input-group col-name-dd mr-2">
               <select class="custom-select" [(ngModel)]="col.name">
                 <option value="" class="d-none" selected>Select column</option>
-                <option *ngFor="let selCol of selectedColOrder;" [value]="selCol.properties.name">
+                <option *ngFor="let selCol of selectedColOrder;" [value]="selCol.dataKey">
                   {{ selCol?.properties?.name }}
                 </option>
               </select>

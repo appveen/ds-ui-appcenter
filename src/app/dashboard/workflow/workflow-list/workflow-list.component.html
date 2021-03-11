@@ -1,15 +1,3 @@
-<!-- <div class="list-wrapper d-flex flex-column w-100 bg-light">
-    <div class="list-page-wrapper row m-0 position-relative bg-white" [ngClass]="{'has-records':totalRecords>0}">
-        <div class="data-container p-0 w-100" *ngIf="totalRecords>0">
-            <odp-workflow-ag-grid [schema]="schema" [columns]="columnDefs" *ngIf="totalRecords>0">
-            </odp-workflow-ag-grid>
-
-
-
-        </div>
-    </div>
-
-</div> -->
 <div class="workflow-wrapper">
     <div class="header d-flex align-items-center justify-content-between pr-3 bg-light border-bottom w-100">
         <div class="title d-flex align-items-center ml-2">
@@ -20,7 +8,7 @@
             </div>
             <div class="text-secondary">{{schema?.name}}</div>
         </div>
-        <span class="text text-primary font-weight-bold hover" (click)="refreshFilter()">Refresh</span>
+        <span class="text text-primary font-weight-bold hover">Refresh</span>
     </div>
     <div class="tabs d-flex bg-white align-items-center border-bottom">
         <div class="text-muted py-2 hover border-right sbTabs d-flex justify-content-between"
@@ -87,14 +75,16 @@
             </button>
         </div>
         <div class="d-flex align-items-center">
-            <p class="text-muted mt-2" *ngIf="allCheckedRecords>0">{{allCheckedRecords}} of {{pendingRecords}} pending
-                workflows selected.
+            <p class="text-muted mt-2" *ngIf="allCheckedRecords>0">
+                {{allCheckedRecords}} of {{pendingRecords}} pending workflows selected.
                 <span class="text-primary hover" *ngIf="allCheckedRecords!=pendingRecords"
-                    (click)="checkAll=true">Select all
-                    pending instead</span>.
+                    (click)="checkAll=true">
+                    Select all pending instead
+                </span>.
                 <span class="text-primary hover" *ngIf="allCheckedRecords===pendingRecords"
-                    (click)="checkAll=false">Click here
-                    to deselect all</span>.
+                    (click)="checkAll=false">
+                    Click here to deselect all
+                </span>.
             </p>
         </div>
         <div class="d-flex align-items-center">
@@ -152,7 +142,7 @@
                             (mouseenter)="filter.showOptions = true" (mouseleave)="filter.showOptions = false">
                             <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
                             <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
-                            <span class="hover text-truncate filterNameWidth" (click)="selectSavedView(filter)"
+                            <span class="hover text-truncate filterNameWidth" (click)="selectSavedView({'view':filter})"
                                 [odpTruncated]="filter.name">{{ filter.name }}</span>
                             <span *ngIf="!filter.showOptions"
                                 class="text-secondary ml-auto position-absolute un-pos">{{ filter.user }}</span>
@@ -189,7 +179,6 @@
                 <div *ngIf="selectedSavedView" class="bg-white position-absolute sm-circle"></div>
                 <span *ngIf="showfilterOptions" class="fas fa-times text-muted position-absolute"></span>
             </div>
-
         </div>
     </div>
     <odp-workflow-filter *ngIf="showfilterOptions" (filterString)="selectSavedView($event)" [serviceId]="srvcId"
@@ -199,23 +188,23 @@
     </odp-workflow-filter>
     <div class="list-wrapper d-flex flex-column w-100 bg-light">
         <div class="list-page-wrapper row m-0 position-relative bg-white" [ngClass]="{'has-records':totalRecords>0}">
-            <div class="data-container p-0 w-100" *ngIf="totalRecords>0">
+            <div #dataContainer class="data-container p-0 w-100" *ngIf="totalRecords>0">
                 <odp-workflow-ag-grid #listGrid [schema]="schema" [columns]="columnDefs" *ngIf="totalRecords>0"
-                    [srvcId]="srvcId" (viewRecord)="view($event._id)" [selectAll]="selectAll"
+                    [srvcId]="srvcId" (viewRecord)="view($event)" [selectAll]="selectAll"
                     [applySavedView]="applySavedView" [approversList]=approversList
                     (selectedRecords)="selectedRecords($event)"
                     (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
                     (removedSavedView)="removedSavedView($event)">
                 </odp-workflow-ag-grid>
-
             </div>
         </div>
 
     </div>
-    <odp-workflow-respond-view *ngIf="showRespondPannel" [selectedData]="selectedData"
+    <odp-workflow-respond-view #respondView *ngIf="showRespondPannel" [selectedData]="selectedData"
         (actionResponse)=" onAction($event);" [ids]="allCheckedRecordIds" [approversList]="approversList"
-        [requestedByList]="requestedByList" [serviceStatus]="schema.status" [workflowUploadedFiles]="workflowUploadedFiles"
-        [workflowFilesList]="workflowFilesList" [respondControl]="respondControl"></odp-workflow-respond-view>
+        [requestedByList]="requestedByList" [serviceStatus]="schema.status"
+        [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
+        [respondControl]="respondControl" [workflowApi]="workflowApi"></odp-workflow-respond-view>
 </div>
 
 <ng-template #confirmDeleteModal>

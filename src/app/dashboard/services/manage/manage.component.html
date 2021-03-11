@@ -56,7 +56,7 @@
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save as draft</span>
         </button>
-        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader"
+        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader || reqInProgress"
           (click)="save(true)" *ngIf="!isEdit && !isDraft">
           <span class="fa fa-save mr-2"></span>
           <span *ngIf="!hasWorkflow" class="text">Save &amp; create another</span>
@@ -198,9 +198,9 @@
       <div class="d-flex align-items-center justify-content-between p-3">
         <span class="d-flex align-items-center">
           <span class="text-secondary mr-1">Submitted by</span>
-          <span *ngIf="workflowModalOptions.requestedBy.length <= 32">{{workflowModalOptions.requestedBy}}</span>
-          <span *ngIf="workflowModalOptions.requestedBy.length > 32" class="text-truncate requestedBy high-zIndex"
-            [ngbTooltip]="workflowModalOptions.requestedBy" placement="top">{{workflowModalOptions.requestedBy}}</span>
+          <span *ngIf="workflowModalOptions?.requestedBy?.length <= 32">{{workflowModalOptions?.requestedBy}}</span>
+          <span *ngIf="workflowModalOptions?.requestedBy?.length > 32" class="text-truncate requestedBy high-zIndex"
+            [ngbTooltip]="workflowModalOptions?.requestedBy" placement="top">{{workflowModalOptions?.requestedBy}}</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="d-flex align-items-center">
           <span class="text-secondary mr-1">Fields affected</span>

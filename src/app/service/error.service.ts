@@ -20,29 +20,29 @@ export class ErrorService implements ErrorHandler {
       || error.message.startsWith('Uncaught (in promise)')) {
       return;
     }
-    const payload: LogsPayload = {};
-    const temp = self.sessionService.getUser();
-    let user: UserDetails = {};
-    if (temp) {
-      user = JSON.parse(temp);
-    }
-    payload.message = error.message;
-    payload.stackTrace = error.stack;
-    payload.name = error.name;
-    payload.message = error.message;
-    payload.userId = user._id;
-    payload.type = 'appcenter';
-    const URL = environment.url.mon + '/ui/logs';
-    const httpHeaders: HttpHeaders = new HttpHeaders()
-      .set('Content-Type', 'application/json; version=2')
-      .set('Authorization', 'JWT ' + self.sessionService.getToken());
-    self.http
-      .post(URL, payload, { headers: httpHeaders })
-      .subscribe(res => {
+    // const payload: LogsPayload = {};
+    // const temp = self.sessionService.getUser();
+    // let user: UserDetails = {};
+    // if (temp) {
+    //   user = JSON.parse(temp);
+    // }
+    // payload.message = error.message;
+    // payload.stackTrace = error.stack;
+    // payload.name = error.name;
+    // payload.message = error.message;
+    // payload.userId = user._id;
+    // payload.type = 'appcenter';
+    // const URL = environment.url.mon + '/ui/logs';
+    // const httpHeaders: HttpHeaders = new HttpHeaders()
+    //   .set('Content-Type', 'application/json; version=2')
+    //   .set('Authorization', 'JWT ' + self.sessionService.getToken());
+    // self.http
+    //   .post(URL, payload, { headers: httpHeaders })
+    //   .subscribe(res => {
 
-      }, err => {
+    //   }, err => {
 
-      });
+    //   });
     console.log('HANDLED:', error);
   }
 }

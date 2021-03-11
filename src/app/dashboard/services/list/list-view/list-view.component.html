@@ -1,6 +1,6 @@
 <ng-container *ngIf="value || type === 'Checkbox'">
   <ng-container *ngIf="type === 'Identifier'">
-    <a [routerLink]="['/~/services/',serviceId,'view',data._id]">{{value}}</a>
+    <a [routerLink]="['/', currentAppId, 'services', serviceId, 'view', data._id]">{{value}}</a>
   </ng-container>
   <ng-container *ngIf="type === 'Checkbox'">
     <div class="d-flex align-items-center">

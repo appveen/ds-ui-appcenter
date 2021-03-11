@@ -1,12 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
+import * as _ from 'lodash';
+
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { Properties } from 'src/app/interfaces/definition';
-import * as _ from 'lodash';
 @Component({
   selector: 'odp-view-relation-data',
   templateUrl: './view-relation-data.component.html',
-  styleUrls: ['./view-relation-data.component.scss']
+  styleUrls: ['./view-relation-data.component.scss'],
 })
 export class ViewRelationDataComponent implements OnInit {
 
@@ -20,26 +21,28 @@ export class ViewRelationDataComponent implements OnInit {
   values: Array<any>;
   isSecureTextPresent: boolean;
   showPassword: boolean;
+
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+
   constructor(
     private appService: AppService,
     private commonService: CommonService,
   ) {
     const self = this;
-    self.serviceAccess = true;
     self.values = [];
   }
 
   ngOnInit(): void {
     const self = this;
     if (self.value) {
-
       if (Object.keys(self.value).length === 2 && '_href' in self.value) {
         self.getDocument(self.value);
       }
       const properties: Properties = self.definition.properties;
-      const srvcIdx = self.appService.fetchedServiceList.findIndex(sid => sid._id === properties.relatedTo);
-      self.serviceAccess = srvcIdx !== -1;
-      self.relationLink = `/~/services/${properties.relatedTo}/view/`;
+      self.checkForServiceAccess(2000);
+      self.relationLink = `/${self.currentAppId}/services/${properties.relatedTo}/view/`;
       self.relatedSrvcDef = `/${properties.relatedTo}`
       self.getServiceDetails();
 
@@ -77,19 +80,29 @@ export class ViewRelationDataComponent implements OnInit {
         self.cleanup();
       }
       else {
-        self.values = [];
+        const temp = [];
         properties.relatedViewFields.forEach((element) => {
-          const val = self.appService.getValue(element.key, self.value);
-          const retVal = self.getValue(val, element.key)
-          self.values.push(retVal);
+          if(!!element.properties.dataPath) {
+            const val = self.appService.getValue(element.properties.dataPath, self.value);
+            const retVal = self.getValue(val, element.key)
+            temp.push(retVal);
+          } else {
+            self.isSecureTextPresent = true;
+            temp.push({
+              value: self.appService.getValue(element.properties.name, self.value),
+              type: 'secureText'
+            })
+          }
         });
+        self.values = [...temp];
       }
-
+      this.checkForServiceAccess();
     },
-      err => {
-
-      })
+    err => {
+      this.checkForServiceAccess();
+    })
   }
+
   cleanup() {
     const self = this;
     self.values = self.values.filter(e => e).map(val => {
@@ -121,19 +134,19 @@ export class ViewRelationDataComponent implements OnInit {
     const properties: Properties = self.definition.properties;
     const temp = self.appService.getValue(self.definition.key + '.' + properties.relatedSearchField, self.value);
     if (temp) {
-      self.values.push({ value: temp });
+      self.values = [{ value: temp }];
     } else {
       if (self.appService.getValue(properties.relatedSearchField, self.value) !== undefined) {
         const value = self.appService.getValue(properties.relatedSearchField, self.value);
-        self.values.push(self.getValue(value, properties.relatedSearchField));
+        self.values = [self.getValue(value, properties.relatedSearchField)];
       } else {
         self.commonService.getService(self.relatedSrvcDef).then(result => {
           if (result.api) {
             const api = '/' + result.app + result.api;
             self.commonService.get('api', api, { filter: self.value }).subscribe(data => {
               const value = self.appService.getValue(properties.relatedSearchField, data[0]);
-              self.values.push({ value: value });
-              self.values = _.uniqBy(self.values, 'value');
+              const tmp = [{ value }];
+              self.values = _.uniqBy(tmp, 'value');
             });
           }
         }).catch(err => {
@@ -147,27 +160,69 @@ export class ViewRelationDataComponent implements OnInit {
 
     const self = this;
     let retValue;
-    const relsrvcDef = self.relatedServiceDefinition.attributeList.find(e => e.key === key);
-    // Relation view field Secure Text
+    const relsrvcDef = self.relatedServiceDefinition.definition.find(e => e.properties.dataPath === key);
 
     if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.password) {
       retValue = {
         value: value.value,
-        isSecureText: true
+        type: 'secureText'
       };
       self.isSecureTextPresent = true;
-    }
-    // Relation view field File
-    else if (relsrvcDef && relsrvcDef.type === 'File') {
-      retValue = { value: value.metadata.filename };
-    }
-    // Relation view field Location
-    else if (relsrvcDef && relsrvcDef.type === 'Geojson') {
-      retValue = { value: value.userInput ? value.userInput : value.formattedAddress };
-    }
-    else {
-      retValue = { value: value };
+    } else if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.richText) {
+      retValue = {
+        value,
+        type: 'richText',
+        definition: {...relsrvcDef, value, path: ''}
+      };
+    } else if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.dateType === 'date' && value) {
+      let dateString = this.appService.getUTCString(value.rawData,value.tzInfo)
+      retValue = {
+        value: dateString,
+        type: 'date'
+      };
+    } else if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.dateType === 'datetime-local' && value) {
+      let dateString = this.appService.getUTCString(value.rawData, value.tzInfo)
+
+      retValue = {
+        value: dateString,
+        type: 'datetime'
+      };
+    } else if (relsrvcDef && relsrvcDef.properties && [relsrvcDef.properties._type, relsrvcDef.properties._typeChanged].includes('Boolean')) {
+      retValue = { 
+        value: value ,
+        type: 'boolean'
+      };
+    } else if (relsrvcDef && relsrvcDef.properties  && [relsrvcDef.properties._type, relsrvcDef.properties._typeChanged].includes('File')) {
+      retValue = { value: value.metadata.filename ,
+        type: 'text'
+
+      };
+    } else if (relsrvcDef  && relsrvcDef.type === 'Geojson') {
+      retValue = { value: value.userInput ? value.userInput : value.formattedAddress ,
+        type: 'text'};
+    } else if (relsrvcDef  && relsrvcDef.type === 'User') {
+      retValue = {
+        value: value._id ? value._id : value,
+        type: 'text'
+      };
+    } else {
+      retValue = {
+        value: value,
+        type: 'text'
+      };
     }
     return retValue;
+  }
+
+  checkForServiceAccess(timeInMs?: number) {
+    if(!!this.appService.fetchedServiceList?.length) {
+      const srvcIdx = this.appService.fetchedServiceList.findIndex(sid => sid._id === this.definition?.properties?.relatedTo);
+      this.serviceAccess = srvcIdx !== -1; 
+    } else {
+      setTimeout(() => {
+        const srvcIdx = this.appService.fetchedServiceList.findIndex(sid => sid._id === this.definition?.properties?.relatedTo);
+        this.serviceAccess = srvcIdx !== -1;   
+      }, !!timeInMs ? timeInMs : 0);
+    }
   }
 }

@@ -11,7 +11,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   @Input() toggle: boolean;
   @Output() toggleChange: EventEmitter<boolean>;
-  @Input() serviceId: string;
+  @Input() schema: any;
   @Input() documentId: string;
   @Output() auditAvailable: EventEmitter<any>;
   @Output() selectedAudit: EventEmitter<any>;
@@ -26,6 +26,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   wfDataMap: {
     [key: string]: Promise<any>;
   };
+  api: string;
   constructor(private commonService: CommonService) {
     const self = this;
     self.auditConfig = {
@@ -43,6 +44,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
+    self.api = '/' + self.commonService.app._id + this.schema.api;
     self.getAuditCount(true);
     self.getAudit();
   }
@@ -62,7 +64,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     self.auditConfig.filter['data._id'] = self.documentId;
     self.auditConfig.sort = '-timeStamp';
     self.subscriptions['getAudit'] =
-      self.commonService.get('mon', `/appCenter/${self.serviceId}/audit`, self.auditConfig).subscribe((data: Array<any>) => {
+      self.commonService.get('mon', `/appCenter/${self.schema._id}/audit`, self.auditConfig).subscribe((data: Array<any>) => {
         if (data.length > 0) {
           data.forEach(e => {
             self.getUserForAudit(e);
@@ -79,7 +81,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   getAuditCount(first?: boolean) {
     const self = this;
     self.subscriptions['getAuditCount'] =
-      self.commonService.get('mon', `/appCenter/${self.serviceId}/audit/count`, {
+      self.commonService.get('mon', `/appCenter/${self.schema._id}/audit/count`, {
         filter: { 'data._id': self.documentId }
       }).subscribe((res: number) => {
         self.auditCount = res;
@@ -97,7 +99,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       select: 'audit',
       filter: {
         documentId: self.documentId,
-        serviceId: self.serviceId,
+        serviceId: self.schema._id,
         app: self.commonService.app._id,
         status: 'Approved',
         'data.old._metadata.version.document': auditData.data._version - 1
@@ -108,7 +110,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       delete options.filter['data.old._metadata.version.document'];
     }
     if (!self.wfDataMap[auditData.data._version]) {
-      self.wfDataMap[auditData.data._version] = self.commonService.get('wf', '', options).toPromise();
+      self.wfDataMap[auditData.data._version] = self.commonService
+        .get('api', this.api + '/utils/workflow', options).toPromise();
     }
     self.wfDataMap[auditData.data._version].then(data => {
       if (data && data.length > 0 && data[0].audit) {

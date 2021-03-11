@@ -12,9 +12,7 @@ import { MapModule } from 'src/app/utils/map/map.module';
 import { VersionModule } from 'src/app/utils/version/version.module';
 import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outside.module';
 import { DataGridModule } from 'src/app/utils/directives/data-grid/data-grid.module';
-import { WorkflowViewComponent } from './workflow-view/workflow-view.component';
 import { RoundCheckModule } from 'src/app/utils/round-check/round-check.module';
-import { WorkflowDetailViewComponent } from './workflow-detail-view/workflow-detail-view.component';
 import { WorkflowFilterComponent } from './workflow-filter/workflow-filter.component';
 import { RadioBtnModule } from 'src/app/utils/radio-btn/radio-btn.module';
 import { SearchForComponent } from './workflow-filter/search-for/search-for.component';
@@ -25,9 +23,6 @@ import { ManageControlModule } from 'src/app/utils/manage-control/manage-control
 import { FindAxisModule } from 'src/app/directive/find-axis/find-axis.module';
 import { OnChangeModule } from 'src/app/directive/on-change/on-change.module';
 import { WorkflowRespondViewModule } from 'src/app/utils/workflow-respond-view/workflow-respond-view.module';
-import { RelationViewComponent } from './workflow-view/relation-view/relation-view.component';
-import { UserViewComponent } from './workflow-view/user-view/user-view.component';
-import { FileViewComponent } from './workflow-view/file-view/file-view.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 import { WorkflowAgGridModule } from './workflow-list/workflow-ag-grid/workflow-ag-grid.module';
@@ -67,19 +62,11 @@ const routes: Routes = [
     WorkflowRespondViewModule,
     PdfViewerModule,
     WorkflowAgGridModule
-
-
-
   ],
   declarations: [
     WorkflowComponent,
-    WorkflowViewComponent,
-    WorkflowDetailViewComponent,
     WorkflowFilterComponent,
     SearchForComponent,
-    RelationViewComponent,
-    UserViewComponent,
-    FileViewComponent,
     WorkflowListComponent,
     WorkflowManageComponent,
     

@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
         return new Promise<boolean>((resolve, reject) => {
             if (this.commonService.userDetails
                 && this.commonService.userDetails._id) {
-                this.router.navigate(['/~']);
+                this.router.navigate(['/', this.commonService.app._id,]);
                 reject(false);
             } else {
                 if (this.sessionService.getToken()) {
@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
                             if (this.commonService.noAccess) {
                                 reject(false);
                             } else {
-                                this.router.navigate(['/~']);
+                                this.router.navigate(['/', this.commonService.app._id,]);
                                 resolve(true);
                             }
                         }).catch(err => {

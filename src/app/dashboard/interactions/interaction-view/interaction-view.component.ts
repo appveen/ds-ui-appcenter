@@ -31,6 +31,8 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
   errorBlocks: Array<NodeData>;
   params: any;
   refreshing: boolean;
+  baseInteraction: any;
+  showLazyLoading: boolean
   constructor(private route: ActivatedRoute,
     private router: Router,
     private appService: AppService,
@@ -52,7 +54,7 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
     self.subscriptions.appChange = self.appService.appChange.subscribe(app => {
-      self.router.navigate(['/~']);
+      self.router.navigate(['/', this.commonService.app._id]);
     });
     self.subscriptions.viewSubs = self.route.params.subscribe((params) => {
       self.params = params;
@@ -65,15 +67,15 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
     self.appService.partnerId = self.params.partnerId;
     self.transactionId = self.params.txnId;
     self.remoteTxnId = self.appService.remoteTxnId;
-    self.config.filter = { odpTxnId: self.params.txnId, remoteTxnId: self.appService.remoteTxnId };
+    self.config.filter = { dataStackTxnId: self.params.txnId, remoteTxnId: self.appService.remoteTxnId };
     const interactionAPI = self.commonService.get('pm', `/${self.commonService.app._id}/interaction`, self.config);
     const interactionBlocksAPI = self.commonService.get('pm', `/${self.commonService.app._id}/interactionBlock`, self.config);
     self.refreshing = true;
     forkJoin([interactionAPI, interactionBlocksAPI]).subscribe((results) => {
       self.refreshing = false;
-      self.interactionData = results[0][0];
+      self.interactionData = results[0][0] || {};
       self.interactionBlocks = results[1];
-      if (self.interactionData.statusAudit && self.interactionData.statusAudit.length > 0) {
+      if (self.interactionData && self.interactionData.statusAudit && self.interactionData.statusAudit.length > 0) {
         self.interactionData.statusAudit = self.interactionData.statusAudit
           .filter((e, i, a) => a.findIndex(ae => e.message === ae.message) === i);
       }
@@ -81,6 +83,9 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
       self.responseBlocks = self.is.parseBlocks(self.interactionData.flowData.successBlock);
       self.errorBlocks = self.is.parseBlocks(self.interactionData.flowData.errorBlock);
       self.decryptPassword();
+      if (this.interactionData.baseInteractionID) {
+        this.getBaseInteraction()
+      }
     }, err => {
       self.refreshing = false;
       console.error(err);
@@ -90,9 +95,9 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
   interactions() {
     const self = this;
     if (self.is.fromAllInteractions) {
-      self.router.navigate([`/~/interactions/all`], { relativeTo: self.route });
+      self.router.navigate(['/', this.commonService.app._id, `interactions/all`], { relativeTo: self.route });
     } else {
-      self.router.navigate([`~/interactions/${self.interactionData.partnerId}/${self.interactionData.flowId}`]);
+      self.router.navigate(['/', this.commonService.app._id, `interactions/${self.interactionData.partnerId}/${self.interactionData.flowId}`]);
     }
   }
 
@@ -141,7 +146,7 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
     const payload = [
       {
         remoteTxnID: self.remoteTxnId,
-        odpTxnID: self.transactionId
+        dataStackTxnId: self.transactionId
       }
     ];
     self.subscriptions.reDownloadMeta = self.commonService.post('pm', `/${self.commonService.app._id}/interaction/redownloadFile`, payload)
@@ -182,7 +187,41 @@ export class InteractionViewComponent implements OnInit, OnDestroy {
     self.init();
   }
 
-  get apiCallsPending() {
-    return false;
+
+
+  reAttempt() {
+    this.showLazyLoading = true
+    this.subscriptions.outputPassword = this.commonService.post('pm',
+      `/${this.commonService.app._id}/interaction/${this.interactionData._id}/reattempt`, {})
+      .subscribe(res => {
+        this.showLazyLoading = false;
+        this.ts.success(res.message);
+        this.init();
+      }, err => {
+        this.showLazyLoading = false;
+        if (err.status === 429 && err.error && err.error.message) {
+          this.ts.warning(err.error.message);
+        } else {
+          this.commonService.errorToast(err);
+        }
+      });
   }
+
+  getBaseInteraction() {
+    const interactionAPI = this.commonService.get('pm', `/${this.commonService.app._id}/interaction`, { filter: { "_id": this.interactionData.baseInteractionID } });
+    this.subscriptions.outputPassword = interactionAPI.subscribe(res => {
+      this.baseInteraction = res[0];
+    }, err => {
+      this.commonService.errorToast(err);
+    });
+  }
+
+  navigateToBase() {
+    this.showLazyLoading = true
+    setTimeout(() => {
+      this.showLazyLoading = false
+    }, 500);
+    this.router.navigate(['/', this.commonService.app._id, `interactions/${this.interactionData.partnerId}/${this.interactionData.flowId}/${this.baseInteraction.dataStackTxnId}`]);
+  }
+
 }

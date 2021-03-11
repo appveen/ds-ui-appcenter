@@ -110,9 +110,9 @@ export class InteractionsGlobalComponent implements OnInit, OnDestroy {
                 properties: {
                     name: 'Order ID'
                 },
-                type: 'odpTxnId',
-                key: 'odpTxnId',
-                dataKey: 'odpTxnId',
+                type: 'dataStackTxnId',
+                key: 'dataStackTxnId',
+                dataKey: 'dataStackTxnId',
             },
             {
                 show: true,
@@ -246,9 +246,9 @@ export class InteractionsGlobalComponent implements OnInit, OnDestroy {
             res = self.orderBy.transform(res, 'name');
             if (!self.appService.partnerId) {
                 self.appService.partnerId = res[0]['_id'];
-                self.router.navigate([`/~/interactions/${res[0]['_id']}`]);
+                self.router.navigate(['/', this.commonService.app._id, `interactions/${res[0]['_id']}`]);
             } else {
-                self.router.navigate([`/~/interactions/${self.appService.partnerId}`]);
+                self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}`]);
             }
         });
     }
@@ -347,7 +347,7 @@ export class InteractionsGlobalComponent implements OnInit, OnDestroy {
             failedRecords.forEach((e) => {
                 const obj = {
                     remoteTxnID: e.remoteTxnId,
-                    odpTxnID: e.odpTxnId
+                    dataStackTxnId: e.dataStackTxnId
                 };
                 reqBodyArr.push(obj);
             });
@@ -949,7 +949,7 @@ export class InteractionsGlobalComponent implements OnInit, OnDestroy {
         const self = this;
         self.appService.remoteTxnId = colData.remoteTxnId;
         self.interactionService.fromAllInteractions = true;
-        self.router.navigate([`~/interactions/${self.appService.partnerId}/${colData.flowId}/${colData.odpTxnId}`]);
+        self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}/${colData.flowId}/${colData.dataStackTxnId}`]);
     }
 
     get hasFilters() {

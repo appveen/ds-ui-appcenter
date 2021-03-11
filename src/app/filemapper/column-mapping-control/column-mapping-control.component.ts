@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ElementRef, Output, EventEmitter } from '@angular/core';
+import { FormArray, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { FormGroup, FormArray, FormControl, FormBuilder } from '@angular/forms';
 import { AppService } from 'src/app/service/app.service';
 import { FormService } from 'src/app/service/form.service';
 
@@ -16,7 +16,7 @@ export class ColumnMappingControlComponent implements OnInit {
   @Input() mappingData: any;
   @Output() emitData: EventEmitter<any>;
   @Input() form: any;
-  @Input() schemaName: String;
+  @Input() schemaName: string;
   showObjectMapping: boolean;
   showInput: boolean;
   model;
@@ -26,7 +26,7 @@ export class ColumnMappingControlComponent implements OnInit {
   constructor(private elem: ElementRef,
     private appservice: AppService,
     private formService: FormService,
-    private fb: FormBuilder, ) {
+    private fb: FormBuilder,) {
     const self = this;
     self.showInput = false;
     self.emitData = new EventEmitter();
@@ -111,19 +111,19 @@ export class ColumnMappingControlComponent implements OnInit {
       self.form.patchValue(null);
     }
   }
- 
+
   clearMappingArray(index) {
     const self = this;
     self.tempArray[index] = null;
     if (self.definition.definition['0'].properties.relatedTo || self.definition.definition['0'].type !== 'User') {
-      (<FormArray>self.form).controls[index].patchValue({ _id: null });
+      (self.form as FormArray).controls[index].patchValue({ _id: null });
     } else if (self.definition.definition['0'].type === 'Object') {
-      (<FormArray>self.form).controls[index].patchValue({ value: null });
+      (self.form as FormArray).controls[index].patchValue({ value: null });
     } else {
-      (<FormArray>self.form).controls[index].patchValue(null);
+      (self.form as FormArray).controls[index].patchValue(null);
     }
   }
- 
+
 
   setRelValue(data) {
     const self = this;
@@ -147,33 +147,38 @@ export class ColumnMappingControlComponent implements OnInit {
     self.form.patchValue({ value: event.item.name });
   }
 
+  selectGeojsonData(event) {
+    const self = this;
+    self.form.patchValue({ userInput: event.item.name });
+  }
+
   selectArrayData(event, index) {
     const self = this;
-    (<FormArray>self.form).controls[index].patchValue(event.item.name);
+    (self.form as FormArray).controls[index].patchValue(event.item.name);
   }
   selectArrayDataRel(event, index) {
     const self = this;
-    (<FormArray>self.form).controls[index].patchValue({ _id: event.item.name });
+    (self.form as FormArray).controls[index].patchValue({ _id: event.item.name });
   }
   selectArraySTData(event, index) {
     const self = this;
-    (<FormArray>self.form).controls[index].patchValue({ value: event.item.name });
+    (self.form as FormArray).controls[index].patchValue({ value: event.item.name });
   }
 
   addControl() {
     const self = this;
     if (self.definition.definition[0].type === 'Object') {
       const form = self.fb.group(self.formService.createMappingForm(self.definition.definition[0].definition));
-      (<FormArray>self.form).push(form);
+      (self.form as FormArray).push(form);
     } else {
-      (<FormArray>self.form).push(new FormControl());
+      (self.form as FormArray).push(new FormControl());
 
     }
     self.tempArray.push();
   }
   removeControl(index) {
     const self = this;
-    (<FormArray>self.form).removeAt(index);
+    (self.form as FormArray).removeAt(index);
     self.tempArray.splice(index, 1);
   }
   onChanges(): void {
@@ -216,6 +221,8 @@ export class ColumnMappingControlComponent implements OnInit {
           self.form.patchValue({ _id: self.appservice.draggedItem.name });
         } else if (self.definition.properties.password) {
           self.form.patchValue({ value: self.appservice.draggedItem.name });
+        } else if (self.definition.type === 'Geojson') {
+          self.form.patchValue({ userInput: self.appservice.draggedItem.name });
         } else {
           self.form.patchValue(self.appservice.draggedItem.name);
         }
@@ -223,11 +230,11 @@ export class ColumnMappingControlComponent implements OnInit {
       } else {
         self.tempArray[index] = this.mappingData.headers.fileKeys.find(e => e.name === self.appservice.draggedItem.name);
         if (self.definition.definition['0'].properties.relatedTo || self.definition.definition['0'].type === 'User') {
-          (<FormArray>self.form).controls[index].patchValue({ _id: self.appservice.draggedItem.name });
+          (self.form as FormArray).controls[index].patchValue({ _id: self.appservice.draggedItem.name });
         } else if (self.definition.definition['0'].properties.password) {
-          (<FormArray>self.form).controls[index].patchValue({ value: self.appservice.draggedItem.name });
+          (self.form as FormArray).controls[index].patchValue({ value: self.appservice.draggedItem.name });
         } else {
-          (<FormArray>self.form).controls[index].patchValue(self.appservice.draggedItem.name);
+          (self.form as FormArray).controls[index].patchValue(self.appservice.draggedItem.name);
         }
 
       }

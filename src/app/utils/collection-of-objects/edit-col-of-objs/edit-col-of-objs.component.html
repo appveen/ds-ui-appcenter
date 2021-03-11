@@ -1,4 +1,5 @@
 <div class="d-flex">
-    <button class="editBtn btn btn-link p-0" (click)="editItem($event)">Edit</button>
-    <button class="removeBtn btn btn-link p-0 ml-3" (click)="removeItem($event)">Remove</button>
+    <button class="editBtn btn btn-link p-0" *ngIf="isEditable"(click)="editItem($event)">Edit</button>
+    <button class="editBtn btn btn-link p-0" *ngIf="!isEditable"(click)="editItem($event)">view</button>
+    <button class="removeBtn btn btn-link p-0 ml-3" *ngIf="isEditable" (click)="removeItem($event)">Remove</button>
 </div>

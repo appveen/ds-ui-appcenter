@@ -1,9 +1,9 @@
 <div [@toggleOverlay]="state" class="overlay" (click)="onCancel()"></div>
 <div class="app-switcher-window d-flex flex-column justify-content-start align-items-center">
   <div class="d-flex align-items-center p-3 position-relative hover" (click)="onCancel()">
-    <div class="active-app d-flex align-items-center position-absolute">
+    <div class="active-app d-flex align-items-center position-absolute text-truncate">
       <odp-app-icon color="aaa" class="mr-2 pt-1" size="24"></odp-app-icon>
-      <span class="pl-1">{{ activeApp._id }}</span>
+      <span class="pl-1 text-truncate" [ngbTooltip]="activeApp._id" >{{ activeApp._id }}</span>
       <span class="text-primary ml-auto pt-1 fas fa-angle-down"></span>
     </div>
     <input type="text" class="form-control search-box" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
@@ -16,7 +16,7 @@
         <img *ngIf="app.logo && app.logo.thumbnail" [src]="app.logo.thumbnail" alt="Logo">
         <odp-app-icon *ngIf="!app.logo || !app.logo.thumbnail" color="aaa"></odp-app-icon>
       </div>
-      <div class="app-name text-center mt-2">{{app._id}}</div>
+      <div class="app-name text-center mt-2 text-truncate" [autoClose]="false" [ngbTooltip]="app._id">{{app._id}}</div>
     </div>
   </div>
 </div>

@@ -2,21 +2,21 @@
 @import "src/assets/scss/bootstrap/_variables.scss";
 
 .grid-container {
-    display: grid;
-    width: 100%;
-    border: 1px solid #ddd;
+  display: grid;
+  width: 100%;
+  border: 1px solid #ddd;
 }
 
 .buttonsRow {
-    height: 32px;
+  height: 32px;
 
-    * {
-      user-select: none;
-    }
+  * {
+    user-select: none;
+  }
 
-    .selectAll {
-        padding-left: 13px;
-    }
+  .selectAll {
+    padding-left: 13px;
+  }
 }
 
 
@@ -44,8 +44,8 @@
 
 
 .scrollBox {
-    height: calc(100vh - 185px);
-    overflow: auto;
+  height: calc(100vh - 185px);
+  overflow: auto;
 }
 
 .modal-header {
@@ -74,4 +74,9 @@
   &.show {
     display: block;
   }
+}
+
+.disabled-text {
+  color: #6A7179 !important;
+  pointer-events: none;
 }

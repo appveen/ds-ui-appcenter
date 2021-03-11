@@ -22,7 +22,7 @@ export class ManageGuard implements CanActivate {
       if (this.commonService.hasPermission(serviceId, documentId ? 'PUT' : 'POST')) {
         return true;
       } else {
-        this.router.navigate([`/~/no-access`]);
+        this.router.navigate(['/', this.commonService.app._id, `no-access`]);
         return false;
       }
     }

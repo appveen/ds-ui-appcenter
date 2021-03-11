@@ -5,7 +5,6 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowService } from 'src/app/dashboard/workflow/workflow.service';
 import * as _ from 'lodash';
-import { JsonPipe } from '@angular/common';
 import { WorkflowAgGridService } from '../../workflow-list/workflow-ag-grid/workflow-ag-grid.service';
 
 @Component({
@@ -17,6 +16,7 @@ export class SearchForComponent implements OnInit {
   @Output() searchForUpdate: EventEmitter<any>;
   @Input() searchForColumn: Array<any>;
   @Input() serviceId: string;
+  tempSearchForColumn: Array<any>;
   allColumnsOfService: any;
   textOptions: Array<{ name: string, value: string }>;
   numbOptions: Array<{ name: string, value: string }>;
@@ -29,7 +29,8 @@ export class SearchForComponent implements OnInit {
   combinedColumns: any;
   startDate: Date;
   endDate: Date;
-
+  fromNumber: number;
+  toNumber: number;
   filterConfig: any;
   tempArray: Array<any>;
 
@@ -57,6 +58,10 @@ export class SearchForComponent implements OnInit {
       {
         name: 'Not equal',
         value: 'notEqual'
+      },
+      {
+        name: 'In range',
+        value: 'inRange'
       }
     ];
     self.textOptions = [
@@ -148,18 +153,10 @@ export class SearchForComponent implements OnInit {
         filterValue: '',
         serviceCol: false
       },
-      // {
-      //   headerName: 'Record ID',
-      //   fieldType: 'String',
-      //   fieldName: 'documentId',
-      //   filterType: 'equals',
-      //   filterValue: '',
-      //   serviceCol: false
-      // },
       {
         headerName: 'Requested By',
         fieldType: 'requestSelect',
-        fieldName: 'requestedBy',
+        fieldName: '_requestedBy',
         filterType: 'equals',
         filterValue: '',
         serviceCol: false
@@ -167,7 +164,7 @@ export class SearchForComponent implements OnInit {
       {
         headerName: 'Responded By',
         fieldType: 'respondSelect',
-        fieldName: 'respondedBy',
+        fieldName: '_respondedBy',
         filterType: 'equals',
         filterValue: '',
         serviceCol: false
@@ -187,7 +184,7 @@ export class SearchForComponent implements OnInit {
       {
         headerName: 'Status',
         fieldType: 'statusSelect',
-        fieldName: 'status',
+        fieldName: '_select',
         filterType: 'equals',
         filterValue: '',
         serviceCol: false
@@ -277,8 +274,19 @@ export class SearchForComponent implements OnInit {
 
   searchDataUpdated() {
     const self = this;
-    // self.createFilterQuery();
-    self.searchForUpdate.emit(self.searchForColumn);
+    this.tempSearchForColumn = JSON.parse(JSON.stringify(this.searchForColumn))
+    this.tempSearchForColumn.forEach(element => {
+      if (element.fieldName === '_select') {
+        element.fieldName = 'status';
+      }
+      if (element.fieldName === '_requestedBy') {
+        element.fieldName = 'requestedBy';
+      }
+      if (element.fieldName === '_respondedBy') {
+        element.fieldName = 'respondedBy';
+      }
+    });
+    self.searchForUpdate.emit(this.tempSearchForColumn);
   }
 
   addColForSearch() {
@@ -353,18 +361,32 @@ export class SearchForComponent implements OnInit {
 
   setSearchFor(filterVal) {
     const self = this;
+    let isServiceCol = true;
+
     self.searchForColumn = [];
     let searchForFltr = [];
     if (filterVal && filterVal.filter && filterVal.filter.$and && filterVal.filter.$and.length) {
       const tempArray = filterVal.filter.$and;
-      searchForFltr = tempArray.filter(e => Object.keys(e)[0] !== 'status' && Object.keys(e)[0] !== 'operation');
+      searchForFltr = tempArray
     }
-
     searchForFltr.forEach(element => {
       if (Object.keys(element)[0] !== '$or') {
         const key = Object.keys(element)[0];
-
-        let tempkey1 = key.replace('data.new.', '')
+        isServiceCol = true;
+        let tempkey1 = key;
+        if (key === 'status') {
+          tempkey1 = '_select';
+        }
+        if (key === 'respondedBy') {
+          tempkey1 = '_respondedBy';
+        }
+        if (key === 'requestedBy') {
+          tempkey1 = '_requestedBy';
+        }
+        if (key === 'status' || key === 'respondedBy' || key === 'requestedBy' || key === '_metadata.lastUpdated' || key === '_id') {
+          isServiceCol = false
+        }
+        tempkey1 = tempkey1.replace('data.new.', '')
         tempkey1 = tempkey1.replace('data.old.', '')
 
         let colObj = self.combinedColumns.find(e => e.fieldName === tempkey1);
@@ -373,14 +395,14 @@ export class SearchForComponent implements OnInit {
           colObj = self.combinedColumns.find(e => e.fieldName === key);
         }
 
-        self.addSearchFor(element, key, colObj, true);
+        self.addSearchFor(element, key, colObj, isServiceCol);
       } else if (Object.keys(element)[0] === '$or') {
         let key = Object.keys(element["$or"][0])[0]
         // console.log(obj);
         let tempkey = key.replace('data.new.', '')
         tempkey = tempkey.replace('data.old.', '')
         const colObj = self.combinedColumns.find(e => e.fieldName[0] === tempkey);
-        self.addSearchFor(element["$or"][0], key, colObj, true);
+        self.addSearchFor(element["$or"][0], key, colObj, isServiceCol);
 
       }
     });
@@ -494,6 +516,25 @@ export class SearchForComponent implements OnInit {
     self.searchDataUpdated();
 
   }
+
+  fromNumberChange(filter) {
+    this.toNumber = null;
+    filter.toNumber = null;
+    filter.fromNumber = this.fromNumber;
+  }
+
+  toNumberChange(filter) {
+    if (this.fromNumber !== null && this.fromNumber !== undefined && this.toNumber !== null && this.toNumber !== undefined) {
+      if (this.fromNumber <= this.toNumber) {
+        filter.toNumber = this.toNumber;
+        this.searchDataUpdated();
+        return;
+      } else {
+        this.ts.warning('To value should be more than or equal to From value');
+      }
+    }
+  }
+
   get requestedByList() {
     const self = this;
     return self.gridService.requestedByList;

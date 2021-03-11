@@ -28,6 +28,7 @@ export class InteractionGridFilterComponent implements OnInit, IFloatingFilter, 
   clearFilterModalRef: NgbModalRef;
   dateFilterType: string;
   componentRef: ComponentRef<DateFilterPickerComponent>;
+  statusList: Array<string>;
   constructor(private element: ElementRef,
     private appService: AppService,
     private commonService: CommonService,
@@ -41,6 +42,7 @@ export class InteractionGridFilterComponent implements OnInit, IFloatingFilter, 
     self.element.nativeElement.classList.add('w-100');
     self.element.nativeElement.style.marginTop = '6px';
     self.dateFilterType = 'equals';
+    this.statusList = ['SUCCESS', 'PENDING', 'ERROR', 'UNKNOWN', 'QUEUED'];
   }
 
   ngOnInit() {
@@ -93,6 +95,7 @@ export class InteractionGridFilterComponent implements OnInit, IFloatingFilter, 
         temp['flowData.inputType'] = value.split('-')[0];
         temp['flowData.outputType'] = value.split('-')[1];
       } else if (self.field === 'status') {
+        // temp[self.field] = this.getStatusFilter(value);
         temp[self.field] = value;
       } else {
         temp[self.field] = '/' + value + '/';
@@ -150,4 +153,28 @@ export class InteractionGridFilterComponent implements OnInit, IFloatingFilter, 
     }
   }
 
+  getStatusFilter(value) {
+    const obj = {};
+    switch (value) {
+      case 'SUCCESS':
+        obj['$eq'] = 'SUCCESS';
+        break;
+      case 'ERROR':
+        obj['$eq'] = 'ERROR';
+        break;
+      case 'PENDING':
+        obj['$eq'] = 'PENDING';
+        obj['$nin'] = ['SUCCESS', 'ERROR', 'UNKNOWN'];
+        break;
+      case 'QUEUED':
+        obj['$eq'] = 'QUEUED';
+        obj['$nin'] = ['SUCCESS', 'ERROR', 'PENDING', 'UNKNOWN'];
+        break;
+      case 'UNKNOWN':
+        obj['$eq'] = 'UNKNOWN';
+        obj['$nin'] = ['SUCCESS', 'ERROR'];
+        break;
+    }
+    return obj;
+  }
 }

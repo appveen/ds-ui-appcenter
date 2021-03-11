@@ -14,7 +14,6 @@ import { AppService } from 'src/app/service/app.service';
   styleUrls: ['./duplicate-resolve.component.scss']
 })
 export class DuplicateResolveComponent implements OnInit, OnDestroy {
-
   @Input() toggle: boolean;
   @Output() toggleChange: EventEmitter<boolean>;
   @Input() schema: any;
@@ -28,9 +27,7 @@ export class DuplicateResolveComponent implements OnInit, OnDestroy {
   api: string;
   rowClassRules: any;
   uniqueFirst: Array<number>;
-  constructor(private commonService: CommonService,
-    private appService: AppService,
-    private dropdownConfig: NgbDropdownConfig) {
+  constructor(private commonService: CommonService, private appService: AppService, private dropdownConfig: NgbDropdownConfig) {
     const self = this;
     self.create = [];
     self.toggleChange = new EventEmitter();
@@ -49,10 +46,10 @@ export class DuplicateResolveComponent implements OnInit, OnDestroy {
     self.api = '/' + self.schema.app + self.schema.api;
     self.importDuplicateRecords();
     self.rowClassRules = {
-      'bg-primary-0-1': (params) => {
+      'bg-primary-0-1': params => {
         return params.data._bgColor;
       },
-      'bg-white': (params) => {
+      'bg-white': params => {
         return !params.data._bgColor;
       }
     };
@@ -63,20 +60,24 @@ export class DuplicateResolveComponent implements OnInit, OnDestroy {
   }
 
   fixSchema(parsedDef) {
-    const self =this;
-    Object.keys(parsedDef).forEach(key => {
-      if (parsedDef[key].properties && parsedDef[key].properties.relatedTo) {
-        parsedDef[key].type = 'Relation';
-        parsedDef[key].properties._typeChanged = 'Relation';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].properties && parsedDef[key].properties.password) {
-        parsedDef[key].type = 'String';
-        parsedDef[key].properties._typeChanged = 'String';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].type === 'Array') {
-        self.fixSchema(parsedDef[key].definition);
-      } else if (parsedDef[key].type === 'Object') {
-        self.fixSchema(parsedDef[key].definition);
+    const self = this;
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.password) {
+        def.type = 'String';
+        def.properties._typeChanged = 'String';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        self.fixSchema(def.definition);
+      } else if (def.type === 'Object') {
+        self.fixSchema(def.definition);
       }
     });
   }
@@ -90,38 +91,37 @@ export class DuplicateResolveComponent implements OnInit, OnDestroy {
       sort: 'data._id,sNo'
     };
     self.subscriptions['importDuplicateRecords'] = self.commonService
-      .get('api', self.api + '/fileMapper/' + self.transfersData.fileId, opt)
-      .subscribe(res => {
-        self.apiCalls.importDuplicateRecords = false;
-        self.duplicateRecords = res;
-        self.uniqueFirst = _.uniqBy(self.duplicateRecords, 'data._id').map(e => e.sNo);
-        self.duplicateRecords.forEach((item, i) => {
-          if (self.create.indexOf(item.sNo) > -1) {
-            item._selected = true;
-          }
-          if (i > 0) {
-            const prevItem = self.duplicateRecords[i - 1];
-            if (item.data._id === prevItem.data._id) {
-              item._bgColor = prevItem._bgColor;
-            } else {
-              item._bgColor = (prevItem._bgColor + 1) % 2;
+      .get('api', self.api + '/utils/fileMapper/' + self.transfersData.fileId, opt)
+      .subscribe(
+        res => {
+          self.apiCalls.importDuplicateRecords = false;
+          self.duplicateRecords = res;
+          self.uniqueFirst = _.uniqBy(self.duplicateRecords, 'data._id').map(e => e.sNo);
+          self.duplicateRecords.forEach((item, i) => {
+            if (self.create.indexOf(item.sNo) > -1) {
+              item._selected = true;
             }
-          } else {
-            item._bgColor = 1;
-          }
-        });
-        let definition = self.schema.definition;
-        if (typeof definition === 'string') {
-          definition = JSON.parse(definition);
+            if (i > 0) {
+              const prevItem = self.duplicateRecords[i - 1];
+              if (item.data._id === prevItem.data._id) {
+                item._bgColor = prevItem._bgColor;
+              } else {
+                item._bgColor = (prevItem._bgColor + 1) % 2;
+              }
+            } else {
+              item._bgColor = 1;
+            }
+          });
+          let definition = self.schema.definition;
+          self.fixSchema(definition);
+          self.populateMetaColumns();
+          self.columnDef = self.columnDef.concat(self.parseDefinition(definition));
+        },
+        err => {
+          self.apiCalls.importDuplicateRecords = false;
+          self.commonService.errorToast(err, 'Unable to get the records,please try again later');
         }
-        self.fixSchema(definition);
-        self.populateMetaColumns();
-        self.columnDef = self.columnDef.concat(self.parseDefinition(definition));
-
-      }, err => {
-        self.apiCalls.importDuplicateRecords = false;
-        self.commonService.errorToast(err, 'Unable to get the records,please try again later');
-      });
+      );
   }
 
   importFirstOccurance() {
@@ -164,10 +164,9 @@ export class DuplicateResolveComponent implements OnInit, OnDestroy {
     const self = this;
     let columns: AgGridColumn[] = [];
     if (definition) {
-      Object.keys(definition).forEach(key => {
-        const def = definition[key];
+      definition.forEach(def => {
         const col = new AgGridColumn();
-        const dataKey = parentKey ? parentKey + '.' + key : key;
+        const dataKey = parentKey ? parentKey + '.' + def.key : def.key;
         let dataName;
         if (def.properties.label) {
           dataName = parentName ? parentName + '.' + def.properties.label : def.properties.label;

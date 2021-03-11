@@ -32,6 +32,13 @@
     overflow: hidden;
     background-size: contain;
     background-repeat: no-repeat;
+    .logo {
+      width: 220px;
+      height: 80px;
+      background-repeat: no-repeat;
+      background-size: 272px;
+      background-position: -18px;
+    }
   }
   .icons-holder {
     min-width: 232px;
@@ -53,6 +60,9 @@
       }
       &:hover {
         cursor: pointer;
+        color: $primary;
+        border: 1px solid $border-color;
+        background: $white;
       }
     }
   }
@@ -68,7 +78,7 @@
   overflow-y: auto;
 }
 
-.pinning-star{
+.pinning-star {
   display: none;
 }
 .menu-list {
@@ -81,14 +91,13 @@
     padding-left: 8px;
     &:not(.text-white):hover {
       cursor: pointer;
-      background:#ECECEC !important;
-      .pinning-star{
-        display: block
+      background: #ececec !important;
+      .pinning-star {
+        display: block;
       }
-
     }
-    &:hover{
-      .pinning-star{
+    &:hover {
+      .pinning-star {
         display: block;
         color: #3498db;
       }
@@ -147,8 +156,8 @@
   .user-details-dropdown {
     min-width: 160px;
     max-width: 160px;
-    min-height: 150px;
-    max-height: 150px;
+    min-height: 170px;
+    max-height: 170px;
     // min-height: 176px;
     // max-height: 176px;
     z-index: 1042;
@@ -165,21 +174,20 @@
       }
     }
     .user-details-footer {
-      min-height: 34px;
-      max-height: 34px;
+      min-height: 50px;
       .powered-by,
       .info {
-        min-height: 32px;
-        max-height: 32px;
+        min-height: 50px;
+        max-height: 50px;
       }
       .powered-by {
-        background-size: 134px;
-        background-position: 10px;
+        background-size: 174px;
+        background-position: -10px -28px;
         background-repeat: no-repeat;
         small {
-          font-size: 8px;
-          top: 2px;
-          right: 4px;
+          font-size: 12px;
+          top: 18px;
+          right: 12px;
         }
       }
     }
@@ -270,6 +278,21 @@
     max-width: 32px;
     min-height: 32px;
     max-height: 32px;
+    position: relative;
+
+    .notification-count {
+      position: absolute;
+      top: -3px;
+      left: 20px;
+      font-size: 10px;
+      font-weight: bold;
+      border-radius: 9px;
+      min-height: 21px;
+      min-width: 20px;
+      display: grid;
+      align-content: center;
+      justify-content: center;
+    }
   }
   .notification-dropdown {
     z-index: 10;
@@ -278,14 +301,14 @@
     left: -190px;
     top: 40px;
     box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.14);
-    border-radius: 16px;
+    border-radius: 0.25rem;
     &:after {
       content: "";
       width: 0;
       height: 0;
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
-      border-bottom: 10px solid #fff;
+      border-bottom: 10px solid #f4f5f5;
       margin-top: -10px;
       position: fixed;
       margin-left: 195px;
@@ -293,10 +316,56 @@
     .notification-dropdown-header {
       min-height: 38px;
       max-height: 38px;
+      user-select: none;
+
+      &.noNotifs {
+        display: grid !important;
+        min-height: 170px !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        row-gap: 10px;
+
+        * {
+          display: grid;
+          justify-content: center;
+        }
+
+        .noNotif-icon {
+          width: 100px;
+          height: 100px;
+          background: rgba($primary, 0.1);
+          border-radius: 50%;
+          align-items: center;
+
+          .fa-bell {
+            font-size: 70px;
+            color: rgba($primary, 0.5);
+          }
+        }
+      }
     }
     .list-group {
       max-height: 385px;
       overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 0 transparent;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        box-shadow: inset 0 0 6px rgba($primary, 0.5);
+      }
+
+      .list-group-item {
+        border: 0;
+        border-radius: 4px;
+      }
     }
     .ds-name {
       max-width: 180px;
@@ -312,8 +381,8 @@
       min-width: 90px;
     }
     .file-name {
-      min-width: 136px;
-      max-width: 136px;
+      min-width: 230px;
+      max-width: 230px;
     }
     .status-circle {
       min-width: 40px;
@@ -329,12 +398,12 @@
 .last-login {
   font-size: 11px;
 }
-.staredContainer{
+.staredContainer {
   min-width: 206px;
   max-width: 206px;
   min-height: 112px;
   max-height: 112px;
-  background: #F4F5F5 0% 0% no-repeat padding-box;
+  background: #f4f5f5 0% 0% no-repeat padding-box;
   border-radius: 16px;
   opacity: 1;
   margin-left: 12px;

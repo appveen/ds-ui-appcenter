@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { OrderByPipe } from 'src/app/pipes/order-by.pipe';
+import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 
 @Component({
   selector: 'odp-services',
@@ -17,11 +18,13 @@ export class ServicesComponent implements OnInit, OnDestroy {
   noServices: boolean;
   private subscriptions: any;
   private serviceToRedirect: string;
+
   constructor(private router: Router,
     private route: ActivatedRoute,
     private commonService: CommonService,
     private appService: AppService,
-    private orderBy: OrderByPipe) {
+    private orderBy: OrderByPipe,
+    private shortcutsService: ShortcutService) {
     const self = this;
     self.subscriptions = {};
   }
@@ -33,23 +36,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
       self.getServices(true);
     });
     self.route.params.subscribe(params => {
-      if (!params || !params.serviceId) {
-        self.serviceToRedirect = self.appService.preferredServiceId || self.serviceToRedirect;
-        const waitForServiceFetch = setInterval(() => {
-          if (self.serviceToRedirect || self.noServices) {
-            if (self.serviceToRedirect) {
-              self.appService.serviceId = self.serviceToRedirect;
-              self.appService.serviceChange.emit({ _id: self.serviceToRedirect });
-              self.router.navigate([self.serviceToRedirect, 'list'], {
-                relativeTo: self.route
-              });
-            } else {
-              self.router.navigate(['/~/no-services']);
-            }
-            clearInterval(waitForServiceFetch);
-          }
-        }, 100);
-      } else {
+      if (!!params?.serviceId) {
         self.serviceToRedirect = params.serviceId;
         self.appService.serviceId = self.serviceToRedirect;
         self.appService.serviceChange.emit({ _id: self.serviceToRedirect });
@@ -60,6 +47,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.shortcutsService.unregisterAllShortcuts();
   }
 
   ngOnDestroy() {
@@ -95,19 +83,18 @@ export class ServicesComponent implements OnInit, OnDestroy {
         self.noServices = true;
       } else {
         res = self.orderBy.transform(res, 'name');
-        self.serviceToRedirect = self.appService.preferredServiceId || res[0]._id;
         if (redirect) {
           if (self.serviceToRedirect) {
             self.appService.serviceId = self.serviceToRedirect;
             self.appService.serviceChange.emit({ _id: self.serviceToRedirect });
-            self.router.navigate(['/~/services', self.serviceToRedirect, 'list']);
+            self.router.navigate(['/', this.commonService.app._id, 'services', self.serviceToRedirect, 'list']);
           }
         }
       }
     }, err => {
       self.fetchingServices = false;
       if (err.status === 403) {
-        self.router.navigate(['/~/no-access']);
+        self.router.navigate(['/', this.commonService.app._id, 'no-access']);
       } else {
         self.commonService.errorToast(err, 'Unable to fetch service records please try again later');
       }

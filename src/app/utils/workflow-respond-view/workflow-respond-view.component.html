@@ -120,12 +120,12 @@
         <textarea *ngIf="actionObj.approve" class="input-comment ml-2 form-control" #inputBox
           [ngClass]="{'increasedHeight':focused,'initialHeight':!focused , 'is-invalid':requiredError}"
           (focus)="focused=true" placeholder="Enter comments to justify your response. Attach document if necessary"
-          [formControl]="respondControl" (blur)="onBlur()"></textarea>
+          [formControl]="respondControl" (onchange)="onBlur()"></textarea>
         <textarea *ngIf="!actionObj.approve" class="input-comment ml-2 form-control" #inputBox
           [ngClass]="{'increasedHeight':focused,'initialHeight':!focused , 'is-invalid':requiredError}"
           (focus)="focused=true"
           placeholder="Comments are required to justify your response. Attach document if necessary."
-          [formControl]="respondControl" (blur)="onBlur()"></textarea>
+          [formControl]="respondControl" (onchange)="onBlur()"></textarea>
       </div>
       <div class="d-flex flex-column m-50">
         <input #workflowFileUploadInput class="d-none" type="file" name="workflowFileUpload" id="workflowFileUpload"
@@ -160,9 +160,9 @@
       </div> -->
       <div class="d-flex px-4 position-absolut justify-content-end action-btn">
         <button class="btn btn-link ignore-outside" (click)="resetAction()">Back</button>
-        <button class="btn btn-primary" *ngIf="actionObj.approve" (click)="respond('Approved')"
+        <button class="btn btn-primary" *ngIf="actionObj.approve" (click)="respond('Approve')"
           type="button">Approve</button>
-        <button class="btn btn-primary" *ngIf="actionObj.reject" (click)="respond('Rejected')"
+        <button class="btn btn-primary" *ngIf="actionObj.reject" (click)="respond('Reject')"
           type="button">Reject</button>
         <button class="btn btn-primary" *ngIf="actionObj.rework" (click)="respond('Rework')"
           type="button">Rework</button>

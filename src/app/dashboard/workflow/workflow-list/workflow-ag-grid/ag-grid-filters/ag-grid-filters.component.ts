@@ -11,8 +11,9 @@ import { WorkflowAgGridService } from '../workflow-ag-grid.service';
   templateUrl: './ag-grid-filters.component.html',
   styleUrls: ['./ag-grid-filters.component.scss']
 })
-export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFrameworkComponent<IFloatingFilterParams>{
-  @ViewChild('clearFilterModal', { static: false }) clearFilterModal: TemplateRef<ElementRef>;
+export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFrameworkComponent<IFloatingFilterParams> {
+  @ViewChild('clearFilterModal', { static: false })
+  clearFilterModal: TemplateRef<ElementRef>;
   api: GridApi;
   column: Column;
   params: IFloatingFilterParams;
@@ -81,22 +82,25 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       temp = null;
     }
     if (self.gridService.selectedSavedView) {
-      self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
-      self.clearFilterModalRef.result.then((close) => {
-        if (close) {
-          self.gridService.selectedSavedView = null;
-          self.params.parentFilterInstance(function (instance: IFilterComp) {
-            (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
-          });
-        }
-      }, dismiss => { });
+      self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, {
+        centered: true
+      });
+      self.clearFilterModalRef.result.then(
+        close => {
+          if (close) {
+            self.gridService.selectedSavedView = null;
+            self.params.parentFilterInstance(function (instance: IFilterComp) {
+              (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
+            });
+          }
+        },
+        dismiss => {}
+      );
     } else {
       self.params.parentFilterInstance(function (instance: IFilterComp) {
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
       });
     }
-
-
   }
   getDateQuery(value: any) {
     const obj = {};
@@ -127,12 +131,14 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       // temp[self.col.dataKey] = '/' + value + '/';
       temp['$or'] = [];
 
-      temp['$or'].push(Object.defineProperty({}, self.col.dataKey + '._id', {
-        value: '/' + value + '/',
-        enumerable: true,
-        configurable: true,
-        writable: true
-      }));
+      temp['$or'].push(
+        Object.defineProperty({}, self.col.dataKey + '._id', {
+          value: '/' + value + '/',
+          enumerable: true,
+          configurable: true,
+          writable: true
+        })
+      );
       if (!self.searchOnlyId) {
         const tempObj = {};
         const def = self.relatedDef;
@@ -155,12 +161,14 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       self.paths.push(self.col.dataKey + '._id');
       self.paths.push(self.col.dataKey + '.' + self.col.properties.relatedSearchField);
       temp['$or'] = [];
-      temp['$or'].push(Object.defineProperty({}, self.col.dataKey + '._id', {
-        value: '/' + value + '/',
-        enumerable: true,
-        configurable: true,
-        writable: true
-      }));
+      temp['$or'].push(
+        Object.defineProperty({}, self.col.dataKey + '._id', {
+          value: '/' + value + '/',
+          enumerable: true,
+          configurable: true,
+          writable: true
+        })
+      );
       if (self.col.properties && self.col.properties.relatedSearchField && self.col.properties.relatedSearchField != '_id') {
         const tempObj = {};
         tempObj[self.col.dataKey + '.' + self.col.properties.relatedSearchField] = '/' + value + '/';
@@ -183,7 +191,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       if (value === 'true') {
         temp[self.col.dataKey] = true;
       } else if (value === 'false') {
-        temp[self.col.dataKey] = { "$ne": true };
+        temp[self.col.dataKey] = { $ne: true };
       }
     } else if (self.col.type === 'Array') {
       self.paths.push(self.col.dataKey);
@@ -200,15 +208,20 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       temp = null;
     }
     if (self.gridService.selectedSavedView) {
-      self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
-      self.clearFilterModalRef.result.then((close) => {       
-        if (close) {
-          self.gridService.selectedSavedView = null;
-          self.params.parentFilterInstance(function (instance: IFilterComp) {
-            (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
-          });
-        }
-      }, dismiss => { });
+      self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, {
+        centered: true
+      });
+      self.clearFilterModalRef.result.then(
+        close => {
+          if (close) {
+            self.gridService.selectedSavedView = null;
+            self.params.parentFilterInstance(function (instance: IFilterComp) {
+              (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
+            });
+          }
+        },
+        dismiss => {}
+      );
     } else {
       self.params.parentFilterInstance(function (instance: IFilterComp) {
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
@@ -232,12 +245,14 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       });
     });
     indexToRemove = indexToRemove.filter((e, i, a) => a.indexOf(e) === i);
-    indexToRemove.sort().reverse().forEach(i => {
-      filterArr.splice(i, 1);
-    });
+    indexToRemove
+      .sort()
+      .reverse()
+      .forEach(i => {
+        filterArr.splice(i, 1);
+      });
     // self.config.filter['$and'] = filterArr;
   }
-
 
   fetchRelatedSchema() {
     const self = this;
@@ -248,29 +263,33 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       self.subscriptions['fetchRelatedSchema_' + self.col.properties.relatedTo] = self.commonService
         .get('sm', '/service/' + self.col.properties.relatedTo, {
           select: 'definition'
-        }).subscribe(res => {
-          self.searchOnlyId = false;
-          self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
-          if (res.definition) {
-            self.relatedDefinition = JSON.parse(res.definition);
+        })
+        .subscribe(
+          res => {
+            self.searchOnlyId = false;
+            self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
+            if (res.definition) {
+              self.relatedDefinition = res.definition;
+            }
+          },
+          err => {
+            self.searchOnlyId = true;
           }
-        }, err => {
-          self.searchOnlyId = true;
-        });
+        );
     } else {
       self.searchOnlyId = false;
       const temp = self.appService.servicesMap[self.col.properties.relatedTo];
       // self.relatedDefinition = JSON.parse(temp.definition);
       if (temp.definition) {
-        self.relatedDefinition = JSON.parse(temp.definition);
+        self.relatedDefinition = temp.definition;
       }
     }
   }
   get relatedDef() {
     const self = this;
     if (self.relatedDefinition && self.col.properties.relatedSearchField) {
-      const newpath = self.col.properties.relatedSearchField.split('.').join('.definition.');
-      return self.appService.getValue(newpath, self.relatedDefinition);
+      const newpath = self.col.properties.relatedSearchField;
+      return self.appService.getValueNew(newpath, self.relatedDefinition);
     }
     return null;
   }
@@ -282,7 +301,6 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     }
     return self.col.type;
   }
-
 
   get richText() {
     const self = this;
@@ -301,7 +319,6 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   get respondedByList() {
     const self = this;
     return self.gridService.respondedByList;
-
   }
 
   get workflowtab() {

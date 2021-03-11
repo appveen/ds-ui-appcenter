@@ -1,7 +1,7 @@
 <div (contextmenu)="onRightClick()">
     <ng-container *ngIf="value   || type === 'Checkbox' || type === 'Array' || type === 'Object' || type === 'Boolean'">
         <ng-container *ngIf="type === 'Identifier'">
-            <a [routerLink]="['/~/services/',serviceId,'view',data._id]">{{value}}</a>
+            <a [routerLink]="['/' , currentAppId, 'services', serviceId, 'view', data._id]">{{value}}</a>
         </ng-container>
         <ng-container *ngIf="type === 'Checkbox'">
             <div class="d-flex align-items-center mt-1">
@@ -30,23 +30,26 @@
         </ng-container>
         <div *ngIf="type === 'String' && properties.password" class="d-flex align-items-center">
             <ng-container *ngIf="value && value.value">
-                <ng-container *ngIf="!showPassword">
+                <span class="mt-1" *ngIf="!showPassword">
                     **********
-                </ng-container>
-                <ng-container *ngIf="showPassword">
+                </span>
+                <span *ngIf="showPassword">
                     {{value.value}}
-                </ng-container>
-                <button type="button" class="btn btn-sm btn-link p-0 ml-2"
+                </span>
+                <!-- <button type="button" class="btn btn-sm btn-link p-0 ml-2"
                     (click)="showPassword=!showPassword;$event.stopPropagation();">
                     {{showPassword?'Hide':'Show'}}
-                </button>
+                </button> -->
+                <span class="fas eye-icon hover ml-2 text-primary"
+                [ngClass]="{'fa-eye ': !showPassword,'fa-eye-slash ': showPassword }"
+                (click)="showPassword=!showPassword;$event.stopPropagation();"></span>
             </ng-container>
         </div>
         <ng-container *ngIf="type === 'String' && properties.longText && !properties.richText">
-            <a  [routerLink]="['/~/services',serviceId,'view',id]">View</a>
+            <a  [routerLink]="['/', currentAppId, 'services', serviceId, 'view', id]">View</a>
         </ng-container>
         <ng-container *ngIf="type === 'String' && !properties.longText && properties.richText">
-            <a  [routerLink]="['/~/services',serviceId,'view',id]">View</a>
+            <a  [routerLink]="['/', currentAppId, 'services', serviceId, 'view', id]">View</a>
         </ng-container>
         <ng-container *ngIf="type === 'Number' && !properties.currency">
             <ng-container *ngIf="value || value === 0">
@@ -63,10 +66,10 @@
         </ng-container>
         <ng-container *ngIf="type === 'Date'">
             <ng-container *ngIf="properties.dateType != 'date'">
-                {{value | date:'MMM d, y, H:mm:ss'}}
+                {{parsedDate | date:'MMM d, y, H:mm:ss'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
             </ng-container>
             <ng-container *ngIf="properties.dateType == 'date'">
-                {{value | date:'mediumDate'}}
+                {{parsedDate | date:'mediumDate'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="type === 'Boolean'">

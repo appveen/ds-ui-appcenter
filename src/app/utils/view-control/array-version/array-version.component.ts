@@ -24,6 +24,10 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
   showPassword;
   decryptedValue;
 
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -131,7 +135,7 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
   }
 
   downloadFile(filename) {
-    window.open(environment.url.api + this.appService.serviceAPI + '/file/download/' + filename);
+    window.open(environment.url.api + this.appService.serviceAPI + '/utils/file/download/' + filename);
   }
 
   getDefinitionWithValue(def: any, val: any, index: number) {

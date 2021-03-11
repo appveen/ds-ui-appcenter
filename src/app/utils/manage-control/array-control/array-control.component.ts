@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 
 import { AppService } from 'src/app/service/app.service';
@@ -11,14 +11,20 @@ import { EditCollectionOfObjectsGridComponent } from '../../collection-of-object
 	templateUrl: './array-control.component.html',
 	styleUrls: ['./array-control.component.scss']
 })
-export class ArrayControlComponent {
+export class ArrayControlComponent implements OnInit {
 	@Input() form: FormArray;
 	@Input() definition: any;
 	@Input() arrayDefinition: any;
 	@Input() markEnable: boolean;
+	isEditable: boolean = false;
 	@ViewChild('gridComponent', { static: false }) gridComponentRef: EditCollectionOfObjectsGridComponent;
 	first: boolean;
 
+	ngOnInit() {
+		if (this.specificType === 'object') {
+			this.isAllAttributesReadOnly(this.arrayDefinition.definition[0].definition);
+		}
+	}
 	get specificType(): string {
 		const self = this;
 		if (self.definition.type === 'Object') {
@@ -52,6 +58,7 @@ export class ArrayControlComponent {
 
 	public addNew(index?: number, value?: any) {
 		const self = this;
+		self.formService.shouldFocus = true;
 		let tempControl: AbstractControl;
 		if (index === undefined) {
 			index = self.form.length;
@@ -109,5 +116,19 @@ export class ArrayControlComponent {
 			minWidth: width,
 			maxWidth: maxWidth
 		};
+	}
+
+
+
+	isAllAttributesReadOnly(definition) {
+		definition.forEach(element => {
+			if (element.type != 'Object') {
+				if (!element.properties.readonly) {
+					this.isEditable = true;
+				}
+			} else {
+				this.isAllAttributesReadOnly(element.definition)
+			}
+		});
 	}
 }

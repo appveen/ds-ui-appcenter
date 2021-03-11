@@ -30,6 +30,9 @@ import { GridColumnFilterModule } from '../collection-of-objects/grid-column-fil
 import { LoadingPlaceholderModule } from '../loading-placeholder/loading-placeholder.module';
 import { FloatingFilterComponent } from '../collection-of-objects/grid-column-filter/floating-filter/floating-filter.component';
 import { ColumnFilterComponent } from '../collection-of-objects/grid-column-filter/column-filter/column-filter.component';
+import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view-collection-of-objects-grid/view-collection-of-objects-grid.module';
+import { ColOfObjsHeaderCellModule } from '../collection-of-objects/col-of-objs-header-cell/col-of-objs-header-cell.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -43,9 +46,12 @@ import { ColumnFilterComponent } from '../collection-of-objects/grid-column-filt
     TruncatedModule,
     RoundCheckModule,
     ColOfObjsGridCellModule,
+    ColOfObjsHeaderCellModule,
     GridColumnFilterModule,
     LoadingPlaceholderModule,
-    AgGridModule.withComponents([EditColOfObjsComponent, GridCheckboxComponent, ColOfObjsGridCellComponent, ColumnFilterComponent, FloatingFilterComponent])
+    ViewCollectionOfObjectsGridModule,
+    AgGridModule,
+    RouterModule
   ],
   declarations: [
     ManageControlComponent,

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Definition, Properties } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'odp-list-view',
@@ -21,8 +21,15 @@ export class ListViewComponent implements OnInit, AfterContentInit {
   isenrichTextWithLinkRequired: boolean;
   textWithLink: any;
   keysCount: number;
-  constructor(private appService: AppService,
-    private sanitize: DomSanitizer) {
+
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+  
+  constructor(
+    private appService: AppService,
+    private commonService: CommonService
+  ) {
     const self = this;
     self.keysCount = 0;
   }

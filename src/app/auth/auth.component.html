@@ -22,14 +22,14 @@
           </div>
           <div class="col-6">
             <div class="product clearfix pl-4">
-              <span class="d-inline-block float-left logo"></span>
+              <span class="d-inline-block float-left logo-white"></span>
               <!-- <span class="d-inline-block float-left px-3 py-2 font-weight-bold name">
                 <div class="title text-uppercase">data.stack</div>
                 <div class="sub-title text-uppercase text-primary">App Center</div>
               </span> -->
             </div>
             <div class="form px-4 mt-5 clearfix">
-              <form [formGroup]="form" (submit)="authTypeChecked?doLogin($event):onSubmit($event)">
+              <form [formGroup]="form" >
                 <div class="form-group" *ngIf="!authTypeChecked">
                   <div class="text-center text-white">Sign in with your credentials</div>
                   <input type="text" class="form-control my-3" formControlName="username" id="username" #usernameControl
@@ -58,7 +58,7 @@
                   <div class="d-flex align-items-center justify-content-end">
                     <!-- <a href="#" class="text-secondary">Forgot your Password?</a> -->
                     <button #loginBtn type="submit" class="btn btn-primary btn-min-width"
-                      [disabled]="!password.value || loader">
+                      [disabled]="!password.value || loader" (click)="doLogin($event)">
                       <span *ngIf="loader" class="fa fa-spinner fa-pulse mr-2"></span>
                       <span class="text">Login</span>
                     </button>

@@ -20,7 +20,7 @@
     <select class="form-control form-control-sm rounded" id="_selectInput" [ngClass]="{'is-invalid':requiredError}"
       [formControl]="control" (keyup)="onEnter($event)" (focus)="onFocus()" #inputControl [attr.id]="definition.path"
       [disabled]="definition.properties.readonly || control.disabled">
-      <option *ngIf="!definition.properties.required" [value]="null">---select---</option>
+      <option *ngIf="!definition.properties.required" value="">---select---</option>
       <option *ngFor="let opt of definition.properties.enum" [value]="opt">{{opt}}</option>
     </select>
   </ng-container>

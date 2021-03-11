@@ -38,10 +38,10 @@ export class NumberTypeComponent implements OnInit, AfterViewInit {
 
   setValue() {
     const self = this;
-    if (self.definition.properties.precision !== undefined && self.definition.properties.precision > 0) {
+    if (self.definition.properties.precision !== undefined && self.definition.properties.precision > 0 && self.control.value !== null && self.control.value !== undefined) {
       const precision = Math.pow(10, self.definition.properties.precision);
       self.control.patchValue(Math.round(parseFloat(self.control.value) * precision) / precision);
-    } else {
+    } else if (self.control.value !== null && self.control.value !== undefined) {
       self.control.patchValue(Math.round(parseFloat(self.control.value)));
     }
   }

@@ -25,7 +25,7 @@ export class ViewControlComponent implements OnInit {
   spacing(level: number, arr?) {
     return {
       'min-width': (level * 10) + 'px',
-      'margin-right': !arr ? (level * 10) + 'px' : '60px',
+      'margin-right': !arr ? (level === 1 ? 0 : 5) + 'px' : '20px',
       'min-height': '36px',
       'max-height': '100%'
     };

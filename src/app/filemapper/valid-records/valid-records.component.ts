@@ -11,7 +11,6 @@ import { ValueRendererComponent } from '../value-renderer/value-renderer.compone
   styleUrls: ['./valid-records.component.scss']
 })
 export class ValidRecordsComponent implements OnInit {
-
   @Input() toggle: boolean;
   @Output() toggleChange: EventEmitter<boolean>;
   @Input() schema: any;
@@ -36,24 +35,27 @@ export class ValidRecordsComponent implements OnInit {
   }
 
   fixSchema(parsedDef) {
-    const self =this;
-    Object.keys(parsedDef).forEach(key => {
-      if (parsedDef[key].properties && parsedDef[key].properties.relatedTo) {
-        parsedDef[key].type = 'Relation';
-        parsedDef[key].properties._typeChanged = 'Relation';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].properties && parsedDef[key].properties.password) {
-        parsedDef[key].type = 'String';
-        parsedDef[key].properties._typeChanged = 'String';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].type === 'Array') {
-        self.fixSchema(parsedDef[key].definition);
-      } else if (parsedDef[key].type === 'Object') {
-        self.fixSchema(parsedDef[key].definition);
+    const self = this;
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.password) {
+        def.type = 'String';
+        def.properties._typeChanged = 'String';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        self.fixSchema(def.definition);
+      } else if (def.type === 'Object') {
+        self.fixSchema(def.definition);
       }
     });
   }
-
 
   importValidRecords() {
     const self = this;
@@ -63,30 +65,30 @@ export class ValidRecordsComponent implements OnInit {
       count: -1
     };
     self.subscriptions['importValidRecords'] = self.commonService
-      .get('api', self.api + '/fileMapper/' + self.transfersData.fileId, opt)
-      .subscribe(res => {
-        self.apiCalls.importValidRecords = false;
-        self.validRecords = res;
-        self.validRecords = self.validRecords.sort((a, b) => {
-          if (a.sNo > b.sNo) {
-            return 1;
-          } else if (a.sNo < b.sNo) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-        let definition = self.schema.definition;
-        if (typeof definition === 'string') {
-          definition = JSON.parse(definition);
+      .get('api', self.api + '/utils/fileMapper/' + self.transfersData.fileId, opt)
+      .subscribe(
+        res => {
+          self.apiCalls.importValidRecords = false;
+          self.validRecords = res;
+          self.validRecords = self.validRecords.sort((a, b) => {
+            if (a.sNo > b.sNo) {
+              return 1;
+            } else if (a.sNo < b.sNo) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+          let definition = self.schema.definition;
+          self.fixSchema(definition);
+          self.populateMetaColumns();
+          self.columnDef = self.columnDef.concat(self.parseDefinition(definition));
+        },
+        err => {
+          self.apiCalls.importValidRecords = false;
+          self.commonService.errorToast(err, 'Unable to get the records,please try again later');
         }
-        self.fixSchema(definition);
-        self.populateMetaColumns();
-        self.columnDef = self.columnDef.concat(self.parseDefinition(definition));
-      }, err => {
-        self.apiCalls.importValidRecords = false;
-        self.commonService.errorToast(err, 'Unable to get the records,please try again later');
-      });
+      );
   }
 
   populateMetaColumns() {
@@ -105,10 +107,9 @@ export class ValidRecordsComponent implements OnInit {
     const self = this;
     let columns: AgGridColumn[] = [];
     if (definition) {
-      Object.keys(definition).forEach(key => {
-        const def = definition[key];
+      definition.forEach(def => {
         const col = new AgGridColumn();
-        const dataKey = parentKey ? parentKey + '.' + key : key;
+        const dataKey = parentKey ? parentKey + '.' + def.key : def.key;
         let dataName;
         if (def.properties.label) {
           dataName = parentName ? parentName + '.' + def.properties.label : def.properties.label;
@@ -148,5 +149,4 @@ export class ValidRecordsComponent implements OnInit {
     }
     return false;
   }
-
 }

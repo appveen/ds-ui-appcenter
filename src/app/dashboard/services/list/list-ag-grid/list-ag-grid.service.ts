@@ -9,9 +9,13 @@ export class ListAgGridService {
   selectAll: EventEmitter<any>;
   selectedSavedView: any;
   inlineFilterActive: any;
+  private lastFilterSearchText: Record<string, Record<string, string>>;
+  private currentServiceId: string;
+
   constructor() {
     const self = this;
     self.selectAll = new EventEmitter();
+    this.lastFilterSearchText = {};
   }
 
   getSelect(definition) {
@@ -33,6 +37,7 @@ export class ListAgGridService {
       } else if (e2.type === 'Geojson') {
         key = e2.key + '.formattedAddress,' + e2.key + '.userInput';
       } else if (e2.type === 'File') {
+        // key = e2.key + '.metadata.filename' 
         key = e2.key + '.metadata.filename,' + e2.key + '._id,' + e2.key + '.filename,' + e2.key + '.contentType';
       } else if (e2.type === 'Object') {
         tempArr = tempArr.concat(self.getSelect(e2.definition));
@@ -49,5 +54,28 @@ export class ListAgGridService {
     });
     tempArr.push('_metadata.workflow');
     return _.uniq(tempArr);
+  }
+
+  initializeLastFilterSearchText(serviceId: string) {
+    if(this.currentServiceId !== serviceId) {
+      this.lastFilterSearchText = {};
+      this.currentServiceId = serviceId;
+    }
+  }
+
+  setLastFilterSearchText(columnHeader: string, searchText: string) {
+    if(!!columnHeader) {
+      if(!!searchText) {
+        this.lastFilterSearchText[this.currentServiceId] = {
+          [columnHeader]: searchText
+        }
+      } else {
+        delete this.lastFilterSearchText[this.currentServiceId][columnHeader];
+      }
+    }
+  }
+
+  getLastFilterSearchText(columnHeader: string): string {
+    return this.lastFilterSearchText[this.currentServiceId][columnHeader] || null;
   }
 }

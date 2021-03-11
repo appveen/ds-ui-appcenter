@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { Observable, Subject, merge } from 'rxjs';
-import { filter, findIndex, debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { filter, debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { AppService } from 'src/app/service/app.service';
 import { ToastrService } from 'ngx-toastr';
@@ -9,7 +9,6 @@ import { NgbModal, NgbTypeahead, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowService } from 'src/app/dashboard/workflow/workflow.service';
 import { SessionService } from 'src/app/service/session.service';
-
 
 interface FilterData {
   serviceId: string;
@@ -26,96 +25,124 @@ interface FilterData {
   styleUrls: ['./workflow-filter.component.scss'],
   animations: [
     trigger('toggleApplyFilter', [
-      state('void', style({
-        display: 'block'
-      })),
+      state(
+        'void',
+        style({
+          display: 'block'
+        })
+      ),
       transition('void => *', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: 0,
-            transform: 'translateY(-20px)'
-          }),
-          style({
-            opacity: 1,
-            transform: 'translateY(0px)'
-          })
-        ]))
+        animate(
+          '250ms ease-in',
+          keyframes([
+            style({
+              opacity: 0,
+              transform: 'translateY(-20px)'
+            }),
+            style({
+              opacity: 1,
+              transform: 'translateY(0px)'
+            })
+          ])
+        )
       ]),
       transition('* => void', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: .7,
-            transform: 'translateY(-10px)'
-          }),
-          style({
-            opacity: .5,
-            transform: 'translateY(-15px)'
-          }),
-          style({
-            opacity: 0,
-            transform: 'translateY(-20px)'
-          })
-        ]))
+        animate(
+          '250ms ease-in',
+          keyframes([
+            style({
+              opacity: 0.7,
+              transform: 'translateY(-10px)'
+            }),
+            style({
+              opacity: 0.5,
+              transform: 'translateY(-15px)'
+            }),
+            style({
+              opacity: 0,
+              transform: 'translateY(-20px)'
+            })
+          ])
+        )
       ])
     ]),
     trigger('toggleSaveFilter', [
-      state('void', style({
-        display: 'block'
-      })),
+      state(
+        'void',
+        style({
+          display: 'block'
+        })
+      ),
       transition('void => *', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: 0,
-            transform: 'translateY(20px)'
-          }),
-          style({
-            opacity: 1,
-            transform: 'translateY(0px)'
-          })
-        ]))
+        animate(
+          '250ms ease-in',
+          keyframes([
+            style({
+              opacity: 0,
+              transform: 'translateY(20px)'
+            }),
+            style({
+              opacity: 1,
+              transform: 'translateY(0px)'
+            })
+          ])
+        )
       ]),
       transition('* => void', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: .7,
-            transform: 'translateY(10px)'
-          }),
-          style({
-            opacity: .5,
-            transform: 'translateY(15px)'
-          }),
-          style({
-            opacity: 0,
-            transform: 'translateY(20px)'
-          })
-        ]))
+        animate(
+          '250ms ease-in',
+          keyframes([
+            style({
+              opacity: 0.7,
+              transform: 'translateY(10px)'
+            }),
+            style({
+              opacity: 0.5,
+              transform: 'translateY(15px)'
+            }),
+            style({
+              opacity: 0,
+              transform: 'translateY(20px)'
+            })
+          ])
+        )
       ])
     ]),
     trigger('filterList', [
-      state('void', style({
-        transformOrigin: 'right top',
-        transform: 'scale(0)'
-      })),
+      state(
+        'void',
+        style({
+          transformOrigin: 'right top',
+          transform: 'scale(0)'
+        })
+      ),
       transition('void => *', [
-        animate('250ms ease-in', style({
-          transform: 'scale(1)'
-        }))
+        animate(
+          '250ms ease-in',
+          style({
+            transform: 'scale(1)'
+          })
+        )
       ]),
       transition('* => void', [
         style({ transformOrigin: 'right top' }),
-        animate('250ms ease-out', style({
-          transform: 'scale(0)'
-        }))
+        animate(
+          '250ms ease-out',
+          style({
+            transform: 'scale(0)'
+          })
+        )
       ])
     ])
   ]
 })
 export class WorkflowFilterComponent implements OnInit, OnDestroy {
   @ViewChild('inputInstance', { static: false }) inputInstance: NgbTypeahead;
-  @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: TemplateRef<HTMLElement>;
+  @ViewChild('confirmDeleteModal', { static: false })
+  confirmDeleteModal: TemplateRef<HTMLElement>;
   @Output() filterString: EventEmitter<any>;
   @Output() getAllfilters: EventEmitter<any>;
-  @Output() clearFilters : EventEmitter<any>
+  @Output() clearFilters: EventEmitter<any>;
   @Input() allFilters: any;
 
   @Input() serviceId: string;
@@ -123,8 +150,8 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
   @Input('dataColumns') allColumns: Array<any>;
   confirmDeleteModalRef: NgbModalRef;
   deleteModal: {
-    title: string,
-    message: string
+    title: string;
+    message: string;
   };
   config: any;
   filter: any;
@@ -156,8 +183,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private commonService: CommonService,
     private sessionService: SessionService,
-    private wfService: WorkflowService,
-
+    private wfService: WorkflowService
   ) {
     const self = this;
     self.placeHolderText = 'Select Filter';
@@ -184,13 +210,16 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.showFilterList = false;
     self.filterId = null;
     self.searchForColumn = [];
-    self.sortingOptions = [{
-      name: 'Ascending',
-      value: '1'
-    }, {
-      name: 'Descending',
-      value: '-1'
-    }];
+    self.sortingOptions = [
+      {
+        name: 'Ascending',
+        value: '1'
+      },
+      {
+        name: 'Descending',
+        value: '-1'
+      }
+    ];
     self.subscriptions = {};
     self.config = { filter: {} };
     self.typeArray = [];
@@ -219,7 +248,8 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         properties: { name: 'Submitted On' },
         fieldType: 'Date',
         fieldName: '_metadata.lastUpdated'
-      }]
+      }
+    ];
   }
 
   ngOnInit() {
@@ -228,20 +258,18 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         self.selectFilter(self.appService.workflowFilter);
       }, 400);
-
     }
     self.subscriptions['refreshCall'] = self.wfService.refreshCall.subscribe(_refreshToken => {
       if (_refreshToken) {
         self.clearFilter();
       }
     });
-    // self.allColumns = self.parseDefinition(JSON.parse(self.definition));
   }
 
-  applyFilter(close?:boolean) {
+  applyFilter(close?: boolean) {
     const self = this;
     if (self.sortingColumns && Array.isArray(self.sortingColumns) && self.sortingColumns.length) {
-      self.config.sort = self.createSortQuery(self.sortingColumns);
+      self.config.sort = self.sortingColumns;
     } else {
       delete self.config.sort;
     }
@@ -254,18 +282,20 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.config.select = self.selectedColOrder.map(e => e.key).join(',');
 
     self.appService.workflowFilter = self.appService.cloneObject(self.config);
-    self.filterString.emit({view:self.config,close});
-
+    self.filterString.emit({ view: self.config, close });
   }
 
   createSortQuery(item) {
-    return item.map(e => {
-      if (e.selectedOption === '1') {
-        return e.name;
-      } else if (e.selectedOption === '-1') {
-        return '-' + e.name;
-      }
-    }).filter(e => e).join(',');
+    return item
+      .map(e => {
+        if (e.selectedOption === '1') {
+          return e.name;
+        } else if (e.selectedOption === '-1') {
+          return '-' + e.name;
+        }
+      })
+      .filter(e => e)
+      .join(',');
   }
 
   filterChange(val, filterType, type) {
@@ -307,21 +337,24 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     });
 
     if (statusIndex > -1 && self.statusArray.length > 0) {
-      self.config.filter.$and[statusIndex]['status'] = { $in: self.statusArray };
+      self.config.filter.$and[statusIndex]['status'] = {
+        $in: self.statusArray
+      };
     } else if (self.statusArray.length > 0) {
       self.config.filter.$and.push({ status: { $in: self.statusArray } });
     } else if (statusIndex > -1) {
       self.config.filter.$and.splice(statusIndex, 1);
     }
     if (operationIndex > -1 && self.typeArray.length > 0) {
-      self.config.filter.$and[operationIndex]['operation'] = { $in: self.typeArray };
+      self.config.filter.$and[operationIndex]['operation'] = {
+        $in: self.typeArray
+      };
     } else if (self.typeArray.length > 0) {
       self.config.filter.$and.push({ operation: { $in: self.typeArray } });
     } else if (operationIndex > -1) {
       self.config.filter.$and.splice(operationIndex, 1);
     }
   }
-
 
   createNoDateFilter(item) {
     const self = this;
@@ -341,34 +374,33 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       self.insertDataInHelperArr(tempObj);
     } else if (item.filterType === 'notEqual' && item.filterValue) {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$ne': item['filterValue'] },
+        value: { $ne: item['filterValue'] },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj);
     } else if (item.filterType === 'notContains' && item.filterValue) {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$not': `/${item['filterValue']}/` },
+        value: { $not: `/${item['filterValue']}/` },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj);
     } else if (item.filterType === 'greaterThan' && item.filterValue) {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$gt': `/${item['filterValue']}/` },
+        value: { $gt: `/${item['filterValue']}/` },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj);
     } else if (item.filterType === 'lessThan' && item.filterValue) {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$lt': `/${item['filterValue']}/` },
+        value: { $lt: `/${item['filterValue']}/` },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj);
     }
-
   }
 
   createRelFilter(item) {
@@ -379,81 +411,90 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     }
     if (item.filterType === 'equals' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
+      item.fieldName.forEach(_relCol => {
         const tempObj1 = { [prefix + _relCol]: item.filterValue };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
     } else if (item.filterType === 'contains' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
+      item.fieldName.forEach(_relCol => {
         const tempObj1 = { [prefix + _relCol]: `/${item['filterValue']}/` };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
     } else if (item.filterType === 'notEqual' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
 
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$nin': [item['filterValue'], null], } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: { $nin: [item['filterValue'], null] }
+        };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
-
       });
-    } else if (item.filterType === 'notContains' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
+    } else if (
+      item.filterType === 'notContains' &&
+      item.filterValue !== null &&
+      item.filterValue !== 'undefined' &&
+      item.filterValue !== ''
+    ) {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$not': `/${item['filterValue']}/`, "$ne": null } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: { $not: `/${item['filterValue']}/`, $ne: null }
+        };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
-
       });
-    } else if (item.filterType === 'greaterThan' && item.filterValue !== null
-      && item.filterValue !== 'undefined' && item.filterValue !== '') {
+    } else if (
+      item.filterType === 'greaterThan' &&
+      item.filterValue !== null &&
+      item.filterValue !== 'undefined' &&
+      item.filterValue !== ''
+    ) {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$gt': item['filterValue'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $gt: item['filterValue'] } };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
-
       });
     } else if (item.filterType === 'lessThan' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$lt': item['filterValue'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $lt: item['filterValue'] } };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
-
       });
     }
   }
@@ -464,12 +505,12 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     if (self.appService.workflowTab === 1 || self.appService.workflowTab === 2) {
       prefix = 'data.old.';
     }
-  
+
     if (item.filterType === 'equals' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
+      item.fieldName.forEach(_relCol => {
         const tempObj1 = { [prefix + _relCol]: item.filterValue };
 
         self.insertDataInHelperArr(tempObj1);
@@ -478,7 +519,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
+      item.fieldName.forEach(_relCol => {
         const tempObj1 = { [prefix + _relCol]: `/${item['filterValue']}/` };
         self.insertDataInHelperArr(tempObj1);
       });
@@ -486,34 +527,66 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$nin': [item['filterValue'], null], } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: { $nin: [item['filterValue'], null] }
+        };
         self.insertDataInHelperArr(tempObj1);
       });
-    } else if (item.filterType === 'notContains' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
+    } else if (
+      item.filterType === 'notContains' &&
+      item.filterValue !== null &&
+      item.filterValue !== 'undefined' &&
+      item.filterValue !== ''
+    ) {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$not': `/${item['filterValue']}/`, "$ne": null } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: { $not: `/${item['filterValue']}/`, $ne: null }
+        };
         self.insertDataInHelperArr(tempObj1);
       });
-    } else if (item.filterType === 'greaterThan' && item.filterValue !== null
-      && item.filterValue !== 'undefined' && item.filterValue !== '') {
+    } else if (
+      item.filterType === 'greaterThan' &&
+      item.filterValue !== null &&
+      item.filterValue !== 'undefined' &&
+      item.filterValue !== ''
+    ) {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$gt': item['filterValue'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $gt: item['filterValue'] } };
         self.insertDataInHelperArr(tempObj1);
-
       });
     } else if (item.filterType === 'lessThan' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$lt': item['filterValue'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $lt: item['filterValue'] } };
+        self.insertDataInHelperArr(tempObj1);
+      });
+    } else if (
+      item.filterType === 'inRange' &&
+      item.fieldType === 'Number' &&
+      item.fromNumber !== null &&
+      item.fromNumber !== undefined &&
+      item.toNumber !== null &&
+      item.toNumber !== undefined
+    ) {
+      if (!Array.isArray(item.fieldName)) {
+        item.fieldName = item.fieldName.split();
+      }
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: {
+            $gte: item['fromNumber'],
+            $lte: item['toNumber']
+          }
+        };
         self.insertDataInHelperArr(tempObj1);
       });
     }
@@ -531,10 +604,9 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         self.createNoDateFilter(item);
       } else if (item.serviceCol && item.fieldType === 'Relation') {
         self.createRelFilter(item);
-      } 
-      else if (item.serviceCol && item.fieldType === 'secureText') {
+      } else if (item.serviceCol && item.fieldType === 'secureText') {
         self.creatSecureTextFilter(item);
-      }else if (item.serviceCol && item.fieldType !== 'Relation' && item.fieldType !== 'Date' && item.fieldName !== 'documentId') {
+      } else if (item.serviceCol && item.fieldType !== 'Relation' && item.fieldType !== 'Date' && item.fieldName !== 'documentId') {
         self.createDSColFilter(item);
       } else if (item.serviceCol && item.fieldType !== 'Relation' && item.fieldType !== 'Date' && item.fieldName === 'documentId') {
         self.createNoDateFilter(item);
@@ -546,30 +618,32 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  creatSecureTextFilter(item){
+  creatSecureTextFilter(item) {
     const self = this;
     let prefix = 'data.new.';
     if (self.appService.workflowTab === 1 || self.appService.workflowTab === 2) {
       prefix = 'data.old.';
     }
-  
+
     if (item.filterType === 'equals' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol+'.value']: item.filterValue };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol + '.value']: item.filterValue };
         self.insertDataInHelperArr(tempObj1);
       });
     } else if (item.filterType === 'notEqual' && item.filterValue !== null && item.filterValue !== 'undefined' && item.filterValue !== '') {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol+'.value']: { '$nin': [item['filterValue'], null], } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol + '.value']: { $nin: [item['filterValue'], null] }
+        };
         self.insertDataInHelperArr(tempObj1);
       });
-    } 
+    }
   }
   createDateFilter(item) {
     const self = this;
@@ -582,28 +656,28 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       self.insertDataInHelperArr(tempObj1);
     } else if (item.filterType === 'greaterThan') {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$gt': item['fromDate'] },
+        value: { $gt: item['fromDate'] },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj, true);
     } else if (item.filterType === 'lessThan') {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$lt': item['fromDate'] },
+        value: { $lt: item['fromDate'] },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj, true);
     } else if (item.filterType === 'notEqual') {
       const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { '$ne': item['fromDate'] },
+        value: { $ne: item['fromDate'] },
         writable: true,
         enumerable: true
       });
       self.insertDataInHelperArr(tempObj, true);
     } else if (item.filterType === 'inRange') {
       const tempObj1 = Object.defineProperty({}, item['fieldName'], {
-        value: { '$gte': item['fromDate'], '$lt': item['toDate'] },
+        value: { $gte: item['fromDate'], $lt: item['toDate'] },
         writable: true,
         enumerable: true
       });
@@ -618,61 +692,65 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     }
     if (item.filterType === 'equals' && item['fromDate']) {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: self.getDateQuery(item['fromDate']) };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: self.getDateQuery(item['fromDate'])
+        };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
     } else if (item.filterType === 'greaterThan') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$gt': item['fromDate'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $gt: item['fromDate'] } };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(tempObj1);
       });
     } else if (item.filterType === 'lessThan') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$lt': item['fromDate'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $lt: item['fromDate'] } };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
     } else if (item.filterType === 'notEqual') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$ne': item['fromDate'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = { [prefix + _relCol]: { $ne: item['fromDate'] } };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
     } else if (item.filterType === 'inRange') {
       const queryObj = {
-        '$or': []
+        $or: []
       };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      item.fieldName.forEach((_relCol) => {
-        const tempObj1 = { [prefix + _relCol]: { '$gte': item['fromDate'], '$lt': item['toDate'] } };
+      item.fieldName.forEach(_relCol => {
+        const tempObj1 = {
+          [prefix + _relCol]: { $gte: item['fromDate'], $lt: item['toDate'] }
+        };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(tempObj1);
       });
@@ -761,8 +839,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       }
       self.filterHelperArr.forEach(element => {
         const key = Object.keys(element)[0];
-        const temp = {
-        };
+        const temp = {};
         temp[key] = element[key];
         const index = self.config.filter.$and.findIndex(ele => ele[key] === temp[key]);
         if (index < 0) {
@@ -781,29 +858,26 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.config.filter = {};
     self.appService.workflowFilter = null;
     self.placeHolderText = 'Select Filter';
-    self.selectedColOrder=[];
-
+    self.selectedColOrder = [];
   }
   addColForSort() {
     const self = this;
-
-    self.sortingColumns.push(self.appService.cloneObject({
-      name: '_id',
-      selectedOption: '1'
-    }));
-
+    self.sortingColumns.push(
+      self.appService.cloneObject({
+        name: '_id',
+        selectedOption: '1'
+      })
+    );
   }
   saveFilter() {
     const self = this;
     self.filterData.type = 'workflow';
     self.config.columns = self.selectedColOrder;
-    self.config.sort = self.createSortQuery(self.sortingColumns);
+    self.config.sort = self.sortingColumns;
+    // self.config.sort = self.createSortQuery(self.sortingColumns);
     self.config.select = self.selectedColOrder.map(e => e.key).join(',');
-
     if (self.filterData.name && self.filterData.name.length > 0) {
-      if (self.filterData.value['filter'] === null ||
-        self.filterData.value['select'] === '' ||
-        self.filterData.value['sort'] === '') {
+      if (self.filterData.value['filter'] === null || self.filterData.value['select'] === '' || self.filterData.value['sort'] === '') {
         self.ts.warning('Filter Appears empty');
       } else {
         self.invalidFilterName = false;
@@ -811,42 +885,38 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         const currentUser = self.sessionService.getUser(true);
         self.filterData.value = JSON.stringify(self.config);
         // self.filterData.value['sort'] = self.sortingColumns;
-        if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
-
-          self.commonService.put('user', `/filter/${self.filterId}`, self.filterData)
-            .subscribe(_filter => {
-              self.showSaveDiv = false;
-              self.applyFilter();
-              self.filterId = _filter._id;
-              self.selectFilter(_filter);
-              self.getAllfilters.emit();
-              self.ts.success('filter created successfully');
-            });
-        } else if (self.filterId && (self.filterCreatedBy !== currentUser._id)) {
+        if (self.filterId && self.filterCreatedBy === currentUser._id) {
+          self.commonService.put('user', `/filter/${self.filterId}`, self.filterData).subscribe(_filter => {
+            self.showSaveDiv = false;
+            self.applyFilter();
+            self.filterId = _filter._id;
+            self.selectFilter(_filter);
+            self.getAllfilters.emit();
+            self.ts.success('filter created successfully');
+          });
+        } else if (self.filterId && self.filterCreatedBy !== currentUser._id) {
           self.filterId = null;
-          self.commonService.post('user', '/filter/', self.filterData)
-            .subscribe(_filter => {
-              self.allFilters.push(_filter);
-              self.showSaveDiv = false;
-              self.applyFilter();
-              self.filterId = _filter._id;
-              self.selectFilter(_filter);
-              self.getAllfilters.emit();
-              self.saveOrEditText = '+Edit View';
-              self.ts.success('New Filter created Successfully');
-            });
+          self.commonService.post('user', '/filter/', self.filterData).subscribe(_filter => {
+            self.allFilters.push(_filter);
+            self.showSaveDiv = false;
+            self.applyFilter();
+            self.filterId = _filter._id;
+            self.selectFilter(_filter);
+            self.getAllfilters.emit();
+            self.saveOrEditText = '+Edit View';
+            self.ts.success('New Filter created Successfully');
+          });
         } else if (self.filterId === null || self.filterId === '') {
-          self.commonService.post('user', '/filter/', self.filterData)
-            .subscribe(_filter => {
-              self.showSaveDiv = false;
-              self.allFilters.push(_filter);
-              self.applyFilter();
-              self.filterId = _filter._id;
-              self.selectFilter(_filter);
-              self.getAllfilters.emit();
-              self.saveOrEditText = '+Edit View';
-              self.ts.success('New Filter created Successfully');
-            });
+          self.commonService.post('user', '/filter/', self.filterData).subscribe(_filter => {
+            self.showSaveDiv = false;
+            self.allFilters.push(_filter);
+            self.applyFilter();
+            self.filterId = _filter._id;
+            self.selectFilter(_filter);
+            self.getAllfilters.emit();
+            self.saveOrEditText = '+Edit View';
+            self.ts.success('New Filter created Successfully');
+          });
         }
       }
     } else {
@@ -887,7 +957,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.setSort(filterVal);
     self.setColumns(filterVal);
     self.commonService.workflowfilterQuery.next(filterVal);
-    self.config = filterVal
+    self.config = filterVal;
     // self.applyFilter();
   }
   checkFilterName() {
@@ -898,7 +968,6 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
   setColumns(filterVal) {
     const self = this;
     self.selectedColOrder = filterVal.columns ? filterVal.columns : [];
-
   }
   setTypeFilter(filterVal) {
     const self = this;
@@ -908,56 +977,38 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       const statusIndex = filterVal.filter.$and.findIndex(e => Object.keys(e)[0] === 'status');
 
       if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Pending') > -1) {
-        self.statusArray.push('Pending')
+        self.statusArray.push('Pending');
         self.filter.submitted = true;
       }
       if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Rework') > -1) {
         self.filter.rework = true;
-        self.statusArray.push('Rework')
-
+        self.statusArray.push('Rework');
       }
       if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Discarded') > -1) {
         self.filter.discard = true;
-        self.statusArray.push('Discarded')
-
+        self.statusArray.push('Discarded');
       }
       if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Approved') > -1) {
         self.filter.approved = true;
-        self.statusArray.push('Approved')
-
+        self.statusArray.push('Approved');
       }
       if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Rejected') > -1) {
         self.filter.rejected = true;
-        self.statusArray.push('Rejected')
-
+        self.statusArray.push('Rejected');
       }
       if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Draft') > -1) {
         self.filter.draft = true;
-        self.statusArray.push('Rework')
-
+        self.statusArray.push('Rework');
       }
     }
-
   }
   setSort(filterVal) {
     const self = this;
-    let sortingValues = [];
-    if (filterVal && filterVal.sort) {
-      sortingValues = filterVal.sort.split(',');
+    if (!filterVal.sort) {
+      this.sortingColumns = [];
+    } else {
+      self.sortingColumns = filterVal.sort;
     }
-    sortingValues.forEach(element => {
-      let selectedOption = 1;
-      if (element.charAt(0) === '-') {
-        selectedOption = -1;
-        element = element.replace('-', '');
-      }
-
-      self.sortingColumns.push(self.appService.cloneObject({
-        name: element,
-        selectedOption: selectedOption
-      }));
-    });
-
   }
 
   resetFilter() {
@@ -976,12 +1027,16 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     const inputFocus$ = this.focus$;
 
     return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      map(term => (term === '' ? this.allColumns
-        : this.allColumns.filter(v => v.properties.name.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
+      map(term =>
+        (term === ''
+          ? this.allColumns
+          : this.allColumns.filter(v => v.properties.name.toLowerCase().indexOf(term.toLowerCase()) > -1)
+        ).slice(0, 10)
+      )
     );
-  }
+  };
 
-  formatter = (x) => x.properties.name;
+  formatter = x => x.properties.name;
 
   selectItem(val) {
     const self = this;
@@ -993,7 +1048,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     } else {
       self.ts.warning('Column already added');
     }
-    self.selectedColOrder.forEach((col) => {
+    self.selectedColOrder.forEach(col => {
       // const temp = self.appService.cloneObject(col);
       if (col.type === 'File') {
         col.dataKey = col.dataKey + '.metadata.filename';
@@ -1009,25 +1064,20 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.name = '';
   }
 
-
   convertToColList() {
     const self = this;
     const tempArr = [];
-    if (typeof self.definition === 'string') {
-      self.definition = JSON.parse(self.definition);
-    }
     if (!self.definition) {
       return tempArr;
     }
-    Object.keys(self.definition).forEach(key => {
+    self.definition.forEach(def => {
       // const flag = self.selectColumns.find(e => e.key === key);
       // if (!flag) {
-      const def = self.definition[key];
-      let prefix = key;
+      let prefix = def.key;
       if (def.type === 'Array') {
         tempArr.push({
           show: true,
-          key,
+          key: def.key,
           dataKey: prefix,
           type: def.type,
           properties: def.properties,
@@ -1036,14 +1086,14 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         });
       } else {
         if (def.type === 'Relation') {
-          prefix = key;
+          prefix = def.key;
           // prefix += '.' + def.properties.relatedSearchField;
         } else if (def.type === 'File') {
           prefix += '.metadata.filename';
         } else if (def.type === 'Geojson') {
           prefix += '.formattedAddress';
         }
-        if (key !== '_id') {
+        if (def.key !== '_id') {
           tempArr.push({
             show: true,
             key: prefix,
@@ -1062,15 +1112,16 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
   removeItem(index) {
     const self = this;
     self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
-    self.confirmDeleteModalRef.result.then(close => {
-      if (close) {
-        self.allColumns.push(self.selectedColOrder[index]);
-        self.selectedColOrder.splice(index, 1);
-      }
-    }, dismiss => { });
+    self.confirmDeleteModalRef.result.then(
+      close => {
+        if (close) {
+          self.allColumns.push(self.selectedColOrder[index]);
+          self.selectedColOrder.splice(index, 1);
+        }
+      },
+      dismiss => {}
+    );
   }
-
-
 
   ngOnDestroy() {
     const self = this;
@@ -1082,8 +1133,5 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     if (self.confirmDeleteModalRef) {
       self.confirmDeleteModalRef.close();
     }
-
   }
-
-
 }

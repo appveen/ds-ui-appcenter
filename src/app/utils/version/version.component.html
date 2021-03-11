@@ -103,7 +103,7 @@
         <span *ngIf="oldValue.length==0" class="text-secondary">No Items&nbsp;</span>
         <ng-container *ngFor="let data of oldValue">
           <span class="old">
-            <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]" class="text-danger">{{data._id}}</a>
+            <a target="_blank" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',data._id]" class="text-danger">{{data._id}}</a>
           </span><br>
         </ng-container>
 
@@ -112,11 +112,11 @@
         <span class="text text-secondary">to&nbsp;</span><br>
         <ng-container *ngFor="let data of newValue">
           <span class="new">
-            <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]" class="text-success">{{data._id}}</a>
+            <a target="_blank" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',data._id]" class="text-success">{{data._id}}</a>
           </span><br>
         </ng-container>
         <!-- <span class="new">
-          <a target="_blank" class="text-success" [routerLink]="['/~',definition.properties.relatedTo,'view',relation.new['_id']]">{{relation.new[definition.properties.relatedSearchField]}}</a>
+          <a target="_blank" class="text-success" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',relation.new['_id']]">{{relation.new[definition.properties.relatedSearchField]}}</a>
         </span> -->
       </div>
     </ng-container>
@@ -125,11 +125,11 @@
         <span class="text text-secondary">Created&nbsp;</span><br>
         <ng-container *ngFor="let data of newValue">
           <span class="old">
-            <a target="_blank" class="text-success" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]">{{data._id}}</a>
+            <a target="_blank" class="text-success" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',data._id]">{{data._id}}</a>
           </span><br>
         </ng-container>
         <!-- <span class="new">
-          <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',relation.new['_id']]">
+          <a target="_blank" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',relation.new['_id']]">
             {{getRelation(relation.new[definition.properties.relatedSearchField])}}
           </a>
         </span> -->

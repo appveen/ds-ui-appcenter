@@ -1,10 +1,14 @@
 <div class="d-flex justify-content-between align-items-center mb-2 buttonsRow">
-    <div class="d-flex align-items">
-        <div class="d-flex align-items-center hover selectAll mr-2" (click)="selectAllRecords()">
-            <odp-round-check [checked]="checkAll" [white]="true" (checkedChange)="selectAllRecords()"></odp-round-check>
-            <strong class="text-primary ml-2">Select all </strong>
+    <div class="d-flex align-items" *ngIf="isEditable">
+        <div class="d-flex align-items-center hover selectAll mr-2" (click)="!!rowCount && selectAllRecords()">
+            <odp-round-check [checked]="checkAll" [white]="true" [disabled]="!rowCount"
+                (checkedChange)="selectAllRecords()">
+            </odp-round-check>
+            <strong class="text-primary ml-2" [class.disabled-text]="!rowCount">
+                Select all
+            </strong>
         </div>
-        <button type="button" class="btn btn-link" *ngIf="!definition?.properties?.readonly" (click)="onRowAdded()">
+        <button type="button" class="btn btn-link" *ngIf="formArray.enabled"(click)="onRowAdded()">
             <span class="fa fa-plus-circle mr-2"></span>
             <span class="text">Add new</span>
         </button>
@@ -29,7 +33,8 @@
     </div>
 </div>
 <div class="grid-container" [ngStyle]="gridStyle">
-    <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [frameworkComponents]="frameworkComponents">
+    <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents">
     </ag-grid-angular>
 </div>
 <ng-template #editModal>
@@ -75,7 +80,8 @@
         <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
             Cancel
         </button>
-        <button type="button" class="btn btn-primary" (click)="editModalRef.close()" [disabled]="formArray.invalid">
+        <button type="button" class="btn btn-primary" *ngIf="isEditable" (click)="editModalRef.close()"
+            [disabled]="!isFormArrayValid">
             Apply
         </button>
     </div>

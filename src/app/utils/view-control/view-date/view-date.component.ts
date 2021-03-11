@@ -13,42 +13,45 @@ export class ViewDateComponent implements OnInit {
   @Input() oldValue: any;
   @Input() newValue: any;
   @Input() workflowDoc: any;
-
-
+  dateString: string;
+  timezone: string;
   constructor(private appService: AppService) {
-    const self = this;
   }
 
   ngOnInit() {
+    if (this.value && this.value.rawData) {
+      this.dateString = this.appService.getUTCString(this.value.rawData, this.value.tzInfo)
+      this.timezone = this.value.tzInfo;
+    }
+    if (this.definition.value && this.definition.value.rawData) {
+      this.dateString = this.appService.getUTCString(this.definition.value.rawData, this.definition.value.tzInfo)
+      this.timezone = this.definition.value.tzInfo;
+    }
   }
 
 
   get isCreated() {
-    const self = this;
     let retValue = false;
-    if (self.newVal && !self.oldVal) {
+    if (this.newVal && !this.oldVal) {
       retValue = true;
     }
     return retValue;
   }
 
   get isUpdated() {
-    const self = this;
     let retValue = false;
-    if (self.newVal && self.oldVal && self.newVal !== self.oldVal) {
+    if (this.newVal && this.oldVal && this.newVal !== this.oldVal) {
       retValue = true;
-    } else if (!self.newVal && self.oldVal) {
+    } else if (!this.newVal && this.oldVal) {
       retValue = true;
     }
     return retValue;
   }
   get oldVal() {
-    const self = this;
-    return self.appService.getValue(self.definition.path, self.oldValue);
+    return this.appService.getValue(this.definition.path, this.oldValue);
   }
   get newVal() {
-    const self = this;
-    return self.appService.getValue(self.definition.path, self.newValue);
+    return this.appService.getValue(this.definition.path, this.newValue);
   }
 
 }

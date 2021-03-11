@@ -15,7 +15,7 @@
   <div class="bookmark-body mx-2 mt-2 bg-white rounded">
     <ng-container *ngIf="bookMarkId">
       <div class="d-flex url-action justify-content-end">
-        <button class="btn btn-link font-weight-bold" type="button" routerLink="/~/bookmark">Back</button>
+        <button class="btn btn-link font-weight-bold" type="button" [routerLink]="['/', currentAppId, 'bookmark']">Back</button>
         <button class="btn btn-link font-weight-bold" type="button" (click)="newTab()">Open in New Tab</button>
         <button class="btn btn-link font-weight-bold" type="button" (click)="refresh()">Refresh</button>
       </div>

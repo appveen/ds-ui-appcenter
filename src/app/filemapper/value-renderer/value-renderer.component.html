@@ -14,24 +14,27 @@
         </div>
     </ng-container>
     <ng-container *ngIf="type === 'Date'">
-        <ng-container *ngIf="value">
+        <ng-container *ngIf="parsedDate">
             <ng-container *ngIf="dateType != 'date'">
-                {{value | date:'medium'}}
+                {{parsedDate | date:'medium'}} ({{timezoneValue}})
             </ng-container>
             <ng-container *ngIf="dateType == 'date'">
-                {{value | date:'mediumDate'}}
+                {{parsedDate | date:'mediumDate'}} ({{timezoneValue}})
             </ng-container>
         </ng-container>
-        <span *ngIf="!value" class="text-muted">N.A.</span>
+        <span *ngIf="!parsedDate" class="text-muted">N.A.</span>
     </ng-container>
     <ng-container *ngIf="type === 'Boolean'">
-        <span *ngIf="value" class="text-muted">
-            <span class="fa fa-check-circle text-primary"></span>
-            <span class="text ml-1">Yes</span>
-        </span>
-        <span *ngIf="!value" class="text-muted">
-            <span class="fa fa-times-circle"></span>
-            <span class="text ml-1">No</span>
-        </span>
+        <ng-container *ngIf="isBooleanValue">
+            <span *ngIf="value" class="text-muted">
+                <span class="fa fa-check-circle text-primary"></span>
+                <span class="text ml-1">Yes</span>
+            </span>
+            <span *ngIf="!value" class="text-muted">
+                <span class="fa fa-times-circle"></span>
+                <span class="text ml-1">No</span>
+            </span>
+        </ng-container>
+        <span *ngIf="!isBooleanValue" class="text-dark">{{value}}</span>
     </ng-container>
 </div>

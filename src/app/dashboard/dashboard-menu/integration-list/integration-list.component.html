@@ -1,0 +1,32 @@
+<div class="search-control position-relative border-right">
+    <span class="fa fa-search position-absolute"></span>
+    <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
+</div>
+<div class="menu-list-item d-flex align-items-center justify-content-between hover"
+    [ngClass]="{'bg-primary text-white': activeId === 'all','bg-light text-secondary': activeId !== 'all'}"
+    (click)="loadPartnerInteractions()">
+    <div class="d-flex align-items-center">
+        <div class="list-item-icon d-flex align-items-center">
+            <span class="odp-flows"></span>
+        </div>
+        <div class="list-item-label d-flex align-items-center text-truncate">All Interactions</div>
+    </div>
+</div>
+<div class="menu-list-item d-flex align-items-center justify-content-between hover"
+    *ngFor="let item of records | serviceSearch:searchText" (click)="loadPartnerInteractions(item)"
+    [ngClass]="{'bg-primary text-white':item._id === activeId,'bg-light text-secondary':item._id !== activeId}">
+    <div class="d-flex align-items-center">
+        <div class="list-item-icon d-flex align-items-center">
+            <span class="odp-flows"></span>
+        </div>
+        <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
+            {{item.name}}
+        </div>
+    </div>
+</div>
+<div *ngIf="!records || records.length==0"
+    class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+    <div class="d-flex align-items-center">
+        <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
+    </div>
+</div>

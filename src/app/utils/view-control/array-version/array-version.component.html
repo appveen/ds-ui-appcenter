@@ -110,7 +110,7 @@
           <span *ngIf="oldVal?.length==0 || oldVal == null" class="text-secondary">No Items&nbsp;</span>
           <ng-container *ngFor="let data of oldVal">
             <span class="old">
-              <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]"
+              <a target="_blank" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',data._id]"
                 class="text-danger">{{data._id}}</a>
             </span><br>
           </ng-container>
@@ -120,7 +120,7 @@
           <span class="text text-secondary">To&nbsp;</span><br>
           <ng-container *ngFor="let data of newVal">
             <span class="new">
-              <a target="_blank" [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]"
+              <a target="_blank" [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',data._id]"
                 class="text-success">{{data._id}}</a>
             </span><br>
           </ng-container>
@@ -132,7 +132,7 @@
           <ng-container *ngFor="let data of newVal">
             <span class="old">
               <a target="_blank" class="text-success"
-                [routerLink]="['/~',definition.properties.relatedTo,'view',data._id]">{{data._id}}</a>
+                [routerLink]="['/', currentAppId ,definition.properties.relatedTo,'view',data._id]">{{data._id}}</a>
             </span><br>
           </ng-container>
         </div>

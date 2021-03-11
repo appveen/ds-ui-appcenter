@@ -36,6 +36,8 @@ echo "odp-ui-appcenter :: Building Image :: "$TAG
 echo "****************************************************"
 cd $WORKSPACE
 
+# ng build --prod
+
 docker build -t odp:ui-appcenter.$TAG .
 
 echo $TAG > $WORKSPACE/../LATEST_APPCENTER

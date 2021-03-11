@@ -1,11 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment-timezone';
 
 import { Definition } from 'src/app/interfaces/definition';
 
 @Injectable()
 export class AppService {
-
     serviceId: string;
     serviceName: string;
     serviceAPI: string;
@@ -47,7 +47,7 @@ export class AppService {
     draggedItem: any;
     // existingInlineFilter: any;
     // inlineFilterApplied: any;
-    fetchedServiceList: any;
+    fetchedServiceList: Array<any>;
     objMappingData: EventEmitter<number>;
     fileObjCount;
     mappingData: any;
@@ -60,9 +60,8 @@ export class AppService {
     cloneRecordId: string;
     workflowId;
     workflowTab: number;
-    workflowTabChange: EventEmitter<Number>;
+    workflowTabChange: EventEmitter<number>;
     fileMapperComponnets: any;
-    preferredServiceId: string;
 
     constructor() {
         const self = this;
@@ -97,18 +96,23 @@ export class AppService {
         self.selectAll = new EventEmitter();
         self.fileMapperComponnets = {};
         self.workflowTabChange = new EventEmitter();
+        this.fetchedServiceList = [];
     }
 
     aggregatePermission(_obj, min?) {
         try {
             const self = this;
-            _obj = Object.assign.apply(null, Object.keys(_obj).filter(e => e.indexOf('_') === -1 || e === '_id')
-                .map(e => Object.defineProperty({}, e, { value: _obj[e], enumerable: true })));
+            _obj = Object.assign.apply(
+                null,
+                Object.keys(_obj)
+                    .filter(e => e.indexOf('_') === -1 || e === '_id')
+                    .map(e => Object.defineProperty({}, e, { value: _obj[e], enumerable: true }))
+            );
             let type = 'max';
             if (min) {
                 type = 'min';
             }
-            let temp = Object.values(_obj).map((e: any) => e._p ? Object.values(e._p) : self.aggregatePermission(e, type));
+            let temp = Object.values(_obj).map((e: any) => (e._p ? Object.values(e._p) : self.aggregatePermission(e, type)));
             temp = Array.prototype.concat.apply([], temp);
             const values = temp.map(e => e.charCodeAt(0));
             return String.fromCharCode(Math[type].apply(null, values));
@@ -120,45 +124,63 @@ export class AppService {
     configureByPermission(definitions, permissions) {
         try {
             const self = this;
-            Object.keys(definitions).map(_e => {
-                if (_e === '_id') {
-                    definitions[_e] = {};
-                    definitions[_e].type = 'String';
-                    definitions[_e].properties = {
-                        name: 'ID'
-                    };
-                }
-                if (!permissions[_e]._p) {
-                    if (definitions[_e].type === 'Relation') {
-                        if (permissions[_e]['_id'] === 'N') {
-                            delete definitions[_e];
-                        }
+            const deleteArray = [];
+            definitions
+                .filter(def => (def.key.indexOf('_') !== 0 || def.key === '_id'))
+                .forEach(def => {
+                    if (def.key === '_id') {
+                        def.type = 'String';
+                        def.properties = {
+                            name: 'ID'
+                        };
                     }
-                    else if (definitions[_e].properties && definitions[_e].properties.password) {
-                        if (permissions[_e]['value'] === 'N') {
-                            delete definitions[_e];
-                        }
-                    }
-
-                    else {
-                        if (self.aggregatePermission(permissions[_e]) !== 'N') {
-                            self.configureByPermission(definitions[_e].definition, permissions[_e]);
+                    const inDirectTag = permissions.reduce((pv, cv) => (pv || !cv.fields[def.key]._p), false);
+                    if (inDirectTag) {
+                        if (def.type === 'Relation') {
+                            const tag = permissions.reduce((pv, cv) => {
+                                const previousTag: string = typeof pv === 'string' ? pv : pv.fields[def.key]._id._p[pv.id];
+                                const currentTag: string = cv.fields[def.key]._id._p[cv.id];
+                                return String.fromCharCode(Math.max(previousTag.charCodeAt(0), currentTag.charCodeAt(0)))
+                            });
+                            if (tag === 'N') {
+                                deleteArray.push(def.key);
+                            }
+                        } else if (def.properties && def.properties.password) {
+                            const tag = permissions.reduce((pv, cv) => {
+                                const previousTag: string = typeof pv === 'string' ? pv : pv.fields[def.key].value._p[pv.id];
+                                const currentTag: string = cv.fields[def.key].value._p[cv.id];
+                                return String.fromCharCode(Math.max(previousTag.charCodeAt(0), currentTag.charCodeAt(0)))
+                            });
+                            if (tag === 'N') {
+                                deleteArray.push(def.key);
+                            }
                         } else {
-                            delete definitions[_e];
+                            const allTagsCharCode = permissions.map(p => this.aggregatePermission(p.fields[def.key]).charCodeAt(0));
+                            const finalTag = String.fromCharCode(Math.max(...allTagsCharCode));
+                            if (finalTag !== 'N') {
+                                def.definition = self.configureByPermission(def.definition, [{ id: permissions[0].id, fields: permissions[0].fields[def.key] }]);
+                            } else {
+                                deleteArray.push(def.key);
+                            }
+                        }
+                    } else {
+                        const tag = permissions.reduce((pv, cv) => {
+                            const previousTag: string = typeof pv === 'string' ? pv : pv.fields[def.key]._p[pv.id];
+                            const currentTag: string = cv.fields[def.key]._p[cv.id];
+                            return String.fromCharCode(Math.max(previousTag.charCodeAt(0), currentTag.charCodeAt(0)))
+                        });
+                        if (tag === 'N') {
+                            deleteArray.push(def.key);
+                        }
+                        if (tag === 'R') {
+                            if (def.type === 'Array') {
+                                def.definition[0].properties.readonly = true;
+                            }
+                            def.properties.readonly = true;
                         }
                     }
-                } else {
-                    if (permissions[_e]._p === 'N') {
-                        delete definitions[_e];
-                    }
-                    if (permissions[_e]._p === 'R') {
-                        if (definitions[_e].type === 'Array') {
-                            definitions[_e].definition._self.properties.readonly = true;
-                        }
-                        definitions[_e].properties.readonly = true;
-                    }
-                }
-            });
+                });
+            return definitions.filter(d => !deleteArray.includes(d.key));
         } catch (e) {
             throw e;
         }
@@ -184,20 +206,24 @@ export class AppService {
                             payload[def.key] = payload[def.key].filter(e => e);
                         }
                         if (payload[def.key]) {
-                            payload[def.key] = payload[def.key].filter(e => e !== null);
+                            payload[def.key] = payload[def.key].filter(e => e !== null && e !== '' && e !== undefined);
                         }
                         if (payload[def.key] && def.definition[0].type === 'Object') {
                             payload[def.key].forEach(obj => self.cleanPayload(obj, def.definition[0].definition, isEdit));
-                            payload[def.key] = payload[def.key].filter(e => Object.keys(e).reduce((pv, cv) => (pv || (e[cv] !== null && e[cv] !== '')), false));
+                            payload[def.key] = payload[def.key].filter(e =>
+                                Object.keys(e).reduce((pv, cv) => pv || (e[cv] !== null && e[cv] !== ''), false)
+                            );
                         }
                         if (payload[def.key] && payload[def.key].length === 0) {
                             payload[def.key] = null;
                         }
                     } else {
-                        if (payload.hasOwnProperty(def.key)
-                            && typeof payload[def.key] !== 'boolean'
-                            && typeof payload[def.key] !== 'number'
-                            && !payload[def.key]) {
+                        if (
+                            payload.hasOwnProperty(def.key) &&
+                            typeof payload[def.key] !== 'boolean' &&
+                            typeof payload[def.key] !== 'number' &&
+                            !payload[def.key]
+                        ) {
                             payload[def.key] = null;
                         }
                         if ((def.type === 'Boolean' || typeof payload[def.key] === 'boolean') && !payload[def.key]) {
@@ -246,14 +272,31 @@ export class AppService {
     //
     getValue(key, obj) {
         try {
-            return key.split('.').reduce(function (prev, curr) {
-                return prev ? prev[curr] : undefined;
-            }, obj);
+            return key.split('.').reduce(
+                function (prev, curr) {
+                    const keys = !!prev ? Object.keys(prev) : [];
+                    const foundKey = keys.find(key => key.toLowerCase() === curr.toLowerCase());
+                    return !!foundKey ? prev[foundKey] : undefined;
+                }, obj);
         } catch (e) {
             throw e;
         }
     }
 
+
+    getValueNew(key, defArray, preValue?) {
+        let retValue = preValue;
+        defArray.forEach(element => {
+            if (element.type === "Object") {
+                retValue = this.getValueNew(key, element.definition, retValue)
+            }
+            else if (element.properties.dataPath === key) {
+                retValue = element;
+            }
+        });
+        return retValue;
+
+    }
     getValueForCollection(key, obj, objKey?) {
         try {
             return key.split('.').reduce(function (prev, curr) {
@@ -366,7 +409,7 @@ export class AppService {
             if (date.getDate() === today.getDate() && date.getMonth() === today.getMonth()) {
                 return 'Yesterday';
             }
-            return (new Date(new Date().getTime() - new Date(dateStr).getTime())).getDate() + ' Days ago';
+            return new Date(new Date().getTime() - new Date(dateStr).getTime()).getDate() + ' Days ago';
         } catch (e) {
             throw e;
         }
@@ -405,7 +448,6 @@ export class AppService {
             if (a[propName] !== b[propName]) {
                 return false;
             }
-
         }
 
         // If we made it this far, objects
@@ -420,10 +462,7 @@ export class AppService {
             if (!obj) {
                 return count;
             }
-            const rootKeys = Object.keys(obj).filter(e => e !== '_version'
-                && e !== '__v'
-                && e !== '_metadata'
-                && e !== '_id');
+            const rootKeys = Object.keys(obj).filter(e => e !== '_version' && e !== '__v' && e !== '_metadata' && e !== '_id');
             count += rootKeys.length;
             rootKeys.forEach(key => {
                 if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
@@ -441,10 +480,7 @@ export class AppService {
             const self = this;
             let count = 0;
             if (oldObj && newObj) {
-                const rootKeys = Object.keys(oldObj).filter(e => e !== '_version'
-                    && e !== '__v'
-                    && e !== '_metadata'
-                    && e !== '_id');
+                const rootKeys = Object.keys(oldObj).filter(e => e !== '_version' && e !== '__v' && e !== '_metadata' && e !== '_id');
                 rootKeys.forEach(key => {
                     if (typeof oldObj[key] === 'object' || typeof newObj[key] === 'object') {
                         if (Array.isArray(oldObj[key]) || Array.isArray(newObj[key])) {
@@ -476,18 +512,11 @@ export class AppService {
             if (oldObj && newObj) {
                 let rootKeys;
                 if (!parent) {
-                    rootKeys = Object.keys(oldObj).filter(e =>
-                        e !== '_version'
-                        && e !== '__v'
-                        && e !== '_metadata'
-                        && e !== '_id'
-                        && e !== '_href');
+                    rootKeys = Object.keys(oldObj).filter(
+                        e => e !== '_version' && e !== '__v' && e !== '_metadata' && e !== '_id' && e !== '_href'
+                    );
                 } else {
-                    rootKeys = Object.keys(oldObj).filter(e =>
-                        e !== '_version'
-                        && e !== '__v'
-                        && e !== '_metadata'
-                        && e !== '_href');
+                    rootKeys = Object.keys(oldObj).filter(e => e !== '_version' && e !== '__v' && e !== '_metadata' && e !== '_href');
                 }
                 rootKeys.forEach(key => {
                     if (typeof oldObj[key] === 'object' || typeof newObj[key] === 'object') {
@@ -553,17 +582,21 @@ export class AppService {
                     if (keyVal.value) {
                         if (temp['$or']) {
                             temp['$and'].push({ $or: temp['$or'] });
-                            temp['$or'] = keyVal.keys.map(e => Object.defineProperty({}, key + '.' + e, {
-                                value: val,
-                                enumerable: true
-                            }));
+                            temp['$or'] = keyVal.keys.map(e =>
+                                Object.defineProperty({}, key + '.' + e, {
+                                    value: val,
+                                    enumerable: true
+                                })
+                            );
                             temp['$and'].push({ $or: temp['$or'] });
                             delete temp['$or'];
                         } else {
-                            temp['$or'] = keyVal.keys.map(e => Object.defineProperty({}, key + '.' + e, {
-                                value: val,
-                                enumerable: true
-                            }));
+                            temp['$or'] = keyVal.keys.map(e =>
+                                Object.defineProperty({}, key + '.' + e, {
+                                    value: val,
+                                    enumerable: true
+                                })
+                            );
                         }
                     }
                 } else {
@@ -629,9 +662,15 @@ export class AppService {
                             temp[key] = {};
                             temp[key]['$ne'] = filterModel[key].filter;
                         } else if (filterModel[key].type === 'startsWith') {
-                            temp[key] = { '$regex': '.*' + filterModel[key].filter, '$options': 'i' };
+                            temp[key] = {
+                                $regex: '.*' + filterModel[key].filter,
+                                $options: 'i'
+                            };
                         } else if (filterModel[key].type === 'endsWith') {
-                            temp[key] = { '$regex': filterModel[key].filter + '.*', '$options': 'i' };
+                            temp[key] = {
+                                $regex: filterModel[key].filter + '.*',
+                                $options: 'i'
+                            };
                         } else if (filterModel[key].type === 'notContains') {
                             temp[key] = {};
                             temp[key]['$not'] = '/' + filterModel[key].filter + '/';
@@ -675,7 +714,7 @@ export class AppService {
         }
     }
 
-    listenForChildClosed(childWindow: Window): Promise<{ status?: number, body?: any }> {
+    listenForChildClosed(childWindow: Window): Promise<{ status?: number; body?: any }> {
         return new Promise((resolve, reject) => {
             let timer;
             const checkChild = () => {
@@ -748,20 +787,36 @@ export class AppService {
         try {
             const self = this;
             if (definition) {
-                definition.forEach((def) => {
+                definition.forEach(def => {
                     if (def.type === 'Object' && payload[def.key]) {
                         self.cleanArray(payload[def.key], def.definition);
                     } else {
-                        delete payload._id
+                        delete payload._id;
                         if (def && def.properties && def.properties.password && payload[def.key]) {
-                            delete payload[def.key].value
+                            delete payload[def.key].value;
                         }
-
                     }
                 });
             }
         } catch (e) {
             throw e;
         }
+    }
+
+    getMoment(dateStr?: any) {
+        return moment(dateStr);
+    }
+
+    getTimezoneString(dateStr, tzInfo) {
+        const foreignTime = moment(dateStr)
+        return foreignTime.tz(tzInfo, true).format();
+    }
+
+    getLocalTimezone() {
+        return moment.tz.guess(true);
+    }
+
+    getUTCString(dateStr, tzInfo) {
+        return moment.tz(dateStr, tzInfo).tz(moment.tz.guess(), true).utc().format();
     }
 }

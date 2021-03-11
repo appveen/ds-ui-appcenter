@@ -10,7 +10,6 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./list-relation-view.component.scss']
 })
 export class ListRelationViewComponent implements OnInit {
-
   @Input() definition: Definition;
   @Input() data: any;
   relatedSrvc: string;
@@ -18,9 +17,12 @@ export class ListRelationViewComponent implements OnInit {
   private showOnlyId: boolean;
   private relatedDefinition: any;
   serviceAccess: boolean;
-  constructor(private appService: AppService,
-    private commonService: CommonService,
-    private datePipe: DatePipe) {
+
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+  
+  constructor(private appService: AppService, private commonService: CommonService, private datePipe: DatePipe) {
     const self = this;
     self.subscriptions = {};
     self.serviceAccess = true;
@@ -58,18 +60,22 @@ export class ListRelationViewComponent implements OnInit {
       self.subscriptions['fetchRelatedSchema_' + self.definition.properties.relatedTo] = self.commonService
         .get('sm', '/service/' + self.definition.properties.relatedTo, {
           select: 'definition'
-        }).subscribe(res => {
-          const sIndex = self.appService.fetchedServiceList.findIndex(s => s._id === res._id);
-          self.showOnlyId = sIndex === -1;
-          if (sIndex === -1) {
-            self.serviceAccess = false;
+        })
+        .subscribe(
+          res => {
+            const sIndex = self.appService.fetchedServiceList.findIndex(s => s._id === res._id);
+            self.showOnlyId = sIndex === -1;
+            if (sIndex === -1) {
+              self.serviceAccess = false;
+            }
+            // self.showOnlyId = false;
+            self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
+            self.relatedDefinition = res.definition;
+          },
+          err => {
+            self.showOnlyId = true;
           }
-          // self.showOnlyId = false;
-          self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
-          self.relatedDefinition = JSON.parse(res.definition);
-        }, err => {
-          self.showOnlyId = true;
-        });
+        );
     } else {
       // self.showOnlyId = false;
       const sIndex = self.appService.fetchedServiceList.findIndex(s => s._id === self.definition.properties.relatedTo);
@@ -78,7 +84,7 @@ export class ListRelationViewComponent implements OnInit {
         self.serviceAccess = false;
       }
       const temp = self.appService.servicesMap[self.definition.properties.relatedTo];
-      self.relatedDefinition = JSON.parse(temp.definition);
+      self.relatedDefinition = temp.definition;
     }
   }
 
@@ -123,7 +129,7 @@ export class ListRelationViewComponent implements OnInit {
   get relatedDef() {
     const self = this;
     if (self.relatedDefinition && self.definition.properties.relatedSearchField) {
-      return self.appService.getValue(self.definition.properties.relatedSearchField, self.relatedDefinition);
+      return self.appService.getValueNew(self.definition.properties.relatedSearchField, self.relatedDefinition);
     }
     return null;
   }

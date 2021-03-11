@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, ElementRef, Output, EventEmitter } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { FormService } from 'src/app/service/form.service';
@@ -11,7 +13,8 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'odp-relation-type',
   templateUrl: './relation-type.component.html',
-  styleUrls: ['./relation-type.component.scss']
+  styleUrls: ['./relation-type.component.scss'],
+  providers: [DatePipe]
 })
 export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -31,27 +34,63 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedValue: string;
   isSerachFieldSecureTxt: boolean;
   relatedServiceDef: any;
+  searchFieldType: string;
+  relatedData: any;
+  relationLink: string;
+
+  get currentAppId(){
+    return this.commonService?.getCurrentAppId();
+  }
+
   constructor(private commonService: CommonService,
     private appService: AppService,
-    private formService: FormService) {
+    private formService: FormService,
+    private datePipe: DatePipe) {
     const self = this;
     self.subscriptions = {};
     self.selectedValue = '';
     self.keyupEvent = new EventEmitter();
     self.recordsCount = 0;
+    this.searchFieldType = 'text';
   }
 
   ngOnInit() {
     const self = this;
     self.itemSelected = false;
     if (self.definition.properties.relatedTo) {
+      self.relationLink = `/${self.currentAppId}/services/${self.definition.properties.relatedTo}/view/`;
       self.relatedField = (self.definition.properties as any).relatedSearchField;
       self.commonService.getService(self.definition.properties.relatedTo).then((res: any) => {
-        if (res && res.attributeList) {
-          self.relatedServiceDef = res.attributeList.find(e => e.key === self.definition.properties.relatedSearchField);
+        if (res && res.definition) {
+          self.relatedServiceDef = res.definition.find(e => e.key === self.definition.properties.relatedSearchField);
         }
         if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties.password) {
           self.isSerachFieldSecureTxt = true;
+        }
+        if (this.relatedServiceDef && this.relatedServiceDef.properties && this.relatedServiceDef.properties.password) {
+          this.searchFieldType = 'secureText'
+        }
+
+        else if (this.relatedServiceDef && this.relatedServiceDef.properties && this.relatedServiceDef.properties.dateType === 'date') {
+          this.searchFieldType = 'date'
+
+        }
+        else if (this.relatedServiceDef && this.relatedServiceDef.properties && this.relatedServiceDef.properties.dateType === 'datetime-local') {
+          this.searchFieldType = 'datetime'
+
+        }
+        else if (this.relatedServiceDef && this.relatedServiceDef.properties && this.relatedServiceDef.properties._type === 'Boolean') {
+          this.searchFieldType = 'boolean'
+
+        }
+        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'Number') {
+          this.searchFieldType = 'number'
+        }
+        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'File') {
+          this.searchFieldType = 'file'
+        }
+        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'Geojson') {
+          this.searchFieldType = 'geojson'
         }
         self.url = '/' + self.commonService.app._id + res.api;
         self.getNoOfRecords().then(() => {
@@ -64,6 +103,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
               self.subscriptions['getRelationData'] = self.commonService
                 .get('api', self.url + '/' + self.control.value._id, options)
                 .subscribe(data => {
+                  self.relatedData = data;
                   if (self.typeAhead) {
                     setTimeout(() => {
                       self.typeAhead.writeValue(data);
@@ -79,7 +119,6 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
               setTimeout(() => {
                 if (self.typeAhead) {
                   setTimeout(() => {
-                  
                     self.typeAhead.writeValue(self.control.value);
                   }, 50);
                   self.selectedValue = self.control.value._id;
@@ -171,16 +210,33 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
         self.control.markAsDirty();
         self.control.markAsTouched();
         let filter = {};
-        if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties.password) {
+        if (this.searchFieldType === 'secureText') {
           filter = {
             [self.definition.properties.relatedSearchField + '.value']: val
           }
         }
-        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'Number') {
+        else if (this.searchFieldType === 'number' || this.searchFieldType === 'boolean') {
           filter = {
             [self.definition.properties.relatedSearchField]: val
           }
-        } else {
+        }
+        else if (this.searchFieldType === 'secureText') {
+          filter = {
+            [self.definition.properties.relatedSearchField + '.value']: val
+          }
+        }
+
+        else if (this.searchFieldType === 'file') {
+          filter = {
+            [self.definition.properties.relatedSearchField + '.metadata.filename']: '/' + val + '/'
+          }
+        }
+        else if (this.searchFieldType === 'geojson') {
+          filter = {
+            [self.definition.properties.relatedSearchField + '.formattedAddress']: '/' + val + '/'
+          }
+        }
+        else {
           filter = { [self.definition.properties.relatedSearchField]: '/' + val + '/' }
         }
 
@@ -199,17 +255,34 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   formatter = (obj: any) => {
     const self = this;
     let retValue = self.appService.getValue(self.definition.properties.relatedSearchField, obj);
-    if (retValue && typeof retValue === 'object') {
-      if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties.password)
-        retValue = retValue.value
+
+    if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties.password && retValue) {
+      retValue = retValue.value;
+    } else if (self.relatedServiceDef?.properties?.richText && !!retValue) {
+      retValue = self.getHtmlContent(retValue);
+    } else if (
+      self.relatedServiceDef &&
+      self.relatedServiceDef.properties &&
+      self.relatedServiceDef.properties._type === 'File' &&
+      retValue
+    ) {
+      retValue = retValue.metadata.filename;
+    } else if (self.relatedServiceDef && self.relatedServiceDef.type === 'Geojson' && retValue) {
+      retValue = retValue.userInput ? retValue.userInput : retValue.formattedAddress;
+    } else if (
+      self.relatedServiceDef &&
+      self.relatedServiceDef.properties &&
+      self.relatedServiceDef.properties.dateType === 'date' &&
+      retValue
+    ) {
+      retValue = this.datePipe.transform(retValue, 'dd-MM-yyyy');
     }
-    else if (self.relatedServiceDef && self.relatedServiceDef.type === 'File') {
-      retValue = retValue.metadata.file
-    }
-    else if (self.relatedServiceDef && self.relatedServiceDef.type === 'Geojson') {
-      retValue = retValue.userInput ? retValue.userInput : retValue.formattedAddress
-    }
+
     return retValue;
+  }
+
+  getHtmlContent(val: string) {
+    return val.replace(/<\/.*>/g, '').replace(/<.*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
   }
 
   getNoOfRecords(): Promise<any> {

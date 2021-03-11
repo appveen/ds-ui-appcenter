@@ -4,6 +4,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 
 import { Definition, Properties, Currency } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'odp-col-of-objs-grid-cell',
@@ -27,6 +28,10 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
   showPassword: boolean;
   id: string;
 
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+
   get checked() {
     if (this.params && this.params.node) {
       return this.params.node.isSelected();
@@ -34,7 +39,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
     return false;
   }
 
-  constructor(private appService: AppService) { }
+  constructor(private appService: AppService, private commonService: CommonService) { }
 
   refresh(): boolean {
     return false;

@@ -38,6 +38,8 @@ export class InteractionsService {
 
   filterApplied: string;
   applyingFilter: EventEmitter<any>;
+  private withinInteractions: boolean;
+
   constructor(private zone: NgZone) {
     const self = this;
     self.grandTotal = 0;
@@ -436,7 +438,7 @@ export class InteractionsService {
       },
       {
         label: 'Order ID',
-        key: 'odpTxnId',
+        key: 'dataStackTxnId',
         width: 300
       },
       {
@@ -484,7 +486,7 @@ export class InteractionsService {
       'partnerId',
       'appName',
       'remoteTxnId',
-      'odpTxnId',
+      'dataStackTxnId',
       'status',
       'createTimestamp',
       'completedTimestamp',
@@ -500,5 +502,13 @@ export class InteractionsService {
       'inputFileName',
       'redownloadMeta.remoteTxnID'
     ].join(',');
+  }
+
+  setWithinInteractions(val: boolean) {
+    this.withinInteractions = val;
+  }
+
+  isWithinInteractions() {
+    return this.withinInteractions;
   }
 }

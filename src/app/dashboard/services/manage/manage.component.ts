@@ -17,11 +17,14 @@ import { CanComponentDeactivate } from 'src/app/guard/route.guard';
   styleUrls: ['./manage.component.scss']
 })
 export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivate {
-
-  @ViewChild('workflowModal', { static: false }) workflowModal: TemplateRef<HTMLElement>;
-  @ViewChild('allStepsDropdown', { static: false }) allStepsDropdown: ElementRef;
-  @ViewChild('confirmDiscardModal', { static: false }) confirmDiscardModal: TemplateRef<HTMLElement>;
-  @ViewChild('pageChangeModalTemplate', { static: false }) pageChangeModalTemplate;
+  @ViewChild('workflowModal', { static: false })
+  workflowModal: TemplateRef<HTMLElement>;
+  @ViewChild('allStepsDropdown', { static: false })
+  allStepsDropdown: ElementRef;
+  @ViewChild('confirmDiscardModal', { static: false })
+  confirmDiscardModal: TemplateRef<HTMLElement>;
+  @ViewChild('pageChangeModalTemplate', { static: false })
+  pageChangeModalTemplate;
   workflowModalRef: NgbModalRef;
   confirmDiscardModalRef: NgbModalRef;
   pageChangeModalTemplateRef: NgbModalRef;
@@ -69,7 +72,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     private ts: ToastrService,
     private shortcutService: ShortcutService,
     private ngbToolTipConfig: NgbTooltipConfig,
-    private modalService: NgbModal,
+    private modalService: NgbModal
   ) {
     const self = this;
     self.workflowModalOptions = {};
@@ -86,11 +89,22 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   ngOnInit() {
     const self = this;
-    self.cancelUrl = '/~/services/' + self.appService.serviceId + '/list';
+    self.cancelUrl = '/' + this.commonService.app._id + '/services/' + self.appService.serviceId + '/list';
     self.showLazyLoader = true;
     self.ngbToolTipConfig.container = 'body';
+    self.shortcutService.unregisterAllShortcuts(357);
+    self.shortcutService.registerShortcut({
+      section: 'Data Service',
+      label: 'Save',
+      keys: ['Ctrl', 'S']
+    });
     self.subscriptions['ctrlSKey'] = self.shortcutService.ctrlSKey.subscribe(e => {
       self.save();
+    });
+    self.shortcutService.registerShortcut({
+      section: 'Data Service',
+      label: 'Reset and Save',
+      keys: ['Ctrl', 'Shift', 'S']
     });
     self.subscriptions['ctrlShiftSKey'] = self.shortcutService.ctrlShiftSKey.subscribe(e => {
       if (!self.isEdit) {
@@ -104,29 +118,27 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     }
     self.form = self.fb.group({});
     self.getSchema(self.appService.serviceId);
-    self.subscriptions['routeParams'] = self.route.params.subscribe(
-      params => {
-        if (params.recordId) {
-          self.ID = params.recordId;
-          self.isEdit = true;
-          if (self.prevUrl) {
-            const tempUrl = self.cancelUrl.split('/');
-            tempUrl.pop();
-            self.cancelUrl = tempUrl.join('/');
-            self.cancelUrl += ('/' + self.prevUrl);
-          }
-        }
-        if (self.appService.cloneRecordId) {
-          self.ID = self.appService.cloneRecordId;
-          self.isClone = true;
+    self.subscriptions['routeParams'] = self.route.params.subscribe(params => {
+      if (params.recordId) {
+        self.ID = params.recordId;
+        self.isEdit = true;
+        if (self.prevUrl) {
+          const tempUrl = self.cancelUrl.split('/');
+          tempUrl.pop();
+          self.cancelUrl = tempUrl.join('/');
+          self.cancelUrl += '/' + self.prevUrl;
         }
       }
-    );
+      if (self.appService.cloneRecordId) {
+        self.ID = self.appService.cloneRecordId;
+        self.isClone = true;
+      }
+    });
     self.subscriptions['sessionExpired'] = self.commonService.sessionExpired.subscribe(() => {
       self.form.markAsPristine();
     });
     self.subscriptions['appChange'] = self.appService.appChange.subscribe(app => {
-      self.router.navigate(['/~']);
+      self.router.navigate(['/', this.commonService.app._id,]);
     });
   }
   ngOnDestroy() {
@@ -154,86 +166,92 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const options = {
       select: 'api definition name relatedSchemas wizard'
     };
-    self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(res => {
-      const parsedDef = JSON.parse(res.definition);
-      self.formService.patchType(parsedDef);
-      self.formService.fixReadonly(parsedDef);
-      res.definition = JSON.stringify(parsedDef);
-      self.title = res.name;
-      self.api = '/' + self.commonService.app._id + res.api;
-      self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
-      self.version = res.version;
-      self.schema = res;
-      self.getApprovers();
-      if (res.wizard && res.wizard.length > 0) {
-        self.wizard = res.wizard;
-        self.active[0] = true;
-        self.currentStep = 0;
-      }
-      if (self.isEdit || self.isClone) {
-        self.subscriptions['getDetails'] = self.commonService.get('api', self.api + '/' + self.ID).subscribe(data => {
+    self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
+      res => {
+        const parsedDef = res.definition;
+        self.formService.patchType(parsedDef);
+        self.formService.fixReadonly(parsedDef);
+        res.definition = JSON.parse(JSON.stringify(parsedDef));
+        self.title = res.name;
+        self.api = '/' + self.commonService.app._id + res.api;
+        self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
+        self.version = res.version;
+        self.schema = res;
+        self.getApprovers();
+        if (res.wizard && res.wizard.length > 0) {
+          self.wizard = res.wizard;
+          self.active[0] = true;
+          self.currentStep = 0;
+        }
+        if (self.isEdit || self.isClone) {
+          self.subscriptions['getDetails'] = self.commonService.get('api', self.api + '/' + self.ID, { expand: true }).subscribe(
+            data => {
+              self.showLazyLoader = false;
+              if (self.appService.reSubmitData) {
+                self.value = self.appService.cloneObject(self.appService.reSubmitData);
+                self.buildForm(res, self.appService.cloneObject(self.appService.reSubmitData));
+                self.appService.reSubmitData = null;
+              } else {
+                if (self.isClone) {
+                  delete data._id;
+                }
+                self.value = self.appService.cloneObject(data);
+                self.buildForm(res, data);
+              }
+            },
+            err => {
+              if (err.status === 403) {
+                self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+              } else {
+                self.commonService.errorToast(err, 'Unable to fetch data');
+              }
+            }
+          );
+        } else {
           self.showLazyLoader = false;
           if (self.appService.reSubmitData) {
-            self.value = self.appService.cloneObject(self.appService.reSubmitData);
             self.buildForm(res, self.appService.cloneObject(self.appService.reSubmitData));
             self.appService.reSubmitData = null;
-          } else {
-            if (self.isClone) {
-              delete data._id;
+          } else if (self.appService.draftData) {
+            let data = self.appService.draftData.data.new;
+            if (typeof data === 'string') {
+              data = JSON.parse(data);
             }
-            self.value = self.appService.cloneObject(data);
+            self.workflowData = self.appService.draftData;
+            self.isDraft = true;
             self.buildForm(res, data);
-          }
-
-        }, err => {
-          if (err.status === 403) {
-            self.router.navigate(['/~/no-access']);
+            self.appService.draftData = null;
+            self.form.markAsDirty();
           } else {
-            self.commonService.errorToast(err, 'Unable to fetch data');
+            self.buildForm(res);
           }
-        });
-      } else {
-        self.showLazyLoader = false;
-        if (self.appService.reSubmitData) {
-          self.buildForm(res, self.appService.cloneObject(self.appService.reSubmitData));
-          self.appService.reSubmitData = null;
-        } else if (self.appService.draftData) {
-          let data = self.appService.draftData.data.new;
-          if (typeof data === 'string') {
-            data = JSON.parse(data);
-          }
-          self.workflowData = self.appService.draftData;
-          self.isDraft = true;
-          self.buildForm(res, data);
-          self.appService.draftData = null;
-          self.form.markAsDirty();
-        } else {
-          self.buildForm(res);
         }
-
+      },
+      err => {
+        self.showLazyLoader = false;
+        if (err.status === 403) {
+          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+        } else if (err.status === 404) {
+          self.router.navigate(['/', this.commonService.app._id,]);
+        } else {
+          self.commonService.errorToast(err, 'Unable to fetch details');
+        }
       }
-    }, err => {
-      self.showLazyLoader = false;
-      if (err.status === 403) {
-        self.router.navigate(['/~/no-access']);
-      } else if (err.status === 404) {
-        self.router.navigate(['/~']);
-      } else {
-        self.commonService.errorToast(err, 'Unable to fetch details');
-      }
-    });
+    );
   }
 
   buildForm(data, value?) {
     const self = this;
     if (!self.isEdit && !self.hasPermission('POST')) {
-      self.router.navigate(['/~/services', self.schema._id, 'list']);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
       return;
     }
     if (self.isEdit && !self.hasPermission('PUT')) {
-      self.router.navigate(['/~/services', self.schema._id, 'list']);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
     }
-    const tempDef = self.formService.parseDefinition(data, value, { isEdit: self.isEdit });
+    const tempDef = self.formService.parseDefinition(data, value, {
+      isEdit: self.isEdit
+    });
     self.form = self.fb.group(self.formService.createForm(tempDef));
     self.definition = tempDef;
     self.form.markAsDirty();
@@ -258,7 +276,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   }
 
   saveAsDraft(reset?) {
-
     const self = this;
     self.draftReqInProgress = true;
     self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
@@ -273,216 +290,250 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.workflowModalOptions.operation = self.isEdit ? 'PUT' : 'POST';
     if (self.isEdit) {
       self.workflowModalOptions.title = 'Save Draft';
-      self.workflowModalOptions.fields = self.appService
-        .countChangedFields(self.value, self.form.getRawValue()) + ' fields';
+      self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.form.getRawValue()) + ' fields';
     } else {
       self.workflowModalOptions.title = 'Save Draft';
       self.workflowModalOptions.fields = 'New document';
     }
     self.workflowModalRef = self.modalService.open(self.workflowModal, {
-      centered: true, beforeDismiss: () => {
+      centered: true,
+      beforeDismiss: () => {
         self.reqInProgress = false;
         return true;
       }
     });
-    self.workflowModalRef.result.then(close => {
-      if (close) {
-        self.submitValue(reset, true);
-      } else {
-        self.draftReqInProgress = false;
+    self.workflowModalRef.result.then(
+      close => {
+        if (close) {
+          self.submitValue(reset, true);
+        } else {
+          self.draftReqInProgress = false;
+          self.showLazyLoader = false;
+        }
+      },
+      dismiss => {
         self.showLazyLoader = false;
       }
-
-    }, dismiss => {
-      self.showLazyLoader = false;
-    });
+    );
   }
 
   saveDraft(reset?) {
     const self = this;
-    self.simulatePayload().then(data => {
-      self.form.patchValue(data);
-      self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
-      if (self.commonService.userDetails.basicDetails.name) {
-        self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
-      }
-      self.workflowModalOptions.remarks = null;
-      self.workflowUploadedFiles = [];
-      if (self.isEdit) {
-        self.workflowModalOptions._id = self.ID;
-      }
-      self.workflowModalOptions.operation = self.ID && self.isEdit ? 'PUT' : 'POST';
-      self.workflowModalOptions.title = 'Save Draft';
-      self.workflowModalOptions.fields = self.appService
-        .countChangedFields(self.value, self.form.getRawValue()) + ' fields';
-      self.workflowModalRef = self.modalService.open(self.workflowModal, {
-        centered: true, beforeDismiss: () => {
-          self.reqInProgress = false;
-          return true;
+    self
+      .simulatePayload()
+      .then(data => {
+        self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+        if (self.commonService.userDetails.basicDetails.name) {
+          self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
         }
-      });
-      self.workflowModalRef.result.then(close => {
-        if (close) {
-          const payload = {
-            remarks: self.workflowModalOptions.remarks,
-            attachments: self.workflowUploadedFiles,
-            data: self.form.getRawValue()
-          };
-          self.showLazyLoader = true;
-          self.subscriptions['saveDraft'] = self.commonService.put('wf', '/doc/' + self.workflowData._id, payload)
-            .subscribe(res => {
-              self.showLazyLoader = false;
-              self.ts.success('Draft saved.');
-              self.afterSubmit(reset);
-            }, err => {
-              self.showLazyLoader = false;
-              self.commonService.errorToast(err, 'Unable to save the record, please try again later');
-            });
-        } else {
-          self.showLazyLoader = false;
+        self.workflowModalOptions.remarks = null;
+        self.workflowUploadedFiles = [];
+        if (self.isEdit) {
+          self.workflowModalOptions._id = self.ID;
         }
-      }, dismiss => {
+        self.workflowModalOptions.operation = self.ID && self.isEdit ? 'PUT' : 'POST';
+        self.workflowModalOptions.title = 'Save Draft';
+        self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.form.getRawValue()) + ' fields';
+        self.workflowModalRef = self.modalService.open(self.workflowModal, {
+          centered: true,
+          beforeDismiss: () => {
+            self.reqInProgress = false;
+            return true;
+          }
+        });
+        self.workflowModalRef.result.then(
+          close => {
+            if (close) {
+              self.buildForm(self.schema, data); //form array patch value will give wrong data
+              const payload = {
+                remarks: self.workflowModalOptions.remarks,
+                attachments: self.workflowUploadedFiles,
+                data: self.form.getRawValue()
+              };
+              self.showLazyLoader = true;
+              self.subscriptions['saveDraft'] = self.commonService
+                .put('api', this.api + 'utils/workflow/doc/' + self.workflowData._id, payload).subscribe(
+                  res => {
+                    self.showLazyLoader = false;
+                    self.ts.success('Draft saved.');
+                    self.afterSubmit(reset);
+                  },
+                  err => {
+                    self.showLazyLoader = false;
+                    self.commonService.errorToast(err, 'Unable to save the record, please try again later');
+                  }
+                );
+            } else {
+              self.showLazyLoader = false;
+            }
+          },
+          dismiss => {
+            self.showLazyLoader = false;
+          }
+        );
+      })
+      .catch(err => {
         self.showLazyLoader = false;
+        self.commonService.errorToast(err, 'Validation Failed');
       });
-    }).catch(err => {
-      self.showLazyLoader = false;
-      self.commonService.errorToast(err, 'Validation Failed');
-    });
   }
 
   discardDraft(reset?) {
     const self = this;
     self.confirmDiscardModalRef = self.modalService.open(self.confirmDiscardModal, { centered: true });
-    self.confirmDiscardModalRef.result.then(close => {
-      if (close) {
-        self.showLazyLoader = true;
-        const payload = {
-          action: 'Discard',
-          ids: [self.workflowData._id]
-        };
-        self.subscriptions['discardDraft'] = self.commonService.put('wf', '/action', payload)
-          // self.subscriptions['discardDraft'] = self.commonService.put('wf', '/action?id=' + self.workflowData._id, payload)
-          .subscribe(res => {
-            self.showLazyLoader = false;
-            self.ts.success('Draft Discarded.');
-            self.afterSubmit(reset);
-          }, err => {
-            self.showLazyLoader = false;
-            self.commonService.errorToast(err, 'Unable to discard the draft, please try again later.');
-          });
+    self.confirmDiscardModalRef.result.then(
+      close => {
+        if (close) {
+          self.showLazyLoader = true;
+          const payload = {
+            action: 'Discard',
+            ids: [self.workflowData._id]
+          };
+          self.subscriptions['discardDraft'] = self.commonService
+            .put('api', this.api + '/utils/workflow/action', payload)
+            // self.subscriptions['discardDraft'] = self.commonService.put('api', this.api+'/utils/workflow/action?id=' + self.workflowData._id, payload)
+            .subscribe(
+              res => {
+                self.showLazyLoader = false;
+                self.ts.success('Draft Discarded.');
+                self.afterSubmit(reset);
+              },
+              err => {
+                self.showLazyLoader = false;
+                self.commonService.errorToast(err, 'Unable to discard the draft, please try again later.');
+              }
+            );
+        }
+      },
+      dismiss => {
+        self.showLazyLoader = false;
       }
-    }, dismiss => {
-      self.showLazyLoader = false;
-    });
-
+    );
   }
   submitDraft(reset?) {
     const self = this;
     self.showLazyLoader = true;
-    self.simulatePayload().then(data => {
-      self.form.patchValue(data);
-      self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
-      if (self.commonService.userDetails.basicDetails.name) {
-        self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
-      }
-      self.workflowModalOptions._id = self.ID;
-      self.workflowModalOptions.remarks = null;
-      self.workflowUploadedFiles = [];
-      self.workflowModalOptions.operation = self.isEdit ? 'PUT' : 'POST';
-      if (self.isEdit) {
-        self.workflowModalOptions.title = 'Submit edit record';
-        self.workflowModalOptions.fields = self.appService
-          .countChangedFields(self.value, self.form.getRawValue()) + ' fields';
-      } else {
-        self.workflowModalOptions.title = 'Submit new record';
-        self.workflowModalOptions.fields = 'New document';
-      }
-      self.workflowModalRef = self.modalService.open(self.workflowModal, {
-        centered: true, beforeDismiss: () => {
-          self.reqInProgress = false;
-          return true;
-        }
-      });
-      self.workflowModalRef.result.then(close => {
-        if (close) {
-          const payload1 = {
-            remarks: self.workflowModalOptions.remarks,
-            attachments: self.workflowUploadedFiles,
-            data: self.form.getRawValue()
-          };
-          self.subscriptions['saveSubmitDraft'] = self.commonService.put('wf', '/doc/' + self.workflowData._id, payload1)
-            .subscribe(res1 => {
-              const payload2 = {
-                action: 'Submit',
-                remarks: self.workflowModalOptions.remarks,
-                attachments: self.workflowUploadedFiles,
-                ids: [self.workflowData._id]
-              };
-              // self.subscriptions['submitDraft'] = self.commonService.put('wf', '/action?id=' + self.workflowData._id, payload2)
-              self.subscriptions['submitDraft'] = self.commonService.put('wf', '/action', payload2)
-                .subscribe(res2 => {
-                  self.showLazyLoader = false;
-                  self.ts.success('Draft submitted.');
-                  self.afterSubmit(reset);
-                  // self.submitWorkflowFiles(reset);
-                }, err => {
-                  self.showLazyLoader = false;
-                  self.commonService.errorToast(err, 'Unable to submit record, please try again later.');
-                });
-            }, err => {
-              self.showLazyLoader = false;
-              self.commonService.errorToast(err, 'Unable to submit record, please try again later.');
-            });
-        } else {
-          self.showLazyLoader = false;
-        }
-      }, dismiss => {
-        self.showLazyLoader = false;
-      });
-    }).catch(err => {
-      self.showLazyLoader = false;
-      self.commonService.errorToast(err, 'Validation Failed');
-    });
-  }
-
-  save(reset?) {
-    const self = this;
-    self.reqInProgress = true
-    if (self.hasWorkflow) {
-      self.simulatePayload().then(data => {
-        self.form.patchValue(data);
+    self
+      .simulatePayload()
+      .then(data => {
         self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
         if (self.commonService.userDetails.basicDetails.name) {
           self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
         }
-        if (self.isEdit) {
-          self.workflowModalOptions._id = self.ID;
-        }
+        self.workflowModalOptions._id = self.ID;
+        self.workflowModalOptions.remarks = null;
+        self.workflowUploadedFiles = [];
         self.workflowModalOptions.operation = self.isEdit ? 'PUT' : 'POST';
         if (self.isEdit) {
           self.workflowModalOptions.title = 'Submit edit record';
-          self.workflowModalOptions.fields = self.appService
-            .countChangedFields(self.value, self.form.getRawValue()) + ' fields';
+          self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.form.getRawValue()) + ' fields';
         } else {
           self.workflowModalOptions.title = 'Submit new record';
           self.workflowModalOptions.fields = 'New document';
         }
         self.workflowModalRef = self.modalService.open(self.workflowModal, {
-          centered: true, beforeDismiss: () => {
+          centered: true,
+          beforeDismiss: () => {
             self.reqInProgress = false;
             return true;
           }
         });
-        self.workflowModalRef.result.then(close => {
-          if (close) {
-            self.submitValue(reset);
+        self.workflowModalRef.result.then(
+          close => {
+            if (close) {
+              self.buildForm(self.schema, data); //form array patch value will give wrong data
+              const payload1 = {
+                remarks: self.workflowModalOptions.remarks,
+                attachments: self.workflowUploadedFiles,
+                data: self.form.getRawValue()
+              };
+              self.subscriptions['saveSubmitDraft'] = self.commonService
+                .put('api', this.api + '/utils/workflow/doc/' + self.workflowData._id, payload1).subscribe(
+                  res1 => {
+                    const payload2 = {
+                      action: 'Submit',
+                      remarks: self.workflowModalOptions.remarks,
+                      attachments: self.workflowUploadedFiles,
+                      ids: [self.workflowData._id]
+                    };
+                    // self.subscriptions['submitDraft'] = self.commonService.put('api', this.api+'/utils/workflow/action?id=' + self.workflowData._id, payload2)
+                    self.subscriptions['submitDraft'] = self.commonService
+                      .put('api', this.api + '/utils/workflow/action', payload2).subscribe(
+                        res2 => {
+                          self.showLazyLoader = false;
+                          self.ts.success('Draft submitted.');
+                          self.afterSubmit(reset);
+                          // self.submitWorkflowFiles(reset);
+                        },
+                        err => {
+                          self.showLazyLoader = false;
+                          self.commonService.errorToast(err, 'Unable to submit record, please try again later.');
+                        }
+                      );
+                  },
+                  err => {
+                    self.showLazyLoader = false;
+                    self.commonService.errorToast(err, 'Unable to submit record, please try again later.');
+                  }
+                );
+            } else {
+              self.showLazyLoader = false;
+            }
+          },
+          dismiss => {
+            self.showLazyLoader = false;
           }
-        }, dismiss => { });
-      }).catch(err => {
+        );
+      })
+      .catch(err => {
         self.showLazyLoader = false;
-        self.reqInProgress = false;
         self.commonService.errorToast(err, 'Validation Failed');
       });
+  }
+
+  save(reset?) {
+    const self = this;
+    self.reqInProgress = true;
+    if (self.hasWorkflow) {
+      self
+        .simulatePayload()
+        .then(data => {
+          self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+          if (self.commonService.userDetails.basicDetails.name) {
+            self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
+          }
+          if (self.isEdit) {
+            self.workflowModalOptions._id = self.ID;
+          }
+          self.workflowModalOptions.operation = self.isEdit ? 'PUT' : 'POST';
+          if (self.isEdit) {
+            self.workflowModalOptions.title = 'Submit edit record';
+            self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.form.getRawValue()) + ' fields';
+          } else {
+            self.workflowModalOptions.title = 'Submit new record';
+            self.workflowModalOptions.fields = 'New document';
+          }
+          self.workflowModalRef = self.modalService.open(self.workflowModal, {
+            centered: true,
+            beforeDismiss: () => {
+              self.reqInProgress = false;
+              return true;
+            }
+          });
+          self.workflowModalRef.result.then(
+            close => {
+              if (close) {
+                self.submitValue(reset);
+              }
+            },
+            dismiss => { }
+          );
+        })
+        .catch(err => {
+          self.showLazyLoader = false;
+          self.reqInProgress = false;
+          self.commonService.errorToast(err, 'Validation Failed');
+        });
     } else {
       self.submitValue(reset);
     }
@@ -518,27 +569,29 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       }
       response = self.commonService.post('api', url, payload);
     }
-    self.subscriptions['saveRecord'] = response.subscribe(res => {
-      if (res._workflow) {
-        self.workflowData = self.appService.cloneObject(res._workflow[0]);
-        self.submitWorkflowFiles(reset, draft);
-      } else if (draft) {
-        self.submitWorkflowFiles(reset, draft);
-
-      } else {
-        self.commonService.fewDocumentsMap[self.api] = null;
+    self.subscriptions['saveRecord'] = response.subscribe(
+      res => {
+        if (res._workflow) {
+          self.workflowData = { _id: res._workflow };
+          self.submitWorkflowFiles(reset, draft);
+        } else if (draft) {
+          self.submitWorkflowFiles(reset, draft);
+        } else {
+          self.commonService.fewDocumentsMap[self.api] = null;
+          self.showLazyLoader = false;
+          self.reqInProgress = false;
+          self.draftReqInProgress = false;
+          self.ts.success('Saved.');
+          self.afterSubmit(reset);
+        }
+      },
+      err => {
         self.showLazyLoader = false;
         self.reqInProgress = false;
         self.draftReqInProgress = false;
-        self.ts.success('Saved.');
-        self.afterSubmit(reset);
+        self.commonService.errorToast(err, 'Oops, something went wrong.');
       }
-    }, err => {
-      self.showLazyLoader = false;
-      self.reqInProgress = false;
-      self.draftReqInProgress = false;
-      self.commonService.errorToast(err, 'Oops, something went wrong.');
-    });
+    );
   }
 
   simulatePayload() {
@@ -555,12 +608,15 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       url = url + '?operation=POST&generateId=false&source=Document Create Request';
     }
     return new Promise((resolve, reject) => {
-      self.commonService.post('api', url, payload).subscribe(res => {
-        self.appService.fixArrayInPayload(res, self.definition, self.isEdit);
-        resolve(res);
-      }, err => {
-        reject(err);
-      });
+      self.commonService.post('api', url, payload).subscribe(
+        res => {
+          self.appService.fixArrayInPayload(res, self.definition, self.isEdit);
+          resolve(res);
+        },
+        err => {
+          reject(err);
+        }
+      );
     });
   }
 
@@ -577,7 +633,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       self.form.markAsPristine();
       if (self.hasWorkflow) {
         self.appService.loadPage.emit('workflow');
-        self.router.navigate(['/~/workflow', self.schema._id]);
+        self.router.navigate(['/', this.commonService.app._id, 'workflow', self.schema._id]);
       } else {
         self.router.navigate([self.cancelUrl]);
       }
@@ -610,16 +666,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const self = this;
     // const path =  `/approvers?entity=${self.schema._id}&app=${self.commonService.app._id}`;
     const path = `/usr/reviewpermissionservice/${self.schema._id}?user=${self.commonService.userDetails._id}`;
-    self.subscriptions['getApprovers'] = self.commonService
-      .get('user', path)
-      .subscribe(res => {
+    self.subscriptions['getApprovers'] = self.commonService.get('user', path).subscribe(
+      res => {
         self.hasWorkflow = true;
       },
-        err => {
-          if (err.status === 404) {
-            self.hasWorkflow = false;
-          }
-        });
+      err => {
+        if (err.status === 404) {
+          self.hasWorkflow = false;
+        }
+      }
+    );
   }
 
   uploadWorkflowFile(ev) {
@@ -631,29 +687,31 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const indexOfValue = self.workflowFilesList.findIndex(val => val.name === file.name);
     if (indexOfValue < 0) {
       self.showLazyLoaderPage = true;
-      self.subscriptions['uploadFile_' + file.name] = self.commonService.upload('wf', '', formData, false)
-        .subscribe(event => {
-          if (event.type === HttpEventType.UploadProgress) {
-            // self.processing.progress = Math.floor(event.loaded / event.total * 100);
-          }
-          if (event.type === HttpEventType.Response) {
-            self.showLazyLoaderPage = false;
-            if (self.workflowFilesList.length === 0) {
-              self.workflowFilesList.push(file);
-            } else {
-              const indexValue = self.workflowFilesList.findIndex(val => val.name === file.name);
-              if (indexValue < 0) {
-                self.workflowFilesList.push(file);
-              }
+      self.subscriptions['uploadFile_' + file.name] = self.commonService
+        .upload('api', this.api, formData, false).subscribe(
+          event => {
+            if (event.type === HttpEventType.UploadProgress) {
+              // self.processing.progress = Math.floor(event.loaded / event.total * 100);
             }
-            self.workflowUploadedFiles.push(event.body);
-            ev.target.value = '';
+            if (event.type === HttpEventType.Response) {
+              self.showLazyLoaderPage = false;
+              if (self.workflowFilesList.length === 0) {
+                self.workflowFilesList.push(file);
+              } else {
+                const indexValue = self.workflowFilesList.findIndex(val => val.name === file.name);
+                if (indexValue < 0) {
+                  self.workflowFilesList.push(file);
+                }
+              }
+              self.workflowUploadedFiles.push(event.body);
+              ev.target.value = '';
+            }
+          },
+          err => {
+            self.showLazyLoaderPage = false;
+            self.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
           }
-        }, err => {
-          self.showLazyLoaderPage = false;
-          self.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
-
-        });
+        );
     }
   }
 
@@ -677,51 +735,67 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         }
       ]
     };
-    self.subscriptions['updateWorkflow'] = self.commonService.put('wf', '/' + self.workflowData._id, payload).subscribe(res => {
-      self.showLazyLoader = false;
-      self.reqInProgress = false;
-      self.draftReqInProgress = false;
-      self.ts.success('Work item submitted for review.');
-      self.afterSubmit(reset);
-    }, err => {
-      self.showLazyLoader = false;
-      self.reqInProgress = false;
-      self.draftReqInProgress = false;
-      self.afterSubmit(reset);
-    });
+    self.subscriptions['updateWorkflow'] = self.commonService
+      .put('api', this.api + '/utils/workflow/' + self.workflowData._id, payload).subscribe(
+        res => {
+          self.showLazyLoader = false;
+          self.reqInProgress = false;
+          self.draftReqInProgress = false;
+          self.ts.success('Work item submitted for review.');
+          self.afterSubmit(reset);
+        },
+        err => {
+          self.showLazyLoader = false;
+          self.reqInProgress = false;
+          self.draftReqInProgress = false;
+          self.afterSubmit(reset);
+        }
+      );
   }
 
   triggerHook(hook: ExpHook) {
     const self = this;
     self.showLazyLoader = true;
 
-    self.commonService.post('api', self.api + `/experienceHook?name=${hook.name}`, { data: self.form.getRawValue() }).subscribe(res => {
-      if (res.data && typeof (res.data) === 'object') {
-        let tempValue = self.appService.cloneObject(self.form.getRawValue());
-        if (!res.data._id) {
-          res.data._id = tempValue._id;
-        }
-        const oldValDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: self.isEdit });
-        tempValue = self.createData(tempValue, res.data, oldValDef);
-        const tempDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: self.isEdit });
-        self.form = self.fb.group(self.formService.createForm(tempDef));
-        self.form.markAsDirty();
-      }
-      self.showLazyLoader = false;
+    self.commonService
+      .post('api', self.api + `/utils/experienceHook?name=${hook.name}`, {
+        data: self.form.getRawValue()
+      })
+      .subscribe(
+        res => {
+          if (res.data && typeof res.data === 'object') {
+            let tempValue = self.appService.cloneObject(self.form.getRawValue());
+            if (!res.data._id || (res.data._id && this.isEdit)) {
+              res.data._id = tempValue._id;
+            }
+            const oldValDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: self.isEdit });
+            tempValue = self.createData(tempValue, res.data, oldValDef);
+            const tempDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: self.isEdit });
+            self.form = self.fb.group(self.formService.createForm(tempDef));
+            self.form.markAsDirty();
+          }
+          self.showLazyLoader = false;
 
-      if (res.message) {
-        self.ts.success(res.message);
-      }
-    }, err => {
-      self.showLazyLoader = false;
-      self.commonService.errorToast(err, 'Unable to trigger the hook, please try again later.');
-    });
+          if (res.message) {
+            self.ts.success(res.message);
+          }
+        },
+        err => {
+          self.showLazyLoader = false;
+          self.commonService.errorToast(err, 'Unable to trigger the hook, please try again later.');
+        }
+      );
   }
   createData(oldData, newData, def) {
     def.forEach(element => {
       if (element.type === 'Object') {
         this.createData(oldData[element.key], newData[element.key], element.definition);
-      } else if (newData && newData[element.key] !== null && newData[element.key] !== undefined) {
+      }
+      if (this.isEdit) {
+        if (newData && newData.hasOwnProperty(element.key) && !element.properties.createOnly) {
+          oldData[element.key] = newData[element.key];
+        }
+      } else if (newData && newData.hasOwnProperty(element.key)) {
         oldData[element.key] = newData[element.key];
       }
     });
@@ -730,7 +804,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   addPlaceholderFormCntrls(def, resData) {
     const self = this;
-    def.forEach((attribute) => {
+    def.forEach(attribute => {
       if (attribute.type === 'Array') {
         const collectionType = attribute.definition[0].type;
         const controlName = attribute.path;
@@ -756,13 +830,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       return new Promise((resolve, reject) => {
         if (self.pageChangeModalTemplateRef) {
           self.pageChangeModalTemplateRef.close(false);
-        };
+        }
         self.pageChangeModalTemplateRef = self.modalService.open(self.pageChangeModalTemplate, { centered: true });
-        self.pageChangeModalTemplateRef.result.then(close => {
-          resolve(close);
-        }, dismiss => {
-          resolve(false);
-        });
+        self.pageChangeModalTemplateRef.result.then(
+          close => {
+            resolve(close);
+          },
+          dismiss => {
+            resolve(false);
+          }
+        );
       });
     }
     return true;

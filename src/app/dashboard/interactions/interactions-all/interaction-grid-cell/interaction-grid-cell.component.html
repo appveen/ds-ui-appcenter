@@ -16,7 +16,7 @@
         </div>
     </div>
 </ng-container>
-<ng-container *ngIf="field === 'odpTxnId'">
+<ng-container *ngIf="field === 'dataStackTxnId'">
     <span>{{value}}</span>
 </ng-container>
 <ng-container *ngIf="field === 'remoteTxnId'">
@@ -28,17 +28,15 @@
 <ng-container *ngIf="field === 'flowData.flowName'">
     <div class="d-flex align-items-center">
         <div *ngIf="direction === 'Inbound'" class="fa fa-arrow-circle-down fa-lg fa-rotate-45 text-success mr-2"></div>
-        <div *ngIf="direction === 'Outbound'" class="fa fa-arrow-circle-up fa-lg fa-rotate-45 text-default-color mr-2"></div>
+        <div *ngIf="direction === 'Outbound'" class="fa fa-arrow-circle-up fa-lg fa-rotate-45 text-default-color mr-2">
+        </div>
         <div class="text-secondary">{{value}}</div>
     </div>
 </ng-container>
 <ng-container *ngIf="field === 'status'">
     <div *ngIf="!rawValue" class="text-muted">N.A.</div>
     <div *ngIf="rawValue" class="d-flex align-items-center">
-        <div class="fas fa-circle mr-2" [ngClass]="{'text-success': rawValue === 'SUCCESS',
-            'text-danger': rawValue === 'ERROR',
-            'text-warning': rawValue === 'PENDING' || rawValue === 'UNKNOWN',
-            'text-queued':rawValue === 'QUEUED'}">
+        <div class="fas fa-circle mr-2 {{styleClass}}">
         </div>
         <div class="text-secondary">{{value}}</div>
         <span *ngIf="reDownloadAvaiable" class="fa fa-file-download text-muted ml-2"

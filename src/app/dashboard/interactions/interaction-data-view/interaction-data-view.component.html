@@ -23,9 +23,9 @@
     </div>
   </div>
 </ng-container>
-<ng-container *ngIf="type === 'odpTxnId'">
-  <span *ngIf="!odpTxnId" [ngbTooltip]="" class="text-muted">N.A.</span>
-  <span *ngIf="odpTxnId" [ngbTooltip]="odpTxnId" placement="top">{{odpTxnId}}</span>
+<ng-container *ngIf="type === 'dataStackTxnId'">
+  <span *ngIf="!dataStackTxnId" [ngbTooltip]="" class="text-muted">N.A.</span>
+  <span *ngIf="dataStackTxnId" [ngbTooltip]="dataStackTxnId" placement="top">{{dataStackTxnId}}</span>
 </ng-container>
 <ng-container *ngIf="type === 'remoteTxnId'">
   <span *ngIf="!remoteTxnId" [ngbTooltip]="" class="text-muted">N.A.</span>

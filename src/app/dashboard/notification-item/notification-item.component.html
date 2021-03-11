@@ -1,0 +1,32 @@
+<div class="notification-container" [class.unread]="!item.isRead" [class.clear]="isClearHover" [class.mb-2]="isLast"
+    (mouseenter)="isHover = true" (mouseleave)="isHover = false" (click)="takeAction($event)">
+    <div class="notification-title-section">
+        <span class="odp-record mr-2"></span>
+        <span class="text ds-name">{{item.name}}</span>
+        <span class="fa fa-circle fa-xs mx-1"></span>
+        <span class="text">{{item.type}}</span>
+        <span class="fa fa-circle fa-xs mx-1"></span>
+        <span class="time">{{getTimeInEnglish(item._metadata.createdAt)}}</span>
+        <span *ngIf="item._delete || item._pending" class="fa fa-spinner fa-pulse"></span>
+    </div>
+    <div class="notification-body">
+        <div class="icon-container" [ngClass]="iconBg">
+            <span class="text-white" [ngClass]="isClearHover ? 'odp-trash' : isHover ? iconHoverGlyph : iconGlyph">
+            </span>
+        </div>
+        <div class="content">
+            <div class="message" [title]="staticMsg">
+                {{ isClearHover ? 'Clear notification.' : isHover ? hoverMsg : staticMsg }}
+            </div>
+            <div class="filename" [title]="item.fileName">
+                {{item.fileName}}
+            </div>
+        </div>
+        <button *ngIf="canClearNotification" type="button" class="btn btn-sm clearBtn" (click)="clearItem($event)"
+            (mouseenter)="isClearHover = true" (mouseleave)="isClearHover = false">
+            <div class="icon">
+                <span *ngFor="let i of [2,1,0]" [class]="'fa fa-minus ml-' + i"></span>
+            </div>
+        </button>
+    </div>
+</div>

@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, HostListener, ElementRef, OnDestroy, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, OnDestroy, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { AppService } from 'src/app/service/app.service';
+import { CommonService } from 'src/app/service/common.service';
 
 
 @Component({
@@ -17,34 +18,44 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   @Input() control: FormControl;
   @Input() definition: any;
   @Input() first: boolean;
-  @Output('keyupEvent') keyupEvent: EventEmitter<KeyboardEvent>;
+  @Output() keyupEvent: EventEmitter<KeyboardEvent>;
   @ViewChild('numberTypeInput', { static: false }) numberTypeInput: ElementRef;
   @ViewChild('validationErrorsDot', { static: false }) validationErrorsDotRef: NgbTooltip;
   selectClickSubscription: Subscription;
   showDatePicker: boolean;
-  dateHolder: any;
-
+  supportedTimezones: Array<string>;
+  selectedTimezone: string;
+  initialDateStr: string;
   constructor(private datePipe: DatePipe,
     private _elementRef: ElementRef,
     private appService: AppService,
+    private commonService: CommonService
   ) {
-    const self = this;
-    self.keyupEvent = new EventEmitter();
+    this.keyupEvent = new EventEmitter();
+    this.supportedTimezones = [];
+    this.selectedTimezone = this.commonService.userDetails.defaultTimezone;
   }
 
   ngOnInit() {
-    const self = this;
-    self.selectClickSubscription = self.appService.selectClicked.subscribe(_clicked => {
-      self.showDatePicker = _clicked;
+    this.selectClickSubscription = this.appService.selectClicked.subscribe(_clicked => {
+      this.showDatePicker = _clicked;
     });
-    if (self.control && self.control.value) {
-      const temp = self.control.value;
-      if (self.definition.properties.dateType === 'date') {
-        self.control.patchValue(self.datePipe.transform(temp, 'yyyy-MM-dd'));
-      } else {
-        self.control.patchValue(new Date(temp).toISOString());
-      }
-      self.dateHolder = self.control.value;
+    this.supportedTimezones = this.definition.properties.supportedTimezones || [];
+    this.supportedTimezones.unshift(this.definition.properties.defaultTimezone);
+    this.selectedTimezone = this.definition.properties.defaultTimezone;
+    if (!this.selectedTimezone) {
+      this.selectedTimezone = this.commonService.userDetails.defaultTimezone;
+    }
+    if (this.control && this.control.value && this.control.value.rawData) {
+      this.initialDateStr = this.appService.getUTCString(this.control.value.rawData, this.control.value.tzInfo);
+      this.selectedTimezone = this.control.value.tzInfo;
+      // const temp = this.control.value;
+      // if (this.definition.properties.dateType === 'date') {
+      //   this.control.patchValue(this.datePipe.transform(temp, 'yyyy-MM-dd'));
+      // } else {
+      //   this.control.patchValue(new Date(temp).toISOString());
+      // }
+      // this.dateHolder = this.control.value;
     }
   }
 
@@ -53,41 +64,62 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   }
 
   clearValue() {
-    const self = this;
-    if (self.definition.properties.readonly) {
+    if (this.definition.properties.readonly) {
       return;
     }
-    self.control.patchValue(null);
-    self.control.markAsDirty();
+    this.initialDateStr = null;
+    this.control.patchValue(null);
+    this.control.markAsDirty();
   }
 
   formatDate(event) {
-    const self = this;
-    const dateStr = event.target.value;
-    const isoDate = new Date(dateStr).toISOString();
-    self.control.patchValue(isoDate);
-    self.control.markAsDirty();
+    const dateVal = event.target.value;
+    const dateStr = new Date(dateVal).toString()
+    this.control.patchValue({
+      rawData: dateStr,
+      tzInfo: this.selectedTimezone
+    });
+    this.control.markAsDirty();
   }
 
   onEnter(event: KeyboardEvent) {
-    const self = this;
-    self.keyupEvent.emit(event);
+    this.keyupEvent.emit(event);
   }
 
   onFocus() {
-    const self = this;
-    if (self.validationErrorsDotRef) {
-      self.validationErrorsDotRef.open();
+    if (this.validationErrorsDotRef) {
+      this.validationErrorsDotRef.open();
+    }
+  }
+
+  onClick(event) {
+    event.stopPropagation();
+    if (this.definition.properties.readonly || this.control.disabled) {
+      return;
+    }
+    const isClickedInside = this._elementRef.nativeElement.contains(event.target);
+    this.showDatePicker = !!isClickedInside;
+  }
+
+  onTimezoneChange(val) {
+    if (this.initialDateStr) {
+      const momentDate = this.appService.getMoment(this.initialDateStr);
+      const dateStr = this.appService.getTimezoneString(momentDate, val);
+      this.control.patchValue({
+        rawData: dateStr,
+        tzInfo: val
+      });
+      this.control.markAsTouched();
+      this.control.markAsDirty();
     }
   }
 
   get selectedDate() {
-    const self = this;
-    if (self.control.value && typeof self.control.value !== 'object') {
-      if ((<any>this.definition.properties).dateType === 'date') {
-        return self.datePipe.transform(self.control.value, 'dd-MMM-yyyy');
+    if (this.setValue) {
+      if (this.definition.properties.dateType === 'date') {
+        return this.datePipe.transform(this.setValue, 'dd-MMM-yyyy');
       } else {
-        return self.datePipe.transform(self.control.value, 'dd-MMM-yyyy hh:mm:ss a');
+        return this.datePipe.transform(this.setValue, 'dd-MMM-yyyy hh:mm:ss a');
       }
     } else {
       return 'Select Date';
@@ -103,33 +135,26 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   }
 
   get setValue() {
-    const self = this;
-    if (typeof self.control.value === 'object') {
+    if (!this.initialDateStr) {
       return null;
     }
-    return self.control.value;
+    return this.initialDateStr;
   }
 
   set setValue(val) {
-    const self = this;
-    self.control.patchValue(val);
-    self.control.markAsTouched();
-    self.control.markAsDirty();
-  }
-
-  @HostListener('document:click', ['$event'])
-  public onClick(event) {
-    event.stopPropagation();
-    if (this.definition.properties.readonly || this.control.disabled) {
-      return;
-    }
-    const isClickedInside = this._elementRef.nativeElement.contains(event.target);
-    this.showDatePicker = !!isClickedInside;
+    this.initialDateStr = val;
+    const momentDate = this.appService.getMoment(val);
+    const dateStr = this.appService.getTimezoneString(momentDate, this.selectedTimezone);
+    this.control.patchValue({
+      rawData: dateStr,
+      tzInfo: this.selectedTimezone
+    });
+    this.control.markAsTouched();
+    this.control.markAsDirty();
   }
 
   get controlType() {
-    const self = this;
-    if (self.definition.properties.dateType === 'date') {
+    if (this.definition.properties.dateType === 'date') {
       return 'date';
     } else {
       return 'datetime-local';
@@ -137,7 +162,6 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   }
 
   get requiredError() {
-    const self = this;
-    return self.control.hasError('required') && self.control.touched;
+    return this.control.hasError('required') && this.control.touched;
   }
 }

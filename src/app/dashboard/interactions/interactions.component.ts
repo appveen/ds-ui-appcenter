@@ -124,9 +124,9 @@ export class InteractionsComponent implements OnInit, OnDestroy {
                 properties: {
                     name: 'Order ID'
                 },
-                type: 'odpTxnId',
-                key: 'odpTxnId',
-                dataKey: 'odpTxnId',
+                type: 'dataStackTxnId',
+                key: 'dataStackTxnId',
+                dataKey: 'dataStackTxnId',
             },
             {
                 show: true,
@@ -456,9 +456,9 @@ export class InteractionsComponent implements OnInit, OnDestroy {
             res = self.orderBy.transform(res, 'name');
             if (!self.appService.partnerId) {
                 self.appService.partnerId = res[0]['_id'];
-                self.router.navigate([`/~/interactions/${res[0]['_id']}`]);
+                self.router.navigate(['/', this.commonService.app._id, `interactions/${res[0]['_id']}`]);
             } else {
-                self.router.navigate([`/~/interactions/${self.appService.partnerId}`]);
+                self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}`]);
             }
         });
     }
@@ -532,7 +532,7 @@ export class InteractionsComponent implements OnInit, OnDestroy {
                     mfName: rcrd.flowData.flowName,
                     timeStamp: rcrd.createTimestamp,
                     status: rcrd.status,
-                    txnId: rcrd.odpTxnId
+                    txnId: rcrd.dataStackTxnId
                 };
                 let i = false;
                 if (flow.latestStreak.length > 0 && flow.latestStreak.length < 10) {
@@ -1039,7 +1039,7 @@ export class InteractionsComponent implements OnInit, OnDestroy {
     viewInteraction(colData) {
         const self = this;
         self.appService.remoteTxnId = colData.remoteTxnId;
-        self.router.navigate([`src/interactions/${self.appService.partnerId}/${colData.odpTxnId}`]);
+        self.router.navigate(['/', this.commonService.app._id, `interactions/${self.appService.partnerId}/${colData.dataStackTxnId}`]);
     }
 
     filterChange(event) {

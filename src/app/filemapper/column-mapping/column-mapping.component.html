@@ -31,7 +31,7 @@
 
   <div class="mapping">
     <div class="mr-2" *ngFor="let def of defnitionArray">
-      <odp-column-mapping-control [definition]="def" [mappingData]="mappingData" [schemaName]="schemaName" [form]="form.get(def.properties.dataKey)"
+      <odp-column-mapping-control [definition]="def" [mappingData]="mappingData" [schemaName]="schemaName" [form]="form.get(def.key)"
         (emitData)="sendForm()"></odp-column-mapping-control>
     </div>
   </div>

@@ -13,9 +13,10 @@ export class ReqResInterceptorService implements HttpInterceptor {
   constructor(private sessionService: SessionService,
     private commonService: CommonService) { }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const token = this.sessionService.getToken();
     request = request.clone({
       setHeaders: {
-        Authorization: `JWT ${this.sessionService.getToken()}`,
+        ...(!!token ? {Authorization: `JWT ${token}`} : {}),
       }
     });
     return next.handle(request)

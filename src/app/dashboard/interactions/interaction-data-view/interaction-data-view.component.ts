@@ -32,9 +32,9 @@ export class InteractionDataViewComponent implements OnInit {
     self.outputType = self.data.flowData.outputType ? self.data.flowData.outputType : 'API';
   }
 
-  get odpTxnId() {
+  get dataStackTxnId() {
     const self = this;
-    return self.data.odpTxnId;
+    return self.data.dataStackTxnId;
   }
 
   get remoteTxnId() {

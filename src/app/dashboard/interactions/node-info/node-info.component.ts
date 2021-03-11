@@ -17,6 +17,7 @@ export class NodeInfoComponent implements OnInit {
   @Input() node: NodeData;
   @Input() index: number;
   @Input() logData: any;
+  @Input() logList: Array<any>;
   passwordCopied: boolean;
   showError: boolean;
   constructor(private appService: AppService) {
@@ -28,6 +29,7 @@ export class NodeInfoComponent implements OnInit {
     self.nodeList = [];
     self.requestNodeList = [];
     self.responseNodeList = [];
+    this.logList = [];
   }
 
   ngOnInit() {
@@ -211,9 +213,18 @@ export class NodeInfoComponent implements OnInit {
     const self = this;
     let message: string;
     if (self.logData && self.logData.error) {
-      message = self.logData.error;
+      if (typeof self.logData.error === 'object') {
+        message = self.logData.error.message;
+      }
+      if (!message) {
+        message = JSON.stringify(self.logData.error);
+      }
     } else if (self.interactionData.errorMessage) {
       message = self.interactionData.errorMessage;
+    }
+    const temp = this.logList.find(e => e.error);
+    if (temp && temp.sequenceNo !== this.index + 1) {
+      message = null;
     }
     if (message && message.indexOf('dial tcp: lookup') > -1) {
       message = 'Unable to reach integration flow pod, Please contact adminstrator';

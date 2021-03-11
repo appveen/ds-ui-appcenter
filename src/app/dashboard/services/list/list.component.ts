@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Validators, FormControl } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { take, filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { CommonService, GetOptions } from 'src/app/service/common.service';
@@ -13,6 +14,8 @@ import { Definition, DateType } from 'src/app/interfaces/definition';
 import { environment } from 'src/environments/environment';
 import { SessionService } from 'src/app/service/session.service';
 import { ListAgGridComponent } from './list-ag-grid/list-ag-grid.component';
+import { ShortcutService } from 'src/app/shortcut/shortcut.service';
+import { ListFiltersComponent } from './list-filters/list-filters.component';
 
 @Component({
   selector: 'odp-list',
@@ -20,56 +23,69 @@ import { ListAgGridComponent } from './list-ag-grid/list-ag-grid.component';
   styleUrls: ['./list.component.scss'],
   animations: [
     trigger('slideIn', [
-      state('void', style({
-        transform: 'translateX(20px)'
-      })),
+      state(
+        'void',
+        style({
+          transform: 'translateX(20px)'
+        })
+      ),
       transition('void => *', [
-        animate('600ms cubic-bezier(0.86, 0, 0.07, 1)', keyframes([
-          style({
-            opacity: 0,
-            transform: 'translateX(20px)'
-          }),
-          style({
-            opacity: .5,
-            transform: 'translateX(10px)'
-          }),
-          style({
-            opacity: 1,
-            transform: 'translateX(0)'
-          })
-        ]))
+        animate(
+          '600ms cubic-bezier(0.86, 0, 0.07, 1)',
+          keyframes([
+            style({
+              opacity: 0,
+              transform: 'translateX(20px)'
+            }),
+            style({
+              opacity: 0.5,
+              transform: 'translateX(10px)'
+            }),
+            style({
+              opacity: 1,
+              transform: 'translateX(0)'
+            })
+          ])
+        )
       ]),
       transition('* => void', [
-        animate('600ms cubic-bezier(0.86, 0, 0.07, 1)', keyframes([
-          style({
-            opacity: .7,
-            transform: 'translateX(10px)'
-          }),
-          style({
-            opacity: .5,
-            transform: 'translateX(15px)'
-          }),
-          style({
-            opacity: 0,
-            transform: 'translateX(20px)'
-          })
-        ]))
+        animate(
+          '600ms cubic-bezier(0.86, 0, 0.07, 1)',
+          keyframes([
+            style({
+              opacity: 0.7,
+              transform: 'translateX(10px)'
+            }),
+            style({
+              opacity: 0.5,
+              transform: 'translateX(15px)'
+            }),
+            style({
+              opacity: 0,
+              transform: 'translateX(20px)'
+            })
+          ])
+        )
       ])
     ])
   ]
 })
-
 export class ListComponent implements OnInit, OnDestroy {
-
   @ViewChild('listGrid', { static: false }) listGrid: ListAgGridComponent;
-  @ViewChild('customizeModalTemplate', { static: false }) customizeModalTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: TemplateRef<HTMLElement>;
-  @ViewChild('workflowModal', { static: false }) workflowModal: TemplateRef<HTMLElement>;
-  @ViewChild('clearFilterModal', { static: false }) clearFilterModal: TemplateRef<ElementRef>;
+  @ViewChild('listFilters', { static: false })
+  listFilters: ListFiltersComponent;
+  @ViewChild('customizeModalTemplate', { static: false })
+  customizeModalTemplate: TemplateRef<HTMLElement>;
+  @ViewChild('confirmDeleteModal', { static: false })
+  confirmDeleteModal: TemplateRef<HTMLElement>;
+  @ViewChild('workflowModal', { static: false })
+  workflowModal: TemplateRef<HTMLElement>;
+  @ViewChild('clearFilterModal', { static: false })
+  clearFilterModal: TemplateRef<ElementRef>;
+  @ViewChild('dataContainer', { static: false }) dataContainer: ElementRef;
   clearFilterModalRef: NgbModalRef;
   confirmDeleteModalRef: NgbModalRef;
   workflowModalRef: NgbModalRef;
-
   lastFilterAppliedPrefId: string;
   schema: any;
   api: string;
@@ -82,25 +98,22 @@ export class ListComponent implements OnInit, OnDestroy {
   workflowData: Array<any>;
   workflowUploadedFiles: Array<any>;
   workflowFilesList: Array<any>;
-
   selectedRows: Array<any>;
   selectedColumns: string;
   appCenterStyle: any;
   advanceFilter: boolean;
-
   showSaveViewDropDown: boolean;
   savedViews: Array<any>;
+  allFilters: Array<any>;
   showSearchSavedView: boolean;
   selectedSavedView: any;
   showPrivateViews: boolean;
   savedViewApiConfig: GetOptions;
   savedViewSearchTerm: string;
-
   deleteModal: {
-    title: string,
-    message: string
+    title: string;
+    message: string;
   };
-
   respondControl: any;
   currentTotalCount: number;
   loadedRecordsCount: number;
@@ -109,15 +122,20 @@ export class ListComponent implements OnInit, OnDestroy {
   checkAll: boolean;
   selectedRow: any;
   showContextMenu: boolean;
-  constructor(private appService: AppService,
+  hasFilterFromUrl = false;
+
+  constructor(
+    private appService: AppService,
     private route: ActivatedRoute,
     private commonService: CommonService,
     private sessionService: SessionService,
     private modalService: NgbModal,
     private router: Router,
     private ts: ToastrService,
-    private fb: FormBuilder,
-    private ngbToolTipConfig: NgbTooltipConfig) {
+    private shortcutService: ShortcutService,
+    private ngbToolTipConfig: NgbTooltipConfig,
+    private activatedRoute: ActivatedRoute
+  ) {
     const self = this;
     self.workflowModalOptions = {};
     self.workflowUploadedFiles = [];
@@ -153,6 +171,8 @@ export class ListComponent implements OnInit, OnDestroy {
       self.checkAll = false;
     });
 
+    this.setupShortcuts();
+
     const waitForServiceId = setInterval(() => {
       if (self.appService.serviceId) {
         self.fetchSchema(self.appService.serviceId);
@@ -180,6 +200,238 @@ export class ListComponent implements OnInit, OnDestroy {
     });
   }
 
+  setupShortcuts() {
+    const self = this;
+    this.shortcutService.unregisterAllShortcuts(357);
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Next Page',
+      keys: ['Shift', '>']
+    });
+    self.subscriptions['nextPage'] = self.shortcutService.shiftDotKey
+      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+      .subscribe(() => {
+        const scrollElement = self.dataContainer?.nativeElement?.querySelector(
+          'odp-list-ag-grid>ag-grid-angular>.ag-root-wrapper>.ag-root-wrapper-body>.ag-root>.ag-body-viewport'
+        );
+        if (!!scrollElement) {
+          scrollElement.scrollTop += scrollElement.clientHeight;
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Previous Page',
+      keys: ['Shift', '<']
+    });
+    self.subscriptions['prevPage'] = self.shortcutService.shiftCommaKey
+      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+      .subscribe(() => {
+        const scrollElement = self.dataContainer?.nativeElement?.querySelector(
+          'odp-list-ag-grid>ag-grid-angular>.ag-root-wrapper>.ag-root-wrapper-body>.ag-root>.ag-body-viewport'
+        );
+        if (!!scrollElement) {
+          scrollElement.scrollTop -= scrollElement.clientHeight;
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Focus on Next Record',
+      keys: ['Down']
+    });
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Focus on Previous Record',
+      keys: ['Up']
+    });
+    self.subscriptions['focusRecord'] = self.shortcutService.key
+      .pipe(filter(event => event.key === 'ArrowUp' || event.key === 'ArrowDown'))
+      .subscribe(() => {
+        const gridApi = this.listGrid?.agGrid?.api;
+        const focusedCell = gridApi?.getFocusedCell();
+        if (!focusedCell) {
+          gridApi?.setFocusedCell(0, '_id');
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Select Focused Record',
+      keys: ['S']
+    });
+    self.subscriptions['selectRecord'] = self.shortcutService.key
+      .pipe(
+        filter(
+          event =>
+            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'S'
+        )
+      )
+      .subscribe(() => {
+        const gridApi = this.listGrid?.agGrid?.api;
+        const focusedCell = gridApi?.getFocusedCell();
+        if (!!focusedCell) {
+          gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex).setSelected(true);
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Unselect Focused Record',
+      keys: ['U']
+    });
+    self.subscriptions['unselectRecord'] = self.shortcutService.key
+      .pipe(
+        filter(
+          event =>
+            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'U'
+        )
+      )
+      .subscribe(() => {
+        const gridApi = this.listGrid?.agGrid?.api;
+        const focusedCell = gridApi?.getFocusedCell();
+        if (!!focusedCell) {
+          gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex).setSelected(false);
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Select Next Record',
+      keys: ['K']
+    });
+    self.subscriptions['selectNextRecord'] = self.shortcutService.key
+      .pipe(
+        filter(
+          event =>
+            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'K'
+        )
+      )
+      .subscribe(() => {
+        const gridApi = this.listGrid?.agGrid?.api;
+        const focusedCell = gridApi?.getFocusedCell();
+        const nextRowIndex = !!focusedCell ? focusedCell.rowIndex + 1 : 0;
+        if (nextRowIndex <= gridApi?.getLastDisplayedRow()) {
+          const nextNode = gridApi?.getDisplayedRowAtIndex(nextRowIndex);
+          gridApi?.setFocusedCell(nextRowIndex, '_id');
+          nextNode?.setSelected(true);
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Select Previous Record',
+      keys: ['J']
+    });
+    self.subscriptions['selectPrevRecord'] = self.shortcutService.key
+      .pipe(
+        filter(
+          event =>
+            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'J'
+        )
+      )
+      .subscribe(() => {
+        const gridApi = this.listGrid?.agGrid?.api;
+        const focusedCell = gridApi?.getFocusedCell();
+        const prevRowIndex = !!focusedCell ? focusedCell.rowIndex - 1 : 0;
+        if (prevRowIndex >= 0) {
+          const prevNode = gridApi?.getDisplayedRowAtIndex(prevRowIndex);
+          gridApi?.setFocusedCell(prevRowIndex, '_id');
+          prevNode?.setSelected(true);
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Select All Records',
+      keys: ['Ctrl', 'A']
+    });
+    self.subscriptions['selectAll'] = self.shortcutService.ctrlAKey.subscribe(() => {
+      const gridApi = this.listGrid?.agGrid?.api;
+      gridApi?.forEachNode(node => node.setSelected(true));
+    });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Unselect All Records',
+      keys: ['Esc']
+    });
+    self.subscriptions['selectNone'] = self.shortcutService.key
+      .pipe(filter(event => event.key.toUpperCase() === 'ESCAPE'))
+      .subscribe(() => {
+        if (this.showSaveViewDropDown) {
+          this.showSaveViewDropDown = false;
+        } else if (this.advanceFilter) {
+          this.advanceFilter = false;
+        } else {
+          const gridApi = this.listGrid?.agGrid?.api;
+          gridApi?.forEachNode(node => node.setSelected(false));
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'View Focused Record',
+      keys: ['Enter']
+    });
+    this.shortcutService.registerShortcut({
+      section: 'Table',
+      label: 'Close Record',
+      keys: ['Esc']
+    });
+    self.subscriptions['openRecord'] = self.shortcutService.key.pipe(filter(event => event.key.toUpperCase() === 'ENTER')).subscribe(() => {
+      const gridApi = this.listGrid?.agGrid?.api;
+      const row = gridApi?.getDisplayedRowAtIndex(gridApi?.getFocusedCell()?.rowIndex);
+      this.listGrid?.rowDoubleClicked(row);
+    });
+
+    this.shortcutService.registerShortcut({
+      section: 'Filters',
+      label: 'Show Advanced Filters',
+      keys: ['Shift', 'F']
+    });
+    this.shortcutService.registerShortcut({
+      section: 'Filters',
+      label: 'Hide Advanced Filters',
+      keys: ['Esc']
+    });
+    self.subscriptions['openFilter'] = self.shortcutService.shiftFKey
+      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+      .subscribe(() => {
+        this.advanceFilter = true;
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Filters',
+      label: 'Show Saved Views',
+      keys: ['Alt', 'Shift', 'F']
+    });
+    this.shortcutService.registerShortcut({
+      section: 'Filters',
+      label: 'Hide Saved Views',
+      keys: ['Esc']
+    });
+    self.subscriptions['openSavedView'] = self.shortcutService.altShiftFKey.subscribe(() => {
+      this.showSaveViewDropDown = true;
+    });
+
+    this.shortcutService.registerShortcut({
+      section: 'Filters',
+      label: 'Clear/Reset Filters',
+      keys: ['Shift', 'X']
+    });
+    self.subscriptions['resetFilter'] = self.shortcutService.shiftXKey
+      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+      .subscribe(() => {
+        if (this.hasFilters) {
+          this.clearFilters();
+        } else if (this.selectedSavedView) {
+          this.resetFilter();
+        }
+      });
+  }
+
   unSubcribeApis() {
     const self = this;
     if (self.confirmDeleteModalRef) {
@@ -191,22 +443,42 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.clearFilterModalRef) {
       self.clearFilterModalRef.close();
     }
-    Object.keys(self.subscriptions).forEach(key => {
-      if (self.subscriptions[key] && key !== 'serviceChange') {
-        if (key !== 'filterCleared') {
+    Object.keys(self.subscriptions)
+      .filter(
+        key =>
+          ![
+            'serviceChange',
+            'filterCleared',
+            'nextPage',
+            'prevPage',
+            'focusRecord',
+            'selectNextRecord',
+            'selectPrevRecord',
+            'selectRecord',
+            'unselectRecord',
+            'selectAll',
+            'selectNone',
+            'openRecord',
+            'openFilter',
+            'openSavedView',
+            'resetFilter'
+          ].includes(key)
+      )
+      .forEach((key: string) => {
+        if (self.subscriptions[key]) {
           self.subscriptions[key].unsubscribe();
         }
-      }
-    });
+      });
   }
 
-  resetFilter() {
+  resetFilter(showAdvancedFilter = false) {
     const self = this;
+    this.hasFilterFromUrl = false;
     if (self.listGrid) {
       self.listGrid.clearSavedView();
     }
     self.savedViews = [];
-    self.advanceFilter = false;
+    self.advanceFilter = showAdvancedFilter;
     self.selectedSavedView = null;
     self.appService.existingFilter = null;
     if (self.lastFilterAppliedPrefId) {
@@ -225,83 +497,153 @@ export class ListComponent implements OnInit, OnDestroy {
       self.subscriptions['getSchema_' + serviceId] = null;
     }
     self.apiCalls.fetchingSchema = true;
-    self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(res => {
-      self.apiCalls.fetchingSchema = false;
-      const parsedDef = JSON.parse(res.definition);
-      self.fixSchema(parsedDef);
-      res.definition = JSON.stringify(parsedDef);
-      self.checkAll = false;
-      self.api = '/' + self.commonService.app._id + res.api;
-      self.appService.serviceAPI = self.api;
-      self.schema = res;
-      self.resetFilter();
-      self.buildColumns();
-      self.refineByPermissions();
-      self.getSavedViews();
-      self.getApprovers();
-      self.getRecordsCount();
-    }, err => {
-      self.apiCalls.fetchingSchema = false;
-      if (err.status === 403) {
-        self.router.navigate(['/~/no-access']);
-      } else if (err.status === 404) {
-        self.router.navigate(['/~']);
-      } else {
-        self.commonService.errorToast(err, 'Unable to fetch details');
+    self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
+      res => {
+        self.apiCalls.fetchingSchema = false;
+        const parsedDef = res.definition;
+        self.fixSchema(parsedDef);
+        res.definition = JSON.parse(JSON.stringify(parsedDef));
+        self.checkAll = false;
+        self.api = '/' + self.commonService.app._id + res.api;
+        self.appService.serviceAPI = self.api;
+        self.schema = res;
+        self.resetFilter();
+        self.buildColumns();
+        self.refineByPermissions();
+        self.getSavedViews(true);
+        self.getApprovers();
+        self.getRecordsCount();
+        this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
+          this.hasFilterFromUrl = !!queryParams && (!!queryParams.filter || !!queryParams.sort || !!queryParams.select);
+        });
+      },
+      err => {
+        self.apiCalls.fetchingSchema = false;
+        if (err.status === 403) {
+          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+        } else if (err.status === 404) {
+          self.router.navigate(['/', this.commonService.app._id]);
+        } else {
+          self.commonService.errorToast(err, 'Unable to fetch details');
+        }
       }
-    });
+    );
   }
 
-  getSavedViews() {
+  onRefine(event) {
+    if (event.refresh) {
+      this.getSavedViews(true);
+    }
+    this.selectSavedView(event);
+  }
+
+  getSavedViews(getAll?: boolean) {
     const self = this;
+    if (!!self.savedViewApiConfig?.filter?.createdBy) {
+      delete self.savedViewApiConfig.filter.createdBy;
+    }
     self.savedViewApiConfig.filter = {
       serviceId: self.schema._id,
       app: self.commonService.app._id,
       type: { $ne: 'workflow' }
     };
-    if (self.showPrivateViews) {
-      self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
-      self.savedViewApiConfig.filter.private = true;
-    }
-    else {
-      self.savedViewApiConfig.filter.private = false;
-    }
-    if (self.savedViewSearchTerm) {
-      self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
-    }
-    self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
-      data.forEach(view => {
-        self.fixSavedView(view);
-        if (view.value && view.type === 'dataService') {
-          if (typeof view.value === 'string') {
-            view.value = JSON.parse(view.value);
+    if (!getAll) {
+      if (self.showPrivateViews) {
+        self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+        self.savedViewApiConfig.filter.private = true;
+      } else {
+        self.savedViewApiConfig.filter.private = false;
+      }
+      if (self.savedViewSearchTerm) {
+        self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+      }
+      self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+        self.savedViews = [];
+        data.forEach(view => {
+          self.fixSavedView(view);
+          if (view.value && view.type === 'dataService') {
+            if (typeof view.value === 'string') {
+              view.value = JSON.parse(view.value);
+            }
+            if (view.value.filter && view.value.filter.length > 0) {
+              view.value.filter.forEach(item => {
+                item.dataKey = item.dataKey;
+                delete item.headerName;
+                delete item.fieldName;
+                delete item.fieldType;
+              });
+            }
           }
-          if (view.value.filter && view.value.filter.length > 0) {
-            view.value.filter.forEach(item => {
-              item.dataKey = item.fieldName;
-              delete item.headerName;
-              delete item.fieldName;
-              delete item.fieldType;
-            });
+          self.getUserName(view);
+          if (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id)) {
+            self.savedViews.push(view);
           }
+        });
+        if (self.showPrivateViews) {
+          const publicViews = self.allFilters.filter(f => !f.private);
+          self.allFilters = [...self.savedViews, ...publicViews];
+        } else {
+          const privateViews = self.allFilters.filter(f => f.private);
+          self.allFilters = [...privateViews, ...self.savedViews];
         }
-        self.getUserName(view);
-        self.savedViews.push(view);
       });
-    });
+    } else {
+      for (let i = 0; i < 2; i++) {
+        if (i === 0) {
+          self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+          self.savedViewApiConfig.filter.private = true;
+          self.savedViews = [];
+          self.allFilters = [];
+        } else {
+          self.savedViewApiConfig.filter.private = false;
+        }
+        self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+          data.forEach(view => {
+            self.fixSavedView(view);
+            if (view.value && view.type === 'dataService') {
+              if (typeof view.value === 'string') {
+                view.value = JSON.parse(view.value);
+              }
+              if (view.value.filter && view.value.filter.length > 0) {
+                view.value.filter.forEach(item => {
+                  item.dataKey = item.dataKey;
+                  delete item.headerName;
+                  delete item.fieldName;
+                  delete item.fieldType;
+                });
+              }
+            }
+            self.getUserName(view);
+            self.allFilters.push(view);
+            if (i === 0 && self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+              self.savedViews.push(view);
+            }
+            if (i === 1 && !self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+              self.savedViews.push(view);
+            }
+          });
+        });
+      }
+    }
   }
 
   fixSavedView(viewData) {
     const self = this;
     if (!viewData.type) {
-      self.commonService.put('user', `/filter/${viewData._id}`, { type: 'dataService' }).subscribe((res) => { }, err => {
-        console.error('Unable to Update Filter:', viewData.name);
-      });
+      self.commonService.put('user', `/filter/${viewData._id}`, { type: 'dataService' }).subscribe(
+        res => { },
+        err => {
+          console.error('Unable to Update Filter:', viewData.name);
+        }
+      );
     }
     if (!viewData.value) {
-      self.commonService.delete('user', `/filter/${viewData._id}`).subscribe((res) => { }, err => {
-        console.error('Unable to Delete Filter:', viewData.name);
-      });
+      self.commonService.delete('user', `/filter/${viewData._id}`).subscribe(
+        res => { },
+        err => {
+          console.error('Unable to Delete Filter:', viewData.name);
+        }
+      );
     }
     // Sort Fix code for later release
     // if (viewData.value) {
@@ -315,31 +657,38 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   fixSchema(parsedDef) {
-    Object.keys(parsedDef).forEach(key => {
-      if (parsedDef[key].properties && parsedDef[key].properties.relatedTo) {
-        parsedDef[key].type = 'Relation';
-        parsedDef[key].properties._typeChanged = 'Relation';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].properties && parsedDef[key].properties.password) {
-        parsedDef[key].type = 'String';
-        parsedDef[key].properties._typeChanged = 'String';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].type === 'Array') {
-        this.fixSchema(parsedDef[key].definition);
-      } else if (parsedDef[key].type === 'Object') {
-        this.fixSchema(parsedDef[key].definition);
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.password) {
+        def.type = 'String';
+        def.properties._typeChanged = 'String';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        this.fixSchema(def.definition);
+      } else if (def.type === 'Object') {
+        this.fixSchema(def.definition);
       }
     });
   }
 
   getUserName(filter) {
     const self = this;
-    self.commonService.getUser(filter.createdBy).then(user => {
-      filter.user = user.basicDetails.name;
-    }).catch(err => {
-      filter.user = filter.createdBy;
-      console.error('Unable to fetch name of User:', filter.createdBy);
-    });
+    self.commonService
+      .getUser(filter.createdBy)
+      .then(user => {
+        filter.user = user.basicDetails.name;
+      })
+      .catch(err => {
+        filter.user = filter.createdBy;
+        console.error('Unable to fetch name of User:', filter.createdBy);
+      });
   }
 
   getApprovers() {
@@ -349,39 +698,43 @@ export class ListComponent implements OnInit, OnDestroy {
       self.subscriptions['getApprovers'] = null;
     }
     const path = `/usr/reviewpermissionservice/${self.schema._id}?user=${self.commonService.userDetails._id}`;
-    self.subscriptions['getApprovers'] = self.commonService.get('user', path).subscribe(res => {
-      self.hasWorkflow = true;
-    }, err => {
-      if (err.status === 404) {
-        self.hasWorkflow = false;
-      } else {
-        console.error(err.message, 'Error While checking if Workflow Enabled');
+    self.subscriptions['getApprovers'] = self.commonService.get('user', path).subscribe(
+      res => {
+        self.hasWorkflow = true;
+      },
+      err => {
+        if (err.status === 404) {
+          self.hasWorkflow = false;
+        } else {
+          console.error(err.message, 'Error While checking if Workflow Enabled');
+        }
       }
-    });
+    );
   }
 
   getRecordsCount() {
     const self = this;
     self.apiCalls.fetchingCount = true;
-    self.commonService
-      .get('api', self.api + '/utils/count')
-      .subscribe(count => {
+    self.commonService.get('api', self.api + '/utils/count').subscribe(
+      count => {
         self.apiCalls.fetchingCount = false;
         self.totalRecords = count;
         self.getLastFilterApplied();
-      }, err => {
+      },
+      err => {
         self.apiCalls.fetchingCount = false;
         if (err.status === 403) {
-          self.router.navigate(['/~/no-access']);
+          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
         } else {
           self.commonService.errorToast(err, 'Unable to fetch count');
         }
-      });
+      }
+    );
   }
 
   buildColumns() {
     const self = this;
-    const temp = self.parseDefinition(JSON.parse(self.schema.definition));
+    const temp = self.parseDefinition(self.schema.definition);
     temp.unshift({
       show: true,
       key: '_checkbox',
@@ -424,30 +777,30 @@ export class ListComponent implements OnInit, OnDestroy {
   parseDefinition(def, parentKey?: string, parentName?: string): Definition[] {
     const self = this;
     let tempArr: Definition[] = [];
-    Object.keys(def).forEach(key => {
+    def.forEach(defObj => {
       const temp: Definition = {};
       temp.show = true;
-      if (key === '_id') {
-        temp.key = key;
-        temp.dataKey = key;
+      if (defObj.key === '_id') {
+        temp.key = defObj.key;
+        temp.dataKey = defObj.key;
         temp.type = 'Identifier';
-        temp.properties = { name: def[key].properties.name };
-        temp.properties.type = def[key].type;
+        temp.properties = { name: defObj.properties.name };
+        temp.properties.type = defObj.type;
         temp.definition = [];
         tempArr.unshift(temp);
       } else {
-        if (def[key].type === 'Object') {
-          const tempName = parentName ? parentName + '.' + def[key].properties.name : def[key].properties.name;
-          const tempKey = parentKey ? parentKey + '.' + key : key;
-          tempArr = tempArr.concat(self.parseDefinition(def[key].definition, tempKey, tempName));
+        if (defObj.type === 'Object') {
+          const tempName = parentName ? parentName + '.' + defObj.properties.name : defObj.properties.name;
+          const tempKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
+          tempArr = tempArr.concat(self.parseDefinition(defObj.definition, tempKey, tempName));
         } else {
-          temp.key = parentKey ? parentKey + '.' + key : key;
-          temp.dataKey = parentKey ? parentKey + '.' + key : key;
-          temp.type = def[key].type;
-          temp.properties = def[key].properties;
+          temp.key = parentKey ? parentKey + '.' + defObj.key : defObj.key;
+          temp.dataKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
+          temp.type = defObj.type;
+          temp.properties = defObj.properties;
           temp.properties.name = parentName ? parentName + '.' + temp.properties.name : temp.properties.name;
-          temp.properties.type = def[key].type;
-          temp.definition = def[key].definition ? self.parseDefinition(def[key].definition, temp.key, def[key].properties.name) : [];
+          temp.properties.type = defObj.type;
+          temp.definition = defObj.definition ? self.parseDefinition(defObj.definition, temp.key, defObj.properties.name) : [];
           tempArr.push(temp);
         }
       }
@@ -457,10 +810,27 @@ export class ListComponent implements OnInit, OnDestroy {
 
   refineByPermissions() {
     const self = this;
-    if (!(self.hasPermission('POST')
-      && self.hasPermission('PUT')
-      && self.hasPermission('DELETE'))) {
-      const fields = self.commonService.getViewFields(self.schema._id);
+    if (!(self.hasPermission('POST') && self.hasPermission('PUT') && self.hasPermission('DELETE'))) {
+      const fieldsList: any[] = self.commonService.getViewFieldsList(self.schema._id);
+      const fields = fieldsList.reduce((pv, cv) => {
+        const temp = {};
+        Object.keys(cv.fields)
+          .filter(key => !!cv.fields[key]._p)
+          .forEach(key => {
+            if(!!pv[key]?._p) {
+              const tag1 = pv[key]?._p.charCodeAt(0);
+              const tag2 = cv.fields[key]._p[cv.id].charCodeAt(0);
+              temp[key] = {
+                _p: String.fromCharCode(Math.max(tag1, tag2))
+              }
+            } else {
+              temp[key] = {
+                _p: cv.fields[key]._p[cv.id]
+              }
+            }
+          });
+          return temp;
+      }, {});
       self.configureByPermission(self.flattenPermission(fields), self.definition);
     }
   }
@@ -471,13 +841,17 @@ export class ListComponent implements OnInit, OnDestroy {
       if (permission[key]._p) {
         temp[key] = permission[key];
       } else {
-        const tempPer = Object.assign.apply({}, Object.keys(permission[key])
-          .map(objKey => Object.defineProperty({}, key + '.' + objKey, {
-            value: permission[key][objKey],
-            enumerable: true,
-            configurable: true,
-            writable: true
-          })));
+        const tempPer = Object.assign.apply(
+          {},
+          Object.keys(permission[key]).map(objKey =>
+            Object.defineProperty({}, key + '.' + objKey, {
+              value: permission[key][objKey],
+              enumerable: true,
+              configurable: true,
+              writable: true
+            })
+          )
+        );
         temp = Object.assign(temp, tempPer);
       }
     });
@@ -505,24 +879,27 @@ export class ListComponent implements OnInit, OnDestroy {
         key: self.schema._id
       }
     };
-    self.commonService.get('user', '/preferences', options).subscribe(prefRes => {
-      try {
-        if (prefRes && prefRes.length > 0) {
-          self.lastFilterAppliedPrefId = prefRes[0]._id;
-          if (typeof prefRes[0].value === 'string') {
-            prefRes[0].value = JSON.parse(prefRes[0].value);
+    self.commonService.get('user', '/preferences', options).subscribe(
+      prefRes => {
+        try {
+          if (prefRes && prefRes.length > 0) {
+            self.lastFilterAppliedPrefId = prefRes[0]._id;
+            if (typeof prefRes[0].value === 'string') {
+              prefRes[0].value = JSON.parse(prefRes[0].value);
+            }
+            const view = prefRes[0].value;
+            self.appService.existingFilter = view;
+            self.selectedSavedView = view;
+            self.applySavedView.emit(view);
           }
-          const view = prefRes[0].value;
-          self.appService.existingFilter = view;
-          self.selectedSavedView = view;
-          self.applySavedView.emit(view);
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
+      },
+      prefErr => {
+        self.commonService.errorToast(prefErr, 'Unable to save preference');
       }
-    }, prefErr => {
-      self.commonService.errorToast(prefErr, 'Unable to save preference');
-    });
+    );
   }
 
   setLastFilterApplied(data: any) {
@@ -539,21 +916,27 @@ export class ListComponent implements OnInit, OnDestroy {
     } else {
       response = self.commonService.post('user', '/preferences', payload);
     }
-    response.subscribe(prefRes => {
-      self.lastFilterAppliedPrefId = prefRes._id;
-    }, prefErr => {
-      self.commonService.errorToast(prefErr, 'Unable to save preference');
-    });
+    response.subscribe(
+      prefRes => {
+        self.lastFilterAppliedPrefId = prefRes._id;
+      },
+      prefErr => {
+        self.commonService.errorToast(prefErr, 'Unable to save preference');
+      }
+    );
   }
 
   deleteLastFilterApplied() {
     const self = this;
     if (self.lastFilterAppliedPrefId) {
-      self.commonService.delete('user', '/preferences/' + self.lastFilterAppliedPrefId).subscribe(prefRes => {
-        self.lastFilterAppliedPrefId = null;
-      }, prefErr => {
-        self.commonService.errorToast(prefErr, 'Unable to update preference');
-      });
+      self.commonService.delete('user', '/preferences/' + self.lastFilterAppliedPrefId).subscribe(
+        prefRes => {
+          self.lastFilterAppliedPrefId = null;
+        },
+        prefErr => {
+          self.commonService.errorToast(prefErr, 'Unable to update preference');
+        }
+      );
     }
   }
 
@@ -594,21 +977,28 @@ export class ListComponent implements OnInit, OnDestroy {
         self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
       }
       if (id) {
-        self.workflowModalOptions._id = id
+        self.workflowModalOptions._id = id;
       } else {
-        self.workflowModalOptions._id = self.selectedRows.filter(e2 => !(e2._metadata && e2._metadata.workflow))
-          .map(e3 => e3._id).join(', ');
+        self.workflowModalOptions._id = self.selectedRows
+          .filter(e2 => !(e2._metadata && e2._metadata.workflow))
+          .map(e3 => e3._id)
+          .join(', ');
       }
       self.workflowModalOptions.operation = 'DELETE';
       self.workflowModalOptions.fields = 'Delete document(s)';
-      self.workflowModalRef = self.modalService.open(self.workflowModal, { centered: true });
-      self.workflowModalRef.result.then(close => {
-        if (close) {
-          self.deleteAlert(id);
-        }
-      }, dismiss => {
-        self.respondControl.markAllAsTouched();
+      self.workflowModalRef = self.modalService.open(self.workflowModal, {
+        centered: true
       });
+      self.workflowModalRef.result.then(
+        close => {
+          if (close) {
+            self.deleteAlert(id);
+          }
+        },
+        dismiss => {
+          self.respondControl.markAllAsTouched();
+        }
+      );
     } else {
       self.deleteAlert(id);
     }
@@ -620,46 +1010,50 @@ export class ListComponent implements OnInit, OnDestroy {
       self.deleteRequest(id);
     } else {
       self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
-      self.confirmDeleteModalRef.result.then(close => {
-        if (close) {
-          self.deleteRequest(id);
-        }
-      }, dismiss => { });
+      self.confirmDeleteModalRef.result.then(
+        close => {
+          if (close) {
+            self.deleteRequest(id);
+          }
+        },
+        dismiss => { }
+      );
     }
   }
 
   deleteRequest(id?) {
     const self = this;
-    let ids = []
+    let ids = [];
     if (!id) {
-      ids = self.selectedRows.filter(e2 => !(e2._metadata && e2._metadata.workflow))
-        .map(e3 => e3._id);
+      ids = self.selectedRows.filter(e2 => !(e2._metadata && e2._metadata.workflow)).map(e3 => e3._id);
     } else {
-      ids.push(id)
+      ids.push(id);
     }
     if (self.subscriptions['bulkDelete']) {
       self.subscriptions['bulkDelete'].unsubscribe();
       self.subscriptions['bulkDelete'] = null;
     }
     self.apiCalls.deleteRequest = true;
-    self.commonService.delete('api', self.api + '/utils/bulkDelete', { ids }).subscribe(res => {
-      self.apiCalls.deleteRequest = false;
-      if (res._workflow) {
-        self.workflowData = res._workflow;
-        self.submitWorkflowFiles();
-      } else {
-        self.appService.clearFilterEvent.emit();
-        self.ts.success('Deleted.');
+    self.commonService.delete('api', self.api + '/utils/bulkDelete', { ids }).subscribe(
+      res => {
+        self.apiCalls.deleteRequest = false;
+        if (res._workflow) {
+          self.workflowData = res._workflow;
+          self.submitWorkflowFiles();
+        } else {
+          self.appService.clearFilterEvent.emit();
+          self.ts.success('Deleted.');
+          self.checkAll = false;
+          self.getRecordsCount();
+        }
+      },
+      err => {
+        self.commonService.errorToast(err, 'Unable to delete, please try again later');
         self.checkAll = false;
-        self.getRecordsCount();
+        self.apiCalls.deleteRequest = false;
       }
-    }, err => {
-      self.commonService.errorToast(err, 'Unable to delete, please try again later');
-      self.checkAll = false;
-      self.apiCalls.deleteRequest = false;
-    });
+    );
   }
-
 
   filterSavedViews() {
     const self = this;
@@ -675,7 +1069,7 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   selectSavedView(evnt) {
-    const view =evnt.query;
+    const view = evnt.query;
     const self = this;
     if (!environment.production) {
       console.log('selectSavedView', view);
@@ -690,8 +1084,8 @@ export class ListComponent implements OnInit, OnDestroy {
       self.applySavedView.emit({ value: view });
       self.appService.existingFilter = { value: view };
     }
-    if(evnt.close){
-      self.advanceFilter =false;
+    if (evnt.close) {
+      self.advanceFilter = false;
     }
   }
 
@@ -712,15 +1106,19 @@ export class ListComponent implements OnInit, OnDestroy {
       return;
     } else {
       const currentUser = self.sessionService.getUser(true);
-      if ((!filter.private) && (currentUser.isSuperAdmin || (currentUser._id === filter.createdBy))) {
+      if (!filter.private && (currentUser.isSuperAdmin || currentUser._id === filter.createdBy)) {
         filter.private = type === 'private';
-        self.subscriptions['filterType'] = self.commonService.put('user', `/filter/${filter._id}`, filter).subscribe(() => {
+        let tempFilter = this.appService.cloneObject(filter);
+        tempFilter.value = JSON.stringify(tempFilter.value);
+        self.subscriptions['filterType'] = self.commonService.put('user', `/filter/${filter._id}`, tempFilter).subscribe(() => {
           self.ts.success('Filter type Updated');
           self.getSavedViews();
         });
-      } else if (filter.private && (currentUser._id === filter.createdBy)) {
+      } else if (filter.private && currentUser._id === filter.createdBy) {
         filter.private = type === 'private';
-        self.subscriptions['filterType'] = self.commonService.put('user', `/filter/${filter._id}`, filter).subscribe(() => {
+        let tempFilter = this.appService.cloneObject(filter);
+        tempFilter.value = JSON.stringify(tempFilter.value);
+        self.subscriptions['filterType'] = self.commonService.put('user', `/filter/${filter._id}`, tempFilter).subscribe(() => {
           self.ts.success('Filter type Updated');
           self.getSavedViews();
         });
@@ -731,17 +1129,25 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   editFilter(filter) {
-    const self = this;
-    const currentUser = self.sessionService.getUser(true);
-    self.advanceFilter = true;
-    self.appService.existingFilter = filter;
-
+    this.showSaveViewDropDown = false;
+    this.appService.existingFilter = filter;
+    if (this.advanceFilter) {
+      this.advanceFilter = false;
+    }
+    setTimeout(() => {
+      this.advanceFilter = true;
+    });
+    setTimeout(() => {
+      if (!!this.listFilters) {
+        this.listFilters.showSaveDiv = true;
+      }
+    }, 100);
   }
 
   deleteFilter(filter) {
     const self = this;
     const currentUser = self.sessionService.getUser(true);
-    if ((!filter.private) && (currentUser.isSuperAdmin || (currentUser._id === filter.createdBy))) {
+    if (!filter.private && (currentUser.isSuperAdmin || currentUser._id === filter.createdBy)) {
       self.filterDeleteApiCall(filter);
       self.resetFilter();
     } else if (filter.private && currentUser._id === filter.createdBy) {
@@ -757,20 +1163,24 @@ export class ListComponent implements OnInit, OnDestroy {
     self.deleteModal.title = 'Delete Filter';
     self.deleteModal.message = `Are you sure you want to delete filter ${filter.name}?`;
     self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
-    self.confirmDeleteModalRef.result.then(close => {
-      if (close) {
-        self.subscriptions['deleteFilter'] = self.commonService.delete('user', `/filter/${filter._id}`).subscribe(res => {
-          self.ts.success('Filter Deleted.');
-          self.savedViews = [];
-          self.getSavedViews();
-        }, err => {
-          self.commonService.errorToast(err, 'Unable to delete, please try again later');
-        });
-      }
-    }, dismiss => { });
+    self.confirmDeleteModalRef.result.then(
+      close => {
+        if (close) {
+          self.subscriptions['deleteFilter'] = self.commonService.delete('user', `/filter/${filter._id}`).subscribe(
+            res => {
+              self.ts.success('Filter Deleted.');
+              self.savedViews = [];
+              self.getSavedViews();
+            },
+            err => {
+              self.commonService.errorToast(err, 'Unable to delete, please try again later');
+            }
+          );
+        }
+      },
+      dismiss => { }
+    );
   }
-
-
 
   view(id?) {
     const self = this;
@@ -778,7 +1188,7 @@ export class ListComponent implements OnInit, OnDestroy {
       id = self.selectedRows[0]._id;
     }
     if (id) {
-      self.router.navigate(['/~/services', self.appService.serviceId, 'view', id]);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'view', id]);
     } else {
       return;
     }
@@ -790,7 +1200,7 @@ export class ListComponent implements OnInit, OnDestroy {
       id = self.selectedRows[0]._id;
     }
     if (id) {
-      self.router.navigate(['/~/services', self.appService.serviceId, 'manage', id]);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'manage', id]);
     } else {
       return;
     }
@@ -799,16 +1209,13 @@ export class ListComponent implements OnInit, OnDestroy {
   bulkEdit() {
     const self = this;
     if (self.recordChecked > 1) {
-      const ids = self.selectedRows.filter(e2 => !(e2._metadata && e2._metadata.workflow))
-        .map(e3 => e3._id);
+      const ids = self.selectedRows.filter(e2 => !(e2._metadata && e2._metadata.workflow)).map(e3 => e3._id);
       self.appService.bulkEditIds = ids;
-      self.router.navigate(['/~/services', self.appService.serviceId, 'bulk-update']);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'bulk-update']);
     } else {
       return;
     }
   }
-
-
 
   closeModal() {
     const self = this;
@@ -828,9 +1235,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
     const indexOfValue = self.workflowFilesList.findIndex(val => val.name === file.name);
     if (indexOfValue < 0) {
-     
-      self.subscriptions['uploadFile_' + file.name] = self.commonService.upload('wf', '', formData, false)
-        .subscribe(event => {
+      self.subscriptions['uploadFile_' + file.name] = self.commonService
+        .upload('api', this.api, formData, false).subscribe(event => {
           if (event.type === HttpEventType.UploadProgress) {
             // self.processing.progress = Math.floor(event.loaded / event.total * 100);
           }
@@ -868,11 +1274,15 @@ export class ListComponent implements OnInit, OnDestroy {
       ]
     };
     for (const wf of self.workflowData) {
-      self.subscriptions['updateWorkflow_' + wf._id] = self.commonService.put('wf', '/' + wf._id, payload).subscribe(res => {
-        self.ts.success('Sent for review.');
-        self.router.navigate(['/~/workflow', self.schema._id], { relativeTo: self.route });
-      }, err => {
-      });
+      self.subscriptions['updateWorkflow_' + wf._id] = self.commonService.put('api', '/utils/workflow' + wf._id, payload).subscribe(
+        res => {
+          self.ts.success('Sent for review.');
+          self.router.navigate(['/', this.commonService.app._id, 'workflow', self.schema._id], {
+            relativeTo: self.route
+          });
+        },
+        err => { }
+      );
     }
   }
 
@@ -881,7 +1291,6 @@ export class ListComponent implements OnInit, OnDestroy {
     self.workflowUploadedFiles.splice(index, 1);
     self.workflowFilesList.splice(index, 1);
   }
-
 
   exportData(id?) {
     try {
@@ -924,12 +1333,17 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       query.push(`totalRecords=${totalRecords}`);
       url += '?' + query.join('&') + '&count=-1';
-      self.commonService.get('api', url).subscribe(res => {
-        self.ts.success(`Exporting ${totalRecords} records, please wait...`);
-        self.commonService.notification.fileExport.emit({ message: 'Export started' });
-      }, err => {
-        self.commonService.errorToast(err, 'Unable to Export Data');
-      });
+      self.commonService.get('api', url).subscribe(
+        res => {
+          self.ts.success(`Exporting ${totalRecords} records, please wait...`);
+          self.commonService.notification.fileExport.emit({
+            message: 'Export started'
+          });
+        },
+        err => {
+          self.commonService.errorToast(err, 'Unable to Export Data');
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -968,19 +1382,15 @@ export class ListComponent implements OnInit, OnDestroy {
       };
     }
     return position;
-
   }
   cloneRecord(recordId) {
     const self = this;
     self.appService.cloneRecordId = recordId;
-    self.router.navigate(['/~/services', self.appService.serviceId, 'manage']);
-
-
+    self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'manage']);
   }
   get canEdit() {
     const self = this;
-    if (self.selectedRows && self.selectedRows.length > 0
-      && self.selectedRows[0]._metadata && self.selectedRows[0]._metadata.workflow) {
+    if (self.selectedRows && self.selectedRows.length > 0 && self.selectedRows[0]._metadata && self.selectedRows[0]._metadata.workflow) {
       return false;
     }
     return true;
@@ -1020,6 +1430,10 @@ export class ListComponent implements OnInit, OnDestroy {
   get apiCallsPending() {
     const self = this;
     return Object.values(self.apiCalls).filter(e => e).length > 0;
+  }
+
+  get selectedAppId() {
+    return this.commonService.getCurrentAppId();
   }
 }
 

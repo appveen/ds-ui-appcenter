@@ -77,7 +77,7 @@
                     <ng-container *ngIf="!logData?.statusCode">N.A.</ng-container>
                 </div>
             </div>
-            <div *ngIf="(node.meta.sourceType === 'REST' || node.meta.blockType === 'PROCESS') && !statusSuccess"
+            <!-- <div *ngIf="(node.meta.sourceType === 'REST' || node.meta.blockType === 'PROCESS') && !statusSuccess"
                 class="d-flex align-items-center mb-2 data-row">
                 <div class="icon-holder">
                     <span class="text-secondary odp-comment"></span>
@@ -86,7 +86,7 @@
                 <div class="value">
                     <span class="font-weight-bold text-danger">{{errorMessage}}</span>
                 </div>
-            </div>
+            </div> -->
             <ng-container *ngIf="node.meta.sourceType === 'FILE'">
                 <div class="d-flex align-items-center mb-2 data-row">
                     <div class="icon-holder">
@@ -211,14 +211,14 @@
                         <ng-container *ngIf="!logData?.agent?.MACAddress">N.A.</ng-container>
                     </div>
                 </div>
-                <div *ngIf="showErrorInNode" class="d-flex align-items-center mb-2 data-row">
-                    <div class="icon-holder">
-                        <span class="fa fa-exclamation-circle text-danger"></span>
-                    </div>
-                    <div class="label text-truncate">Error</div>
-                    <div class="value  error-message text-danger">{{showErrorInNode}}</div>
-                </div>
             </ng-container>
+            <div *ngIf="showErrorInNode" class="d-flex align-items-center mb-2 data-row">
+                <div class="icon-holder">
+                    <span class="fa fa-exclamation-circle text-danger"></span>
+                </div>
+                <div class="label text-truncate">Error</div>
+                <div class="value  error-message text-danger">{{showErrorInNode}}</div>
+            </div>
         </div>
     </ng-container>
     <ng-container *ngIf="!logData">

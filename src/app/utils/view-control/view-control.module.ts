@@ -24,11 +24,10 @@ import { ArrayVersionComponent } from './array-version/array-version.component';
 import { ViewUserComponent } from './view-user/view-user.component';
 import { ViewSecureTextComponent } from './view-secure-text/view-secure-text.component';
 import { ViewRelationDataComponent } from './view-relation-data/view-relation-data.component';
-import { ViewCollectionOfObjectsGridComponent } from '../collection-of-objects/view-collection-of-objects-grid/view-collection-of-objects-grid.component';
 import { ViewColOfObjsComponent } from '../collection-of-objects/view-col-of-objs/view-col-of-objs.component';
-import { AgGridModule } from 'ag-grid-angular';
 import { ColOfObjsGridCellModule } from '../collection-of-objects/col-of-objs-grid-cell/col-of-objs-grid-cell.module';
 import { GridColumnFilterModule } from '../collection-of-objects/grid-column-filter/grid-column-filter.module';
+import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view-collection-of-objects-grid/view-collection-of-objects-grid.module';
 
 @NgModule({
   imports: [
@@ -42,7 +41,7 @@ import { GridColumnFilterModule } from '../collection-of-objects/grid-column-fil
     PdfViewerModule,
     ColOfObjsGridCellModule,
     GridColumnFilterModule,
-    AgGridModule
+    ViewCollectionOfObjectsGridModule
   ],
   declarations: [
     ViewControlComponent,
@@ -61,7 +60,6 @@ import { GridColumnFilterModule } from '../collection-of-objects/grid-column-fil
     ViewUserComponent,
     ViewSecureTextComponent,
     ViewRelationDataComponent,
-    ViewCollectionOfObjectsGridComponent,
     ViewColOfObjsComponent
   ],
   exports: [

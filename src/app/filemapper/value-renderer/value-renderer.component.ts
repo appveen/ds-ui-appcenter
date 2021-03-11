@@ -20,49 +20,63 @@ export class ValueRendererComponent implements ICellRendererAngularComp {
   arrayLength: number;
   textDanger: boolean;
   textBold: boolean;
+  parsedDate: string;
+  timezoneValue: string;
+  showTimezone: boolean;
+  isBooleanValue: boolean;
   constructor(private appService: AppService) {
-    const self = this;
-    self.definition = {};
-    self.data = {};
-    self.dateType = 'date';
-    self.type = 'String';
+    this.definition = {};
+    this.data = {};
+    this.dateType = 'date';
+    this.type = 'String';
   }
 
   agInit(params: ICellRendererParams) {
-    const self = this;
-    self.params = params;
-    self.data = self.params.data;
-    self.definition = self.params.colDef.refData;
-    if (!self.definition) {
-      self.definition = {};
+    this.params = params;
+    this.data = this.params.data;
+    this.definition = this.params.colDef.refData;
+    if (!this.definition) {
+      this.definition = {};
     }
-    self.dataKey = self.params.colDef.field;
-    if (self.definition && self.definition.type) {
-      self.type = self.definition.type;
+    this.dataKey = this.params.colDef.field;
+    if (this.definition && this.definition.type) {
+      this.type = this.definition.type;
     }
-    if (self.type !== 'Date' && self.type !== 'Boolean' && self.type !== 'Number' && self.type !== 'Array') {
-      self.type = 'String';
+    if (this.type !== 'Date' && this.type !== 'Boolean' && this.type !== 'Number' && this.type !== 'Array') {
+      this.type = 'String';
     }
-    if (self.type === 'Date') {
-      self.dateType = self.definition.properties.dateType;
+    if (Array.isArray(this.value)) {
+      this.arrayLength = this.value.length;
     }
-    if (Array.isArray(self.value)) {
-      self.arrayLength = self.value.length;
+    if (this.dataKey === 'message') {
+      this.textDanger = true;
     }
-    if (self.dataKey === 'errorMessage') {
-      self.textDanger = true;
+    if (this.dataKey === 'message' || this.dataKey === 'data._id') {
+      this.textBold = true;
     }
-    if (self.dataKey === 'errorMessage' || self.dataKey === 'data._id') {
-      self.textBold = true;
-    }
-    if (self.definition.type === 'Relation' || self.definition.type === 'User') {
-      self.value = self.appService.getValue(self.dataKey + '._id', self.data);
-    } else if (self.definition.type === 'File') {
-      self.value = self.appService.getValue(self.dataKey + '.filename', self.data);
-    } else if (self.definition.type === 'Geojson') {
-      self.value = self.appService.getValue(self.dataKey + '.userInput', self.data);
+    if (this.definition.type === 'Relation' || this.definition.type === 'User') {
+      this.value = this.appService.getValue(this.dataKey + '._id', this.data);
+    } else if (this.definition.type === 'File') {
+      this.value = this.appService.getValue(this.dataKey + '.filename', this.data);
+    } else if (this.definition.type === 'Geojson') {
+      this.value = this.appService.getValue(this.dataKey + '.userInput', this.data);
     } else {
-      self.value = self.appService.getValue(self.dataKey, self.data);
+      this.value = this.appService.getValue(this.dataKey, this.data);
+    }
+    if (this.type === 'Date') {
+      this.dateType = this.definition.properties.dateType;
+      if (this.value && this.value.rawData) {
+        this.parsedDate = this.appService.getUTCString(this.value.rawData, this.value.tzInfo);
+        this.timezoneValue = this.value.tzInfo;
+        this.showTimezone = true;
+      }
+    }
+    if (this.type === 'Boolean') {
+      this.isBooleanValue = typeof this.value === 'boolean';
+    }
+    if (this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt') {
+      this.parsedDate = this.value;
+      this.timezoneValue = this.appService.getLocalTimezone();
     }
   }
 

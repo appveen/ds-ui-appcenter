@@ -74,7 +74,7 @@ export class ListFileViewComponent implements OnInit, OnDestroy {
       ev.preventDefault();
     }
     if (self.value) {
-      window.open(environment.url.api + self.appService.serviceAPI + '/file/download/' + self.fileId);
+      window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId);
     }
   }
 
@@ -84,9 +84,9 @@ export class ListFileViewComponent implements OnInit, OnDestroy {
       ev.preventDefault();
     }
     if (self.value) {
-      const tempUrl = environment.url.api + self.appService.serviceAPI + '/file/' + self.fileId + '/view';
+      const tempUrl = environment.url.api + self.appService.serviceAPI + '/utils/file/' + self.fileId + '/view';
       self.pdfPreviewUrl = self.sanitizer.bypassSecurityTrustResourceUrl(tempUrl);
-      self.imgPreviewUrl = environment.url.api + self.appService.serviceAPI + '/file/download/' + self.fileId;
+      self.imgPreviewUrl = environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId;
       self.previewModalRef = self.modalService.open(self.previewModal, {
         centered: true,
         windowClass: 'preview-window'

@@ -96,6 +96,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
             const id = self.definition.id.replace('.', '');
             selector = '#' + id + 'rich';
         }
+        selector = selector.replace('.', '');
         tinymce.init({
             selector: selector,
             // selector: '.editor',
@@ -119,6 +120,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             tinymce.get(self.Id).hide();
         }
+       
 
     }
 
@@ -181,6 +183,8 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
             const id = self.definition.id.replace('.', '');
             retVal = id + 'rich';
         }
+        retVal = retVal.replace('.', '');
+       
         return retVal;
     }
 

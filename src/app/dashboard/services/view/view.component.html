@@ -53,7 +53,7 @@
                     class="btn btn-primary px-3 ignore-outside responseBtncls" type="button">
                     <span class="text ignore-outside">Respond</span>
                 </button>
-                <button [routerLink]="['/~/services',schema._id,'list']" class="btn btn-link px-3" type="button">
+                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3" type="button">
                     <span class="fa fa-angle-left mr-2"></span>
                     <span class="text">Back</span>
                 </button>
@@ -75,7 +75,7 @@
                     <span class="odp-edit mr-2 font-13"></span>
                     <span class="text font-13">Edit</span>
                 </button>
-                <button [routerLink]="['/~/services',schema._id,'list']" class="btn btn-link px-3" type="button">
+                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3" type="button">
                     <span class="fa fa-angle-left mr-2 font-13"></span>
                     <span class="text font-13">Back</span>
                 </button>
@@ -101,7 +101,7 @@
             </div>
         </div>
     </div>
-    <odp-history *ngIf="schema?._id" [(toggle)]="showHistoryDropdown" [serviceId]="schema._id" [documentId]="id"
+    <odp-history *ngIf="schema?._id" [(toggle)]="showHistoryDropdown" [schema]="schema" [documentId]="id"
         (auditAvailable)="auditAvailable=$event" (selectedAudit)="selectedAudit=$event" (compare)="compareVersion()">
     </odp-history>
 

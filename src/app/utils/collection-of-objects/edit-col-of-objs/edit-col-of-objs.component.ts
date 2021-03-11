@@ -11,6 +11,7 @@ export class EditColOfObjsComponent implements AgRendererComponent {
   params: ICellRendererParams;
   parentContext: any;
   selectedRowIndex: number;
+  isEditable: boolean;
 
   constructor() { }
 
@@ -21,6 +22,7 @@ export class EditColOfObjsComponent implements AgRendererComponent {
   agInit(params: ICellRendererParams): void {
     this.params = params;
     this.parentContext = params.context.gridParent;
+    this.isEditable = params.context.gridParent.isEditable;
     this.selectedRowIndex = this.params.rowIndex;
   }
 

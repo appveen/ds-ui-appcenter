@@ -10,13 +10,15 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./search-for-field.component.scss']
 })
 export class SearchForFieldComponent implements OnInit, OnDestroy {
-
-  @ViewChild('filterTypeEle', { static: false }) filterTypeEle: ElementRef<HTMLSelectElement>;
+  @ViewChild('filterTypeEle', { static: false })
+  filterTypeEle: ElementRef<HTMLSelectElement>;
   @Input() columns: Definition[];
   @Input() filterModel: FilterModel;
   @Output() filterModelChange: EventEmitter<any>;
   toggleFromDate: boolean;
   toggleToDate: boolean;
+  fromNumber: number;
+  toNumber: number;
   private fromDate: Date;
   private toDate: Date;
   private searchOnlyId: boolean;
@@ -25,10 +27,8 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   dateObjIndex: number;
   duplicateInRangeDateField: boolean;
   dateFieldType: string;
-  filterTypeOptions: Array<{ name: string, value: string }>;
-  constructor(private commonService: CommonService,
-    private appService: AppService,
-    private ts: ToastrService) {
+  filterTypeOptions: Array<{ name: string; value: string }>;
+  constructor(private commonService: CommonService, private appService: AppService, private ts: ToastrService) {
     const self = this;
     self.filterModelChange = new EventEmitter();
     self.subscriptions = {};
@@ -44,36 +44,36 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
     self.setFilterTypeOptions();
-    if (self.filterModel
-      && self.filterModel.dataKey
-      && self.filterModel.filterValue
-      && (!self.filterModel.filterObject || Object.keys(self.filterModel.filterObject).length === 0)) {
+    if (
+      self.filterModel &&
+      self.filterModel.dataKey &&
+      self.filterModel.filterValue &&
+      (!self.filterModel.filterObject || Object.keys(self.filterModel.filterObject).length === 0)
+    ) {
       self.filterModel.filterObject = {};
       self.valueChange();
     }
-    if (self.filterModel
-  
-      && self.filterModel.filterValue) {
+    if (self.filterModel && self.filterModel.filterValue) {
       const temp = new Date(self.filterModel.filterValue);
       if (temp.toString() !== 'Invalid Date') {
         // self.filterModel.filterObject.forEach((e, i) => {
-          let obj =self.filterModel.filterObject;
-                    for (const key in obj) {
-            if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] || obj[key]['$gt'])) {
-              // self.dateObjIndex = i;
-              if (obj[key]['$gte']) {
-                self.setStartDate(obj[key]['$gte']);
-              } else if (obj[key]['$gt']) {
-                self.setStartDate(obj[key]['$gt']);
-              }
-            } else if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$lt'] || obj[key]['$lte'])) {
-              if (obj[key]['$lt']) {
-                self.setEndDate(obj[key]['$lt']);
-              } else {
-                self.setEndDate(obj[key]['$lte']);
-              }
+        let obj = self.filterModel.filterObject;
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] || obj[key]['$gt'])) {
+            // self.dateObjIndex = i;
+            if (obj[key]['$gte']) {
+              self.setStartDate(obj[key]['$gte']);
+            } else if (obj[key]['$gt']) {
+              self.setStartDate(obj[key]['$gt']);
+            }
+          } else if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$lt'] || obj[key]['$lte'])) {
+            if (obj[key]['$lt']) {
+              self.setEndDate(obj[key]['$lt']);
+            } else {
+              self.setEndDate(obj[key]['$lte']);
             }
           }
+        }
         // });
       }
     }
@@ -115,7 +115,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       delete self.filterModel.filterObject[key];
     });
     self.filterModel.filterValue = null;
-    self.appService.dataKeyForSelectedCols.forEach((e) => {
+    self.appService.dataKeyForSelectedCols.forEach(e => {
       self.duplicateInRangeDateField = e === self.filterModel.dataKey;
     });
     self.filterModelChange.emit(self.filterModel);
@@ -134,7 +134,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         self.filterTypeEle.nativeElement.value = self.filterModel.filterType;
       }, 100);
     }
-    if (!self.filterModel.filterValue) {
+    if (self.filterModel.filterValue === null || self.filterModel.filterValue === undefined) {
       Object.keys(self.filterModel.filterObject).forEach(key => {
         delete self.filterModel.filterObject[key];
       });
@@ -149,56 +149,68 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       const filterType = self.filterModel.filterType;
       if (filterType === 'notEqual' || filterType === 'notContains') {
         self.filterModel.filterObject['$and'] = [];
-        self.filterModel.filterObject['$and'].push(Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
-          value: self.getFilterValue('String'),
-          enumerable: true,
-          configurable: true,
-          writable: true
-        }));
+        self.filterModel.filterObject['$and'].push(
+          Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
+            value: self.getFilterValue('String'),
+            enumerable: true,
+            configurable: true,
+            writable: true
+          })
+        );
         if (!self.searchOnlyId) {
           const tempObj = {};
           const def = self.relatedDef;
           if (def) {
             if (def.type === 'Number') {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-                = self.getFilterValue('Number');
+              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+                'Number'
+              );
             } else if (def.type === 'Date') {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-                = self.getFilterValue('Date');
+              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+                'Date'
+              );
             } else if (def.type === 'String' && def.properties.password) {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField + '.value'] = self.getFilterValue(self.relatedDef.type);
-            }
-            else {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-                = self.getFilterValue(self.relatedDef.type);
+              tempObj[
+                self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField + '.value'
+              ] = self.getFilterValue(self.relatedDef.type);
+            } else {
+              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+                self.relatedDef.type
+              );
             }
           }
           self.filterModel.filterObject['$and'].push(tempObj);
         }
       } else {
         self.filterModel.filterObject['$or'] = [];
-        self.filterModel.filterObject['$or'].push(Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
-          value: self.getFilterValue('String'),
-          enumerable: true,
-          configurable: true,
-          writable: true
-        }));
+        self.filterModel.filterObject['$or'].push(
+          Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
+            value: self.getFilterValue('String'),
+            enumerable: true,
+            configurable: true,
+            writable: true
+          })
+        );
         if (!self.searchOnlyId) {
           const tempObj = {};
           const def = self.relatedDef;
           if (def) {
             if (def.type === 'Number') {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-                = self.getFilterValue('Number');
+              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+                'Number'
+              );
             } else if (def.type === 'Date') {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-                = self.getFilterValue('Date');
+              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+                'Date'
+              );
             } else if (def.type === 'String' && def.properties.password) {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField + '.value'] = self.getFilterValue(self.relatedDef.type);
-            }
-            else {
-              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-                = self.getFilterValue(self.relatedDef.type);
+              tempObj[
+                self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField + '.value'
+              ] = self.getFilterValue(self.relatedDef.type);
+            } else {
+              tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+                self.relatedDef.type
+              );
             }
           }
           self.filterModel.filterObject['$or'].push(tempObj);
@@ -208,32 +220,44 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       const filterType = self.filterModel.filterType;
       if (filterType === 'notEqual' || filterType === 'notContains') {
         self.filterModel.filterObject['$and'] = [];
-        self.filterModel.filterObject['$and'].push(Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
-          value: self.getFilterValue('String'),
-          enumerable: true,
-          configurable: true,
-          writable: true
-        }));
-        if (self.selectedFieldDef.properties && self.selectedFieldDef.properties.relatedSearchField &&
-          self.selectedFieldDef.properties.relatedSearchField !== '_id') {
+        self.filterModel.filterObject['$and'].push(
+          Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
+            value: self.getFilterValue('String'),
+            enumerable: true,
+            configurable: true,
+            writable: true
+          })
+        );
+        if (
+          self.selectedFieldDef.properties &&
+          self.selectedFieldDef.properties.relatedSearchField &&
+          self.selectedFieldDef.properties.relatedSearchField !== '_id'
+        ) {
           const tempObj = {};
-          tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-            = self.getFilterValue(self.relatedDef.type);
+          tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+            self.relatedDef.type
+          );
           self.filterModel.filterObject['$and'].push(tempObj);
         }
       } else {
         self.filterModel.filterObject['$or'] = [];
-        self.filterModel.filterObject['$or'].push(Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
-          value: self.getFilterValue('String'),
-          enumerable: true,
-          configurable: true,
-          writable: true
-        }));
-        if (self.selectedFieldDef.properties && self.selectedFieldDef.properties.relatedSearchField &&
-          self.selectedFieldDef.properties.relatedSearchField !== '_id') {
+        self.filterModel.filterObject['$or'].push(
+          Object.defineProperty({}, self.selectedFieldDef.dataKey + '._id', {
+            value: self.getFilterValue('String'),
+            enumerable: true,
+            configurable: true,
+            writable: true
+          })
+        );
+        if (
+          self.selectedFieldDef.properties &&
+          self.selectedFieldDef.properties.relatedSearchField &&
+          self.selectedFieldDef.properties.relatedSearchField !== '_id'
+        ) {
           const tempObj = {};
-          tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField]
-            = self.getFilterValue(self.relatedDef.type);
+          tempObj[self.selectedFieldDef.dataKey + '.' + self.selectedFieldDef.properties.relatedSearchField] = self.getFilterValue(
+            self.relatedDef.type
+          );
           self.filterModel.filterObject['$or'].push(tempObj);
         }
       }
@@ -244,51 +268,86 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
     } else if (self.selectedFieldType === 'Boolean') {
       self.filterModel.filterObject[self.filterModel.dataKey] = self.getFilterValue(self.selectedFieldType);
     } else if (self.selectedFieldType === 'Date') {
-      // if (self.dateObjIndex > -1) {
-      //   self.filterModel.filterObject.splice(1, self.dateObjIndex);
-      // }
-      if (self.startDate === undefined && self.endDate &&
-        (self.filterModel.filterType === 'greaterThan' || self.filterModel.filterType === 'notEqual')) {
-        self.startDate = self.endDate;
-        self.endDate = null;
+      switch (self.filterModel.filterType) {
+        case 'equals': {
+          const startDate = new Date(self.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(self.startDate);
+          endDate.setHours(23, 59, 59, 999);
+          self.filterModel.filterObject = {
+            [self.filterModel.dataKey]: {
+              $gte: startDate.toISOString(),
+              $lte: endDate.toISOString()
+            }
+          };
+          break;
+        }
+        case 'notEqual': {
+          const startDate = new Date(self.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(self.startDate);
+          endDate.setHours(23, 59, 59, 999);
+          self.filterModel.filterObject = {
+            $or: [
+              {
+                [self.filterModel.dataKey]: {
+                  $lt: startDate.toISOString()
+                }
+              },
+              {
+                [self.filterModel.dataKey]: {
+                  $gt: endDate.toISOString()
+                }
+              }
+            ]
+          };
+          break;
+        }
+        case 'greaterThan': {
+          const date = new Date(self.startDate);
+          date.setHours(23, 59, 59, 999);
+          self.filterModel.filterObject = {
+            [self.filterModel.dataKey]: {
+              $gt: date.toISOString()
+            }
+          };
+          break;
+        }
+        case 'lessThan': {
+          const date = new Date(self.endDate);
+          date.setHours(0, 0, 0, 0);
+          self.filterModel.filterObject = {
+            [self.filterModel.dataKey]: {
+              $lt: date.toISOString()
+            }
+          };
+          break;
+        }
+        case 'inRange': {
+          const startDate = new Date(self.startDate);
+          startDate.setHours(0, 0, 0, 0);
+          const endDate = new Date(self.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          self.filterModel.filterObject = {
+            [self.filterModel.dataKey]: {
+              $gte: startDate.toISOString(),
+              $lte: endDate.toISOString()
+            }
+          };
+          break;
+        }
       }
-      if (self.endDate === undefined && self.startDate &&
-        self.filterModel.filterType === 'lessThan') {
-        self.endDate = self.startDate;
-        self.startDate = null;
-      }
-      self.filterModel.filterObject = {};
-      const dataKey = self.filterModel.dataKey;
-      const tempObj1 = Object.defineProperty({}, dataKey, {
-        value: self.getFilterValue(self.selectedFieldType, '$gte'),
-        writable: true,
-        enumerable: true,
-        configurable: true
-      });
-      const tempObj2 = Object.defineProperty({}, dataKey, {
-        value: self.getFilterValue(self.selectedFieldType, '$lt'),
-        writable: true,
-        enumerable: true,
-        configurable: true
-      });
-      if (Object.keys(tempObj1[dataKey]).length > 0) {
-        // self.filterModel.filterObject.push(tempObj1);
-        self.filterModel.filterObject = tempObj1;
-      }
-      if (Object.keys(tempObj2[dataKey]).length > 0) {
-        // self.filterModel.filterObject.push(tempObj2);
-        self.filterModel.filterObject = tempObj2;
-      }
-      if (Object.keys(tempObj1[dataKey]).length > 0 && Object.keys(tempObj2[dataKey]).length > 0) {
-        self.filterModel.filterObject[dataKey] = Object.assign({}, tempObj1[dataKey], tempObj2[dataKey]);
-      }
-    }
-    else if (self.selectedFieldType === 'secureText') {
-      let attr =self.filterModel.dataKey + '.value' ;
-      self.filterModel.filterObject[ attr] = self.getFilterValue(self.selectedFieldType);
-    }
-
-    else {
+    } else if (self.selectedFieldType === 'secureText') {
+      let attr = self.filterModel.dataKey + '.value';
+      self.filterModel.filterObject[attr] = self.getFilterValue(self.selectedFieldType);
+    } else if (self.selectedFieldType === 'Number' && self.filterModel.filterType === 'inRange') {
+      self.filterModel.filterObject = {
+        [self.filterModel.dataKey]: {
+          $gte: this.fromNumber,
+          $lte: this.toNumber
+        }
+      };
+    } else {
       self.filterModel.filterObject[self.filterModel.dataKey] = self.getFilterValue(self.selectedFieldType);
     }
     self.setFilterTypeOptions();
@@ -298,12 +357,8 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   setStartDate(e) {
     const self = this;
     self.startDate = new Date(e);
-    if ((self.filterModel.dataKey === '_metadata.createdAt' ||
-      self.filterModel.dataKey === '_metadata.lastUpdated') && self.filterModel.filterType === 'equals') {
-      self.createCUDateQry(e);
-    } else {
-      self.startDate.setMilliseconds(0);
-      self.filterModel.filterValue = self.startDate.toISOString();
+    self.filterModel.filterValue = self.startDate.toISOString();
+    if (self.filterModel.filterType !== 'inRange') {
       self.valueChange();
     }
   }
@@ -311,37 +366,14 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   setEndDate(event) {
     const self = this;
     self.endDate = new Date(event);
-    self.endDate.setMilliseconds(0);
     self.filterModel.filterValue = self.endDate.toISOString();
-    if (self.endDate < self.startDate) {
+    if (!!self.startDate && self.endDate >= self.startDate) {
+      self.valueChange();
+    } else {
       self.ts.warning('To Date should be more than From Date');
       self.endDate = null;
       self.filterModel.filterValue = null;
-      return;
     }
-    self.valueChange();
-  }
-
-  createCUDateQry(date) {
-    const self = this;
-    const fromDate = new Date(date);
-    fromDate.setHours(0);
-    fromDate.setMinutes(0);
-    fromDate.setSeconds(0);
-    fromDate.setMilliseconds(0);
-    const toDate = new Date(date);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
-    toDate.setMilliseconds(0);
-    self.filterModel.filterObject = {};
-    const dateObj = Object.defineProperty({}, self.filterModel.dataKey, {
-      value: { $gte: fromDate.toISOString(), $lte: toDate.toISOString() },
-      writable: true,
-      enumerable: true
-    });
-    self.filterModel.filterObject = dateObj;
-    self.filterModelChange.emit(self.filterModel);
   }
 
   getFilterValue(type: string, filterType?: string) {
@@ -355,7 +387,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       if (self.filterModel.filterType === 'true') {
         value = true;
       } else if (self.filterModel.filterType === 'false') {
-        value = { "$ne": true };
+        value = { $ne: true };
       }
     } else if (self.filterModel.filterType === 'notEqual') {
       value = {};
@@ -425,40 +457,66 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       self.subscriptions['fetchRelatedSchema_' + self.selectedFieldDef.properties.relatedTo] = self.commonService
         .get('sm', '/service/' + self.selectedFieldDef.properties.relatedTo, {
           select: 'definition'
-        }).subscribe(res => {
-          self.searchOnlyId = false;
-          self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
-          self.relatedDefinition = JSON.parse(res.definition);
-          self.fixSchema(self.relatedDefinition);
-        }, err => {
-          self.searchOnlyId = true;
-        });
+        })
+        .subscribe(
+          res => {
+            self.searchOnlyId = false;
+            self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
+            self.relatedDefinition = res.definition;
+            self.fixSchema(self.relatedDefinition);
+          },
+          err => {
+            self.searchOnlyId = true;
+          }
+        );
     } else {
       self.searchOnlyId = false;
       const temp = self.appService.servicesMap[self.selectedFieldDef.properties.relatedTo];
-      self.relatedDefinition = JSON.parse(temp.definition);
+      self.relatedDefinition = temp.definition;
       self.fixSchema(self.relatedDefinition);
-
     }
   }
 
   fixSchema(parsedDef) {
-    Object.keys(parsedDef).forEach(key => {
-      if (parsedDef[key].properties && parsedDef[key].properties.relatedTo) {
-        parsedDef[key].type = 'Relation';
-        parsedDef[key].properties._typeChanged = 'Relation';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].properties && parsedDef[key].properties.password) {
-        parsedDef[key].type = 'String';
-        parsedDef[key].properties._typeChanged = 'String';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].type === 'Array') {
-        this.fixSchema(parsedDef[key].definition);
-      } else if (parsedDef[key].type === 'Object') {
-        this.fixSchema(parsedDef[key].definition);
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.password) {
+        def.type = 'String';
+        def.properties._typeChanged = 'String';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        this.fixSchema(def.definition);
+      } else if (def.type === 'Object') {
+        this.fixSchema(def.definition);
       }
     });
   }
+
+  fromNumberChange() {
+    this.toNumber = null;
+    this.filterModel.filterValue = null;
+  }
+
+  toNumberChange() {
+    if (this.fromNumber !== null && this.fromNumber !== undefined && this.toNumber !== null && this.toNumber !== undefined) {
+      if (this.fromNumber <= this.toNumber) {
+        this.filterModel.filterValue = this.toNumber;
+        this.valueChange();
+        return;
+      } else {
+        this.ts.warning('To value should be more than or equal to From value');
+      }
+    }
+    this.filterModel.filterValue = null;
+  }
+
   set startDate(val) {
     const self = this;
     self.fromDate = new Date(val);
@@ -505,9 +563,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       const temp = self.allFields.find(e => e.key === self.filterModel.dataKey);
       if (temp && temp.properties && temp.properties.password) {
         retValue = 'secureText';
-      }
-      else 
-      if (temp) {
+      } else if (temp) {
         retValue = temp.type;
       }
     }
@@ -525,8 +581,8 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   get relatedDef() {
     const self = this;
     if (self.relatedDefinition && self.selectedFieldDef.properties.relatedSearchField) {
-      const newpath = self.selectedFieldDef.properties.relatedSearchField.split('.').join('.definition.');
-      return self.appService.getValue(newpath, self.relatedDefinition);
+      const newpath = self.selectedFieldDef.properties.relatedSearchField
+      return self.appService.getValueNew(newpath, self.relatedDefinition);
       // return self.appService.getValue(self.selectedFieldDef.properties.relatedSearchField, self.relatedDefinition);
     }
     return {};
@@ -593,6 +649,10 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         {
           name: 'Not equal',
           value: 'notEqual'
+        },
+        {
+          name: 'In range',
+          value: 'inRange'
         }
       ];
     } else if (self.selectedFieldDef && self.selectedFieldDef.type === 'Boolean') {
@@ -610,8 +670,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           value: 'false'
         }
       ];
-    }
-    else if (self.selectedFieldDef && self.selectedFieldDef.properties && self.selectedFieldDef.properties.password) {
+    } else if (self.selectedFieldDef && self.selectedFieldDef.properties && self.selectedFieldDef.properties.password) {
       self.filterTypeOptions = [
         {
           name: 'Equals',

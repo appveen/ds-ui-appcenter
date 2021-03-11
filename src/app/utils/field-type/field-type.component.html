@@ -1,9 +1,12 @@
 <div *ngIf="!unique && !createOnly" class="icon rounded border bg-white text-primary d-flex align-items-center justify-content-center">
     <div class="{{iconClass}}"></div>
 </div>
-<div *ngIf="unique" class="icon rounded border border-primary bg-primary text-white d-flex align-items-center justify-content-center" container="body" placement="top" ngbTooltip="This Field has unique check">
+<div *ngIf="unique && !createOnly" class="icon rounded border border-primary bg-primary text-white d-flex align-items-center justify-content-center" container="body" placement="top" ngbTooltip="This Field has unique check">
     <div class="{{iconClass}}"></div>
 </div>
-<div *ngIf="createOnly" class="icon rounded border border-primary bg-primary text-white d-flex align-items-center justify-content-center" container="body" placement="top" ngbTooltip="This Field has create only check">
+<div *ngIf="createOnly && !unique" class="icon rounded border border-primary bg-primary text-white d-flex align-items-center justify-content-center" container="body" placement="top" ngbTooltip="This Field has create only check">
+    <div class="{{iconClass}}"></div>
+</div>
+<div *ngIf="createOnly && unique" class="icon rounded border border-primary bg-primary text-white d-flex align-items-center justify-content-center" container="body" placement="top" ngbTooltip="This Field has create only and unique check">
     <div class="{{iconClass}}"></div>
 </div>

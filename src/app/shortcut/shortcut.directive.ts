@@ -44,6 +44,9 @@ export class ShortcutDirective implements AfterContentInit {
     } else if (event.key === 's') {
       event.preventDefault();
       self.service.ctrlSKey.emit(event);
+    } else if (event.key === 'a') {
+      event.preventDefault();
+      self.service.ctrlAKey.emit(event);
     } else if (event.key === 'ArrowDown') {
       self.service.ctrlDownArrowKey.emit(event);
     } else if (event.key === 'ArrowUp') {
@@ -69,6 +72,30 @@ export class ShortcutDirective implements AfterContentInit {
     if (event.key === 'Enter') {
       self.service.shiftEnterKey.emit(event);
     }
+    if (event.key === '>') {
+      self.service.shiftDotKey.emit(event);
+    }
+    if (event.key === '<') {
+      self.service.shiftCommaKey.emit(event);
+    }
+    if (event.key.toUpperCase() === 'A') {
+      self.service.shiftAKey.emit(event);
+    }
+    if (event.key.toUpperCase() === 'R') {
+      self.service.shiftRKey.emit(event);
+    }
+    if (event.key.toUpperCase() === 'W') {
+      self.service.shiftWKey.emit(event);
+    }
+    if (event.key.toUpperCase() === 'H') {
+      self.service.shiftHKey.emit(event);
+    }
+    if (event.key.toUpperCase() === 'F') {
+      self.service.shiftFKey.emit(event);
+    }
+    if (event.key.toUpperCase() === 'X') {
+      self.service.shiftXKey.emit(event);
+    }
   }
 
   altCtrlKey(event: KeyboardEvent) {
@@ -81,6 +108,9 @@ export class ShortcutDirective implements AfterContentInit {
     }
   }
   altShiftKey(event: KeyboardEvent) {
-
+    const self = this;
+    if (event.key.toUpperCase() === 'F') {
+      self.service.altShiftFKey.emit(event);
+    }
   }
 }

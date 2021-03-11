@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Renderer2, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
-import { SessionService } from 'src/app/service/session.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -9,20 +8,27 @@ import { FormService } from 'src/app/service/form.service';
 import { WorkflowService } from '../workflow.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
+import { ShortcutService } from 'src/app/shortcut/shortcut.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'odp-workflow-manage',
   templateUrl: './workflow-manage.component.html',
   styleUrls: ['./workflow-manage.component.scss']
 })
-export class WorkflowManageComponent implements OnInit {
-
-  @ViewChild('allStepsDropdown', { static: false }) allStepsDropdown: ElementRef;
-  @ViewChild('confirmDiscardModal', { static: false }) confirmDiscardModal: TemplateRef<HTMLElement>;
-  @ViewChild('confirmCancelModal', { static: false }) confirmCancelModal: TemplateRef<HTMLElement>;
-  @ViewChild('discardModal', { static: false }) discardModal: TemplateRef<HTMLElement>;
-  @ViewChild('workflowModal', { static: false }) workflowModal: TemplateRef<HTMLElement>;
-  @ViewChild('workflowModalDelete', { static: false }) workflowModalDelete: TemplateRef<HTMLElement>;
+export class WorkflowManageComponent implements OnInit, OnDestroy {
+  @ViewChild('allStepsDropdown', { static: false })
+  allStepsDropdown: ElementRef;
+  @ViewChild('confirmDiscardModal', { static: false })
+  confirmDiscardModal: TemplateRef<HTMLElement>;
+  @ViewChild('confirmCancelModal', { static: false })
+  confirmCancelModal: TemplateRef<HTMLElement>;
+  @ViewChild('discardModal', { static: false })
+  discardModal: TemplateRef<HTMLElement>;
+  @ViewChild('workflowModal', { static: false })
+  workflowModal: TemplateRef<HTMLElement>;
+  @ViewChild('workflowModalDelete', { static: false })
+  workflowModalDelete: TemplateRef<HTMLElement>;
   @ViewChild('inputBox', { static: false }) ele: ElementRef;
   form: FormGroup;
   workflowModalDeleteRef: NgbModalRef;
@@ -34,19 +40,19 @@ export class WorkflowManageComponent implements OnInit {
   serviceId: string;
   workflowId: string;
   serviceAPI: string;
-  loading: Boolean;
+  loading: boolean;
   schema: any;
   approversList: Array<any>;
   wizard: any;
   active: any;
-  recordIdName: string
+  recordIdName: string;
   dataToRespond: any;
   selectedData: any;
   value: any;
   activeAuditOldData: any;
   activeAuditNewData: any;
   definition: Array<any>;
-  showLazyLoader: Boolean;
+  showLazyLoader: boolean;
   currentStep = 0;
   respondControl: FormControl;
   respondModalOptions: any;
@@ -57,13 +63,13 @@ export class WorkflowManageComponent implements OnInit {
   showRespondView: boolean;
   toggleAllActionsDropDown: boolean;
   ids: Array<string>;
-  requestedByList: Array<any>
+  requestedByList: Array<any>;
   expandList: Array<any>;
-  
+  workflowApi: string;
+  api: string;
   constructor(
     private commonService: CommonService,
     private appService: AppService,
-    private sessionService: SessionService,
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
@@ -73,6 +79,7 @@ export class WorkflowManageComponent implements OnInit {
     private wfView: ElementRef,
     private renderer: Renderer2,
     private fb: FormBuilder,
+    private shortcutService: ShortcutService
   ) {
     const self = this;
     self.subscriptions = {};
@@ -100,55 +107,100 @@ export class WorkflowManageComponent implements OnInit {
       self.fetchSchema(self.serviceId);
       // self.getWfRecord();
     });
+    this.setupShortcuts();
   }
-  ngAfterViewInit() {
+
+  ngOnDestroy() {
     const self = this;
-    const view: HTMLElement = self.wfView.nativeElement.querySelector('.view-body');
-    self.renderer.listen(view, 'scroll', (event) => {
-      const scrollTop = event.target.scrollTop;
-      self.showHeaderOnly = scrollTop >= 26;
+    Object.keys(self.subscriptions).forEach(key => {
+      if (!!self.subscriptions[key]) {
+        self.subscriptions[key].unsubscribe();
+      }
     });
   }
+
+  setupShortcuts() {
+    const self = this;
+    this.shortcutService.unregisterAllShortcuts(357);
+
+    this.shortcutService.registerShortcut({
+      section: 'Workflow',
+      label: 'Close Record',
+      keys: ['Esc']
+    });
+    self.subscriptions['closeRecord'] = self.shortcutService.key
+      .pipe(filter(event => event.key.toUpperCase() === 'ESCAPE'))
+      .subscribe(() => {
+        if (this.showRespondView) {
+          this.showRespondView = false;
+        } else {
+          self.closeData();
+        }
+      });
+
+    this.shortcutService.registerShortcut({
+      section: 'Workflow',
+      label: 'Show Remarks',
+      keys: ['Shift', 'H']
+    });
+    self.subscriptions['showRemarks'] = self.shortcutService.shiftHKey
+      .pipe(filter(() => !this.canRespond && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+      .subscribe(() => {
+        this.showRespondView = true;
+      });
+  }
+
   fetchSchema(serviceId: string) {
     const self = this;
     self.showLazyLoader = true;
-    self.subscriptions['getServiceDetails'] = self.commonService.get('sm', '/service/' + serviceId).subscribe(res => {
-      self.showLazyLoader = false;
-      self.schema = res;
-      self.getApprovers();
-      self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
-      if (res.wizard && res.wizard.length > 0) {
-        self.wizard = res.wizard;
-        self.active[0] = true;
-      }
-      const parsedDef = JSON.parse(self.schema.definition);
+    self.subscriptions['getServiceDetails'] = self.commonService.get('sm', '/service/' + serviceId).subscribe(
+      res => {
+        self.showLazyLoader = false;
+        self.schema = res;
+        self.getApprovers();
+        self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
+        this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
+        this.api = `/${this.commonService.app._id}${res.api}`;
+        if (res.wizard && res.wizard.length > 0) {
+          self.wizard = res.wizard;
+          self.active[0] = true;
+        }
+        const parsedDef = self.schema.definition;
 
-      self.recordIdName = parsedDef['_id'].properties.name;
-      self.formService.patchType(parsedDef);
-      self.formService.fixReadonly(parsedDef);
-      self.getExpandList(parsedDef);
-      parsedDef._id = { type: 'String', properties: parsedDef._id.properties };
-      self.schema.definition = JSON.stringify(parsedDef);
-      self.getWfRecord();
-    }, err => {
-      self.loading = false;
-      self.commonService.errorToast(err, 'Unable to get the service details, please try again later');
-    });
+        self.recordIdName = parsedDef[0].properties.name;
+        self.formService.patchType(parsedDef);
+        self.formService.fixReadonly(parsedDef);
+        self.getExpandList(parsedDef);
+        // parsedDef._id = {
+        //   type: 'String',
+        //   properties: parsedDef._id.properties
+        // };
+        self.schema.definition = JSON.parse(JSON.stringify(parsedDef));
+        self.getWfRecord();
+      },
+      err => {
+        self.loading = false;
+        self.commonService.errorToast(err, 'Unable to get the service details, please try again later');
+      }
+    );
   }
 
   getWfRecord() {
     const self = this;
     self.showLazyLoader = true;
     self.subscriptions['getRecords'] = self.commonService
-      .get('wf', '/' + self.workflowId + '?expand=true').subscribe(wfRecord => {
+      .get('api', this.workflowApi + '/' + self.workflowId + '?expand=true').subscribe(wfRecord => {
         self.showLazyLoader = false;
         self.selectedData = self.appService.cloneObject(wfRecord);
-        self.commonService.getUser(self.selectedData.requestedBy).then(res => {
-          self.selectedData.username = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
-        }).catch(err => {
-          self.selectedData.username = 'ERROR';
-        });
-        self.ids.push(self.selectedData._id)
+        self.commonService
+          .getUser(self.selectedData.requestedBy)
+          .then(res => {
+            self.selectedData.username = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
+          })
+          .catch(err => {
+            self.selectedData.username = 'ERROR';
+          });
+        self.ids.push(self.selectedData._id);
         self.appService.remove_idFromArray(self.selectedData);
         self.selectedData.audit.map(user => {
           self.addUserDetailsToAudit(user);
@@ -193,35 +245,43 @@ export class WorkflowManageComponent implements OnInit {
         const tempDef = self.formService.parseDefinition(self.schema, self.value, { isEdit });
         self.form = self.fb.group(self.formService.createForm(tempDef));
         self.respondControl = new FormControl('', Validators.required);
-      })
+      });
   }
 
   getApprovers() {
     const self = this;
     self.subscriptions['getApprovers'] = self.commonService
       .get('user', `/approvers?entity=${self.schema._id}&app=${self.commonService.app._id}`)
-      .subscribe(res => {
-        self.approversList = res.approvers;
-      },
-        err => { });
+      .subscribe(
+        res => {
+          self.approversList = res.approvers;
+        },
+        err => { }
+      );
   }
   addUserDetailsToAudit(audit: any) {
     const self = this;
-    self.commonService.getUser(audit.id).then(res => {
-      audit.name = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
-    }).catch(err => {
-      audit.name = 'ERROR';
-      audit.userDeleted = true;
-    });
+    self.commonService
+      .getUser(audit.id)
+      .then(res => {
+        audit.name = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
+      })
+      .catch(err => {
+        audit.name = 'ERROR';
+        audit.userDeleted = true;
+      });
   }
   checkForResubmit(data) {
     const self = this;
     if (data.documentId) {
-      self.commonService.getDocumentVersion(data.serviceId, data.documentId).then(_version => {
-        data.canResubmit = data.data.old._metadata.version.document === _version;
-      }).catch(err => {
-        data.canResubmit = err;
-      });
+      self.commonService
+        .getDocumentVersion(data.serviceId, data.documentId)
+        .then(_version => {
+          data.canResubmit = data.data.old._metadata.version.document === _version;
+        })
+        .catch(err => {
+          data.canResubmit = err;
+        });
     } else {
       data.canResubmit = true;
     }
@@ -231,31 +291,38 @@ export class WorkflowManageComponent implements OnInit {
     self.appService.reSubmitData = self.selectedData.data.new;
     if (self.selectedData.operation === 'PUT') {
       self.appService.loadPage.emit('services');
-      self.router.navigate(['/~/services', self.selectedData.serviceId, 'manage',
-        self.selectedData.documentId], { relativeTo: self.route });
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.selectedData.serviceId, 'manage', self.selectedData.documentId], {
+        relativeTo: self.route
+      });
     } else if (self.selectedData.operation === 'DELETE') {
       self.workflowModalDeleteRef = self.modalService.open(self.workflowModalDelete, { centered: true });
-      self.workflowModalDeleteRef.result.then(close => {
-        if (close) {
-          self.deleteRequest();
-        }
-      }, dismiss => { });
+      self.workflowModalDeleteRef.result.then(
+        close => {
+          if (close) {
+            self.deleteRequest();
+          }
+        },
+        dismiss => { }
+      );
     } else {
       self.appService.loadPage.emit('services');
-      self.router.navigate(['/~/services', self.selectedData.serviceId, 'manage'], { relativeTo: self.route });
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.selectedData.serviceId, 'manage'], { relativeTo: self.route });
     }
   }
   deleteRequest() {
     const self = this;
     const api = '/' + self.commonService.app._id + self.schema.api;
-    self.subscriptions['delete'] = self.commonService.delete('api', api + '/' + self.selectedData.documentId).subscribe(res => {
-      if (res._workflow) {
-        const workflowData = self.appService.cloneObject(res._workflow[0]);
-        self.submitWorkflowFiles(workflowData);
+    self.subscriptions['delete'] = self.commonService.delete('api', api + '/' + self.selectedData.documentId).subscribe(
+      res => {
+        if (res._workflow) {
+          const workflowData = self.appService.cloneObject(res._workflow[0]);
+          self.submitWorkflowFiles(workflowData);
+        }
+      },
+      err => {
+        self.commonService.errorToast(err, 'Oops, something went wrong.');
       }
-    }, err => {
-      self.commonService.errorToast(err, 'Oops, something went wrong.');
-    });
+    );
   }
   submitWorkflowFiles(workflowData) {
     const self = this;
@@ -271,11 +338,15 @@ export class WorkflowManageComponent implements OnInit {
         }
       ]
     };
-    self.subscriptions['updateWorkflow'] = self.commonService.put('wf', '/' + workflowData._id, payload).subscribe(res => {
-      self.ts.success('Sent for review.');
-    }, err => {
-      self.commonService.errorToast(err, 'Oops, something went wrong.');
-    });
+    self.subscriptions['updateWorkflow'] = self.commonService
+      .put('api', this.workflowApi + '/' + workflowData._id, payload).subscribe(
+        res => {
+          self.ts.success('Sent for review.');
+        },
+        err => {
+          self.commonService.errorToast(err, 'Oops, something went wrong.');
+        }
+      );
   }
   closeDiscardModel() {
     const self = this;
@@ -285,8 +356,7 @@ export class WorkflowManageComponent implements OnInit {
       return;
     }
 
-    self.discardModalRef.close(true)
-
+    self.discardModalRef.close(true);
   }
 
   respond(action: string, data?) {
@@ -297,117 +367,140 @@ export class WorkflowManageComponent implements OnInit {
       remarks: self.respondModalOptions.remarks,
       attachments: self.workflowUploadedFiles,
       ids: [self.selectedData._id],
-      data: data
+      data
     };
-    self.subscriptions['respond'] = self.commonService.put('wf', '/action', payload)
-      .subscribe(res => {
-
-        if (res.passed && res.passed.length > 0) {
-          const tempData = res.passed.find(e => e._id === self.selectedData._id);
-          if (tempData.status === 'Approved') {
-            self.ts.success('Approved');
-          } else if (tempData.status === 'Rejected') {
-            self.ts.error('Rejected');
+    self.subscriptions['respond'] = self.commonService
+      .put('api', this.workflowApi + '/action', payload).subscribe(
+        res => {
+          if (res.passed && res.passed.length > 0) {
+            const tempData = res.passed.find(e => e._id === self.selectedData._id);
+            if (tempData.status === 'Approved') {
+              self.ts.success('Approved');
+            } else if (tempData.status === 'Rejected') {
+              self.ts.error('Rejected');
+            }
+          } else if (res.message === 'Sent For Changes.') {
+            self.ts.success('Sent for rework.');
+          } else if (res.message === 'Submission Successful.') {
+            self.ts.success('Draft Submitted');
+          } else if (res.message === 'Deletion successful') {
+            self.ts.success('Record discarded');
           }
-        } else if (res.message === 'Sent For Changes.') {
-          self.ts.success('Sent for rework.');
-        } else if (res.message === 'Submission Successful.') {
-          self.ts.success('Draft Submitted');
+          self.closeData();
+          self.showLazyLoader = false;
+        },
+        err => {
+          this.showLazyLoader = false;
+          self.commonService.errorToast(err, 'Unable to respond to workflow, please try again later');
         }
-        else if (res.message === 'Deletion successful') {
-          self.ts.success('Record discarded');
-        }
-        self.closeData()
-        self.showLazyLoader = false;
-      }, err => {
-        this.showLazyLoader = false;
-        self.commonService.errorToast(err, 'Unable to respond to workflow, please try again later');
-      });
+      );
   }
-
-
 
   saveDraft(reset?) {
     const self = this;
-    self.simulatePayload().then(data => {
-      self.form.patchValue(data);
-      self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
-      if (self.commonService.userDetails.basicDetails.name) {
-        self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
-      }
-      self.workflowModalOptions.remarks = null;
-      self.workflowUploadedFiles = [];
-      self.workflowModalOptions._id = self.value._id;
-      self.workflowModalOptions.operation = self.value._id ? 'PUT' : 'POST';
-      self.workflowModalOptions.title = 'Save Draft';
-      self.workflowModalOptions.fields = self.appService
-        .countChangedFields(self.value, self.form.getRawValue()) + ' fields';
-      self.workflowModalRef = self.modalService.open(self.workflowModal, { centered: true });
-      self.workflowModalRef.result.then(close => {
-        if (close) {
-          const payload = {
-            remarks: self.respondModalOptions.remarks,
-            attachments: self.workflowUploadedFiles,
-            data: self.form.getRawValue()
-          };
-          self.showLazyLoader = true;
-          self.subscriptions['saveDraft'] = self.commonService.put('wf', '/doc/' + self.selectedData._id, payload)
-            .subscribe(res => {
-              self.showLazyLoader = false;
-              self.ts.success('Draft saved.');
-            }, err => {
-              self.showLazyLoader = false;
-              self.commonService.errorToast(err, 'Unable to save the draft, please try again later');
-            });
-        } else {
-          self.showLazyLoader = false;
+    self
+      .simulatePayload()
+      .then(data => {
+        self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+        if (self.commonService.userDetails.basicDetails.name) {
+          self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
         }
-      }, dismiss => {
+        self.workflowModalOptions.remarks = null;
+        self.workflowUploadedFiles = [];
+        self.workflowModalOptions._id = self.value._id;
+        self.workflowModalOptions.operation = self.value._id ? 'PUT' : 'POST';
+        self.workflowModalOptions.title = 'Save Draft';
+        self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.form.getRawValue()) + ' fields';
+        self.workflowModalRef = self.modalService.open(self.workflowModal, {
+          centered: true
+        });
+        self.workflowModalRef.result.then(
+          close => {
+            if (close) {
+              // self.form.patchValue(data);
+              const isEdit = true;
+              const tempDef = self.formService.parseDefinition(self.schema, data, { isEdit });
+              self.form = self.fb.group(self.formService.createForm(tempDef));
+              const payload = {
+                remarks: self.respondModalOptions.remarks,
+                attachments: self.workflowUploadedFiles,
+                data: self.form.getRawValue()
+              };
+              self.showLazyLoader = true;
+              self.subscriptions['saveDraft'] = self.commonService
+                .put('api', this.workflowApi + '/doc/' + self.selectedData._id, payload).subscribe(
+                  res => {
+                    self.showLazyLoader = false;
+                    self.ts.success('Draft saved.');
+                  },
+                  err => {
+                    self.showLazyLoader = false;
+                    self.commonService.errorToast(err, 'Unable to save the draft, please try again later');
+                  }
+                );
+            } else {
+              self.showLazyLoader = false;
+            }
+          },
+          dismiss => {
+            self.showLazyLoader = false;
+          }
+        );
+      })
+      .catch(err => {
         self.showLazyLoader = false;
+        self.commonService.errorToast(err, 'Validation Failed');
       });
-    }).catch(err => {
-      self.showLazyLoader = false;
-      self.commonService.errorToast(err, 'Validation Failed');
-    });
   }
 
   submitDraft() {
     const self = this;
     self.showLazyLoader = true;
-    self.simulatePayload().then(data => {
-      self.value = data;
-      self.form.patchValue(data);
-      self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
-      if (self.commonService.userDetails.basicDetails.name) {
-        self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
-      }
-      self.workflowModalOptions._id = self.selectedData._id;
-      self.workflowModalOptions.operation = self.selectedData.operation;
-      if (self.selectedData.operation === 'PUT') {
-        self.workflowModalOptions.title = 'Submit Draft';
-        self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.value) + ' fields';
-      } else {
-        self.workflowModalOptions.title = 'Submit Draft';
-        self.workflowModalOptions.fields = 'New document';
-      }
-      if (!self.workflowModalRef) {
-        self.workflowModalRef = self.modalService.open(self.workflowModal, { centered: true });
-      }
-      self.workflowModalRef.result.then(close => {
-        if (close) {
-          self.respond('Submit', self.form.getRawValue());
-        } else {
-          self.showLazyLoader = false;
-          self.workflowModalRef = null;
+    self
+      .simulatePayload()
+      .then(data => {
+        self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+        if (self.commonService.userDetails.basicDetails.name) {
+          self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
         }
-      }, dismiss => {
+        self.workflowModalOptions._id = self.selectedData._id;
+        self.workflowModalOptions.operation = self.selectedData.operation;
+        if (self.selectedData.operation === 'PUT') {
+          self.workflowModalOptions.title = 'Submit Draft';
+          self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.value) + ' fields';
+        } else {
+          self.workflowModalOptions.title = 'Submit Draft';
+          self.workflowModalOptions.fields = 'New document';
+        }
+        if (!self.workflowModalRef) {
+          self.workflowModalRef = self.modalService.open(self.workflowModal, {
+            centered: true
+          });
+        }
+        self.workflowModalRef.result.then(
+          close => {
+            if (close) {
+              // self.form.patchValue(data);
+              const isEdit = true;
+              const tempDef = self.formService.parseDefinition(self.schema, data, { isEdit });
+              self.form = self.fb.group(self.formService.createForm(tempDef));
+              self.value = data;
+              self.respond('Submit', self.form.getRawValue());
+            } else {
+              self.showLazyLoader = false;
+              self.workflowModalRef = null;
+            }
+          },
+          dismiss => {
+            self.showLazyLoader = false;
+            self.workflowModalRef = null;
+          }
+        );
+      })
+      .catch(err => {
         self.showLazyLoader = false;
-        self.workflowModalRef = null;
+        self.commonService.errorToast(err, 'Validation Failed');
       });
-    }).catch(err => {
-      self.showLazyLoader = false;
-      self.commonService.errorToast(err, 'Validation Failed');
-    });
   }
   simulatePayload() {
     const self = this;
@@ -419,12 +512,15 @@ export class WorkflowManageComponent implements OnInit {
     const operation = self.selectedData.operation;
     const apiPath = self.appService.serviceAPI + '/utils/simulate?operation=' + operation + '&source=Draft Submitted';
     return new Promise((resolve, reject) => {
-      self.commonService.post('api', apiPath, payload).subscribe(res => {
-        self.appService.fixArrayInPayload(res, self.definition, false);
-        resolve(res);
-      }, err => {
-        reject(err);
-      });
+      self.commonService.post('api', apiPath, payload).subscribe(
+        res => {
+          self.appService.fixArrayInPayload(res, self.definition, false);
+          resolve(res);
+        },
+        err => {
+          reject(err);
+        }
+      );
     });
   }
   uploadWorkflowFile(ev) {
@@ -435,29 +531,32 @@ export class WorkflowManageComponent implements OnInit {
     const indexOfValue = self.workflowFilesList.findIndex(val => val.name === file.name);
     if (indexOfValue < 0) {
       self.showLazyLoader = true;
-      self.subscriptions['uploadFile_' + file.name] = self.commonService.upload('wf', '', formData, false)
-        .subscribe(event => {
-          if (event.type === HttpEventType.UploadProgress) {
-            // self.processing.progress = Math.floor(event.loaded / event.total * 100);
-          }
-          if (event.type === HttpEventType.Response) {
-            self.showLazyLoader = false;
-
-            // self.processing.progressBar = false;
-            if (self.workflowFilesList.length === 0) {
-              self.workflowFilesList.push(file);
-            } else {
-              const indexValue = self.workflowFilesList.findIndex(val => val.name === file.name);
-              if (indexValue < 0) {
-                self.workflowFilesList.push(file);
-              }
+      self.subscriptions['uploadFile_' + file.name] = self.commonService
+        .upload('api', this.api, formData, false).subscribe(
+          event => {
+            if (event.type === HttpEventType.UploadProgress) {
+              // self.processing.progress = Math.floor(event.loaded / event.total * 100);
             }
-            self.workflowUploadedFiles.push(event.body);
+            if (event.type === HttpEventType.Response) {
+              self.showLazyLoader = false;
+
+              // self.processing.progressBar = false;
+              if (self.workflowFilesList.length === 0) {
+                self.workflowFilesList.push(file);
+              } else {
+                const indexValue = self.workflowFilesList.findIndex(val => val.name === file.name);
+                if (indexValue < 0) {
+                  self.workflowFilesList.push(file);
+                }
+              }
+              self.workflowUploadedFiles.push(event.body);
+            }
+          },
+          err => {
+            self.showLazyLoader = false;
+            self.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
           }
-        }, err => {
-          self.showLazyLoader = false;
-          self.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
-        });
+        );
     }
   }
   getDefinition(field: string) {
@@ -466,11 +565,11 @@ export class WorkflowManageComponent implements OnInit {
     if (self.definition) {
       retValue = self.definition.find(e => e.key === field);
     }
-    return retValue
+    return retValue;
   }
   closeData() {
     const self = this;
-    self.router.navigate(['/~/workflow', self.appService.serviceId]);
+    self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
   }
   discardDraft() {
     const self = this;
@@ -479,15 +578,19 @@ export class WorkflowManageComponent implements OnInit {
     if (self.commonService.userDetails.basicDetails.name) {
       self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
     }
-    self.discardModalRef = self.modalService.open(self.discardModal, { centered: true });
-    self.discardModalRef.result.then(close => {
-      if (close) {
+    self.discardModalRef = self.modalService.open(self.discardModal, {
+      centered: true
+    });
+    self.discardModalRef.result.then(
+      close => {
+        if (close) {
+          self.respondModalOptions.remarks = self.respondControl.value;
 
-        self.respondModalOptions.remarks = self.respondControl.value;
-
-        self.respond('Discard');
-      }
-    }, dismiss => { });
+          self.respond('Discard');
+        }
+      },
+      dismiss => { }
+    );
   }
   showStep(id) {
     const self = this;
@@ -505,12 +608,11 @@ export class WorkflowManageComponent implements OnInit {
     self.active[id] = true;
     self.currentStep = id;
     document.getElementById('step-' + id).scrollIntoView();
-
   }
   showAllStepsDropdown(event) {
     const self = this;
-    self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'left', (event.layerX - 200) + 'px');
-    self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'top', (event.layerY + 25) + 'px');
+    self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'left', event.layerX - 200 + 'px');
+    self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'top', event.layerY + 25 + 'px');
     self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'display', 'block');
     self.allStepsDropdown.nativeElement.focus();
   }
@@ -523,33 +625,45 @@ export class WorkflowManageComponent implements OnInit {
     const api = '/' + self.commonService.app._id + self.schema.api;
     self.showLazyLoader = true;
     self.subscriptions['experience-hook'] = self.commonService
-      .post('api', api + `/experienceHook?name=${hook.name}`, { data: self.form.getRawValue() }).subscribe(res => {
-        self.showLazyLoader = false;
-        if (res.data && typeof (res.data) === 'object') {
-          let tempValue = self.appService.cloneObject(self.form.getRawValue());
-          if (!res.data._id) {
-            res.data._id = tempValue._id;
-          }
-          const oldValDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: true });
+      .post('api', api + `/utils/experienceHook?name=${hook.name}`, {
+        data: self.form.getRawValue()
+      })
+      .subscribe(
+        res => {
+          self.showLazyLoader = false;
+          if (res.data && typeof res.data === 'object') {
+            let tempValue = self.appService.cloneObject(self.form.getRawValue());
+            if (res.data._id) {
+              res.data._id = tempValue._id;
+            }
+            const oldValDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: true });
 
-          tempValue = self.createData(tempValue, res.data, oldValDef);
-          const tempDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: true });
-          self.form = self.fb.group(self.formService.createForm(tempDef));
-          self.form.markAsDirty();
+            tempValue = self.createData(tempValue, res.data, oldValDef);
+            const tempDef = self.formService.parseDefinition(self.schema, tempValue, { isEdit: true });
+            self.form = self.fb.group(self.formService.createForm(tempDef));
+            self.form.markAsDirty();
+          }
+          if (res.message) {
+            self.ts.success(res.message);
+          }
+        },
+        err => {
+          self.showLazyLoader = false;
+          self.commonService.errorToast(err, 'Unable no trigger the hook, please try again later');
         }
-        if (res.message) {
-          self.ts.success(res.message);
-        }
-      }, err => {
-        self.showLazyLoader = false;
-        self.commonService.errorToast(err, 'Unable no trigger the hook, please try again later');
-      });
+      );
   }
   createData(oldData, newData, def) {
+    const isEdit = this.selectedData.operation === 'PUT' ? true : false;
     def.forEach(element => {
       if (element.type === 'Object') {
         this.createData(oldData[element.key], newData[element.key], element.definition);
-      } else if (newData && newData[element.key] !== null && newData[element.key] !== undefined) {
+      }
+      if (isEdit) {
+        if (newData && newData.hasOwnProperty(element.key) && !element.properties.createOnly) {
+          oldData[element.key] = newData[element.key];
+        }
+      } else if (newData && newData.hasOwnProperty(element.key)) {
         oldData[element.key] = newData[element.key];
       }
     });
@@ -572,44 +686,42 @@ export class WorkflowManageComponent implements OnInit {
   getExpandList(parsedDef, parent?) {
     const self = this;
     if (parsedDef) {
-      Object.keys(parsedDef).forEach(element => {
-        if (parsedDef[element].type && (parsedDef[element].type === 'Relation' || parsedDef[element].type === 'User')) {
-          if (parsedDef[element].properties.relatedViewFields.length) {
-            parsedDef[element].properties.relatedViewFields.forEach(ele => {
+      parsedDef.forEach(def => {
+        if (def.type && (def.type === 'Relation' || def.type === 'User')) {
+          if (def.properties.relatedViewFields.length) {
+            def.properties.relatedViewFields.forEach(ele => {
               if (parent) {
-                self.expandList.push(parent + '.' + parsedDef[element].properties.dataKey + '.' + ele.key);
+                self.expandList.push(parent + '.' + def.properties.dataKey + '.' + ele.key);
               } else {
-                self.expandList.push(parsedDef[element].properties.dataKey + '.' + ele.key);
+                self.expandList.push(def.properties.dataKey + '.' + ele.key);
               }
             });
-
           }
-          if (parsedDef[element].properties.relatedSearchField !== '_id') {
+          if (def.properties.relatedSearchField !== '_id') {
             if (parent) {
-              self.expandList.push(parent + '.' + parsedDef[element].properties.dataKey + '.' + parsedDef[element].properties.relatedSearchField);
-
+              self.expandList.push(parent + '.' + def.properties.dataKey + '.' + def.properties.relatedSearchField);
             } else {
-              self.expandList.push(parsedDef[element].properties.dataKey + '.' + parsedDef[element].properties.relatedSearchField);
+              self.expandList.push(def.properties.dataKey + '.' + def.properties.relatedSearchField);
             }
           }
-        } else if (parsedDef[element].type && parsedDef[element].type === 'Array') {
-          let par = element;
+        } else if (def.type && def.type === 'Array') {
+          let par = def.key;
           if (parent) {
-            par = element + parent;
+            par = def.key + parent;
           }
-          if (parsedDef[element].definition._self.type === 'Relation' || parsedDef[element].type === 'User') {
-            parsedDef[element].definition._self.properties.relatedViewFields.forEach(ele => {
-              self.expandList.push(parsedDef[element].properties.dataKey + '.' + ele.key);
+          const selfObj = def.definition[0] || {};
+          if (selfObj.type === 'Relation' || def.type === 'User') {
+            selfObj.properties.relatedViewFields.forEach(ele => {
+              self.expandList.push(def.properties.dataKey + '.' + ele.key);
             });
-            if (parsedDef[element].definition._self.properties.relatedSearchField !== '_id') {
-              self.expandList.push(parsedDef[element].properties.dataKey + '.' + parsedDef[element].definition._self.properties.relatedSearchField);
-
+            if (selfObj.properties.relatedSearchField !== '_id') {
+              self.expandList.push(def.properties.dataKey + '.' + selfObj.properties.relatedSearchField);
             }
-          } else if (parsedDef[element].definition._self.type === 'Object') {
-            self.getExpandList(parsedDef[element].definition._self.definition, par)
+          } else if (selfObj.type === 'Object') {
+            self.getExpandList(selfObj.definition, par);
           }
-        } else if (parsedDef[element].type && parsedDef[element].type === 'Object') {
-          self.getExpandList(parsedDef[element].definition, element);
+        } else if (def.type && def.type === 'Object') {
+          self.getExpandList(def.definition, def.key);
         }
       });
     }
@@ -624,10 +736,12 @@ export class WorkflowManageComponent implements OnInit {
   }
   get canResubmit() {
     const self = this;
-    if (self.selectedData
-      && (self.hasPermission('POST') || self.hasPermission('PUT'))
-      && self.selectedData.status === 'Rejected'
-      && (self.selectedData.operation === 'POST' || self.selectedData.canResubmit)) {
+    if (
+      self.selectedData &&
+      (self.hasPermission('POST') || self.hasPermission('PUT')) &&
+      self.selectedData.status === 'Rejected' &&
+      (self.selectedData.operation === 'POST' || self.selectedData.canResubmit)
+    ) {
       return true;
     }
     return false;
@@ -699,7 +813,6 @@ export class WorkflowManageComponent implements OnInit {
       return false;
     } else {
       return true;
-
     }
   }
   hasPermission(method?: string) {

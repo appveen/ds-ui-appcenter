@@ -7,6 +7,7 @@ import { WorkflowAgGridService } from '../workflow-ag-grid.service';
 import { CommonService } from 'src/app/service/common.service';
 import { Properties } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
+import { Md5 } from 'ts-md5';
 
 @Component({
   selector: 'odp-ag-grid-cell',
@@ -29,7 +30,9 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   id: string;
   url: string;
   formattedAddress: string;
-
+  decryptedValue: string;
+  timezoneValue: string;
+  parsedDate: string;
   constructor(
     private appService: AppService,
     private commonService: CommonService,
@@ -53,6 +56,9 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
       self.formattedAddress = self.value.formattedAddress;
     } else if (self.value && self.value.userInput) {
       self.formattedAddress = self.value.userInput;
+    } else if (this.value && this.value.rawData) {
+      this.parsedDate = this.appService.getUTCString(this.value.rawData, this.value.tzInfo);
+      this.timezoneValue = this.value.tzInfo;
     }
   }
 
@@ -82,7 +88,27 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   view() {
     const self = this;
     self.gridService.respond.emit(self.data);
-    self.router.navigate(['/~/workflow', self.appService.serviceId, self.id]);
+    self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId, self.id]);
+  }
+
+  showDecryptedValue(value) {
+    const self = this;
+
+    self.showPassword = !self.showPassword;
+    if (self.showPassword) {
+      let cksm = Md5.hashStr(value.value);
+      if (value.checksum && value.checksum === cksm) {
+        self.decryptedValue = value.value;
+      }
+      else {
+        self.commonService.post('sec', '/enc/' + this.commonService.app._id + '/decrypt', { data: value.value }).subscribe(res => {
+          self.decryptedValue = res.data;
+        }, err => {
+          self.decryptedValue = value.value;
+        })
+      }
+    }
+
   }
 
   get relVal() {

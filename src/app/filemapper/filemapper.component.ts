@@ -11,13 +11,13 @@ import Fuse from 'fuse.js';
 @Component({
   selector: 'odp-filemapper',
   templateUrl: './filemapper.component.html',
-  styleUrls: ['./filemapper.component.scss'],
-
+  styleUrls: ['./filemapper.component.scss']
 })
 export class FilemapperComponent implements OnInit, OnDestroy {
-
-  @ViewChild('validationInProgress', { static: true }) validationInProgress: TemplateRef<HTMLElement>;
-  @ViewChild('importInProgress', { static: true }) importInProgress: TemplateRef<HTMLElement>;
+  @ViewChild('validationInProgress', { static: true })
+  validationInProgress: TemplateRef<HTMLElement>;
+  @ViewChild('importInProgress', { static: true })
+  importInProgress: TemplateRef<HTMLElement>;
   activeStep: number;
   title: string;
   attributeList: any;
@@ -56,7 +56,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     private appService: AppService,
     private formService: FormService,
     private fb: FormBuilder
-
   ) {
     const self = this;
     self.activeStep = 0;
@@ -87,30 +86,35 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     const self = this;
     self.title = self.appService.serviceName;
     self.ripple = false;
-    if (self.appService.resultObj
-      && self.appService.resultObj.conflicts === 0
-      && self.appService.resultObj.duplicate === 0
-      && self.appService.resultObj.valid === 0) {
+    if (
+      self.appService.resultObj &&
+      self.appService.resultObj.conflicts === 0 &&
+      self.appService.resultObj.duplicate === 0 &&
+      self.appService.resultObj.valid === 0
+    ) {
       self.hasBulkInvalidRecords = true;
     }
     self.showLazyLoader = true;
     self.subscriptions['getRoles'] = self.commonService
       .get('user', '/usr/role?entity=' + self.appService.serviceId + '&app=' + self.commonService.app._id)
-      .subscribe(res => {
-        self.showLazyLoader = false;
-        const roles = res.map(e => e.method);
-        if (roles.indexOf('POST') === -1 && roles.indexOf('PUT') === -1) {
-          self.router.navigate(['../list'], { relativeTo: self.route });
-          return;
+      .subscribe(
+        res => {
+          self.showLazyLoader = false;
+          const roles = res.map(e => e.method);
+          if (roles.indexOf('POST') === -1 && roles.indexOf('PUT') === -1) {
+            self.router.navigate(['../list'], { relativeTo: self.route });
+            return;
+          }
+          self.getSchema(self.appService.serviceId);
+        },
+        err => {
+          self.ts.error('Oops, something went wrong.');
+          self.showLazyLoader = false;
         }
-        self.getSchema(self.appService.serviceId);
-      }, err => {
-        self.ts.error('Oops, something went wrong.');
-        self.showLazyLoader = false;
-      });
+      );
 
     self.appService.objMappingData.subscribe(data => {
-      self.isChildDom = data;
+      self.isChildDom = !!data;
     });
 
     self.appService.hasBulkInvalidRecords.subscribe(data => {
@@ -127,12 +131,12 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       filter: { app: self.commonService.app._id }
     };
     self.showLazyLoader = true;
-    self.subscriptions['serviceDefinition'] = self.commonService.get('sm', '/service/' + serviceId, options)
-      .subscribe(res => {
+    self.subscriptions['serviceDefinition'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
+      res => {
         self.showLazyLoader = false;
-        const parsedDef = JSON.parse(res.definition);
+        const parsedDef = res.definition;
         self.updateSchema(parsedDef);
-        res.definition = JSON.stringify(parsedDef);
+        res.definition = JSON.parse(JSON.stringify(parsedDef));
         self.schema = res;
         self.title = res.name;
         self.version = res.version;
@@ -141,16 +145,14 @@ export class FilemapperComponent implements OnInit, OnDestroy {
           res.wizard.forEach(element => {
             self.tempAttrList = self.tempAttrList.concat(element.fields);
           });
-        } else {
-          self.attributeList = Object.assign.apply({}, res.attributeList
-            .map(e => Object.defineProperty({}, e.key, { value: e.name, enumerable: true, writable: true })));
         }
         if (self.appService.mappingData) {
           self.activeStep = 3;
           self.fileData = self.appService.fileData;
           self.mappingData = self.appService.mappingData;
           self.resultObj = self.appService.resultObj;
-          self.resultObj.totalRecords = self.resultObj.valid + self.resultObj.errorCount + (self.resultObj.duplicate - self.resultObj.conflicts);
+          self.resultObj.totalRecords =
+            self.resultObj.valid + self.resultObj.errorCount + (self.resultObj.duplicateCount - self.resultObj.conflictCount);
           self.appService.mappingData = null;
           self.appService.fileData = null;
           self.appService.resultObj = null;
@@ -161,15 +163,16 @@ export class FilemapperComponent implements OnInit, OnDestroy {
           self.appService.mappingData = null;
           self.appService.fileData = null;
         }
-      }, err => {
+      },
+      err => {
         self.commonService.errorToast(err, 'Unable to get the record please, try again later');
         self.showLazyLoader = false;
-      });
+      }
+    );
   }
   enableFileSettings(event) {
     const self = this;
     self.activeStep = 1;
-
   }
 
   selectAndUpload(event) {
@@ -191,24 +194,25 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     const self = this;
     self.ripple = false;
     self.showLazyLoader = true;
-    self.subscriptions['uploadFile_'] = self.commonService.upload('api', self.api, formData, true)
-      .subscribe(event => {
+    self.subscriptions['uploadFile_'] = self.commonService.upload('api', self.api, formData, true).subscribe(
+      event => {
         if (event.type === HttpEventType.Response) {
           self.activeStep = 1;
           self.fileData = event.body;
           self.showLazyLoader = false;
           self.clearForms();
 
-          const flattedArray = self.formService.parseDefinitionFM(JSON.parse(self.schema.definition))
+          const flattedArray = self.formService.parseDefinitionFM(self.schema.definition);
           flattedArray.forEach(element => {
-            self.dsKeys.push(element.key)
+            self.dsKeys.push(element.key);
           });
-
         }
-      }, err => {
+      },
+      err => {
         self.showLazyLoader = false;
         self.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
-      });
+      }
+    );
   }
 
   dragOver() {
@@ -227,7 +231,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     self.fileSettings = {
       headers: true
     };
-    
   }
 
   parseFile() {
@@ -254,58 +257,66 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     self.showLazyLoader = true;
 
     self.subscriptions['selectSheet'] = self.commonService
-      .put('api', self.api + '/fileMapper/' + self.fileData.fileId, self.fileSettings)
-      .subscribe(res => {
-        self.activeStep++;
-        self.mappingData = res;
-        self.mappingData.fileId = res.fileId;
-        self.mappingData.fileName = res.fileName;
-        self.showLazyLoader = false;
-        let defnitionArray = self.formService.parseDefinition(self.schema, null, null);
-        if (self.tempAttrList.length) {
-          defnitionArray = defnitionArray.filter(data => self.tempAttrList.includes(data.properties.dataPath));
-        }
-        self.form = self.fb.group(self.formService.createMappingForm(defnitionArray));
-        const fuse = new Fuse(self.mappingData.headers.fileKeys, {
-          isCaseSensitive: true,
-          keys: ['name']
-        })
-        let mapObj = {};
-        defnitionArray.forEach(element => {
-          const temp = fuse.search(element.properties.name);
-          if (temp && temp.length > 0) {
-            mapObj[element.properties.dataKey] = temp[0].item['name'];
+      .put('api', self.api + '/utils/fileMapper/' + self.fileData.fileId, self.fileSettings)
+      .subscribe(
+        res => {
+          self.activeStep++;
+          self.mappingData = res;
+          self.mappingData.fileId = res.fileId;
+          self.mappingData.fileName = res.fileName;
+          self.showLazyLoader = false;
+          let defnitionArray = self.formService.parseDefinition(self.schema, null, null);
+          if (self.tempAttrList.length) {
+            defnitionArray = defnitionArray.filter(data => self.tempAttrList.includes(data.properties.dataPath));
           }
-        });
-        self.form.patchValue(mapObj);
-      }, err => {
-        self.commonService.errorToast(err, 'unable to fetch file details, please try again later');
-        self.showLazyLoader = false;
-      });
+          self.form = self.fb.group(self.formService.createMappingForm(defnitionArray));
+          const fuse = new Fuse(self.mappingData.headers.fileKeys, {
+            isCaseSensitive: false,
+            keys: ['name']
+          });
+          let mapObj = {};
+          defnitionArray.forEach(element => {
+            const temp = fuse.search(element.properties.name);
+            if (temp && temp.length > 0) {
+              mapObj[element.properties.dataKey] = temp[0].item['name'];
+            }
+          });
+          console.log(mapObj);  
+          self.form.patchValue(mapObj);
+        },
+        err => {
+          self.commonService.errorToast(err, 'unable to fetch file details, please try again later');
+          self.showLazyLoader = false;
+        }
+      );
   }
 
   sendMapping() {
     const self = this;
     self.mappingData.headerMapping = self.form.value;
     self.showLazyLoader = true;
-    const url = self.api + '/fileMapper/' + self.mappingData.fileId + '/mapping?timezone=' + (new Date().getTimezoneOffset());
-    self.subscriptions['fileMapperMapping'] = self.commonService
-      .put('api', url, self.mappingData)
-      .subscribe(res => {
+    const url = self.api + '/utils/fileMapper/' + self.mappingData.fileId + '/mapping?timezone=' + new Date().getTimezoneOffset();
+    self.subscriptions['fileMapperMapping'] = self.commonService.put('api', url, self.mappingData).subscribe(
+      res => {
         self.validationInProgressRef = self.modalService.open(self.validationInProgress, {
           centered: true,
           beforeDismiss: () => false
         });
-        self.validationInProgressRef.result.then(close => {
-          self.commonService.notification.fileImport.emit({
-            message: 'Validating'
-          });
-          self.router.navigate(['~/services', self.schema._id, 'list']);
-        }, dismiss => { });
-      }, err => {
-        self.commonService.errorToast(err, "Unable to map the columns, please try again later.");
+        self.validationInProgressRef.result.then(
+          close => {
+            self.commonService.notification.fileImport.emit({
+              message: 'Validating'
+            });
+            self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
+          },
+          dismiss => { }
+        );
+      },
+      err => {
+        self.commonService.errorToast(err, 'Unable to map the columns, please try again later.');
         self.showLazyLoader = false;
-      });
+      }
+    );
   }
   getForm(event) {
     const self = this;
@@ -321,27 +332,34 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     self.createObj.fileId = self.mappingData.fileId;
     self.createObj.fileName = self.mappingData.fileName;
     self.subscriptions['createRecords'] = self.commonService
-      .post('api', self.api + '/fileMapper/' + self.mappingData.fileId + '/create', self.createObj)
-      .subscribe(res => {
-        self.showImportLoader = false;
-        if (res._workflow && res._workflow.failed) {
-          self.ts.warning('File upload failed for '+res._workflow.failed+' records')
-        } 
-        self.importInProgressRef = self.modalService.open(self.importInProgress, {
-          centered: true,
-          beforeDismiss: () => false
-        });
-        self.importInProgressRef.result.then(close => {
-          self.commonService.notification.fileImport.emit({
-            message: 'Importing'
+      .post('api', self.api + '/utils/fileMapper/' + self.mappingData.fileId + '/create', self.createObj)
+      .subscribe(
+        res => {
+          self.showImportLoader = false;
+          if (res._workflow && res._workflow.failed) {
+            self.ts.warning('File upload failed for ' + res._workflow.failed + ' records');
+          }
+          self.importInProgressRef = self.modalService.open(self.importInProgress, {
+            centered: true,
+            beforeDismiss: () => false
           });
-          self.router.navigate(['~/services', self.schema._id, 'list']);
-        }, dismiss => { });
-      }, err => {
-        self.commonService.errorToast(err, 'unable to create records pleasetry again later');
-        self.showImportLoader = false;
-        clearInterval(self.prgressInVal);
-      });
+          self.importInProgressRef.result.then(
+            close => {
+              self.commonService.notification.fileImport.emit({
+                message: 'Importing'
+              });
+              self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
+            },
+            dismiss => { }
+          );
+        },
+        err => {
+          self.commonService.errorToast(err, 'unable to create records pleasetry again later');
+          self.showImportLoader = false;
+          clearInterval(self.prgressInVal);
+          self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
+        }
+      );
   }
 
   progress() {
@@ -382,7 +400,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
         self.form.patchValue(self.mappingData.headerMapping);
       }
     }
-
   }
 
   updateChange(event) {
@@ -395,7 +412,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     self.createObj.create = event;
   }
 
-
   getCreateData(event) {
     const self = this;
     self.createObj = event;
@@ -404,36 +420,38 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     const self = this;
     self.appService.hasBulkInvalidRecords.emit(true);
-
   }
 
   cancel() {
     const self = this;
-    self.router.navigate(['~/services', self.appService.serviceId, 'list']);
+    self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'list']);
   }
   dragEvent(event, data) {
     const self = this;
     self.appService.draggedItem = data;
   }
   updateSchema(parsedDef) {
-    Object.keys(parsedDef).forEach(key => {
-      if (parsedDef[key].properties && parsedDef[key].properties.relatedTo) {
-        parsedDef[key].type = 'Relation';
-        parsedDef[key].properties._typeChanged = 'Relation';
-        delete parsedDef[key].definition;
-      } else if (parsedDef[key].type === 'Array') {
-        this.updateSchema(parsedDef[key].definition);
-      } else if (parsedDef[key].type === 'Object') {
-        this.updateSchema(parsedDef[key].definition);
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        this.updateSchema(def.definition);
+      } else if (def.type === 'Object') {
+        this.updateSchema(def.definition);
       }
     });
   }
   get progressWidth() {
     const self = this;
     return {
-      minWidth: (500 * (self.uploading / 100)) + 'px'
+      minWidth: 500 * (self.uploading / 100) + 'px'
     };
-
   }
 
   get resolveOpen() {

@@ -1,7 +1,12 @@
 <ng-container *ngIf="specificType=='object'">
-  <odp-edit-collection-of-objects-grid #gridComponent [formArray]="form" [definition]="definition"
-    [collectionFieldName]="arrayDefinition.properties.name">
+  <odp-edit-collection-of-objects-grid #gridComponent 
+    [formArray]="form" [definition]="definition" [collectionFieldName]="arrayDefinition.properties.name" [isEditable]="isEditable">
   </odp-edit-collection-of-objects-grid>
+  <!-- <ng-template #readOnlyMode>
+    <odp-view-collection-of-objects-grid [collectionFieldName]="arrayDefinition.properties.name"
+      [definition]="definition">
+    </odp-view-collection-of-objects-grid>
+  </ng-template> -->
 </ng-container>
 <ng-container *ngIf="specificType!='object'">
   <div class="d-flex flex-column">

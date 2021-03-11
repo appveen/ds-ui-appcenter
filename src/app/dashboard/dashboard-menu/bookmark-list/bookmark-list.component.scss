@@ -1,0 +1,58 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.menu-list-item {
+  min-height: 32px;
+  max-height: 32px;
+  padding-left: 8px;
+  &:not(.text-white):hover {
+    cursor: pointer;
+    background: #ececec !important;
+    .pinning-star {
+      display: block;
+    }
+  }
+  &:hover {
+    .pinning-star {
+      display: block;
+      color: #3498db;
+    }
+  }
+  .list-item-icon {
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 32px;
+    max-width: 32px;
+  }
+  .list-item-label {
+    min-width: 156px;
+    max-width: 156px;
+  }
+  .type {
+    border-radius: 20%;
+  }
+}
+
+.search-control {
+  input {
+    min-width: 231px;
+    max-width: 231px;
+    min-height: 48px;
+    max-height: 48px;
+    background: transparent;
+    text-indent: 36px;
+    font-size: 12px;
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      color: $border;
+    }
+  }
+  .fa-search {
+    left: 16px;
+    top: 19px;
+    font-size: 12px;
+    color: $border;
+  }
+}

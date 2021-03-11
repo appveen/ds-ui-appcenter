@@ -1,17 +1,28 @@
 <div class="relation-control-wrapper position-relative">
-    <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError}"
-        [ngModel]="selectedValue" type="text" [ngbTypeahead]="search" [inputFormatter]="formatter"
-        #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
-        (focus)="itemSelected = true" [disabled]="definition.properties.readonly || control.disabled" (keyup)="onEnter($event)"
-        (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
 
-    <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
-        [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
-        (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
-        [disabled]="definition.properties.readonly || control.disabled">
-        <option *ngIf="!definition.properties.required" value="">---select---</option>
-        <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
-    </select>
+    <ng-container *ngIf="!definition.properties.readonly">
+        <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded"
+            [ngClass]="{'is-invalid':requiredError}" [ngModel]="selectedValue" type="text" [ngbTypeahead]="search"
+            [inputFormatter]="formatter" #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)"
+            [resultFormatter]="formatter" #relationTypeInput (focus)="itemSelected = true"
+            [disabled]=" control.disabled" (keyup)="onEnter($event)" (blur)="onBlur()" (focus)="onFocus($event)"
+            [attr.id]="definition.path">
+
+        <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
+            [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
+            (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
+            [disabled]="control.disabled">
+            <option *ngIf="!definition.properties.required" value="">---select---</option>
+            <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
+        </select>
+    </ng-container>
+
+    <ng-container *ngIf="definition.properties.readonly">
+        <a [routerLink]="relationLink+control.value._id" target="_blank" *ngIf="control?.value?._id">
+            {{formatter(relatedData)?formatter(relatedData):control.value._id}}
+        </a>
+        <span class="text-muted" *ngIf="!control?.value?._id">N.A</span>
+    </ng-container>
 
     <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
         [ngClass]="{'bg-error':requiredError}">

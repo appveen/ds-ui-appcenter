@@ -1,12 +1,8 @@
-FROM node:14-alpine
+FROM appveen/angular.base:11
 
 WORKDIR /app
 
-ENV NODE_OPTIONS --max_old_space_size=8192
-RUN npm i -g @angular/cli@9.1.5
-
 COPY package.json .
-
 RUN npm install
 
 COPY . .

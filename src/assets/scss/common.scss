@@ -18,12 +18,21 @@
 }
 
 .logo {
-  background-image: url("../img/data.stack_appcenter_dark_optimized.svg");
+  // background-image: url("../img/data.stack_appcenter_dark_optimized.svg");
+  background-image: url("../img/logo_default.svg");
+  background-size: contain;
+  background-position: center;
+}
+.logo-white{
+  background-image: url("../img/logo_white.svg");
   background-size: contain;
   background-position: center;
 }
 .powered-by {
-  background-image: url("../img/data.stack_appcenter_powered_by.svg");
+  // background-image: url("../img/data.stack_appcenter_powered_by.svg");
+  background-image: url("../img/powered-by.svg");
+  background-size: contain;
+  background-position: center;
 }
 .login-img {
   background: url("../img/world.gif");

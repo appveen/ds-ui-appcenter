@@ -14,7 +14,7 @@ const routes: Routes = [
   // { path: 'auth', component: AuthComponent, canActivate: [AuthGuard] },x
   { path: 'auth', component: AuthComponent },
   {
-    path: '~', component: DashboardComponent,
+    path: ':app', component: DashboardComponent,
     canActivateChild: [BeforeGuard],
     canActivate: [BeforeGuard],
     children: [

@@ -18,6 +18,11 @@ export class RelationViewComponent implements OnInit {
   serviceAccess: boolean;
   isSecureText: boolean;
   showPassword: boolean;
+
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+  
   constructor(private appService: AppService,
     private commonService: CommonService,
    ) {

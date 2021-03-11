@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ColDef, ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
 
 import {
@@ -19,7 +19,7 @@ import { ColumnFilterComponent } from '../grid-column-filter/column-filter/colum
   templateUrl: './view-collection-of-objects-grid.component.html',
   styleUrls: ['./view-collection-of-objects-grid.component.scss']
 })
-export class ViewCollectionOfObjectsGridComponent implements OnInit {
+export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
   @Input() definition: any;
   @Input() showIndexColumn: boolean = false;
   @Input() collectionFieldName: string;
@@ -33,6 +33,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
   columnApi: ColumnApi;
   hasPath: boolean;
   frameworkComponents: any;
+  rowData: Array<any>;
 
   get gridStyle() {
     return {
@@ -57,7 +58,14 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
       this.hasPath = true;
     }
     this.flattenDefinition(this.definitionList, this.definition.definition);
+    this.rowData = this.getRowData();
     this.prepareTable();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!!changes && !!changes['definition']) {
+      this.rowData = this.getRowData();
+    }
   }
 
   flattenDefinition(definitionList, definition, parent?) {
@@ -148,7 +156,6 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
       paginationPageSize: AG_GRID_PAGINATION_COUNT,
       animateRows: true,
       floatingFilter: true,
-      rowData: this.getRowData(),
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
       onRowDoubleClicked: this.onRowDoubleClick.bind(this),
@@ -156,7 +163,8 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
       defaultColDef: {
         suppressMovable: true,
         suppressMenu: true
-      }
+      },
+      suppressColumnVirtualisation:true
     };
   }
 
@@ -175,6 +183,8 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
     this.gridApi = event.api;
     this.columnApi = event.columnApi;
     this.forceResizeColumns()
+    // this.gridApi.sizeColumnsToFit()
+    // this.columnApi.autoSizeAllColumns();
     this.gridApi.setFilterModel('');
   }
 
@@ -217,6 +227,8 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
   private autoSizeAllColumns() {
     if (!!this.gridApi && !!this.columnApi) {
       setTimeout(() => {
+        const container = document.querySelector('.grid-container');
+        const availableWidth = !!container ? container.clientWidth - 80 : 900;
         const allColumns = this.columnApi.getAllColumns();
         allColumns.forEach(col => {
           this.columnApi.autoSizeColumn(col);
@@ -224,6 +236,10 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit {
             col.setActualWidth(200);
           }
         });
+        const occupiedWidth = allColumns.reduce((pv, cv) => (pv + cv.getActualWidth()), -80);
+        if (occupiedWidth < availableWidth) {
+          this.gridApi.sizeColumnsToFit();
+        }
       });
     }
   }

@@ -48,13 +48,13 @@ export class ValidationResultComponent implements OnInit {
   ngOnInit() {
     const self = this;
     self.api = '/' + self.schema.app + self.schema.api;
-    if (self.transfersData.valid > 0 || self.transfersData.conflicts > 0 || self.transfersData.duplicate > 0) {
+    if (self.transfersData.validCount > 0 || self.transfersData.conflictCount > 0 || self.transfersData.duplicateCount > 0) {
       self.fileCorrupted = false;
     }
-    self.totalRecords = self.transfersData.valid
-      + self.transfersData.conflicts
+    self.totalRecords = self.transfersData.validCount
+      + self.transfersData.conflictCount
       + self.transfersData.errorCount
-      + self.transfersData.duplicate;
+      + self.transfersData.duplicateCount;
   }
 
   ignoreConflictRecords() {
@@ -93,7 +93,7 @@ export class ValidationResultComponent implements OnInit {
       sort: 'sNo'
     };
     self.subscriptions['fileMapperCreate'] = self.commonService
-      .get('api', self.api + '/fileMapper/' + self.transfersData.fileId, opt)
+      .get('api', self.api + '/utils/fileMapper/' + self.transfersData.fileId, opt)
       .subscribe(res => {
         self.apiCalls.updateExistingRecords = false;
         // self.conflictIds = res.map(e => e.sNo);
@@ -116,7 +116,7 @@ export class ValidationResultComponent implements OnInit {
       sort: 'sNo'
     };
     self.subscriptions['fileMapperCreate'] = self.commonService
-      .get('api', self.api + '/fileMapper/' + self.transfersData.fileId, opt)
+      .get('api', self.api + '/utils/fileMapper/' + self.transfersData.fileId, opt)
       .subscribe(res => {
         self.apiCalls.importFirstOccurance = false;
         self.duplicateIds = res.map(e => e.sNo);

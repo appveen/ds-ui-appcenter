@@ -6,6 +6,7 @@ import { CommonService, GetOptions } from 'src/app/service/common.service';
 import * as urlParse from 'url-parse';
 import { AppService } from 'src/app/service/app.service';
 import { SessionService } from 'src/app/service/session.service';
+import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 
 @Component({
   selector: 'odp-bookmark-frame',
@@ -24,12 +25,18 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
   totalRecords: number;
   searchData: string;
   showLazyLoader: boolean;
+  
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+  
   constructor(private route: ActivatedRoute,
     private router: Router,
     private commonService: CommonService,
     private appService: AppService,
     private sessionService: SessionService,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private shortcutsService: ShortcutService) {
     const self = this;
     self.subscriptions = {};
     self.originalUrl = '';
@@ -58,6 +65,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     self.appService.appChange.subscribe(data => {
       self.clearSearch();
     });
+    this.shortcutsService.unregisterAllShortcuts();
   }
   ngOnDestroy() {
     const self = this;
@@ -212,7 +220,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
       self.bookMarkUrl = self.sanitizer.bypassSecurityTrustResourceUrl(self.originalUrl);
       self.newTab();
     } else {
-      self.router.navigate(['/~/bookmark', item._id]);
+      self.router.navigate(['/', this.commonService.app._id,'bookmark', item._id]);
     }
   }
 

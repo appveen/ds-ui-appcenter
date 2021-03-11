@@ -23,7 +23,7 @@ export class ViewGuard implements CanActivate {
       if (this.commonService.hasPermission(serviceId)) {
         return true;
       } else {
-        this.router.navigate([`/~/no-access`]);
+        this.router.navigate(['/', this.commonService.app._id, `no-access`]);
         return false;
       }
     }

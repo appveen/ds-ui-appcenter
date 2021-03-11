@@ -9,7 +9,7 @@
             </button>
         </div>
         <div class="d-flex align-items-center justify-content-end">
-            <button (click)="resetAdvanceFilters()" *ngIf="advanceFilterQuery"
+            <button (click)="resetAdvanceFilters()" *ngIf="advanceFilterQuery || hasFilterFromUrl"
                 class="btn btn-link text-danger mr-3 font-weight-bold" type="button">
                 <span class="fa fa-undo-alt mr-2"></span>
                 <span class="text">Reset Filters</span>
@@ -66,13 +66,14 @@
         </button>
         <span class="text-secondary ml-auto" *ngIf="loadedCount">Showing {{loadedCount}} of {{filteredCount}}</span>
     </div>
-    <div class="body bg-white w-100">
+    <div class="body bg-white w-100" #dataContainer>
         <ag-grid-angular #agGrid *ngIf="columnDefs" class="ag-theme-balham w-100 body" [columnDefs]="columnDefs"
             rowSelection="multiple" rowMultiSelectWithClick="true" rowDeselection="true" rowModelType="infinite"
             [datasource]="dataSource" [floatingFilter]="true" cacheBlockSize="30"
             (rowDoubleClicked)="rowDoubleClicked($event)" (rowSelected)="rowSelected($event)"
-            (sortChanged)="sortChanged($event)" (filterModified)="filterModified($event)"
-            (columnResized)="columnResized($event)" (columnVisible)="columnVisible($event)" (gridReady)="gridReady($event)" [overlayNoRowsTemplate]="noRowsTemplate">
+            (sortChanged)="sortChanged($event)" (filterModified)="filterModified()"
+            (columnResized)="columnResized($event)" (columnVisible)="columnVisible($event)"
+            (gridReady)="gridReady($event)" [overlayNoRowsTemplate]="noRowsTemplate">
         </ag-grid-angular>
     </div>
 </div>

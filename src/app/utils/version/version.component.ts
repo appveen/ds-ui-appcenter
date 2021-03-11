@@ -1,30 +1,30 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CommonService, GetOptions } from 'src/app/service/common.service';
+import { Component, Input, OnDestroy } from '@angular/core';
+import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { AppService } from 'src/app/service/app.service';
-
 
 @Component({
   selector: 'odp-version',
   templateUrl: './version.component.html',
   styleUrls: ['./version.component.scss']
 })
-export class VersionComponent implements OnInit, OnDestroy {
+export class VersionComponent implements OnDestroy {
 
   @Input() definition;
   @Input() oldValue;
   @Input() newValue;
   relation: any;
   subscriptions: any = {};
+
+  get currentAppId() {
+    return this.commonService?.getCurrentAppId();
+  }
+  
   constructor(
     private commonService: CommonService,
     private appService: AppService,
-  ) {
-  }
+  ) { }
 
-  ngOnInit() {
-    const self = this;
-  }
   ngOnDestroy() {
     const self = this;
     Object.keys(self.subscriptions).forEach(key => {
@@ -104,7 +104,7 @@ export class VersionComponent implements OnInit, OnDestroy {
 
   downloadFile(filename) {
     const self = this;
-    window.open(environment.url.api + self.appService.serviceAPI + '/file/download/' + filename);
+    window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + filename);
   }
   getDefinitionWithValue(def: any, val: any, index: number) {
     const self = this;
