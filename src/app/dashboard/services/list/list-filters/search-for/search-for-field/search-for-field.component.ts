@@ -86,26 +86,6 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDateText(type) {
-    switch (type) {
-      case 'equals': {
-        return 'Date';
-      }
-      case 'greaterThan': {
-        return 'Date';
-      }
-      case 'lessThan': {
-        return 'Date';
-      }
-      case 'notEqual': {
-        return 'Date';
-      }
-      default: {
-        return 'From';
-      }
-    }
-  }
-
   onFieldChange() {
     const self = this;
     if (self.selectedFieldDef.type === 'Relation') {
@@ -114,6 +94,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
     Object.keys(self.filterModel.filterObject).forEach(key => {
       delete self.filterModel.filterObject[key];
     });
+    self.filterModel.filterType = null;
     self.filterModel.filterValue = null;
     self.appService.dataKeyForSelectedCols.forEach(e => {
       self.duplicateInRangeDateField = e === self.filterModel.dataKey;
@@ -274,12 +255,21 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           startDate.setHours(0, 0, 0, 0);
           const endDate = new Date(self.startDate);
           endDate.setHours(23, 59, 59, 999);
-          self.filterModel.filterObject = {
-            [self.filterModel.dataKey]: {
-              $gte: startDate.toISOString(),
-              $lte: endDate.toISOString()
-            }
-          };
+          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey]: {
+                $gte: startDate.toISOString(),
+                $lte: endDate.toISOString()
+              }
+            };
+          } else {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey + '.utc']: {
+                $gte: startDate.toISOString(),
+                $lte: endDate.toISOString()
+              }
+            };
+          }
           break;
         }
         case 'notEqual': {
@@ -287,40 +277,73 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           startDate.setHours(0, 0, 0, 0);
           const endDate = new Date(self.startDate);
           endDate.setHours(23, 59, 59, 999);
-          self.filterModel.filterObject = {
-            $or: [
-              {
-                [self.filterModel.dataKey]: {
-                  $lt: startDate.toISOString()
+          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+            self.filterModel.filterObject = {
+              $or: [
+                {
+                  [self.filterModel.dataKey]: {
+                    $lt: startDate.toISOString()
+                  }
+                },
+                {
+                  [self.filterModel.dataKey]: {
+                    $gt: endDate.toISOString()
+                  }
                 }
-              },
-              {
-                [self.filterModel.dataKey]: {
-                  $gt: endDate.toISOString()
+              ]
+            };
+          } else {
+            self.filterModel.filterObject = {
+              $or: [
+                {
+                  [self.filterModel.dataKey + '.utc']: {
+                    $lt: startDate.toISOString()
+                  }
+                },
+                {
+                  [self.filterModel.dataKey + '.utc']: {
+                    $gt: endDate.toISOString()
+                  }
                 }
-              }
-            ]
-          };
+              ]
+            };
+          }
           break;
         }
         case 'greaterThan': {
           const date = new Date(self.startDate);
           date.setHours(23, 59, 59, 999);
-          self.filterModel.filterObject = {
-            [self.filterModel.dataKey]: {
-              $gt: date.toISOString()
-            }
-          };
+          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey]: {
+                $gt: date.toISOString()
+              }
+            };
+          } else {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey + '.utc']: {
+                $gt: date.toISOString()
+              }
+            };
+          }
           break;
         }
         case 'lessThan': {
           const date = new Date(self.endDate);
           date.setHours(0, 0, 0, 0);
-          self.filterModel.filterObject = {
-            [self.filterModel.dataKey]: {
-              $lt: date.toISOString()
-            }
-          };
+          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey]: {
+                $lt: date.toISOString()
+              }
+            };
+          } else {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey + '.utc']: {
+                $lt: date.toISOString()
+              }
+            };
+          }
           break;
         }
         case 'inRange': {
@@ -328,12 +351,21 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           startDate.setHours(0, 0, 0, 0);
           const endDate = new Date(self.endDate);
           endDate.setHours(23, 59, 59, 999);
-          self.filterModel.filterObject = {
-            [self.filterModel.dataKey]: {
-              $gte: startDate.toISOString(),
-              $lte: endDate.toISOString()
-            }
-          };
+          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey]: {
+                $gte: startDate.toISOString(),
+                $lte: endDate.toISOString()
+              }
+            };
+          } else {
+            self.filterModel.filterObject = {
+              [self.filterModel.dataKey + '.utc']: {
+                $gte: startDate.toISOString(),
+                $lte: endDate.toISOString()
+              }
+            };
+          }
           break;
         }
       }
