@@ -70,7 +70,7 @@ export class RelationViewComponent implements OnInit, OnDestroy {
     if(typeof self.searchFieldValue === 'string' && self.searchFieldValue.includes('<!DOCTYPE')) {
       self.searchFieldValue = self.getHtmlContent(self.searchFieldValue);
     }
-    if (typeof self.searchFieldValue === 'object') {
+    if (![null, undefined].includes(self.searchFieldValue) && typeof self.searchFieldValue === 'object') {
       if (self.searchFieldValue.checksum) {
         self.searchFieldValue = self.searchFieldValue.value
         self.isSecureText = true;
@@ -83,6 +83,9 @@ export class RelationViewComponent implements OnInit, OnDestroy {
       }
       else if (self.searchFieldValue.rawData) {
         self.searchFieldValue = self.searchFieldValue.rawData;
+      }
+      else if (self.searchFieldValue._id) {
+        self.searchFieldValue = self.searchFieldValue._id;
       }
     }
   }

@@ -138,7 +138,11 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     } else if (self.definition.type === 'Number') {
       temp[self.definition.dataKey] = +value;
     } else if (self.definition.type === 'Date') {
-      temp[self.definition.dataKey] = self.getDateQuery(value);
+      if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(this.params?.column?.getColDef().field)) {
+        temp[self.definition.dataKey] = self.getDateQuery(value);
+      } else {
+        temp[self.definition.dataKey + '.utc'] = self.getDateQuery(value);
+      }
     } else if (self.definition.type === 'Boolean') {
       if (typeof value === 'boolean') {
         temp[self.definition.dataKey] = value;
