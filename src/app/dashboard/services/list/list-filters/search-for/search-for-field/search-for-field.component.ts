@@ -621,6 +621,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   }
 
   setFilterTypeOptions() {
+    console.log(this.selectedFieldDef)
     const self = this;
     if (self.selectedFieldDef && self.selectedFieldDef.type === 'Date' && !self.duplicateInRangeDateField) {
       self.filterTypeOptions = [
@@ -713,7 +714,20 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           value: 'notEqual'
         }
       ];
-    } else {
+    } 
+    else if(self.selectedFieldDef && self.selectedFieldDef.properties && (self.selectedFieldDef.properties.longText || self.selectedFieldDef.properties.richText)){
+      self.filterTypeOptions = [
+        {
+          name: 'Contains',
+          value: 'contains'
+        },
+        {
+          name: 'Not contains',
+          value: 'notContains'
+        }
+      ];
+    }
+    else {
       self.filterTypeOptions = [
         {
           name: 'Equals',
