@@ -258,6 +258,8 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties.password && retValue) {
       retValue = retValue.value;
+    } else if (self.relatedServiceDef?.type === 'User' && !!retValue) {
+      retValue = retValue?._id;
     } else if (self.relatedServiceDef?.properties?.richText && !!retValue) {
       retValue = self.getHtmlContent(retValue);
     } else if (
