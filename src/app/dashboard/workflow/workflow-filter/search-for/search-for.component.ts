@@ -210,15 +210,15 @@ export class SearchForComponent implements OnInit {
     //   self.setSearchFor(self.appService.workflowFilter);
     // }
     if (self.wfService.serviceColumns && self.wfService.serviceColumns.length > 0) {
-      self.allColumnsOfService = self.wfService.serviceColumns.find(e => e.id === self.serviceId).attrs;
+      self.allColumnsOfService = self.wfService.serviceColumns;
       self.allColumnsOfService.forEach((col) => {
         let obj;
 
-        if (col.properties && col.properties._type !== 'Relation') {
+        if (col.type !== 'Relation') {
 
           if (col.properties && col.properties.password) {
             obj = {
-              headerName: col.name,
+              headerName: col.properties.name,
               fieldType: 'secureText',
               fieldName: col.key,
               filterType: 'equals',
@@ -227,8 +227,8 @@ export class SearchForComponent implements OnInit {
             };
           } else {
             obj = {
-              headerName: col.name,
-              fieldType: col.properties._type ? col.properties._type : 'String',
+              headerName: col.properties.name,
+              fieldType: col.type ? col.type : 'String',
               fieldName: col.key,
               filterType: 'equals',
               filterValue: '',
@@ -238,10 +238,10 @@ export class SearchForComponent implements OnInit {
           // self.combinedColumns.push(obj); // If you are uncommenting below code, then remove this line of code
         }
         // This part will be commented for this release and will be documented as a known issue
-        else if (col.properties && col.properties._type === 'Relation') {
+        else if ( col.type === 'Relation') {
           obj = {
-            headerName: col.name,
-            fieldType: col.properties._type,
+            headerName: col.properties.name,
+            fieldType: col.type,
             fieldName: [col.key],
             filterType: 'equals',
             filterValue: '',
@@ -268,7 +268,7 @@ export class SearchForComponent implements OnInit {
       if (self.appService.workflowFilter) {
         self.setSearchFor(self.appService.workflowFilter);
       }
-      // console.log(self.combinedColumns);
+    
     }
   }
 
@@ -305,9 +305,9 @@ export class SearchForComponent implements OnInit {
       const relVal = e.target.value.split(',');
       tempCol = self.combinedColumns.find(col => _.isEqual(col.fieldName, relVal));
     }
-    if (tempCol.fieldType !== 'Relation') {
+    if (tempCol && tempCol.fieldType !== 'Relation') {
       self.searchForColumn.splice(index, 1, self.appService.cloneObject(tempCol));
-    } else if (tempCol.fieldType === 'Relation') {
+    } else if (tempCol && tempCol.fieldType === 'Relation') {
       self.searchForColumn.splice(index, 1, self.appService.cloneObject(tempCol));
     }
     self.searchDataUpdated();
