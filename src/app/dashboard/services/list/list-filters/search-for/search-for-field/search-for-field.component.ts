@@ -621,7 +621,6 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   }
 
   setFilterTypeOptions() {
-    console.log(this.selectedFieldDef)
     const self = this;
     if (self.selectedFieldDef && self.selectedFieldDef.type === 'Date' && !self.duplicateInRangeDateField) {
       self.filterTypeOptions = [
