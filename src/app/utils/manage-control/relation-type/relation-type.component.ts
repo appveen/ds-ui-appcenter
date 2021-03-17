@@ -38,7 +38,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   relatedData: any;
   relationLink: string;
 
-  get currentAppId(){
+  get currentAppId() {
     return this.commonService?.getCurrentAppId();
   }
 
@@ -79,17 +79,17 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
           this.searchFieldType = 'datetime'
 
         }
-        else if (this.relatedServiceDef && this.relatedServiceDef.properties && this.relatedServiceDef.properties._type === 'Boolean') {
+        else if (this.relatedServiceDef &&  this.relatedServiceDef.type === 'Boolean') {
           this.searchFieldType = 'boolean'
 
         }
-        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'Number') {
+        else if (self.relatedServiceDef && self.relatedServiceDef.type === 'Number') {
           this.searchFieldType = 'number'
         }
-        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'File') {
+        else if (self.relatedServiceDef && self.relatedServiceDef.type === 'File') {
           this.searchFieldType = 'file'
         }
-        else if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties._type === 'Geojson') {
+        else if (self.relatedServiceDef && self.relatedServiceDef.type === 'Geojson') {
           this.searchFieldType = 'geojson'
         }
         self.url = '/' + self.commonService.app._id + res.api;
