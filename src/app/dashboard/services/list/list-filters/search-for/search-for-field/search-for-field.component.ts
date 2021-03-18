@@ -59,7 +59,11 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         // self.filterModel.filterObject.forEach((e, i) => {
         let obj = self.filterModel.filterObject;
         for (const key in obj) {
-          if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] || obj[key]['$gt'])) {
+          if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] && obj[key]['$lte'])) {
+            self.setStartDate(obj[key]['$gte']);
+            self.setEndDate(obj[key]['$lte']);
+          }
+          else if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] || obj[key]['$gt'])) {
             // self.dateObjIndex = i;
             if (obj[key]['$gte']) {
               self.setStartDate(obj[key]['$gte']);
@@ -255,7 +259,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           startDate.setHours(0, 0, 0, 0);
           const endDate = new Date(self.startDate);
           endDate.setHours(23, 59, 59, 999);
-          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+          if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
                 $gte: startDate.toISOString(),
@@ -277,7 +281,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           startDate.setHours(0, 0, 0, 0);
           const endDate = new Date(self.startDate);
           endDate.setHours(23, 59, 59, 999);
-          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+          if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               $or: [
                 {
@@ -313,7 +317,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         case 'greaterThan': {
           const date = new Date(self.startDate);
           date.setHours(23, 59, 59, 999);
-          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+          if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
                 $gt: date.toISOString()
@@ -331,7 +335,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         case 'lessThan': {
           const date = new Date(self.endDate);
           date.setHours(0, 0, 0, 0);
-          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+          if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
                 $lt: date.toISOString()
@@ -351,7 +355,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           startDate.setHours(0, 0, 0, 0);
           const endDate = new Date(self.endDate);
           endDate.setHours(23, 59, 59, 999);
-          if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
+          if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
                 $gte: startDate.toISOString(),
