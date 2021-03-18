@@ -713,7 +713,20 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           value: 'notEqual'
         }
       ];
-    } else {
+    } 
+    else if(self.selectedFieldDef && self.selectedFieldDef.properties && (self.selectedFieldDef.properties.longText || self.selectedFieldDef.properties.richText)){
+      self.filterTypeOptions = [
+        {
+          name: 'Contains',
+          value: 'contains'
+        },
+        {
+          name: 'Not contains',
+          value: 'notContains'
+        }
+      ];
+    }
+    else {
       self.filterTypeOptions = [
         {
           name: 'Equals',
