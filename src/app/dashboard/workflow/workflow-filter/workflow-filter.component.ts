@@ -1036,7 +1036,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     );
   };
 
-  formatter = x => x.properties.name;
+  formatter = (x) => x.properties.label ? x.properties.label : x.properties.name 
 
   selectItem(val) {
     const self = this;
