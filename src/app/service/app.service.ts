@@ -817,6 +817,10 @@ export class AppService {
     }
 
     getUTCString(dateStr, tzInfo) {
-        return moment.tz(dateStr, tzInfo).tz(moment.tz.guess(), true).utc().format();
+        try {
+            return moment.tz(dateStr, tzInfo).tz(moment.tz.guess(), true).utc().format();
+        } catch (e) {
+            return '';
+        }
     }
 }

@@ -1041,7 +1041,6 @@ export class ListComponent implements OnInit, OnDestroy {
           self.workflowData = res._workflow;
           self.submitWorkflowFiles();
         } else {
-          self.appService.clearFilterEvent.emit();
           self.ts.success('Deleted.');
           self.checkAll = false;
           self.getRecordsCount();

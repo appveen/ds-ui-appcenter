@@ -72,7 +72,9 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
     }
     this.serviceId = this.appService.serviceId;
     this.isenrichTextWithLinkRequired = this.checkForLink(this.value);
-    this.textWithLink = this.enrichTextWithLink(this.value);
+    if(this.isenrichTextWithLinkRequired) {
+      this.textWithLink = this.enrichTextWithLink(this.value);
+    }
     if (this.value && typeof this.value === 'object') {
       this.keysCount = Object.keys(this.value).length;
     }

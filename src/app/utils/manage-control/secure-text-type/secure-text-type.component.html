@@ -2,7 +2,7 @@
     <input class="form-control form-control-sm rounded"
         [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}" [type]="showPassword ? 'text' : 'password'"
         (keyup)="onEnter($event)" (change)="onChange($event.target.value)" #inputControl [attr.id]="definition.path"
-        [ngModel]="password" [disabled]="control.disabled">
+        [ngModel]="password" [disabled]="control.disabled" autocomplete="off">
     <span class="fas eye-icon eyeIcon position-absolute hover"
         [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash': showPassword }"
         (click)="showPassword= !showPassword"></span>
