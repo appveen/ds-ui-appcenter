@@ -240,7 +240,8 @@ export class FormService {
         _tempValidators.push(Validators.minLength(_definition.properties.minlength));
       }
       if (_definition.properties.pattern) {
-        _tempValidators.push(Validators.pattern(_definition.properties.pattern));
+        const regex = new RegExp(_definition.properties.pattern);
+        _tempValidators.push(Validators.pattern(regex));
       }
       if (_definition.properties.max === 0 || _definition.properties.max) {
         _tempValidators.push(Validators.max(_definition.properties.max));
