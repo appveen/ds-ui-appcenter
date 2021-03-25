@@ -17,12 +17,12 @@ export class ColumnMappingComponent implements OnInit {
   @Output() emitDataToParent: EventEmitter<any>;
   @Input() form: FormGroup;
   @Input() parentDef: any;
-  @Input() schemaName: String;
+  @Input() schemaName: string;
   @Input() tempAttrList: any;
   constructor(
     private formService: FormService,
     private fb: FormBuilder,
-    private appService :AppService
+    private appService: AppService
 
   ) {
     const self = this;
@@ -33,6 +33,7 @@ export class ColumnMappingComponent implements OnInit {
   ngOnInit() {
     const self = this;
     if (self.definition) {
+      this.definition.definition = this.formService.patchType(this.definition.definition);
       self.defnitionArray = self.formService.parseDefinition(self.definition, null, null);
       if (self.tempAttrList.length) {
         self.defnitionArray = self.defnitionArray.filter(data => self.tempAttrList.includes(data.properties.dataPath));
@@ -42,7 +43,6 @@ export class ColumnMappingComponent implements OnInit {
       }
       self.sendForm();
     }
-  
   }
   clearAll() {
     const self = this;
@@ -50,14 +50,14 @@ export class ColumnMappingComponent implements OnInit {
   }
   goToPreviousStep() {
     const self = this;
-    self.appService.fileObjCount =self.appService.fileObjCount-1;
-    self.appService.objMappingData.emit( self.appService.fileObjCount);
+    self.appService.fileObjCount = self.appService.fileObjCount - 1;
+    self.appService.objMappingData.emit(self.appService.fileObjCount);
     self.emitData.emit();
   }
   back() {
     const self = this;
     self.form.reset();
-  
+
   }
   sendForm() {
     const self = this;

@@ -26,8 +26,7 @@
 
     <!-- secure text type handling -->
 
-    <input type="text" class="colDiv p-2 rounded" *ngIf="definition?.type!=='Array' && definition?.type ==='Object' && definition.type !=='Relation' && 
-        definition?.type!=='User' && definition?.properties?.password"
+    <input type="text" class="colDiv p-2 rounded" *ngIf="definition?.properties?.password"
         [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
         [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)"
         (selectItem)="selectSecureTextData($event)" [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter"
