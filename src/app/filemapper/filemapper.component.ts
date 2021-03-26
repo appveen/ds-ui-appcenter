@@ -294,6 +294,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   sendMapping() {
     const self = this;
     self.mappingData.headerMapping = self.form.value;
+    this.appService.fixMappingPayload(self.mappingData.headerMapping);
     self.showLazyLoader = true;
     const url = self.api + '/utils/fileMapper/' + self.mappingData.fileId + '/mapping?timezone=' + new Date().getTimezoneOffset();
     self.subscriptions['fileMapperMapping'] = self.commonService.put('api', url, self.mappingData).subscribe(

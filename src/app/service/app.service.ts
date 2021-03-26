@@ -823,4 +823,19 @@ export class AppService {
             return '';
         }
     }
+
+    fixMappingPayload(mapping) {
+        Object.keys(mapping).forEach(key => {
+            if (mapping[key]) {
+                if (Array.isArray(mapping[key])) {
+                    const len = mapping[key].filter(e => e).length;
+                    if (len === 0) {
+                        mapping[key] = null;
+                    }
+                } else if (typeof mapping[key] === 'object') {
+                    this.fixMappingPayload(mapping[key]);
+                }
+            }
+        });
+    }
 }
