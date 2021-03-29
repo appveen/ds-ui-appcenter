@@ -98,9 +98,9 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         if (def) {
           tempObj = {};
           if (def.type === 'Number') {
-            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = value;
+            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = +value;
           } else if (def.type === 'Date') {
-            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = self.getDateQuery(value);
+            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + '.rawData'] = self.getDateQuery(value);
           } else if (def.type === 'String' && def.properties.password) {
             tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + '.value'] = value;
           } else {

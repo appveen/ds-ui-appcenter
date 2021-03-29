@@ -55,6 +55,9 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     self.definition = self.column.getColDef().refData;
     self.workflowFilter = self.definition.value;
     self.col = self.definition;
+    if (self.definition.properties.relatedTo) {
+      self.fetchRelatedSchema();
+    }
   }
 
   onParentModelChanged(parentModel: any, filterChangedEvent?: FilterChangedEvent): void {
@@ -140,22 +143,23 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         })
       );
       if (!self.searchOnlyId) {
-        const tempObj = {};
+        let tempObj;
         const def = self.relatedDef;
         if (def) {
+          tempObj = {};
           if (def.type === 'Number') {
-            tempObj[self.col.dataKey] = value;
+            tempObj[self.col.dataKey + '.' + self.col.properties.relatedSearchField] = +value;
           } else if (def.type === 'Date') {
-            tempObj[self.col.dataKey] = self.getDateQuery(value);
+            tempObj[self.col.dataKey + '.' + self.col.properties.relatedSearchField + '.rawData'] = self.getDateQuery(value);
+          } else if (def.type === 'String' && def.properties.password) {
+            tempObj[self.col.dataKey + '.' + self.col.properties.relatedSearchField + '.value'] = value;
           } else {
-            // tempObj[self.col.dataKey ] = '/' + value + '/';
             tempObj[self.col.dataKey + '.' + self.col.properties.relatedSearchField] = '/' + value + '/';
           }
         }
-        // else {
-        //   tempObj[self.col.dataKey + '.' + self.col.properties.relatedSearchField] = '/' + value + '/';
-        // }
-        temp['$or'].push(tempObj);
+        if(!!tempObj) {
+          temp['$or'].push(tempObj);
+        }
       }
     } else if (self.col.type === 'User') {
       self.paths.push(self.col.dataKey + '._id');
@@ -185,7 +189,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       temp[self.col.dataKey] = +value;
     } else if (self.col.type === 'Date') {
       self.paths.push(self.col.dataKey);
-      temp[self.col.dataKey] = self.getDateQuery(value);
+      temp[self.col.dataKey + '.rawData'] = self.getDateQuery(value);
     } else if (self.col.type === 'Boolean') {
       self.paths.push(self.col.dataKey);
       if (value === 'true') {
@@ -256,35 +260,43 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   fetchRelatedSchema() {
     const self = this;
-    if (!self.appService.servicesMap || !self.appService.servicesMap[self.col.properties.relatedTo]) {
-      if (self.subscriptions['fetchRelatedSchema_' + self.col.properties.relatedTo]) {
-        self.subscriptions['fetchRelatedSchema_' + self.col.properties.relatedTo].unsubscribe();
-      }
-      self.subscriptions['fetchRelatedSchema_' + self.col.properties.relatedTo] = self.commonService
-        .get('sm', '/service/' + self.col.properties.relatedTo, {
-          select: 'definition'
-        })
-        .subscribe(
-          res => {
-            self.searchOnlyId = false;
-            self.appService.servicesMap[res._id] = self.appService.cloneObject(res);
-            if (res.definition) {
-              self.relatedDefinition = res.definition;
-            }
-          },
-          err => {
-            self.searchOnlyId = true;
-          }
-        );
-    } else {
-      self.searchOnlyId = false;
-      const temp = self.appService.servicesMap[self.col.properties.relatedTo];
-      // self.relatedDefinition = JSON.parse(temp.definition);
-      if (temp.definition) {
-        self.relatedDefinition = temp.definition;
-      }
-    }
+    self.commonService
+      .getService(self.definition.properties.relatedTo)
+      .then(res => {
+        if (res.definition) {
+          self.searchOnlyId = false;
+          self.relatedDefinition = res.definition;
+          self.fixSchema(self.relatedDefinition);
+        }
+      })
+      .catch(err => {
+        self.searchOnlyId = true;
+        console.error('Unable to fetch Related Schema', self.definition.properties.relatedTo);
+      });
   }
+
+  fixSchema(parsedDef) {
+    parsedDef.forEach(def => {
+      if (def.properties && def.properties.relatedTo) {
+        def.type = 'Relation';
+        def.properties._typeChanged = 'Relation';
+        delete def.definition;
+      } else if (def.properties && def.properties.password) {
+        def.type = 'String';
+        def.properties._typeChanged = 'String';
+        delete def.definition;
+      } else if (def.properties && def.properties.geoType) {
+        def.type = 'Geojson';
+        def.properties._typeChanged = 'Geojson';
+        delete def.definition;
+      } else if (def.type === 'Array') {
+        this.fixSchema(def.definition);
+      } else if (def.type === 'Object') {
+        this.fixSchema(def.definition);
+      }
+    });
+  }
+
   get relatedDef() {
     const self = this;
     if (self.relatedDefinition && self.col.properties.relatedSearchField) {
