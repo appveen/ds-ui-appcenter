@@ -5,6 +5,7 @@ import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowAgGridService } from '../workflow-ag-grid.service';
+import { FormService } from 'src/app/service/form.service';
 
 @Component({
   selector: 'odp-ag-grid-filters',
@@ -35,7 +36,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     private commonService: CommonService,
     private gridService: WorkflowAgGridService,
     private element: ElementRef,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private formService: FormService
   ) {
     const self = this;
     self.subscriptions = {};
@@ -266,35 +268,13 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         if (res.definition) {
           self.searchOnlyId = false;
           self.relatedDefinition = res.definition;
-          self.fixSchema(self.relatedDefinition);
+          self.formService.patchType(self.relatedDefinition);
         }
       })
       .catch(err => {
         self.searchOnlyId = true;
         console.error('Unable to fetch Related Schema', self.definition.properties.relatedTo);
       });
-  }
-
-  fixSchema(parsedDef) {
-    parsedDef.forEach(def => {
-      if (def.properties && def.properties.relatedTo) {
-        def.type = 'Relation';
-        def.properties._typeChanged = 'Relation';
-        delete def.definition;
-      } else if (def.properties && def.properties.password) {
-        def.type = 'String';
-        def.properties._typeChanged = 'String';
-        delete def.definition;
-      } else if (def.properties && def.properties.geoType) {
-        def.type = 'Geojson';
-        def.properties._typeChanged = 'Geojson';
-        delete def.definition;
-      } else if (def.type === 'Array') {
-        this.fixSchema(def.definition);
-      } else if (def.type === 'Object') {
-        this.fixSchema(def.definition);
-      }
-    });
   }
 
   get relatedDef() {

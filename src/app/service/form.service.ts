@@ -427,6 +427,9 @@ export class FormService {
             } else if (def.properties.password) {
               def.type = 'String';
               delete def.definition;
+            } else if (def.properties.geoType) {
+              def.type = 'Geojson';
+              delete def.definition;
             } else if (def.properties.dateType) {
               def.type = 'Date';
               delete def.definition;
