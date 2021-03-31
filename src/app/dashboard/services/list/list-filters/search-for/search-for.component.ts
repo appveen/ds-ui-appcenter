@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {  Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AppService } from 'src/app/service/app.service';
 import * as _ from 'lodash';
 import { FilterModel } from './search-for-field/search-for-field.component';

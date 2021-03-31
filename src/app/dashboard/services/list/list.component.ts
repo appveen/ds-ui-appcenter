@@ -645,6 +645,7 @@ export class ListComponent implements OnInit, OnDestroy {
         }
       );
     }
+    viewData.hasOptions = viewData.createdBy === this.commonService.userDetails._id;
     // Sort Fix code for later release
     // if (viewData.value) {
     //   if (typeof viewData.value === 'string') {

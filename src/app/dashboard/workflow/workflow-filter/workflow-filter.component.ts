@@ -3,9 +3,10 @@ import { trigger, state, style, transition, animate, keyframes } from '@angular/
 import { Observable, Subject, merge } from 'rxjs';
 import { filter, debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { AppService } from 'src/app/service/app.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbTypeahead, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
+import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowService } from 'src/app/dashboard/workflow/workflow.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -18,6 +19,7 @@ interface FilterData {
   app: string;
   createdBy: string;
   type?: string;
+  hasOptions?: boolean;
 }
 @Component({
   selector: 'odp-workflow-filter',
@@ -176,6 +178,8 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
   defaultColums: Array<any>;
+  showSeparateCreateBtn: boolean;
+  hasOptions = true;
 
   constructor(
     private appService: AppService,
@@ -196,6 +200,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.allColumns = [];
     self.selectedColOrder = [];
     self.saveOrEditText = '+Save As New View';
+    self.showSeparateCreateBtn = false;
     self.filterData = {
       serviceId: self.appService.serviceId,
       name: '',
@@ -697,9 +702,20 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
+      const startD = new Date(item['fromDate']);
+      const endD = new Date(item['fromDate']);
+      if(item.dateFieldType === 'date') {
+        startD.setHours(0, 0, 0);
+        endD.setHours(23, 59, 59);
+      }
+      startD.setMilliseconds(0);
+      endD.setMilliseconds(999);
       item.fieldName.forEach(_relCol => {
         const tempObj1 = {
-          [prefix + _relCol]: self.getDateQuery(item['fromDate'])
+          [prefix + _relCol + '.utc']: {
+            $gte: startD.toISOString(),
+            $lte: endD.toISOString()
+          }
         };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
@@ -711,8 +727,13 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
+      const date = new Date(item['fromDate']);
+      if(item.dateFieldType === 'date') {
+        date.setHours(23, 59, 59);
+      }
+      date.setMilliseconds(999);
       item.fieldName.forEach(_relCol => {
-        const tempObj1 = { [prefix + _relCol]: { $gt: item['fromDate'] } };
+        const tempObj1 = { [prefix + _relCol + '.utc']: { $gt: date.toISOString()} };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(tempObj1);
       });
@@ -723,8 +744,13 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
+      const date = new Date(item['fromDate']);
+      if(item.dateFieldType === 'date') {
+        date.setHours(0, 0, 0);
+      }
+      date.setMilliseconds(0);
       item.fieldName.forEach(_relCol => {
-        const tempObj1 = { [prefix + _relCol]: { $lt: item['fromDate'] } };
+        const tempObj1 = { [prefix + _relCol + '.utc']: { $lt: date.toISOString() } };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
@@ -735,8 +761,16 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
+      const startD = new Date(item['fromDate']);
+      const endD = new Date(item['fromDate']);
+      if(item.dateFieldType === 'date') {
+        startD.setHours(0, 0, 0);
+        endD.setHours(23, 59, 59);
+      }
+      startD.setMilliseconds(0);
+      endD.setMilliseconds(999);
       item.fieldName.forEach(_relCol => {
-        const tempObj1 = { [prefix + _relCol]: { $ne: item['fromDate'] } };
+        const tempObj1 = { [prefix + _relCol + '.utc']: {$or: [{ $lt: startD.toISOString()}, {$gt: endD.toISOString()}]} };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
       });
@@ -747,9 +781,17 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
+      const startD = new Date(item['fromDate']);
+      const endD = new Date(item['toDate']);
+      if(item.dateFieldType === 'date') {
+        startD.setHours(0, 0, 0);
+        endD.setHours(23, 59, 59);
+      }
+      startD.setMilliseconds(0);
+      endD.setMilliseconds(999);
       item.fieldName.forEach(_relCol => {
         const tempObj1 = {
-          [prefix + _relCol]: { $gte: item['fromDate'], $lt: item['toDate'] }
+          [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lt: endD.toISOString() }
         };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(tempObj1);
@@ -858,7 +900,10 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     self.config.filter = {};
     self.appService.workflowFilter = null;
     self.placeHolderText = 'Select Filter';
+    self.saveOrEditText = '+Save As New View';
+    self.showSeparateCreateBtn = false;
     self.selectedColOrder = [];
+    self.hasOptions = true;
   }
   addColForSort() {
     const self = this;
@@ -886,35 +931,40 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         self.filterData.value = JSON.stringify(self.config);
         // self.filterData.value['sort'] = self.sortingColumns;
         if (self.filterId && self.filterCreatedBy === currentUser._id) {
-          self.commonService.put('user', `/filter/${self.filterId}`, self.filterData).subscribe(_filter => {
+          self.commonService.put('user', `/filter/${self.filterId}`, self.filterData).subscribe(res => {
             self.showSaveDiv = false;
             self.applyFilter();
-            self.filterId = _filter._id;
-            self.selectFilter(_filter);
+            self.filterId = res._id;
+            res.hasOptions = res.createdBy === currentUser._id;
+            self.selectFilter(res);
             self.getAllfilters.emit();
             self.ts.success('filter created successfully');
           });
         } else if (self.filterId && self.filterCreatedBy !== currentUser._id) {
           self.filterId = null;
-          self.commonService.post('user', '/filter/', self.filterData).subscribe(_filter => {
-            self.allFilters.push(_filter);
+          self.commonService.post('user', '/filter/', self.filterData).subscribe(res => {
             self.showSaveDiv = false;
             self.applyFilter();
-            self.filterId = _filter._id;
-            self.selectFilter(_filter);
+            self.filterId = res._id;
+            res.hasOptions = res.createdBy === currentUser._id;
+            self.allFilters.push(res);
+            self.selectFilter(res);
             self.getAllfilters.emit();
             self.saveOrEditText = '+Edit View';
+            self.showSeparateCreateBtn = true;
             self.ts.success('New Filter created Successfully');
           });
         } else if (self.filterId === null || self.filterId === '') {
-          self.commonService.post('user', '/filter/', self.filterData).subscribe(_filter => {
+          self.commonService.post('user', '/filter/', self.filterData).subscribe(res => {
             self.showSaveDiv = false;
-            self.allFilters.push(_filter);
             self.applyFilter();
-            self.filterId = _filter._id;
-            self.selectFilter(_filter);
+            self.filterId = res._id;
+            res.hasOptions = res.createdBy === currentUser._id;
+            self.allFilters.push(res);
+            self.selectFilter(res);
             self.getAllfilters.emit();
             self.saveOrEditText = '+Edit View';
+            self.showSeparateCreateBtn = true;
             self.ts.success('New Filter created Successfully');
           });
         }
@@ -925,15 +975,34 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     }
   }
 
+  duplicateView() {
+    this.filterData = {
+      serviceId: this.appService.serviceId,
+      name: '',
+      private: true,
+      value: '',
+      app: this.commonService.app._id,
+      createdBy: this.sessionService.getUser(true)._id,
+      type: 'workflow'
+    };
+    this.invalidFilterName = false;
+    this.showSaveDiv = true;
+    this.placeHolderText = 'Select Filter';
+    this.showFilterList = false;
+    this.filterId = null;
+  }
+
   selectFilter(filterValue) {
     const self = this;
     let filterVal;
     // self.appService.allFilters.selectedFilter = filterValue;
     // self.appService.allFilters.colNames = self.columnNames;
+    self.hasOptions = filterValue.hasOptions;
     if (filterValue.value) {
       self.filterId = filterValue._id;
       self.filterCreatedBy = filterValue.createdBy;
       self.saveOrEditText = '+Edit View';
+      self.showSeparateCreateBtn = true;
       self.placeHolderText = filterValue.name;
       self.filterData.name = filterValue.name;
       self.filterData.private = filterValue.private;
@@ -945,6 +1014,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     } else {
       self.filterId = '';
       self.saveOrEditText = '+Save As New View';
+      self.showSeparateCreateBtn = false;
       self.placeHolderText = 'Select Filter';
       self.filterData.name = '';
       self.filterData.private = true;

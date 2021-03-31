@@ -31,7 +31,8 @@
           <span class="fa fa-calendar mr-2 text-primary"></span>
           <span class="text-primary">{{ filterModel.filterType === 'inRange' ? 'From' : 'Date' }}</span>
         </div>
-        <span class="timestamp font-sm ml-auto mr-auto">{{ startDate ? ( startDate | date: 'd MMM y') : '' }}</span>
+        <span class="timestamp font-sm ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ startDate ? ( startDate | date: 'd MMM y') : '' }}</span>
+        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ startDate ? ( startDate | date: 'd MMM y, HH:mm:ss') : '' }}</span>
         <span class="fas fa-angle-down text-primary"></span>
         <div class="position-absolute">
           <odp-date-picker *ngIf="toggleFromDate" [togglePicker]="toggleFromDate"
@@ -47,7 +48,8 @@
           <span class="fa fa-calendar mr-2 text-primary"></span>
           <span class="text-primary">{{ filterModel.filterType === 'inRange' ? 'To' : 'Date' }}</span>
         </div>
-        <span class="timestamp font-sm ml-auto mr-auto">{{ endDate ? (endDate | date: 'd MMM y') : '' }}</span>
+        <span class="timestamp font-sm ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ endDate ? (endDate | date: 'd MMM y') : '' }}</span>
+        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ endDate ? (endDate | date: 'd MMM y, HH:mm:ss') : '' }}</span>
         <span class="fas fa-angle-down text-primary"></span>
         <div class="position-absolute">
           <odp-date-picker *ngIf="toggleToDate" [togglePicker]="toggleToDate"

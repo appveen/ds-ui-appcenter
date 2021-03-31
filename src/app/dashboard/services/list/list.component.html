@@ -124,17 +124,18 @@
           <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
             <div *ngFor="let filter of savedViews"
               class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
-              (mouseenter)="filter.showOptions = true" (mouseleave)="filter.showOptions = false">
+              (mouseenter)="filter.hasOptions && filter.showOptions = true" (mouseleave)="filter.hasOptions && filter.showOptions = false">
               <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
               <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
               <span class="hover text-truncate filterNameWidth"
                 (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
                 [odpTruncated]="filter.name">{{ filter.name }}</span>
-              <span *ngIf="!filter.showOptions" class="text-secondary ml-auto position-absolute un-pos">{{ filter.user
-                }}</span>
-              <span *ngIf="!filter.showOptions"
+              <span *ngIf="!filter.showOptions" class="text-secondary ml-auto position-absolute un-pos">
+                {{ filter.user }}
+              </span>
+              <span *ngIf="filter.hasOptions && !filter.showOptions"
                 class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
-              <div *ngIf="filter.showOptions" class="ml-auto d-flex align-items-center hover" [@slideIn]>
+              <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover" [@slideIn]>
                 <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
                 <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
                 <div class="left-radius position-relative hover"
