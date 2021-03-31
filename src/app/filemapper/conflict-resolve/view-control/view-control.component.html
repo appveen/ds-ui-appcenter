@@ -1,5 +1,5 @@
-<div [ngClass]="{'text-muted':definition?.properties?.createOnly && !isOriginalData}" 
-[ngbTooltip]="definition?.properties?.createOnly?'Create only field will be ignored while updating the document':''">
+<div [ngClass]="{'text-muted':definition?.properties?.createOnly && !isOriginalData && data._id}" 
+[ngbTooltip]="definition?.properties?.createOnly && data._id ?'Create only field will be ignored while updating this document':''">
   <ng-container *ngIf="type === 'Identifier'">
     <span *ngIf="value">{{value}}</span>
     <span *ngIf="!value" class="text-muted">N.A.</span>
