@@ -985,6 +985,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       this.allFilters = _filter;
       this.allFilters.forEach(e => {
         e['showOptions'] = false;
+        e['hasOptions'] = e.createdBy === this.commonService.userDetails._id;
         this.getUsrName(e.createdBy, e);
       });
       this.filterPlaceHolder = this.allFilters;

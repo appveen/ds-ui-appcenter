@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Observable, Subject, merge, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { AppService } from 'src/app/service/app.service';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { CommonService } from 'src/app/service/common.service';
 import { NgbModal, NgbModalRef, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+
+import { AppService } from 'src/app/service/app.service';
+import { CommonService } from 'src/app/service/common.service';
 import { FilterModel } from './search-for/search-for-field/search-for-field.component';
 import { SessionService } from 'src/app/service/session.service';
 
@@ -18,6 +19,7 @@ interface FilterData {
   app: string;
   createdBy: string;
   type: string;
+  hasOptions?: boolean;
 }
 
 interface ColFilter {
@@ -150,6 +152,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   noFilterObject: boolean;
   filterApplied$: Subscription;
   showSeparateCreateBtn: boolean;
+  hasOptions = true;
 
   constructor(private ts: ToastrService,
     private appService: AppService,
@@ -304,9 +307,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       self.queryObject.filter = '';
     }
     if (Array.isArray(self.queryObject.filter)) {
-      self.queryObject.filter.forEach((filterObj) => {
-        self.appService.dataKeyForSelectedCols.push(filterObj.dataKey);
-      });
+      self.appService.dataKeyForSelectedCols = self.queryObject.filter.map(filterObj => filterObj.dataKey);
     }
   }
 
@@ -330,6 +331,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.showSeparateCreateBtn = false;
     self.appService.existingFilter = null;
     self.appService.dataKeyForSelectedCols = [];
+    self.hasOptions = true;
     self.filterCleared.emit(true);
   }
 
@@ -357,6 +359,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     const self = this;
     let filterVal;
     self.appService.existingFilter = filterValue;
+    self.hasOptions = filterValue.hasOptions;
     if (filterValue.value) {
       self.filterId = filterValue._id;
       self.filterCreatedBy = filterValue.createdBy;
@@ -449,6 +452,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
           self.showSaveDiv = false;
           self.applyFilter();
           self.filterId = res._id;
+          res.hasOptions = res.createdBy === currentUser._id;
           self.selectFilter(res);
           self.refine.emit({ query: res, refresh: true });
           self.saveOrEditText = '+Edit View';

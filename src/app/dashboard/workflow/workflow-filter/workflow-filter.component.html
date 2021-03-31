@@ -17,7 +17,10 @@
               *ngIf="showFilterList" odpClickOutside [ignore]="['.ignore-outside']" (outside)="showFilterList = false">
               <div *ngFor="let filter of allFilters" class="p-2 hover filter-name text-secondary ignore-outside"
                 (click)="selectFilter(filter)">
-                {{ filter.name }}
+                <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
+                <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
+                <span class="mr-2">{{ filter.name }}</span>
+                <small> - {{ filter.user }}</small>
               </div>
             </div>
           </div>
@@ -52,13 +55,11 @@
         <div class="d-flex flex-wrap">
           <div class="d-flex drag-boundary  flex-wrap" [sortablejs]="selectedColOrder">
             <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex">
-              <div
-                class="col-name  d-flex justify-content-between bg-white d-flex justify-content-center align-items-center mb-2"
-                [ngClass]="{'mr-2': !last}">
-                <span class="ml-2 font-xsm"
-                  [odpTruncated]="col?.properties?.label ? col?.properties?.label : col?.properties?.name">{{ col?.properties?.label ? col?.properties?.label : col?.properties?.name }}</span>
+              <div class="col-name d-flex justify-content-center align-items-center mb-2" [ngClass]="{'mr-2': !last}">
+                <strong class="pr-2"
+                  [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">{{ col.properties.label ? col.properties.label : col.properties.name }}</strong>
                 <div class="remove-col hover pr-2" (click)="removeItem(i)">
-                  <span class="fas font-xsm fa-lg fa-times mb-2"></span>
+                  <span class="fas fa-sm fa-lg fa-times"></span>
                 </div>
               </div>
             </div>
@@ -81,7 +82,7 @@
               <select class="custom-select" [(ngModel)]="col.name">
                 <option value="" class="d-none" selected>Select column</option>
                 <option *ngFor="let selCol of selectedColOrder;" [value]="selCol.dataKey">
-                  {{ selCol?.properties?.name }}
+                  {{ selCol?.properties?.label ? selCol.properties.label : selCol?.properties?.name }}
                 </option>
               </select>
             </div>
@@ -106,8 +107,13 @@
         </div>
       </div>
       <div *ngIf="!showSaveDiv" class="d-flex justify-content-end p-3">
-        <button class="mr-2 btn btn-link" (click)="clearFilter()">Clear</button>
-        <button class="mr-2 btn btn-link text-success" (click)="showSaveDiv = true">{{ saveOrEditText }}</button>
+        <button class="mr-2 btn btn-link" (click)="clearFilter()">Clear
+          <span *ngIf="showSeparateCreateBtn">&nbsp;/&nbsp;Create New View</span>
+        </button>
+        <button class="mr-2 btn btn-link text-success" type="button" *ngIf="showSeparateCreateBtn"
+          (click)="duplicateView()">+Duplicate View</button>
+        <button class="mr-2 btn btn-link text-success" (click)="showSaveDiv = true"
+          *ngIf="hasOptions && (!showSeparateCreateBtn || !!filterId)">{{ saveOrEditText }}</button>
         <button class="btn btn-primary mr-2 " type="button" (click)="applyFilter()">Apply</button>
         <button class="btn btn-primary" type="button" (click)="applyFilter(true)">Apply & Close</button>
       </div>

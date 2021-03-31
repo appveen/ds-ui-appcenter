@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output, ViewChild, TemplateRef,
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, tap } from 'rxjs/operators';
 
 import { AgGridFiltersComponent } from './ag-grid-filters/ag-grid-filters.component';
 import { AgGridCellComponent } from './ag-grid-cell/ag-grid-cell.component';
@@ -217,7 +217,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
                   self.configureView(viewModel || {});
                 }
               },
-              dismiss => { }
+              dismiss => {}
             );
           } else {
             self.gridService.selectedSavedView = viewModel;
