@@ -101,12 +101,16 @@
                 <span class="fa fa-calendar mr-2 text-primary"></span>
                 <span class="text-primary">{{getDateText(item.filterType)}}</span>
               </div>
-              <span class="timestamp font-sm ml-auto mr-auto">{{ item.fromDate ? ( item.fromDate | date: 'd MMM y') :
-                '' }}</span>
+              <span class="timestamp font-sm ml-auto mr-auto" *ngIf="item.dateFieldType === 'date'">
+                {{ item.fromDate ? ( item.fromDate | date: 'd MMM y') : '' }}
+              </span>
+              <span class="timestamp font-xs ml-auto mr-auto" *ngIf="item.dateFieldType === 'date-time'">
+                {{ item.fromDate ? ( item.fromDate | date: 'd MMM y, HH:mm:ss') : '' }}
+              </span>
               <span class="fas fa-angle-down text-primary"></span>
               <odp-date-picker *ngIf="item.toggleFromDate" [togglePicker]="item.toggleFromDate"
                 (togglePickerChange)="item.toggleFromDate = $event" [from]="startDate"
-                (fromChange)="setStartDate($event, item)" [options]="{floating:true,buttons:true,type:'date'}">
+                (fromChange)="setStartDate($event, item)" [options]="{floating:true,buttons:true,type:item.dateFieldType}">
               </odp-date-picker>
             </div>
             <div *ngIf="item.filterType === 'inRange'"
@@ -116,12 +120,16 @@
                 <span class="fa fa-calendar mr-2 text-primary"></span>
                 <span class="text-primary">To</span>
               </div>
-              <span class="timestamp font-sm ml-auto mr-auto">{{ item.toDate ? (item.toDate | date: 'd MMM y') : ''
-                }}</span>
+              <span class="timestamp font-sm ml-auto mr-auto" *ngIf="item.dateFieldType === 'date'">
+                {{ item.toDate ? (item.toDate | date: 'd MMM y') : ''}}
+              </span>
+              <span class="timestamp font-xs ml-auto mr-auto" *ngIf="item.dateFieldType === 'date-time'">
+                {{ item.toDate ? (item.toDate | date: 'd MMM y, HH:mm:ss') : ''}}
+              </span>
               <span class="fas fa-angle-down text-primary"></span>
               <odp-date-picker *ngIf="item.toggleToDate" [togglePicker]="item.toggleToDate"
                 (togglePickerChange)="item.toggleToDate = $event" [from]="endDate"
-                (fromChange)="setEndDate($event, item)" [options]="{floating:true,buttons:true,type:'date'}">
+                (fromChange)="setEndDate($event, item)" [options]="{floating:true,buttons:true,type:item.dateFieldType}">
               </odp-date-picker>
             </div>
           </div>
@@ -132,7 +140,7 @@
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
             <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
               <option *ngFor="let option of requestedByList" [value]="option._id">
-                {{option.name}}
+                {{option.name || option._id}}
               </option>
             </select>
           </div>
@@ -142,7 +150,7 @@
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
             <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
               <option *ngFor="let option of respondedByList" [value]="option._id">
-                {{option.name}}
+                {{option.name || option._id}}
               </option>
             </select>
           </div>

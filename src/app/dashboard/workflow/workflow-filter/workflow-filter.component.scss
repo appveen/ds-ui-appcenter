@@ -207,21 +207,17 @@
 }
 
 .col-name {
-  border: 1px solid #DFE1E2;
-  border-radius: 16px;
-  opacity: 1;
-  min-width: 100px;
-  height: 23px;
-  cursor:grabbing;
-    span{
-    text-align: left;
-    letter-spacing: 0px;
-    color: #747E8D;
-    opacity: 1;
-  }
+  min-height: 28px;
+  max-height: 36px;
+  border-radius: 4px;
+  cursor: grabbing;
+  color: $dark;
+  border: 1px solid $border;
+  background-color: $gray-200;
   &:hover {
-    background-color: $gray-medium;
+    background-color: $white;
   }
+  padding: 8px;
 }
 .custom-select {
   min-height: 32px;

@@ -45,7 +45,7 @@
           #inputInstance="ngbTypeahead" />
         <span class="fas fa-lg fa-plus-circle text-primary position-absolute" id="addColumn"></span>
       </div>
-      <div class="helper-text text-muted" *ngIf="selectedColOrder.length > 1">
+      <div class="helper-text text-muted" *ngIf="selectedColOrder?.length > 1">
         Click and drag the column names to re-arrange the order.
       </div>
     </div>
@@ -106,7 +106,7 @@
       <button class="mr-2 btn btn-link text-success" type="button" *ngIf="showSeparateCreateBtn"
         (click)="duplicateView()">+Duplicate View</button>
       <button class="mr-2 btn btn-link text-success" type="button" (click)="showSaveDiv = true"
-        *ngIf="!showSeparateCreateBtn || !!filterId">{{ saveOrEditText }}</button>
+        *ngIf="hasOptions && (!showSeparateCreateBtn || !!filterId)">{{ saveOrEditText }}</button>
       <button class="btn btn-primary mr-2" type="button" (click)="applyFilter()">Apply</button>
       <button class="btn btn-primary" type="button" (click)="applyFilter(true)">Apply & Close</button>
     </div>

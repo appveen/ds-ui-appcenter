@@ -1,10 +1,11 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AppService } from 'src/app/service/app.service';
 import { ToastrService } from 'ngx-toastr';
+import * as _ from 'lodash';
+
+import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowService } from 'src/app/dashboard/workflow/workflow.service';
-import * as _ from 'lodash';
 import { WorkflowAgGridService } from '../../workflow-list/workflow-ag-grid/workflow-ag-grid.service';
 
 @Component({
@@ -98,12 +99,10 @@ export class SearchForComponent implements OnInit {
       }, {
         name: 'Less than',
         value: 'lessThan'
-      }
-      // , {
-      //   name: 'Not equal',
-      //   value: 'notEqual'
-      // }
-      , {
+      }, {
+        name: 'Not equal',
+        value: 'notEqual'
+      }, {
         name: 'In range',
         value: 'inRange'
       }];
@@ -178,8 +177,8 @@ export class SearchForComponent implements OnInit {
         toDate: null,
         toggleFromDate: false,
         toggleToDate: false,
-        serviceCol: false
-
+        serviceCol: false,
+        dateFieldType: 'date-time'
       },
       {
         headerName: 'Status',
@@ -232,7 +231,12 @@ export class SearchForComponent implements OnInit {
               fieldName: col.key,
               filterType: 'equals',
               filterValue: '',
-              serviceCol: true
+              serviceCol: true,
+              ...(col.type === 'Date'
+                ? {
+                    dateFieldType: col.properties.dateType === 'date' ? 'date' : 'date-time'
+                  }
+                : {})
             };
           }
           // self.combinedColumns.push(obj); // If you are uncommenting below code, then remove this line of code
@@ -305,31 +309,13 @@ export class SearchForComponent implements OnInit {
       const relVal = e.target.value.split(',');
       tempCol = self.combinedColumns.find(col => _.isEqual(col.fieldName, relVal));
     }
-    if (tempCol && tempCol.fieldType !== 'Relation') {
-      self.searchForColumn.splice(index, 1, self.appService.cloneObject(tempCol));
-    } else if (tempCol && tempCol.fieldType === 'Relation') {
+    if (!!tempCol) {
       self.searchForColumn.splice(index, 1, self.appService.cloneObject(tempCol));
     }
     self.searchDataUpdated();
   }
   getDateText(type) {
-    switch (type) {
-      case 'equals': {
-        return 'Date';
-      }
-      case 'greaterThan': {
-        return 'Date';
-      }
-      case 'lessThan': {
-        return 'Date';
-      }
-      case 'notEqual': {
-        return 'Date';
-      }
-      default: {
-        return 'From';
-      }
-    }
+    return ['equals', 'greaterThan', 'lessThan', 'notEqual'].includes(type) ? 'Date' : 'From';
   }
 
   setStartDate(event, filter) {
