@@ -652,170 +652,250 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
   }
   createDateFilter(item) {
     const self = this;
+    const timezone = item.timezone;
     if (item.filterType === 'equals' && item['fromDate']) {
-      const tempObj1 = Object.defineProperty({}, item['fieldName'], {
-        value: self.getDateQuery(item['fromDate']),
-        writable: true,
-        enumerable: true
-      });
+      let value;
+      if (item.dateFieldType === 'date') {
+        value = {
+          $gte: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start').toISOString(),
+          $lte: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:end').toISOString()
+        }
+      } else {
+        value = {
+          $gte: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start').toISOString(),
+          $lte: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:end').toISOString()
+        }
+      }
+      const tempObj1 =  {
+        [item['fieldName']] : value
+      }
       self.insertDataInHelperArr(tempObj1);
-    } else if (item.filterType === 'greaterThan') {
-      const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { $gt: item['fromDate'] },
-        writable: true,
-        enumerable: true
-      });
+    } else if (item.filterType === 'greaterThan' && item['fromDate']) {
+      let value;
+      if (item.dateFieldType === 'date') {
+        value = {
+          $gt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start').toISOString()
+        }
+      } else {
+        value = {
+          $gt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start').toISOString()
+        }
+      }
+      const tempObj = {
+        [item['fieldName']]: value
+      };
       self.insertDataInHelperArr(tempObj, true);
-    } else if (item.filterType === 'lessThan') {
-      const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { $lt: item['fromDate'] },
-        writable: true,
-        enumerable: true
-      });
+    } else if (item.filterType === 'lessThan' && item['fromDate']) {
+      let value;
+      if (item.dateFieldType === 'date') {
+        value = {
+          $lt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start').toISOString()
+        }
+      } else {
+        value = {
+          $lt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start').toISOString()
+        }
+      }
+      const tempObj = {
+        [item['fieldName']]: value
+      };
       self.insertDataInHelperArr(tempObj, true);
-    } else if (item.filterType === 'notEqual') {
-      const tempObj = Object.defineProperty({}, item['fieldName'], {
-        value: { $ne: item['fromDate'] },
-        writable: true,
-        enumerable: true
-      });
+    } else if (item.filterType === 'notEqual' && item['fromDate']) {
+      let value;
+      if (item.dateFieldType === 'date') {
+        value = [
+          { [item['fieldName']] : { $lt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start').toISOString() }},
+          { [item['fieldName']]: { $gt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:end').toISOString() }}
+        ]        
+      } else {
+        value = [
+          { [item['fieldName']] : { $lt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start').toISOString() }},
+          { [item['fieldName']] : { $gt: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:end').toISOString() }}
+        ]
+      }
+      const tempObj = {
+        $or: value
+      };
       self.insertDataInHelperArr(tempObj, true);
-    } else if (item.filterType === 'inRange') {
-      const tempObj1 = Object.defineProperty({}, item['fieldName'], {
-        value: { $gte: item['fromDate'], $lt: item['toDate'] },
-        writable: true,
-        enumerable: true
-      });
+    } else if (item.filterType === 'inRange' && item['fromDate'] && item['toDate']) {
+      let value;
+      if (item.dateFieldType === 'date') {
+        value = {
+          $gte: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start').toISOString(),
+          $lte: this.appService.getMomentInTimezone(new Date(item['toDate']), timezone, 'time:end').toISOString()
+        }
+      } else {
+        value = {
+          $gte: this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start').toISOString(),
+          $lte: this.appService.getMomentInTimezone(new Date(item['toDate']), timezone, 'ms:end').toISOString()
+        }
+      }
+      const tempObj1 = {
+        [item['fieldName']]: value
+      };
       self.insertDataInHelperArr(tempObj1, true, 'gte');
     }
   }
   createRelDateFilter(item) {
     const self = this;
+    const timezone = item.timezone;
     let prefix = 'data.new.';
     if (self.appService.workflowTab === 1 || self.appService.workflowTab === 2) {
       prefix = 'data.old.';
     }
     if (item.filterType === 'equals' && item['fromDate']) {
-      const queryObj = {
-        $or: []
-      };
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      const startD = new Date(item['fromDate']);
-      const endD = new Date(item['fromDate']);
+      let startD, endD;
       if(item.dateFieldType === 'date') {
-        startD.setHours(0, 0, 0);
-        endD.setHours(23, 59, 59);
+        startD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start');
+        endD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:end');
+      } else {
+        startD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start');
+        endD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:end');
       }
-      startD.setMilliseconds(0);
-      endD.setMilliseconds(999);
-      item.fieldName.forEach(_relCol => {
-        const tempObj1 = {
-          [prefix + _relCol + '.utc']: {
-            $gte: startD.toISOString(),
-            $lte: endD.toISOString()
-          }
+      if(item.fieldName.length > 1) {
+        const queryObj = {
+          $or: []
         };
-        queryObj['$or'].push(tempObj1);
-        self.insertDataInHelperArr(queryObj);
-      });
-    } else if (item.filterType === 'greaterThan') {
-      const queryObj = {
-        $or: []
-      };
+        item.fieldName.forEach(_relCol => {
+          const tempObj1 = {
+            [prefix + _relCol + '.utc']: {
+              $gte: startD.toISOString(),
+              $lte: endD.toISOString()
+            }
+          };
+          queryObj['$or'].push(tempObj1);
+          self.insertDataInHelperArr(queryObj);
+        });
+      } else {
+        item.fieldName.forEach(_relCol => {
+          const queryObj = {
+            [prefix + _relCol + '.utc']: {
+              $gte: startD.toISOString(),
+              $lte: endD.toISOString()
+            }
+          };
+          self.insertDataInHelperArr(queryObj);
+        });
+      }
+    } else if (item.filterType === 'greaterThan' && item['fromDate']) {
       if (!Array.isArray(item.fieldName)) {
         item.fieldName = item.fieldName.split();
       }
-      const date = new Date(item['fromDate']);
+      let date;
       if(item.dateFieldType === 'date') {
-        date.setHours(23, 59, 59);
+        date = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:end');
+      } else {
+        date = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:end');
       }
-      date.setMilliseconds(999);
-      item.fieldName.forEach(_relCol => {
-        const tempObj1 = { [prefix + _relCol + '.utc']: { $gt: date.toISOString()} };
-        queryObj['$or'].push(tempObj1);
-        self.insertDataInHelperArr(tempObj1);
-      });
-    } else if (item.filterType === 'lessThan') {
-      const queryObj = {
-        $or: []
-      };
-      if (!Array.isArray(item.fieldName)) {
-        item.fieldName = item.fieldName.split();
-      }
-      const date = new Date(item['fromDate']);
-      if(item.dateFieldType === 'date') {
-        date.setHours(0, 0, 0);
-      }
-      date.setMilliseconds(0);
-      item.fieldName.forEach(_relCol => {
-        const tempObj1 = { [prefix + _relCol + '.utc']: { $lt: date.toISOString() } };
-        queryObj['$or'].push(tempObj1);
-        self.insertDataInHelperArr(queryObj);
-      });
-    } else if (item.filterType === 'notEqual') {
-      const queryObj = {
-        $or: []
-      };
-      if (!Array.isArray(item.fieldName)) {
-        item.fieldName = item.fieldName.split();
-      }
-      const startD = new Date(item['fromDate']);
-      const endD = new Date(item['fromDate']);
-      if(item.dateFieldType === 'date') {
-        startD.setHours(0, 0, 0);
-        endD.setHours(23, 59, 59);
-      }
-      startD.setMilliseconds(0);
-      endD.setMilliseconds(999);
-      item.fieldName.forEach(_relCol => {
-        const tempObj1 = { [prefix + _relCol + '.utc']: {$or: [{ $lt: startD.toISOString()}, {$gt: endD.toISOString()}]} };
-        queryObj['$or'].push(tempObj1);
-        self.insertDataInHelperArr(queryObj);
-      });
-    } else if (item.filterType === 'inRange') {
-      const queryObj = {
-        $or: []
-      };
-      if (!Array.isArray(item.fieldName)) {
-        item.fieldName = item.fieldName.split();
-      }
-      const startD = new Date(item['fromDate']);
-      const endD = new Date(item['toDate']);
-      if(item.dateFieldType === 'date') {
-        startD.setHours(0, 0, 0);
-        endD.setHours(23, 59, 59);
-      }
-      startD.setMilliseconds(0);
-      endD.setMilliseconds(999);
-      item.fieldName.forEach(_relCol => {
-        const tempObj1 = {
-          [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lt: endD.toISOString() }
+      if(item.fieldName.length > 1) {
+        const queryObj = {
+          $or: []
         };
-        queryObj['$or'].push(tempObj1);
-        self.insertDataInHelperArr(tempObj1);
-      });
+        item.fieldName.forEach(_relCol => {
+          const tempObj1 = { [prefix + _relCol + '.utc']: { $gt: date.toISOString()} };
+          queryObj['$or'].push(tempObj1);
+          self.insertDataInHelperArr(queryObj);
+        });
+      } else {
+        item.fieldName.forEach(_relCol => {
+          const queryObj = { [prefix + _relCol + '.utc']: { $gt: date.toISOString()} };
+          self.insertDataInHelperArr(queryObj);
+        });
+      }
+    } else if (item.filterType === 'lessThan' && item['fromDate']) {
+      if (!Array.isArray(item.fieldName)) {
+        item.fieldName = item.fieldName.split();
+      }
+      let date;
+      if(item.dateFieldType === 'date') {
+        date = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start');
+      } else {
+        date = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start');
+      }
+      if(item.fieldName.length > 1) {
+        const queryObj = {
+          $or: []
+        };
+        item.fieldName.forEach(_relCol => {
+          const tempObj1 = { [prefix + _relCol + '.utc']: { $lt: date.toISOString() } };
+          queryObj['$or'].push(tempObj1);
+          self.insertDataInHelperArr(queryObj);
+        });
+      } else {
+        item.fieldName.forEach(_relCol => {
+          const queryObj = { [prefix + _relCol + '.utc']: { $lt: date.toISOString() } };
+          self.insertDataInHelperArr(queryObj);
+        });
+      }
+    } else if (item.filterType === 'notEqual' && item['fromDate']) {
+      if (!Array.isArray(item.fieldName)) {
+        item.fieldName = item.fieldName.split();
+      }
+      let startD, endD;
+      if(item.dateFieldType === 'date') {
+        startD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start');
+        endD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:end');
+      } else {
+        startD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start');
+        endD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:end');
+      }
+      const queryObj = {
+        $or: []
+      };
+      if(item.fieldName.length > 1) {
+        item.fieldName.forEach(_relCol => {
+          const tempObj1 = { [prefix + _relCol + '.utc']: { $lt: startD.toISOString() } };
+          const tempObj2 = { [prefix + _relCol + '.utc']: {$gt: endD.toISOString() } };
+          queryObj['$or'].push(tempObj1);
+          queryObj['$or'].push(tempObj2);
+          self.insertDataInHelperArr(queryObj);
+        });
+      } else {
+        item.fieldName.forEach(_relCol => {
+          const tempObj1 = { [prefix + _relCol + '.utc']: { $lt: startD.toISOString() } };
+          const tempObj2 = { [prefix + _relCol + '.utc']: { $gt: endD.toISOString() } };
+          queryObj['$or'].push(tempObj1);
+          queryObj['$or'].push(tempObj2);
+          self.insertDataInHelperArr(queryObj);
+        });
+      }
+    } else if (item.filterType === 'inRange' && item['fromDate'] && item['toDate']) {
+      if (!Array.isArray(item.fieldName)) {
+        item.fieldName = item.fieldName.split();
+      }
+      let startD, endD;
+      if(item.dateFieldType === 'date') {
+        startD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'time:start');
+        endD = this.appService.getMomentInTimezone(new Date(item['toDate']), timezone, 'time:end');
+      } else {
+        startD = this.appService.getMomentInTimezone(new Date(item['fromDate']), timezone, 'ms:start');
+        endD = this.appService.getMomentInTimezone(new Date(item['toDate']), timezone, 'ms:end');
+      }
+      if(item.fieldName.length > 1) {
+        const queryObj = {
+          $or: []
+        };
+        item.fieldName.forEach(_relCol => {
+          const tempObj1 = {
+            [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lt: endD.toISOString() }
+          };
+          queryObj['$or'].push(tempObj1);
+          self.insertDataInHelperArr(queryObj);
+        });
+      } else {
+        item.fieldName.forEach(_relCol => {
+          const queryObj = {
+            [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lt: endD.toISOString() }
+          };
+          self.insertDataInHelperArr(queryObj);
+        });
+      }
     }
   }
-  getDateQuery(value: any) {
-    const obj = {};
-    if (value) {
-      const fromDate = new Date(value);
-      fromDate.setHours(0);
-      fromDate.setMinutes(0);
-      fromDate.setSeconds(0);
-      fromDate.setMilliseconds(0);
-      const toDate = new Date(value);
-      toDate.setHours(23);
-      toDate.setMinutes(59);
-      toDate.setSeconds(59);
-      toDate.setMilliseconds(0);
-      obj['$gte'] = fromDate.toISOString();
-      obj['$lte'] = toDate.toISOString();
-    }
-    return obj;
-  }
+
   insertDataInHelperArr(tempObj, dateData?, inRange?) {
     const self = this;
     const placeHolderArr = [];

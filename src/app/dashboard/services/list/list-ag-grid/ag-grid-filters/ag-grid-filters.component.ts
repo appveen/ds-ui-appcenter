@@ -134,7 +134,9 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         );
       }
     } else if (self.definition.type === 'Geojson') {
-      temp[self.definition.dataKey + '.formattedAddress'] = '/' + value + '/';
+      temp['$or'] = [];
+      temp['$or'].push({[self.definition.dataKey + '.formattedAddress'] : '/' + value + '/'});
+      temp['$or'].push({[self.definition.dataKey + '.userInput'] : '/' + value + '/'});
     } else if (self.definition.type === 'File') {
       temp[self.definition.dataKey + '.metadata.filename'] = '/' + value + '/';
     } else if (self.definition.type === 'Number') {
@@ -207,17 +209,15 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   getDateQuery(value: any) {
     const obj = {};
+    let fromDate, toDate;
     if (value) {
-      const fromDate = new Date(value);
-      fromDate.setHours(0);
-      fromDate.setMinutes(0);
-      fromDate.setSeconds(0);
-      fromDate.setMilliseconds(0);
-      const toDate = new Date(value);
-      toDate.setHours(23);
-      toDate.setMinutes(59);
-      toDate.setSeconds(59);
-      toDate.setMilliseconds(999);
+      if(this.dateType === 'date') {
+        fromDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:start');
+        toDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:end');
+      } else {
+        fromDate = this.appService.getMomentInTimezone(new Date(value + ':00'), this.timezone || 'Zulu', 'ms:start');
+        toDate = this.appService.getMomentInTimezone(new Date(value + ':59'), this.timezone || 'Zulu', 'ms:end');
+      }
       obj['$gte'] = fromDate.toISOString();
       obj['$lte'] = toDate.toISOString();
     }
@@ -265,6 +265,14 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       return self.relatedDef.properties.dateType;
     }
     return self.definition.properties.dateType;
+  }
+
+  get timezone() {
+    const self = this;
+    if (self.relatedDef) {
+      return self.relatedDef.properties.defaultTimezone;
+    }
+    return self.definition.properties.defaultTimezone;
   }
 
   get checkbox() {

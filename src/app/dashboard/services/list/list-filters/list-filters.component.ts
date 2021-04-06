@@ -230,26 +230,12 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   selectItem(val) {
     const self = this;
-    const tempArr = [];
     val.preventDefault();
     const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.item.properties.name);
     if (index1 === -1) {
       self.selectedColOrder.push(val.item);
     } else {
       self.ts.warning('Column already added');
-    }
-    self.selectedColOrder.forEach((col) => {
-      // const temp = self.appService.cloneObject(col);
-      if (col.type === 'File') {
-        col.dataKey = col.dataKey + '.metadata.filename';
-        // tempArr.push(temp);
-      } else if (col.type === 'Geojson') {
-        col.dataKey = col.dataKey + '.formattedAddress';
-        // tempArr.push(temp);
-      }
-    });
-    if (tempArr.length > 0) {
-      self.selectedColOrder = [...self.selectedColOrder, ...tempArr];
     }
     self.name = '';
   }
