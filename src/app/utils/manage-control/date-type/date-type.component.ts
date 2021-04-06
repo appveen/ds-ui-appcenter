@@ -114,6 +114,15 @@ export class DateTypeComponent implements OnInit, OnDestroy {
     }
   }
 
+  setDefault(event) {
+    const dateStr = new Date(this.defaultValue).toString()
+    this.initialDateStr = new Date(this.defaultValue).toISOString();
+    this.control.patchValue({
+      rawData: dateStr,
+      tzInfo: this.selectedTimezone
+    });
+  }
+
   get selectedDate() {
     if (this.setValue) {
       if (this.definition.properties.dateType === 'date') {
@@ -163,5 +172,16 @@ export class DateTypeComponent implements OnInit, OnDestroy {
 
   get requiredError() {
     return this.control.hasError('required') && this.control.touched;
+  }
+
+  get defaultValue() {
+    if (this.definition && this.definition.properties && this.definition.properties.default) {
+      if (this.definition.properties.dateType === 'date') {
+        return this.datePipe.transform(this.definition.properties.default, 'mediumDate');
+      } else {
+        return this.datePipe.transform(this.definition.properties.default, 'medium');
+      }
+    }
+    return null;
   }
 }

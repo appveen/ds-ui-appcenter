@@ -17,6 +17,12 @@
     </select>
     <span *ngIf="supportedTimezones.length<2 || control.disabled" class="p-2 text-primary">{{selectedTimezone}}</span>
 </div>
+<div *ngIf="defaultValue" class="default-value d-flex align-items-center">
+    <button type="button" class="btn btn-sm btn-link form-text px-0" (click)="setDefault($event)">
+        <span class="text">Set Default</span>
+    </button>
+    <span class="text-dark ml-2"><small>({{defaultValue}})</small></span>
+</div>
 <odp-date-picker *ngIf="showDatePicker" [(togglePicker)]="showDatePicker"
     [options]="{floating:true,type:fieldType, buttons: true}" [(from)]="setValue"></odp-date-picker>
 
