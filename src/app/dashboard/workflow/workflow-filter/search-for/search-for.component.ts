@@ -379,8 +379,10 @@ export class SearchForComponent implements OnInit {
 
         let colObj = self.combinedColumns.find(e => e.fieldName === tempkey1);
         if (!colObj) {
-          const key = tempkey1.replace('.value', '')
-          colObj = self.combinedColumns.find(e => e.fieldName === key);
+          let replacedKey = tempkey1.replace('.value', '');
+          replacedKey = replacedKey.replace('.utc', '');
+          replacedKey = replacedKey.replace('.rawData', '');
+          colObj = self.combinedColumns.find(e => e.fieldName === replacedKey);
         }
 
         self.addSearchFor(element, key, colObj, isServiceCol);
@@ -401,7 +403,6 @@ export class SearchForComponent implements OnInit {
     const self = this;
     let value = '';
     let filterType = 'contains';
-    // console.log(colObj);
     if (typeof (tempObj[key]) === 'string') {
       if ((tempObj[key]) !== 'requestedBy') {
         if (tempObj[key].charAt(0) === '/'
@@ -436,18 +437,7 @@ export class SearchForComponent implements OnInit {
       filterType = 'greaterThan';
       value = tempObj[key].$gt;
     }
-    if ((tempObj[key]) !== '_metadata.lastUpdated') {
-      const obj = {
-        headerName: colObj.headerName,
-        fieldType: colObj.fieldType,
-        fieldName: colObj.fieldName,
-        filterType: filterType,
-        filterValue: value,
-        serviceCol: serviceCol
-      };
-      self.searchForColumn.push(obj);
-      // console.log(self.searchForColumn);
-    } else if ((tempObj[key]) === '_metadata.lastUpdated') {
+    if (key === '_metadata.lastUpdated') {
       let fromDate;
       let toDate;
       let tempfilterType = 'equals';
@@ -466,13 +456,49 @@ export class SearchForComponent implements OnInit {
         tempfilterType = 'lessThan';
       }
       const obj = {
-        headerName: colObj.headerName,
-        fieldType: colObj.fieldType,
-        fieldName: colObj.fieldName,
+        headerName: colObj?.headerName,
+        fieldType: colObj?.fieldType,
+        fieldName: colObj?.fieldName,
         filterType: tempfilterType,
         fromDate: fromDate,
         toDate: toDate,
         serviceCol: serviceCol
+      };
+      self.searchForColumn.push(obj);
+    } else if (colObj?.fieldType === 'Date') {
+      let colKey = key.replace('.utc', '');
+      colKey = colKey.replace('.rawData', '');
+      colKey = colKey.replace('data.new.', '');
+      colKey = colKey.replace('data.old.', '');
+      const colDef = this.allColumnsOfService.find(c => c.key === colKey);
+      const obj = {
+        ...colObj,
+        ...(!!colDef
+          ? {
+              dateFieldType: colDef.properties.dateType === 'date' ? 'date' : 'date-time',
+              timezone: colDef.properties.defaultTimezone || 'Zulu'
+            }
+          : {})
+      };
+      if(colObj.filterType === 'equals') {
+        obj.fromDate = tempObj[key].$gte;
+      } else if (colObj.filterType === 'greaterThan') {
+        obj.fromDate = tempObj[key].$gt;
+      } else if (colObj.filterType === 'lessThan' || colObj.filterType === 'notEqual') {
+        obj.fromDate = tempObj[key].$lt;
+      } else if (colObj.filterType === 'inRange') {
+        obj.fromDate = tempObj[key].$gte;
+        obj.toDate = tempObj[key].$lte;
+      }
+      self.searchForColumn.push(obj);
+    } else if (key !== '_metadata.lastUpdated') {
+      const obj = {
+        headerName: colObj?.headerName,
+        fieldType: colObj?.fieldType,
+        fieldName: colObj?.fieldName,
+        filterType: colObj?.filterType || filterType,
+        filterValue: colObj?.filterValue || value,
+        serviceCol: colObj?.serviceCol
       };
       self.searchForColumn.push(obj);
     }
