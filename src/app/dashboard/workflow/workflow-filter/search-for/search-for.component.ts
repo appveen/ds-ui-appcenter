@@ -178,7 +178,8 @@ export class SearchForComponent implements OnInit {
         toggleFromDate: false,
         toggleToDate: false,
         serviceCol: false,
-        dateFieldType: 'date-time'
+        dateFieldType: 'date-time',
+        timezone: 'Zulu'
       },
       {
         headerName: 'Status',
@@ -234,7 +235,8 @@ export class SearchForComponent implements OnInit {
               serviceCol: true,
               ...(col.type === 'Date'
                 ? {
-                    dateFieldType: col.properties.dateType === 'date' ? 'date' : 'date-time'
+                    dateFieldType: col.properties.dateType === 'date' ? 'date' : 'date-time',
+                    timezone: col.properties.defaultTimezone || 'Zulu'
                   }
                 : {})
             };

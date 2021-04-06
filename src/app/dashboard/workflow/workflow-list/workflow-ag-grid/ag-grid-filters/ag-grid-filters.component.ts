@@ -107,19 +107,18 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       });
     }
   }
+
   getDateQuery(value: any) {
     const obj = {};
+    let fromDate, toDate;
     if (value) {
-      const fromDate = new Date(value);
-      fromDate.setHours(0);
-      fromDate.setMinutes(0);
-      fromDate.setSeconds(0);
-      fromDate.setMilliseconds(0);
-      const toDate = new Date(value);
-      toDate.setHours(23);
-      toDate.setMinutes(59);
-      toDate.setSeconds(59);
-      toDate.setMilliseconds(0);
+      if(this.dateType === 'date') {
+        fromDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:start');
+        toDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:end');
+      } else {
+        fromDate = this.appService.getMomentInTimezone(new Date(value + ':00'), this.timezone || 'Zulu', 'ms:start');
+        toDate = this.appService.getMomentInTimezone(new Date(value + ':59'), this.timezone || 'Zulu', 'ms:end');
+      }
       obj['$gte'] = fromDate.toISOString();
       obj['$lte'] = toDate.toISOString();
     }
@@ -316,5 +315,21 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   get workflowtab() {
     const self = this;
     return self.appService.workflowTab;
+  }
+
+  get dateType() {
+    const self = this;
+    if (self.relatedDef) {
+      return self.relatedDef.properties.dateType;
+    }
+    return self.col.properties.dateType;
+  }
+
+  get timezone() {
+    const self = this;
+    if (self.relatedDef) {
+      return self.relatedDef.properties.defaultTimezone;
+    }
+    return self.col.properties.defaultTimezone;
   }
 }

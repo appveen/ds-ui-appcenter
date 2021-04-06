@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+
 import { Definition } from 'src/app/interfaces/definition';
 import { CommonService } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
-import { ToastrService } from 'ngx-toastr';
 import { FormService } from 'src/app/service/form.service';
 
 @Component({
@@ -60,32 +61,28 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       self.filterModel.filterObject = {};
       self.valueChange();
     }
-    if (self.filterModel && self.filterModel.filterValue) {
+    if (self.selectedFieldDef?.type === 'Date' && self.filterModel && self.filterModel.filterValue) {
+      const fieldData = self.allFields.find(e => e.key === self.filterModel.dataKey);
+      self.dateFieldType = fieldData.properties.dateType === 'date' ? 'date' : 'date-time';
       const temp = new Date(self.filterModel.filterValue);
       if (temp.toString() !== 'Invalid Date') {
-        // self.filterModel.filterObject.forEach((e, i) => {
         let obj = self.filterModel.filterObject;
         for (const key in obj) {
-          if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] && obj[key]['$lte'])) {
-            self.setStartDate(obj[key]['$gte']);
-            self.setEndDate(obj[key]['$lte']);
-          }
-          else if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$gte'] || obj[key]['$gt'])) {
-            // self.dateObjIndex = i;
-            if (obj[key]['$gte']) {
+          if(self.filterModel.filterType !== 'lessThan' && obj.hasOwnProperty(key) && obj[key]) {
+            if(obj[key]['$gte']) {
               self.setStartDate(obj[key]['$gte']);
-            } else if (obj[key]['$gt']) {
+            } else if(obj[key]['$gt']) {
               self.setStartDate(obj[key]['$gt']);
             }
-          } else if (obj.hasOwnProperty(key) && obj[key] && (obj[key]['$lt'] || obj[key]['$lte'])) {
-            if (obj[key]['$lt']) {
-              self.setEndDate(obj[key]['$lt']);
-            } else {
+          }
+          if(['inRange', 'lessThan'].includes(self.filterModel.filterType) && obj.hasOwnProperty(key) && obj[key]) {
+            if(obj[key]['$lte']) {
               self.setEndDate(obj[key]['$lte']);
+            } else if(obj[key]['$lt']) {
+              self.setEndDate(obj[key]['$lt']);
             }
           }
         }
-        // });
       }
     }
   }
@@ -99,7 +96,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
 
   onFieldChange() {
     const self = this;
-    if (self.selectedFieldDef.type === 'Relation') {
+    if (self.selectedFieldDef?.type === 'Relation') {
       self.fetchRelatedSchema();
     }
     Object.keys(self.filterModel.filterObject).forEach(key => {
@@ -258,22 +255,25 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         }
       }
     } else if (self.selectedFieldType === 'Geojson') {
-      self.filterModel.filterObject[self.filterModel.dataKey + '.formattedAddress'] = self.getFilterValue(self.selectedFieldType);
+      self.filterModel.filterObject['$or'] = [];
+      self.filterModel.filterObject['$or'].push({[self.filterModel.dataKey + '.formattedAddress'] : self.getFilterValue(self.selectedFieldType)});
+      self.filterModel.filterObject['$or'].push({[self.filterModel.dataKey + '.userInput'] : self.getFilterValue(self.selectedFieldType)});
     } else if (self.selectedFieldType === 'File') {
       self.filterModel.filterObject[self.filterModel.dataKey + '.metadata.filename'] = self.getFilterValue(self.selectedFieldType);
     } else if (self.selectedFieldType === 'Boolean') {
       self.filterModel.filterObject[self.filterModel.dataKey] = self.getFilterValue(self.selectedFieldType);
     } else if (self.selectedFieldType === 'Date') {
+      const timezone = self.selectedFieldDef?.properties?.defaultTimezone || 'Zulu';
       switch (self.filterModel.filterType) {
         case 'equals': {
-          const startDate = new Date(self.startDate);
-          const endDate = new Date(self.startDate);
+          let startDate, endDate;
           if(self.dateFieldType === 'date') {
-            startDate.setHours(0, 0, 0);
-            endDate.setHours(23, 59, 59);
+            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:start');
+            endDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:end');
+          } else {
+            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:start');
+            endDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:end');
           }
-          startDate.setMilliseconds(0);
-          endDate.setMilliseconds(999);
           if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
@@ -292,14 +292,14 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           break;
         }
         case 'notEqual': {
-          const startDate = new Date(self.startDate);
-          const endDate = new Date(self.startDate);
+          let startDate, endDate;
           if(self.dateFieldType === 'date') {
-            startDate.setHours(0, 0, 0);
-            endDate.setHours(23, 59, 59);
+            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:start');
+            endDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:end');
+          } else {
+            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:start');
+            endDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:end');
           }
-          startDate.setMilliseconds(0);
-          endDate.setMilliseconds(999);
           if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               $or: [
@@ -334,11 +334,12 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           break;
         }
         case 'greaterThan': {
-          const date = new Date(self.startDate);
+          let date;
           if(self.dateFieldType === 'date') {
-            date.setHours(23, 59, 59);
+            date = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:end');
+          } else {
+            date = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:end');
           }
-          date.setMilliseconds(999);
           if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
@@ -355,11 +356,12 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           break;
         }
         case 'lessThan': {
-          const date = new Date(self.endDate);
+          let date;
           if(self.dateFieldType === 'date') {
-            date.setHours(0, 0, 0);
+            date = this.appService.getMomentInTimezone(this.endDate, timezone, 'time:start');
+          } else {
+            date = this.appService.getMomentInTimezone(this.endDate, timezone, 'ms:start');
           }
-          date.setMilliseconds(0);
           if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {
@@ -376,14 +378,14 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           break;
         }
         case 'inRange': {
-          const startDate = new Date(self.startDate);
-          const endDate = new Date(self.endDate);
+          let startDate, endDate;
           if(self.dateFieldType === 'date') {
-            startDate.setHours(0, 0, 0);
-            endDate.setHours(23, 59, 59);
+            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:start');
+            endDate = this.appService.getMomentInTimezone(this.endDate, timezone, 'time:end');
+          } else {
+            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:start');
+            endDate = this.appService.getMomentInTimezone(this.endDate, timezone, 'ms:end');
           }
-          startDate.setMilliseconds(0);
-          endDate.setMilliseconds(999);
           if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
               [self.filterModel.dataKey]: {

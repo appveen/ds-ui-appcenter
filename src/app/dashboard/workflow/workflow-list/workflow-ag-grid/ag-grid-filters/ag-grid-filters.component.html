@@ -1,80 +1,84 @@
 <ng-container *ngIf="col.dataType!=='others'">
-        <input type="text" class="border rounded bg-white w-100" *ngIf="col.dataType ==='text'" [(ngModel)]="workflowFilter"
-            (ngModelChange)="filterChange($event)">
-        <input *ngIf="col.type==='date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            (ngModelChange)="filterChange($event)">
-        <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='requestedBy'"
-            (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
-            <option value="">Anyone</option>
-            <option [value]="user._id" *ngFor="let user of requestedByList">{{user.name?user.name:user._id}}</option>
-        </select>
-        <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='respondedBy'"
-            (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
-            <option value="">Anyone</option>
-            <option [value]="user._id" *ngFor="let user of respondedByList">{{user.name?user.name:user._id}}</option>
-        </select>
-        <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='status' && workflowtab!==3"
-            (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
-            <option value="">All</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Pending">Pending Review</option>
-            <option value="Rework">Rework</option>
-            <option value="Discarded" *ngIf="workflowtab!==2">Discarded</option>
-        </select>
-        <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='operation'"
-            (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
-            <option value="">All</option>
-            <option value="POST">New</option>
-            <option value="PUT">Edit</option>
-            <option value="DELETE">Delete</option>
-        </select>
-    </ng-container>
+    <input type="text" class="border rounded bg-white w-100" *ngIf="col.dataType ==='text'" [(ngModel)]="workflowFilter"
+        (ngModelChange)="filterChange($event)">
+    <input *ngIf="col.type==='date' && dateType === 'date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        (ngModelChange)="filterChange($event)">
+    <input *ngIf="col.type==='date' && dateType !== 'date'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        (ngModelChange)="filterChange($event)">
+    <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='requestedBy'"
+        (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
+        <option value="">Anyone</option>
+        <option [value]="user._id" *ngFor="let user of requestedByList">{{user.name?user.name:user._id}}</option>
+    </select>
+    <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='respondedBy'"
+        (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
+        <option value="">Anyone</option>
+        <option [value]="user._id" *ngFor="let user of respondedByList">{{user.name?user.name:user._id}}</option>
+    </select>
+    <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='status' && workflowtab!==3"
+        (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
+        <option value="">All</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Pending">Pending Review</option>
+        <option value="Rework">Rework</option>
+        <option value="Discarded" *ngIf="workflowtab!==2">Discarded</option>
+    </select>
+    <select class="border rounded text-primary bg-white w-100" *ngIf="col.key==='operation'"
+        (ngModelChange)="filterChange($event)" [(ngModel)]="workflowFilter">
+        <option value="">All</option>
+        <option value="POST">New</option>
+        <option value="PUT">Edit</option>
+        <option value="DELETE">Delete</option>
+    </select>
+</ng-container>
     
-    <ng-container *ngIf="col.dataType === 'others'">
-        <input *ngIf="(type==='String' && !longText && !richText || type==='Identifier')" type="text"
-            class="border rounded bg-white w-100" [(ngModel)]="workflowFilter" odpOnChange (textChange)="onChange($event)">
-        <input *ngIf="type==='Number'" type="number" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            odpOnChange (textChange)="onChange($event)">
-        <input *ngIf="type==='File'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            odpOnChange (textChange)="onChange($event)">
-        <input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            odpOnChange (textChange)="onChange($event)">
-        <input *ngIf="type==='Date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            (change)="onChange($event.target.value)">
-        <!-- <input *ngIf="type==='Date' && dateType==='date' " type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
-        <!-- <input *ngIf="type==='Date' && (definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated')" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
-            <input *ngIf="type==='Date' && dateType!=='date' && definition.dataKey !=='_metadata.createdAt' && definition.dataKey !=='_metadata.lastUpdated'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
-        <input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            odpOnChange (textChange)="onChange($event)">
-        <input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            odpOnChange (textChange)="onChange($event)">
-        <select *ngIf="type==='Boolean'" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-            (ngModelChange)="onChange($event)">
-            <option value="">--All--</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
-    </ng-container>
+<ng-container *ngIf="col.dataType === 'others'">
+    <input *ngIf="(type==='String' && !longText && !richText || type==='Identifier')" type="text"
+        class="border rounded bg-white w-100" [(ngModel)]="workflowFilter" odpOnChange (textChange)="onChange($event)">
+    <input *ngIf="type==='Number'" type="number" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        odpOnChange (textChange)="onChange($event)">
+    <input *ngIf="type==='File'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        odpOnChange (textChange)="onChange($event)">
+    <input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        odpOnChange (textChange)="onChange($event)">
+    <input *ngIf="type==='Date' && dateType === 'date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        (change)="onChange($event.target.value)">
+    <input *ngIf="type==='Date' && dateType !== 'date'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        (change)="onChange($event.target.value)">
+    <!-- <input *ngIf="type==='Date' && dateType==='date' " type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
+    <!-- <input *ngIf="type==='Date' && (definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated')" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
+        <input *ngIf="type==='Date' && dateType!=='date' && definition.dataKey !=='_metadata.createdAt' && definition.dataKey !=='_metadata.lastUpdated'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
+    <input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        odpOnChange (textChange)="onChange($event)">
+    <input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        odpOnChange (textChange)="onChange($event)">
+    <select *ngIf="type==='Boolean'" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
+        (ngModelChange)="onChange($event)">
+        <option value="">--All--</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+    </select>
+</ng-container>
 
-    <ng-template #clearFilterModal>
-        <div class="modal-header alert">
-            <h4 class="modal-title text-danger">Warning</h4>
-            <button id="clearModalCloseBtn" type="button" class="close" aria-label="Close"
-                (click)="clearFilterModalRef.close(false)">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <p class="text-center">Current filters will be applied and other filters will be removed?</p>
-        </div>
-        <div class="modal-footer">
-            <button id="clearModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
-                (click)="clearFilterModalRef.close(false)">
-                No
-            </button>
-            <button id="clearModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
-                (click)="clearFilterModalRef.close(true)">Yes
-            </button>
-        </div>
-    </ng-template>
+<ng-template #clearFilterModal>
+    <div class="modal-header alert">
+        <h4 class="modal-title text-danger">Warning</h4>
+        <button id="clearModalCloseBtn" type="button" class="close" aria-label="Close"
+            (click)="clearFilterModalRef.close(false)">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center">Current filters will be applied and other filters will be removed?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="clearModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
+            (click)="clearFilterModalRef.close(false)">
+            No
+        </button>
+        <button id="clearModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
+            (click)="clearFilterModalRef.close(true)">Yes
+        </button>
+    </div>
+</ng-template>
