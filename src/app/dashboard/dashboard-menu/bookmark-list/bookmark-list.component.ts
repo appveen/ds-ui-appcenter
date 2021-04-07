@@ -74,7 +74,13 @@ export class BookmarkListComponent implements OnInit {
       });
   }
 
-  loadBookmark(bookmark: any) {
-    this.router.navigate(['/', this.commonService.app._id, 'bookmark', bookmark._id]);
+  loadBookmark(bookmark: any, force?: boolean) {
+    if(force) {
+      this.router.navigateByUrl(['', this.commonService.app._id, 'bookmark'].join('/')).then(() => {
+        this.router.navigate(['/', this.commonService.app._id, 'bookmark', bookmark._id]);
+      });
+    } else {
+      this.router.navigate(['/', this.commonService.app._id, 'bookmark', bookmark._id]);
+    }
   }
 }

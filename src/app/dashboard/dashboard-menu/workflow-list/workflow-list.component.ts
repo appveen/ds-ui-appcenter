@@ -109,7 +109,13 @@ export class WorkflowListComponent implements OnInit {
       });
   }
 
-  loadWorkflow(workflow: any) {
-    this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
+  loadWorkflow(workflow: any, force?: boolean) {
+    if(force) {
+      this.router.navigateByUrl(['', this.commonService.app._id, 'workflow'].join('/')).then(() => {
+        this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
+      });
+    } else {
+      this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
+    }
   }
 }

@@ -70,13 +70,27 @@ export class IntegrationListComponent implements OnInit {
     });
   }
 
-  loadPartnerInteractions(interactionItem?: any) {
-    if (interactionItem && interactionItem._id) {
-      this.appService.partnerId = interactionItem._id;
-      this.router.navigate(['/', this.commonService.app._id, 'interactions',interactionItem._id]);
+  loadPartnerInteractions(interactionItem?: any, force?: boolean) {
+    if(force) {
+      if (interactionItem && interactionItem._id) {
+        this.appService.partnerId = interactionItem._id;
+        this.router.navigateByUrl(['', this.commonService.app._id, 'interactions'].join('/')).then(() => {
+          this.router.navigate(['/', this.commonService.app._id, 'interactions',interactionItem._id]);
+        });
+      } else {
+        this.appService.partnerId = null;
+        this.router.navigateByUrl(['', this.commonService.app._id].join('/')).then(() => {
+          this.router.navigate(['/', this.commonService.app._id, 'interactions','all']);
+        });
+      }
     } else {
-      this.appService.partnerId = null;
-      this.router.navigate(['/', this.commonService.app._id, 'interactions','all']);
+      if (interactionItem && interactionItem._id) {
+        this.appService.partnerId = interactionItem._id;
+        this.router.navigate(['/', this.commonService.app._id, 'interactions',interactionItem._id]);
+      } else {
+        this.appService.partnerId = null;
+        this.router.navigate(['/', this.commonService.app._id, 'interactions','all']);
+      }
     }
   }
 

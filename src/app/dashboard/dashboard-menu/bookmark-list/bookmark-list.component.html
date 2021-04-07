@@ -2,7 +2,7 @@
     <span class="fa fa-search position-absolute"></span>
     <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
 </div>
-<div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadBookmark(item)"
+<div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadBookmark(item, true)"
     *ngFor="let item of records | serviceSearch:searchText"
     [ngClass]="{'bg-primary text-white':item._id === activeId,'bg-light text-secondary':item._id !== activeId}">
     <div class="d-flex align-items-center">

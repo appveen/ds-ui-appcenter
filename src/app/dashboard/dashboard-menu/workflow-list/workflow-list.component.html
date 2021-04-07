@@ -4,7 +4,7 @@
 </div>
 <ng-container *ngFor="let item of records | serviceSearch:searchText">
     <div *ngIf="item?.name" class="menu-list-item d-flex align-items-center justify-content-between"
-        (click)="loadWorkflow(item)"
+        (click)="loadWorkflow(item, true)"
         [ngClass]="{'bg-primary text-white':item?._id === activeId,'bg-white text-secondary':item?._id !== activeId}">
         <div class="d-flex align-items-center">
             <div class="list-item-icon d-flex align-items-center">
