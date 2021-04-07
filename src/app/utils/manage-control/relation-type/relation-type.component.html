@@ -1,12 +1,12 @@
 <div class="relation-control-wrapper position-relative">
 
     <ng-container *ngIf="!definition.properties.readonly">
-        <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded"
+        <!-- <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt" class="form-control form-control-sm rounded" container="body"
             [ngClass]="{'is-invalid':requiredError}" [ngModel]="selectedValue" type="text" [ngbTypeahead]="search"
             [inputFormatter]="formatter" #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)"
             [resultFormatter]="formatter" #relationTypeInput (focus)="itemSelected = true"
             [disabled]=" control.disabled" (keyup)="onEnter($event)" (blur)="onBlur()" (focus)="onFocus($event)"
-            [attr.id]="definition.path">
+            [attr.id]="definition.path"> -->
 
         <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
             [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
@@ -15,6 +15,21 @@
             <option *ngIf="!definition.properties.required" value="">---select---</option>
             <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
         </select>
+        <div ngbDropdown #listDropdown="ngbDropdown" container="body" *ngIf="recordsCount>10 || isSerachFieldSecureTxt">
+            <button ngbDropdownToggle (click)="focusSearch()" [disabled]="control.disabled"
+                class="toggle-btn btn btn-sm bg-white rounded w-100 d-flex align-items-center">
+                {{ (!!currentItem ? formatter(currentItem) : '') || 'Select' }}
+            </button>
+            <div class="dropdown-container" ngbDropdownMenu>
+                <input type="text" #searchBox name="searchText" class="form-control form-control-sm rounded" autocomplete="off"
+                    placeholder="Type to Search" [(ngModel)]="searchText" (ngModelChange)="onSearch()">
+                <div class="dropdown-list">
+                    <button ngbDropdownItem class="dropdown-itm" *ngFor="let item of dropdownItems" (click)="selectItem(item)"
+                        [innerHTML]="getHighlightedSearchItem(item)">
+                    </button>
+                </div>
+            </div>
+        </div>
     </ng-container>
 
     <ng-container *ngIf="definition.properties.readonly">
