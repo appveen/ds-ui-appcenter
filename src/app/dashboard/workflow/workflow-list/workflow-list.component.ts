@@ -1063,6 +1063,9 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
             this.appService.workflowFilter = view;
             this.selectedSavedView = view;
             this.applySavedView.emit(view);
+          } else if (!!this.appService.workflowFilter) {
+            this.selectedSavedView = this.appService.workflowFilter;
+            this.applySavedView.emit(this.appService.workflowFilter);
           } else {
             this.selectedSavedView = null;
           }

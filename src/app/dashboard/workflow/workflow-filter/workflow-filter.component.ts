@@ -1098,7 +1098,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       self.placeHolderText = 'Select Filter';
       self.filterData.name = '';
       self.filterData.private = true;
-      filterVal = filterValue;
+      filterVal = filterValue?.value;
     }
     self.sortingColumns = [];
     // self.sortingColumns = filterVal.sort;
