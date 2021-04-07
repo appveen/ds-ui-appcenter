@@ -807,6 +807,47 @@ export class AppService {
         return moment(dateStr);
     }
 
+    getMomentInTimezone(date: Date, timezone: string, adjustment?: 'time:start' | 'time:end' | 'ms:start' | 'ms:end' | 'exact'): moment.Moment {
+        const momentDate = moment(new Date()).tz(timezone);
+        momentDate.year(date.getFullYear());
+        momentDate.month(date.getMonth());
+        momentDate.date(date.getDate());
+        switch(adjustment) {
+            case 'time:start':
+                momentDate.hours(0);
+                momentDate.minutes(0);
+                momentDate.seconds(0);
+                momentDate.milliseconds(0);
+            break;
+            case 'time:end':
+                momentDate.hours(23);
+                momentDate.minutes(59);
+                momentDate.seconds(59);
+                momentDate.milliseconds(999);
+            break;
+            case 'ms:start':
+                momentDate.hours(date.getHours())
+                momentDate.minutes(date.getMinutes());
+                momentDate.seconds(date.getSeconds());
+                momentDate.milliseconds(0);
+            break;
+            case 'ms:end':
+                momentDate.hours(date.getHours())
+                momentDate.minutes(date.getMinutes());
+                momentDate.seconds(date.getSeconds());
+                momentDate.milliseconds(999);
+            break;
+            case 'exact':
+            default:
+                momentDate.hours(date.getHours())
+                momentDate.minutes(date.getMinutes());
+                momentDate.seconds(date.getSeconds());
+                momentDate.milliseconds(date.getMilliseconds());
+            break;
+        }
+        return momentDate;
+    }
+
     getTimezoneString(dateStr, tzInfo) {
         const foreignTime = moment(dateStr)
         return foreignTime.tz(tzInfo, true).format();

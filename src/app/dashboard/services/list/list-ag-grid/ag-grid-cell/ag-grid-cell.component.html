@@ -66,10 +66,10 @@
         </ng-container>
         <ng-container *ngIf="type === 'Date'">
             <ng-container *ngIf="properties.dateType != 'date'">
-                {{parsedDate | date:'MMM d, y, H:mm:ss'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
+                {{parsedDate | date:'MMM dd, y, H:mm:ss'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
             </ng-container>
             <ng-container *ngIf="properties.dateType == 'date'">
-                {{parsedDate | date:'mediumDate'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
+                {{parsedDate | date:'MMM dd, y'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="type === 'Boolean'">
