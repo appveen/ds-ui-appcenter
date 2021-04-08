@@ -179,6 +179,12 @@ export class ListComponent implements OnInit, OnDestroy {
         clearInterval(waitForServiceId);
       }
     }, 100);
+
+    this.commonService.notification.fileImport
+    .pipe(filter(data => data?.status === 'Created'))
+    .subscribe(() => {
+      this.getRecordsCount();
+    })
   }
 
   ngOnDestroy() {
