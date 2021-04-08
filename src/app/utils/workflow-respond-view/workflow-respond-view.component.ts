@@ -194,13 +194,30 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
       ids: self.dataToRespond.map(data => data._id)
     };
     self.subscriptions['respond'] = self.commonService.put('api', this.workflowApi + '/action', payload)
-      .subscribe(res => {
-        if (res && res.failed && res.failed.length) {
-          self.ts.warning(res.passed.length + ' records passed and ' + res.failed.length + ' records failed');
-        } else if (res.passed) {
-          self.ts.success(res.passed.length + ' records passed');
-        } else if (res.message) {
-          self.ts.success(res.message);
+      .subscribe((res: any[]) => {
+        if(!!res?.length) {
+          const successArray = [];
+          const failedArray = [];
+          res.forEach(wfResult => {
+            const errorAudit = (wfResult?.audit || []).find(audit => audit.action === 'Error');
+            if(!!errorAudit) {
+              failedArray.push({id: wfResult._id, remarks: errorAudit.remarks});
+            } else {
+              successArray.push({id: wfResult._id});
+            }
+          });
+          if(!failedArray.length) {
+            this.ts.success(`${successArray.length} records passed`);
+          } else {
+            const failedMsg = failedArray.reduce((pv, cv) => pv + cv.id + ':&nbsp;' + cv.remarks + '<br/>', '');
+            this.ts.error(failedMsg, '', {enableHtml: true}).onHidden.subscribe(() => {
+              if(!!successArray.length) {
+                this.ts.info(`${successArray.length} records passed and ${failedArray.length} records failed`);
+              } else {
+                this.ts.error(`${failedArray.length} records failed`);
+              }
+            });
+          }
         }
         self.appService.workflowStatus.emit(true);
         self.expandWflist(true, true);
