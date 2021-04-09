@@ -255,9 +255,10 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         }
       }
     } else if (self.selectedFieldType === 'Geojson') {
-      self.filterModel.filterObject['$or'] = [];
-      self.filterModel.filterObject['$or'].push({[self.filterModel.dataKey + '.formattedAddress'] : self.getFilterValue(self.selectedFieldType)});
-      self.filterModel.filterObject['$or'].push({[self.filterModel.dataKey + '.userInput'] : self.getFilterValue(self.selectedFieldType)});
+      const operator = ['notContains', 'notEqual'].includes(self.filterModel.filterType) ? '$and' : '$or';
+      self.filterModel.filterObject[operator] = [];
+      self.filterModel.filterObject[operator].push({[self.filterModel.dataKey + '.formattedAddress'] : self.getFilterValue(self.selectedFieldType)});
+      self.filterModel.filterObject[operator].push({[self.filterModel.dataKey + '.userInput'] : self.getFilterValue(self.selectedFieldType)});
     } else if (self.selectedFieldType === 'File') {
       self.filterModel.filterObject[self.filterModel.dataKey + '.metadata.filename'] = self.getFilterValue(self.selectedFieldType);
     } else if (self.selectedFieldType === 'Boolean') {
