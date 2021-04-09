@@ -593,8 +593,11 @@ export class ViewComponent implements OnInit, OnDestroy {
     createData(oldData, newData, def) {
         def.forEach(element => {
             if (element.type === 'Object') {
+                if(!oldData[element.key]) {
+                    oldData[element.key] = {};
+                }
                 this.createData(oldData[element.key], newData[element.key], element.definition);
-            } else if (newData && newData.hasOwnProperty(element.key) && !element.properties.createOnly) {
+            } else if (newData && newData.hasOwnProperty(element.key) && !element.properties?.createOnly) {
                 oldData[element.key] = newData[element.key];
             }
         });
