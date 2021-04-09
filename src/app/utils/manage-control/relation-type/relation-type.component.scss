@@ -1,3 +1,6 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
 .error-exclamation {
   top: 9px;
   right: 6px;
@@ -8,4 +11,48 @@
 }
 .bg-error {
   background-color: #f8dcdc !important;
+}
+
+.toggle-btn {
+  display: flex !important;
+  justify-content: space-between;
+  min-height: 25px !important;
+  min-height: 25px !important;
+  border: 1px solid #ccc;
+  color: #495057;
+}
+
+.dropdown-container.show {
+  display: grid;
+  max-height: 200px;
+  min-width: 340px;
+  grid-template-rows: auto 1fr;
+  row-gap: 10px;
+
+  input {
+    max-width: 300px;
+    margin: 0 20px;
+  }
+
+  .dropdown-list {
+    overflow: auto;
+    min-height: 147px;
+      
+    .dropdown-itm {
+      &:hover {
+        background-color: rgba($primary, 0.25);
+        color: black;
+      }
+      &:active {
+        background-color: $primary;
+        color: white;        
+      }
+    }
+  }
+
+  .dropdown-buttons {
+    display: grid;
+    padding: 0 10px;
+    grid-template-columns: 1fr auto;
+  }
 }

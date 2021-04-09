@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, ElementR
 import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { CommonService, GetOptions } from 'src/app/service/common.service';
@@ -24,6 +24,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() keyupEvent: EventEmitter<KeyboardEvent>;
   @ViewChild('typeAhead', { static: false }) typeAhead: NgbTypeahead;
   @ViewChild('relationTypeInput', { static: false }) relationTypeInput: ElementRef;
+  @ViewChild('searchBox', { static: false }) searchBox: ElementRef;
 
   url: string;
   relatedField: string;
@@ -37,6 +38,10 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   searchFieldType: string;
   relatedData: any;
   relationLink: string;
+  dropdownItems: Array<any>;
+  searchText: string;
+  searchTextSubject: Subject<string>;
+  currentItem: any;
 
   get currentAppId() {
     return this.commonService?.getCurrentAppId();
@@ -52,6 +57,9 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     self.keyupEvent = new EventEmitter();
     self.recordsCount = 0;
     this.searchFieldType = 'text';
+    this.dropdownItems = [];
+    this.searchText = '';
+    this.searchTextSubject = new Subject();
   }
 
   ngOnInit() {
@@ -103,14 +111,9 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
               self.subscriptions['getRelationData'] = self.commonService
                 .get('api', self.url + '/' + self.control.value._id, options)
                 .subscribe(data => {
-                  self.relatedData = data;
-                  if (self.typeAhead) {
-                    setTimeout(() => {
-                      self.typeAhead.writeValue(data);
-                    }, 50);
-                  } else {
-                    self.selectedValue = data._id;
-                  }
+                  this.relatedData = data;
+                  this.currentItem = data;
+                  this.searchText = this.formatter(data);
                 }, err => {
                   self.control.setValue(null);
                   self.commonService.errorToast(err, 'Unable to fetch reference data');
@@ -139,6 +142,62 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
         self.commonService.errorToast(err, 'Unable to fetch reference');
       });
     }
+
+    this.subscriptions['search'] = this.searchTextSubject.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(val => {
+        const self = this;
+        self.control.markAsDirty();
+        self.control.markAsTouched();
+        if (val) {
+          self.control.patchValue({ _id: val });
+          let filter = {};
+          if (this.searchFieldType === 'secureText') {
+            filter = {
+              [self.definition.properties.relatedSearchField + '.value']: val
+            };
+          } else if (this.searchFieldType === 'number' || this.searchFieldType === 'boolean') {
+            filter = {
+              [self.definition.properties.relatedSearchField]: val
+            };
+          } else if (this.searchFieldType === 'secureText') {
+            filter = {
+              [self.definition.properties.relatedSearchField + '.value']: val
+            };
+          } else if (this.searchFieldType === 'file') {
+            filter = {
+              [self.definition.properties.relatedSearchField + '.metadata.filename']: '/' + val + '/'
+            };
+          } else if (this.searchFieldType === 'geojson') {
+            filter = {
+              [self.definition.properties.relatedSearchField + '.formattedAddress']: '/' + val + '/'
+            };
+          } else {
+            filter = { [self.definition.properties.relatedSearchField]: '/' + val + '/' };
+          }
+
+          const options: GetOptions = {
+            filter,
+            select: self.relatedField,
+            count: 20,
+            srvcID: self.definition.properties.relatedTo
+          };
+          return self.commonService.get('api', self.url, options);
+        } else {
+          self.control.setValue(null);
+          return of([]);
+        }
+      })
+    ).subscribe(
+      res => {
+        this.dropdownItems = res;
+      },
+      err => {
+        this.dropdownItems = [];
+        this.commonService.errorToast(err, 'Unable to search');
+      }
+    )
   }
 
   ngAfterViewInit() {
@@ -162,9 +221,10 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selectItem(val) {
     const self = this;
-    self.control.patchValue({ _id: val.item._id });
+    self.control.patchValue({ _id: val._id });
     self.control.markAsDirty();
     self.itemSelected = false;
+    self.currentItem = val;
   }
 
   onFocus($event) {
@@ -195,62 +255,6 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
       self.itemSelected = true;
     }
   }
-
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap(val => {
-        const self = this;
-        if (val) {
-          self.control.patchValue({ _id: val });
-        } else {
-          self.control.setValue(null);
-        }
-        self.control.markAsDirty();
-        self.control.markAsTouched();
-        let filter = {};
-        if (this.searchFieldType === 'secureText') {
-          filter = {
-            [self.definition.properties.relatedSearchField + '.value']: val
-          }
-        }
-        else if (this.searchFieldType === 'number' || this.searchFieldType === 'boolean') {
-          filter = {
-            [self.definition.properties.relatedSearchField]: val
-          }
-        }
-        else if (this.searchFieldType === 'secureText') {
-          filter = {
-            [self.definition.properties.relatedSearchField + '.value']: val
-          }
-        }
-
-        else if (this.searchFieldType === 'file') {
-          filter = {
-            [self.definition.properties.relatedSearchField + '.metadata.filename']: '/' + val + '/'
-          }
-        }
-        else if (this.searchFieldType === 'geojson') {
-          filter = {
-            [self.definition.properties.relatedSearchField + '.formattedAddress']: '/' + val + '/'
-          }
-        }
-        else {
-          filter = { [self.definition.properties.relatedSearchField]: '/' + val + '/' }
-        }
-
-        const options: GetOptions = {
-          filter,
-          select: self.relatedField,
-          count: 20,
-          srvcID: self.definition.properties.relatedTo
-        };
-        return self.commonService.get('api', self.url, options).toPromise().then(res => {
-          return res;
-        }).catch(err => { self.commonService.errorToast(err, 'Unable to search'); });
-      })
-    )
 
   formatter = (obj: any) => {
     const self = this;
@@ -283,6 +287,19 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     return retValue;
   }
 
+  getHighlightedSearchItem(item: any) {
+    const fullText: string = this.formatter(item);
+    const lowerCaseItem = fullText.toLowerCase();
+    const lowerCaseSearchText = this.searchText.toLowerCase();
+    const index = lowerCaseItem.indexOf(lowerCaseSearchText);
+    const part1 = fullText.slice(0, index);
+    const matchedPart = fullText.slice(index, index + lowerCaseSearchText.length);
+    const part2 = fullText.slice(index + lowerCaseSearchText.length);
+    return (
+      part1 + '<strong>' + matchedPart + '</strong>' + part2
+    );
+  }
+
   getHtmlContent(val: string) {
     return val.replace(/<\/.*>/g, '').replace(/<.*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
   }
@@ -303,6 +320,21 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
       }).catch(err => {
         reject(err);
       });
+    });
+  }
+
+  onSearch() {
+    this.searchTextSubject.next(this.searchText);
+  }
+
+  focusSearch() {
+    setTimeout(() => {
+      if(!!this.searchBox) {
+        this.searchBox.nativeElement.focus();
+      }
+      if(!!this.searchText) {
+        this.searchTextSubject.next(this.searchText);
+      }
     });
   }
 
