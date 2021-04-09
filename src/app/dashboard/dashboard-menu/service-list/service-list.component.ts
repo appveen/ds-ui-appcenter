@@ -140,7 +140,9 @@ export class ServiceListComponent implements OnInit {
     this.appService.serviceId = service._id;
     this.dashboardService.selectedService.emit(service);
     if (!this.activeId  || force) {
-      this.router.navigate(['/', this.commonService.app._id, 'services', service._id, 'list']);
+      this.router.navigateByUrl(['', this.commonService.app._id, 'services'].join('/')).then(() => {
+        this.router.navigate(['/', this.commonService.app._id, 'services', service._id, 'list']);
+      });
     }
   }
 
