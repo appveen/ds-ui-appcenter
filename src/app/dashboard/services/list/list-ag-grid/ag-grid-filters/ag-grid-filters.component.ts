@@ -211,7 +211,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     const obj = {};
     let fromDate, toDate;
     if (value) {
-      if(this.dateType === 'date') {
+      if(this.dateType === 'date' || ['_metadata.createdAt', '_metadata.lastUpdated'].includes(this.definition.dataKey)) {
         fromDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:start');
         toDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:end');
       } else {

@@ -6,10 +6,14 @@
     (textChange)="onChange($event)">
 <input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
-<input *ngIf="type==='Date' && dateType === 'date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value"
-    (change)="onChange($event.target.value)">
-<input *ngIf="type==='Date' && dateType !== 'date'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value"
-    (change)="onChange($event.target.value)">
+<ng-container *ngIf="type==='Date'">
+    <ng-container *ngIf="dateType === 'date' || definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated'; else dateTime">
+        <input type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
+    </ng-container>
+    <ng-template #dateTime>
+        <input type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
+    </ng-template>
+</ng-container>
 <!-- <input *ngIf="type==='Date' && dateType==='date' " type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
 <!-- <input *ngIf="type==='Date' && (definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated')" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
 <input *ngIf="type==='Date' && dateType!=='date' && definition.dataKey !=='_metadata.createdAt' && definition.dataKey !=='_metadata.lastUpdated'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
