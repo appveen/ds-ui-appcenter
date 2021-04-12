@@ -311,6 +311,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.commonService.app = this.commonService.appList.find(d => d._id === app._id);
         // this.appService.serviceId = null;
         // this.appService.appChange.emit(this.selectedApp);
+        this.commonService.disconnectSocket();
+        this.commonService.connectSocket();
         this.commonService.saveLastActiveApp();
         // this.init();
         const segments = this.router.url.split('/');
