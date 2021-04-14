@@ -1,0 +1,19 @@
+.dropdown-container {
+    padding: 10px;
+    min-width: 240px;
+    max-width: 240px;
+
+    .dropdown-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 10px;
+    }
+}
+
+.toggle-btn {
+    display: flex !important;
+    justify-content: space-between;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    color: #495057;
+}

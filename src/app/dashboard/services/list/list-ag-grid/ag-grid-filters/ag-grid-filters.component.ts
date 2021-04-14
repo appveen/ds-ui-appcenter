@@ -14,8 +14,8 @@ import { ListAgGridService } from '../list-ag-grid.service';
   styleUrls: ['./ag-grid-filters.component.scss']
 })
 export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFrameworkComponent<IFloatingFilterParams> {
-  @ViewChild('clearFilterModal', { static: false })
-  clearFilterModal: TemplateRef<ElementRef>;
+  @ViewChild('clearFilterModal', { static: false }) clearFilterModal: TemplateRef<ElementRef>;
+  @ViewChild('toDateRef', { static: false}) toDateRef: ElementRef;
   api: GridApi;
   column: Column;
   params: IFloatingFilterParams;
@@ -25,6 +25,11 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   filterQueryChange: EventEmitter<any>;
   value: any;
   clearFilterModalRef: NgbModalRef;
+  dateFilterType: string;
+  fromDate: string;
+  toDate: string;
+  dateFilterSet: boolean;
+
   private relatedDefinition: any;
   private searchOnlyId: boolean;
   private columnHeader: string;
@@ -46,6 +51,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     self.filterModel = {};
     self.element.nativeElement.classList.add('w-100');
     self.element.nativeElement.style.marginTop = '6px';
+    this.dateFilterType = 'equals';
   }
 
   ngOnInit() {
@@ -56,6 +62,10 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     }
     self.appService.clearFilterEvent.subscribe(() => {
       self.value = null;
+      self.fromDate = null;
+      self.toDate = null;
+      self.dateFilterSet = false;
+      self.dateFilterType = 'equals';
       this.gridService.setLastFilterSearchText(this.columnHeader, null);
     });
   }
@@ -69,6 +79,13 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     this.definition = colDef.refData;
     this.columnHeader = colDef.headerName;
     this.value = this.gridService.getLastFilterSearchText(this.columnHeader);
+    if(this.type === 'Date' && !!this.value && this.value.indexOf('{') === 0) {
+      const obj = JSON.parse(this.value);
+      this.dateFilterType = obj?.dateFilterType;
+      this.fromDate = obj?.fromDate;
+      this.toDate = obj?.toDate;
+      this.dateFilterSet = true;
+    }
   }
 
   onParentModelChanged(parentModel: any, filterChangedEvent?: FilterChangedEvent): void {
@@ -76,6 +93,10 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     const filterModel = self.api.getFilterModel();
     if (Object.getOwnPropertyNames(filterModel).indexOf(self.definition.dataKey) === -1) {
       self.value = null;
+      self.fromDate = null;
+      self.toDate = null;
+      self.dateFilterSet = false;
+      self.dateFilterType = 'equals';
       this.gridService.setLastFilterSearchText(this.columnHeader, null);
     }
   }
@@ -83,7 +104,9 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   onChange(value) {
     const self = this;
     let temp = {};
-    this.gridService.setLastFilterSearchText(this.columnHeader, this.value);
+    if(self.definition.type !== 'Date') {
+      this.gridService.setLastFilterSearchText(this.columnHeader, this.value);
+    }
     if (self.definition.type === 'Relation') {
       temp['$or'] = [];
       temp['$or'].push(
@@ -102,7 +125,18 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
           if (def.type === 'Number') {
             tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = +value;
           } else if (def.type === 'Date') {
-            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + '.rawData'] = self.getDateQuery(value);
+            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + '.utc'] = self.getDateQuery();
+            if(!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
+              value = JSON.stringify({
+                dateFilterType: this.dateFilterType,
+                fromDate: this.fromDate,
+                toDate: this.toDate
+              })
+            } else {
+              value = null;
+            }
+            this.value = value;
+            this.gridService.setLastFilterSearchText(this.columnHeader, value);
           } else if (def.type === 'String' && def.properties.password) {
             tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + '.value'] = value;
           } else {
@@ -143,10 +177,21 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       temp[self.definition.dataKey] = +value;
     } else if (self.definition.type === 'Date') {
       if(['_metadata.createdAt', '_metadata.lastUpdated'].includes(this.params?.column?.getColDef().field)) {
-        temp[self.definition.dataKey] = self.getDateQuery(value);
+        temp[self.definition.dataKey] = self.getDateQuery();
       } else {
-        temp[self.definition.dataKey + '.utc'] = self.getDateQuery(value);
+        temp[self.definition.dataKey + '.utc'] = self.getDateQuery();
       }
+      if(!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
+        value = JSON.stringify({
+          dateFilterType: this.dateFilterType,
+          fromDate: this.fromDate,
+          toDate: this.toDate
+        })
+      } else {
+        value = null;
+      }
+      this.value = value;
+      this.gridService.setLastFilterSearchText(this.columnHeader, value);
     } else if (self.definition.type === 'Boolean') {
       if (typeof value === 'boolean') {
         temp[self.definition.dataKey] = value;
@@ -207,34 +252,54 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       });
   }
 
-  getDateQuery(value: any) {
+  getDateQuery() {
     const obj = {};
     let fromDate, toDate;
-    if (value) {
-      if(this.dateType === 'date' || ['_metadata.createdAt', '_metadata.lastUpdated'].includes(this.definition.dataKey)) {
-        fromDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:start');
-        toDate = this.appService.getMomentInTimezone(new Date(value), this.timezone || 'Zulu', 'time:end');
-      } else {
-        fromDate = this.appService.getMomentInTimezone(new Date(value + ':00'), this.timezone || 'Zulu', 'ms:start');
-        toDate = this.appService.getMomentInTimezone(new Date(value + ':59'), this.timezone || 'Zulu', 'ms:end');
+    if (!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
+      switch(this.dateFilterType) {
+        case 'equals': {
+          if(this.dateType === 'date') {
+            fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate), this.timezone || 'Zulu', 'time:start');
+            toDate = this.appService.getMomentInTimezone(new Date(this.fromDate), this.timezone || 'Zulu', 'time:end');
+          } else {
+            fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':00'), this.timezone || 'Zulu', 'ms:start');
+            toDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':59'), this.timezone || 'Zulu', 'ms:end');
+          }
+          obj['$gte'] = fromDate.toISOString();
+          obj['$lte'] = toDate.toISOString();
+        };
+        break;
+        case 'inRange': {
+          if(this.dateType === 'date') {
+            fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate), this.timezone || 'Zulu', 'time:start');
+            toDate = this.appService.getMomentInTimezone(new Date(this.toDate), this.timezone || 'Zulu', 'time:end');
+          } else {
+            fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':00'), this.timezone || 'Zulu', 'ms:start');
+            toDate = this.appService.getMomentInTimezone(new Date(this.toDate + ':59'), this.timezone || 'Zulu', 'ms:end');
+          }
+          obj['$gte'] = fromDate.toISOString();
+          obj['$lte'] = toDate.toISOString();
+        };
+        break;
+        case 'lessThan': {
+          if(this.dateType === 'date') {
+            fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate), this.timezone || 'Zulu', 'time:start');
+          } else {
+            fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':00'), this.timezone || 'Zulu', 'ms:start');
+          }
+          obj['$lt'] = fromDate.toISOString();
+        };
+        break;
+        case 'greaterThan': {
+          if(this.dateType === 'date') {
+            toDate = this.appService.getMomentInTimezone(new Date(this.fromDate), this.timezone || 'Zulu', 'time:end');
+          } else {
+            toDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':59'), this.timezone || 'Zulu', 'ms:end');
+          }
+          obj['$gt'] = toDate.toISOString();
+        };
+        break;
       }
-      obj['$gte'] = fromDate.toISOString();
-      obj['$lte'] = toDate.toISOString();
-    }
-    return obj;
-  }
-
-  getDateTimeQuery(value) {
-    const obj = {};
-    if (value) {
-      const fromDate = new Date(value);
-      fromDate.setSeconds(0);
-      fromDate.setMilliseconds(0);
-      const toDate = new Date(value);
-      toDate.setSeconds(59);
-      toDate.setMilliseconds(999);
-      obj['$gte'] = fromDate.toISOString();
-      obj['$lte'] = toDate.toISOString();
     }
     return obj;
   }

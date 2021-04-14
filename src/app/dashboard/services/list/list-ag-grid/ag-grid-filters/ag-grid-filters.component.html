@@ -7,16 +7,82 @@
 <input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
 <ng-container *ngIf="type==='Date'">
-    <ng-container *ngIf="dateType === 'date' || definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated'; else dateTime">
-        <input type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
-    </ng-container>
-    <ng-template #dateTime>
-        <input type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
-    </ng-template>
+    <div ngbDropdown #dateDropdown="ngbDropdown" container="body" display="dynamic">
+        <button ngbDropdownToggle class="toggle-btn border btn btn-sm bg-white rounded w-100 d-flex align-items-center">
+            <div class="clue">
+                <ng-container *ngIf="dateFilterSet && !!fromDate">
+                    <strong class="text-primary" *ngIf="dateFilterType === 'equals'">
+                        =&nbsp;&nbsp;
+                    </strong>
+                    <strong class="text-primary" *ngIf="dateFilterType === 'lessThan'">
+                        <&nbsp;&nbsp;
+                    </strong>
+                    <strong class="text-primary" *ngIf="dateFilterType === 'greaterThan'">
+                        >&nbsp;&nbsp;
+                    </strong>
+                    <span *ngIf="dateType === 'date'">
+                        {{ fromDate | date:'dd/MM/yyyy'}}
+                    </span>
+                    <span *ngIf="dateType !== 'date'">
+                        {{ fromDate | date:'dd/MM/yyyy, HH:mm'}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="dateFilterSet && !!toDate">
+                    <strong class="text-primary" *ngIf="dateFilterType === 'inRange'">
+                        &nbsp;&nbsp;:&nbsp;&nbsp;
+                    </strong>
+                    <span *ngIf="dateType === 'date'">
+                        {{ toDate | date:'dd/MM/yyyy'}}
+                    </span>
+                    <span *ngIf="dateType !== 'date'">
+                        {{ toDate | date:'dd/MM/yyyy, HH:mm'}}
+                    </span>
+                </ng-container>
+            </div>
+        </button>
+        <div class="dropdown-container" ngbDropdownMenu>
+            <div class="form-group">
+                <select class="form-control" [(ngModel)]="dateFilterType" (ngModelChange)="dateFilterSet = false; toDate = null; fromDate = null">
+                    <option value="equals">Equals</option>
+                    <option value="inRange">In Range</option>
+                    <option value="lessThan">Less Than</option>
+                    <option value="greaterThan">Greater Than</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input [type]="dateType === 'date' ? 'date' : 'datetime-local'" class="form-control"
+                    [(ngModel)]="fromDate" (ngModelChange)="dateFilterSet = false">
+                <ng-container *ngIf="dateFilterType === 'inRange'">
+                    <div class="d-flex justify-content-center">
+                        <strong>
+                            <small>TO</small>
+                        </strong>
+                    </div>
+                    <input #toDateRef *ngIf="dateType === 'date'" type="date"
+                        [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
+                        min="{{ fromDate | date: 'yyyy-MM-dd'}}" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
+                    <input #toDateRef *ngIf="dateType !== 'date'" type="datetime-local"
+                        [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
+                        min="{{ fromDate | date: 'yyyy-MM-ddTHH:mm'}}" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
+                    <small class="text-danger" *ngIf="toDateRef?.nativeElement?.validity?.rangeUnderflow">{{
+                        toDateRef?.nativeElement?.validationMessage }}</small>
+                </ng-container>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-buttons">
+                <button class="btn btn-sm btn-link font-sm" [disabled]="!fromDate && !toDate"
+                    (click)="dateFilterSet = false; dateFilterType = 'equals'; toDate = null; fromDate = null; dateDropdown.close(); onChange(null)">
+                    Clear
+                </button>
+                <button class="btn btn-sm btn-primary font-sm"
+                    [disabled]="!fromDate || (dateFilterType === 'inRange' && (!toDate || toDateRef?.nativeElement?.validity?.rangeUnderflow))"
+                    (click)="dateFilterSet = true; dateDropdown.close(); onChange(null)">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
 </ng-container>
-<!-- <input *ngIf="type==='Date' && dateType==='date' " type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
-<!-- <input *ngIf="type==='Date' && (definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated')" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
-<input *ngIf="type==='Date' && dateType!=='date' && definition.dataKey !=='_metadata.createdAt' && definition.dataKey !=='_metadata.lastUpdated'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
 <input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
 <input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
