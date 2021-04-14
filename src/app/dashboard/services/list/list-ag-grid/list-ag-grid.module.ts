@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ListAgGridComponent } from './list-ag-grid.component';
 import { AgGridFiltersComponent } from './ag-grid-filters/ag-grid-filters.component';
@@ -37,7 +38,8 @@ import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
     PdfViewerModule,
     RelationViewModule,
     UserViewModule,
-    FileViewModule
+    FileViewModule,
+    NgbModule
   ],
   exports: [ListAgGridComponent],
   providers: [ListAgGridService]
