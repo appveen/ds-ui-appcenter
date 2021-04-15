@@ -55,6 +55,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   reqInProgress: boolean;
   draftReqInProgress: boolean;
   isClone: boolean;
+  restrictOverflow: boolean;
+
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -85,6 +87,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.schema = {};
     self.reqInProgress = false;
     self.draftReqInProgress = false;
+    this.restrictOverflow = false;
   }
 
   ngOnInit() {
@@ -140,7 +143,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.subscriptions['appChange'] = self.appService.appChange.subscribe(app => {
       self.router.navigate(['/', this.commonService.app._id,]);
     });
+    this.subscriptions['restrictOverflow'] = this.formService.overFlowSubject.subscribe(restrictOverflow => {
+      this.restrictOverflow = restrictOverflow;
+    });
   }
+
   ngOnDestroy() {
     const self = this;
     self.appService.cloneRecordId = null;
