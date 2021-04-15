@@ -150,6 +150,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.ts.success(`${data.fileName} is validated and is now ready to be reviewed for import.`);
             } else if (data.status === 'Created') {
                 this.ts.success(`${data.fileName} was imported successfully.`);
+            } else if (data.status === 'Error') {
+                this.ts.error(`${data.fileName} could not be imported due to error(s).`);
             }
             this.fetchFileTransfers(this.selectedService._id);
         });
