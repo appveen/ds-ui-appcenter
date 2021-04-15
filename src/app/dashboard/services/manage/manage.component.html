@@ -134,7 +134,7 @@
       </ng-container>
     </div>
     <div class="d-flex flex-column w-100 h-100 bg-white rounded">
-      <div *ngIf="!showLazyLoader" class="form-body position-relative"
+      <div *ngIf="!showLazyLoader" class="form-body position-relative" [class.restrict-overflow]="restrictOverflow"
         [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
         <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
           <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">

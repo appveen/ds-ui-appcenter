@@ -36,6 +36,9 @@
     max-height: calc(100vh - 242px);
     height: calc(100vh - 242px) !important;
   }
+  &.restrict-overflow {
+    overflow: hidden;
+  }
 }
 
 .all-steps-dropdown {

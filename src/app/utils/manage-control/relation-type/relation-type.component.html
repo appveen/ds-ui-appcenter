@@ -1,13 +1,6 @@
 <div class="relation-control-wrapper position-relative">
 
     <ng-container *ngIf="!definition.properties.readonly">
-        <!-- <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt" class="form-control form-control-sm rounded" container="body"
-            [ngClass]="{'is-invalid':requiredError}" [ngModel]="selectedValue" type="text" [ngbTypeahead]="search"
-            [inputFormatter]="formatter" #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)"
-            [resultFormatter]="formatter" #relationTypeInput (focus)="itemSelected = true"
-            [disabled]=" control.disabled" (keyup)="onEnter($event)" (blur)="onBlur()" (focus)="onFocus($event)"
-            [attr.id]="definition.path"> -->
-
         <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
             [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
             (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
@@ -15,7 +8,8 @@
             <option *ngIf="!definition.properties.required" value="">---select---</option>
             <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
         </select>
-        <div ngbDropdown #listDropdown="ngbDropdown" container="body" *ngIf="recordsCount>10 || isSerachFieldSecureTxt">
+        <div ngbDropdown #listDropdown="ngbDropdown" container="body" display="dynamic"
+            *ngIf="recordsCount>10 || isSerachFieldSecureTxt" (openChange)="onDropdownOpenChange($event)">
             <button ngbDropdownToggle (click)="focusSearch()" [disabled]="control.disabled"
                 class="toggle-btn btn btn-sm bg-white rounded w-100 d-flex align-items-center">
                 {{ (!!currentItem ? formatter(currentItem) : '') || 'Select' }}
