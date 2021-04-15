@@ -157,13 +157,13 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
             filter = {
               [self.definition.properties.relatedSearchField + '.value']: val
             };
-          } else if (this.searchFieldType === 'number' || this.searchFieldType === 'boolean') {
+          } else if (this.searchFieldType === 'number') {
             filter = {
-              [self.definition.properties.relatedSearchField]: val
+              [self.definition.properties.relatedSearchField]: +val
             };
-          } else if (this.searchFieldType === 'secureText') {
+          } else if (this.searchFieldType === 'boolean' && ['true', 'false'].includes(val.toLowerCase())) {
             filter = {
-              [self.definition.properties.relatedSearchField + '.value']: val
+              [self.definition.properties.relatedSearchField]: JSON.parse(val.toLowerCase())
             };
           } else if (this.searchFieldType === 'file') {
             filter = {
@@ -288,9 +288,9 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getHighlightedSearchItem(item: any) {
-    const fullText: string = this.formatter(item);
+    const fullText: string = '' + this.formatter(item);
     const lowerCaseItem = fullText.toLowerCase();
-    const lowerCaseSearchText = this.searchText.toLowerCase();
+    const lowerCaseSearchText = ('' + this.searchText).toLowerCase();
     const index = lowerCaseItem.indexOf(lowerCaseSearchText);
     const part1 = fullText.slice(0, index);
     const matchedPart = fullText.slice(index, index + lowerCaseSearchText.length);
@@ -336,6 +336,10 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
         this.searchTextSubject.next(this.searchText);
       }
     });
+  }
+
+  onDropdownOpenChange(event: any) {
+    this.formService.overFlowSubject.next(event);
   }
 
   get requiredError() {
