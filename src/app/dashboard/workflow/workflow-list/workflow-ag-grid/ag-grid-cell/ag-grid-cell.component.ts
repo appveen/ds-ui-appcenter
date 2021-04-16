@@ -33,6 +33,8 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   decryptedValue: string;
   timezoneValue: string;
   parsedDate: string;
+  schemaDefinition: any;
+
   constructor(
     private appService: AppService,
     private commonService: CommonService,
@@ -49,7 +51,8 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     self.data = params.data || {};
     self.id = self.data._id;
     self.values = params.value;
-    self.definition = params.colDef.refData;
+    self.definition = params.colDef.refData.definition;
+    self.schemaDefinition = params.colDef.refData.schemaDefinition;
     self.properties = self.definition.properties;
     self.currencyType = self.definition.properties.currency;
     if (self.value && self.value.formattedAddress) {
@@ -177,6 +180,9 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     if (!self.gridService.approversList.find(e => e === self.commonService.userDetails._id)) {
       flag = false;
     }
+    if(this.schemaDefinition?.length && (this.schemaDefinition as any[]).some(def => def.type === 'User') && !this.hasUsersPermission()) {
+      flag = false;
+    }
     return flag;
   }
   get checked() {
@@ -185,6 +191,10 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
       return self.params.node.isSelected();
     }
     return false;
+  }
+
+  hasUsersPermission() {
+    return this.commonService?.hasAuthorPermissionStartsWith('PVU') || this.commonService?.hasAuthorPermissionStartsWith('PMU');
   }
 
   onCheckChanged(val) {

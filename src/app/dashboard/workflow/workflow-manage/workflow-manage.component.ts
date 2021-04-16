@@ -766,8 +766,10 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     if (!self.approversList.find(e => e === self.commonService.userDetails._id)) {
       flag = false;
     }
-
     if (self.schema.status !== 'Active') {
+      flag = false;
+    }
+    if(!!this.schema?.definition?.length && (self.schema.definition as any[]).some(def => def.type === 'User') && !this.hasUsersPermission()) {
       flag = false;
     }
     return flag;
@@ -818,5 +820,8 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   hasPermission(method?: string) {
     const self = this;
     return self.commonService.hasPermission(self.schema._id, method);
+  }
+  hasUsersPermission() {
+    return this.commonService?.hasAuthorPermissionStartsWith('PVU') || this.commonService?.hasAuthorPermissionStartsWith('PMU');
   }
 }

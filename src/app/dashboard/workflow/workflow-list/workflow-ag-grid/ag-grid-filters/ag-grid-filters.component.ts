@@ -61,7 +61,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     self.params = params;
     self.column = params.column;
     self.api = params.api;
-    self.definition = self.column.getColDef().refData;
+    self.definition = self.column.getColDef().refData.definition;
     self.workflowFilter = self.definition.value;
     self.col = self.definition;
     if(this.type === 'Date' && !!this.workflowFilter && this.workflowFilter.indexOf('{') === 0) {

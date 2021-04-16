@@ -46,6 +46,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   filterModel: any;
   noRowsTemplate;
   workflowApi: string;
+
   constructor(
     private gridService: WorkflowAgGridService,
     private commonService: CommonService,
@@ -99,7 +100,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         let definitionList = self.agGrid.columnApi
           .getAllColumns()
           .filter(e => e.isVisible())
-          .map(e => e.getColDef().refData);
+          .map(e => (e.getColDef().refData as any).definition);
         const cols = self.agGrid.columnApi.getAllGridColumns();
         const colToNameFunc = function (col, index) {
           return {
@@ -340,7 +341,10 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       }
       temp.cellRendererFramework = AgGridCellComponent;
       // e.approverList = self.approversList;
-      temp.refData = e;
+      temp.refData = {
+        definition: e,
+        schemaDefinition: this.schema.definition
+      };
       temp.hide = !e.show;
       self.columnDefs.push(temp);
     });
@@ -559,6 +563,9 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     if (!self.approversList.find(e => e === self.commonService.userDetails._id)) {
       flag = false;
     }
+    if(!!this.schema?.definition?.length && (this.schema.definition as any[]).some(def => def.type === 'User') && !this.hasUsersPermission()) {
+      flag = false;
+    }
     return flag;
   }
   clearSavedView() {
@@ -662,5 +669,9 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         self.subscription[key].unsubscribe();
       }
     });
+  }
+
+  hasUsersPermission() {
+    return this.commonService?.hasAuthorPermissionStartsWith('PVU') || this.commonService?.hasAuthorPermissionStartsWith('PMU');
   }
 }

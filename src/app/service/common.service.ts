@@ -43,6 +43,7 @@ export class CommonService {
   sessionTimeoutWarning: EventEmitter<number>;
   noAccess: boolean;
   loginComponent: boolean;
+  authorPermissions: Array<Role>;
   permissions: Array<Role>;
   connectionDetails: any;
   filterQueryUpdated: Subject<any>;
@@ -263,7 +264,7 @@ export class CommonService {
   private _fetchUserRolesApi_() {
     const URL = environment.url.user + `/usr/${this.userDetails._id}/allRoles`;
     const filterObj: any = {
-      'roles.type': 'appcenter'
+      'roles.type': { $in: ['appcenter', 'author']}
     };
     let httpParams = new HttpParams();
     httpParams = httpParams.set('filter', JSON.stringify(filterObj));
@@ -284,8 +285,10 @@ export class CommonService {
         .subscribe(
           (data: any) => {
             self.permissions = [];
+            self.authorPermissions = [];
             if (data && data.roles && data.roles.length > 0) {
               self.permissions = data.roles.filter(e => e.type === 'appcenter');
+              self.authorPermissions = data.roles.filter(e => e.type === 'author');
             }
             const apps: Array<App> = self.permissions
               .map(e => e.app)
@@ -1272,19 +1275,53 @@ export class CommonService {
     }
   }
 
-  /*  get isAppAdmin(): boolean {
-     const self = this;
-     if (!self.userDetails.accessControl.apps) {
-       self.userDetails.accessControl.apps = [];
-     }
-     const index = self.userDetails.accessControl.apps.findIndex(a => a._id === self.app._id);
-     if (index > -1) {
-       return true;
-     } else {
-       return false;
-     }
-     // return true;
-   } */
+  hasAuthorPermissionStartsWith(segment: string, entity?: string) {
+    const self = this;
+    // Check for Super Admin
+    if (self.userDetails.isSuperAdmin) {
+      return true;
+    }
+    // Check for App Admin
+    if (!self.userDetails.isSuperAdmin && self.isAppAdmin) {
+      return true;
+    }
+    // Check for normal user
+    if (
+      entity &&
+      self.authorPermissions.filter(
+        e =>
+        (e.id.substr(0, 3) === segment || e.id.substr(0, 4) === segment || e.id.substr(0, 5) === segment) &&
+          e.app === self.app._id &&
+          e.entity === entity
+        ).length > 0
+    ) {
+      return true;
+    }
+    if (
+      !entity &&
+      self.authorPermissions.filter(
+        e =>
+        (e.id.substr(0, 3) === segment || e.id.substr(0, 4) === segment || e.id.substr(0, 5) === segment) &&
+          e.app === self.app._id
+      ).length > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  get isAppAdmin(): boolean {
+    const self = this;
+    if (!self.userDetails.accessControl.apps) {
+      self.userDetails.accessControl.apps = [];
+    }
+    const index = self.userDetails.accessControl.apps.findIndex(a => a._id === self.app._id);
+    if (index > -1) {
+      return true;
+    } else {
+      return false;
+    }
+   }
 
   get servicesWithAccess() {
     const self = this;
