@@ -100,9 +100,6 @@ export class SearchForComponent implements OnInit {
         name: 'Less than',
         value: 'lessThan'
       }, {
-        name: 'Not equal',
-        value: 'notEqual'
-      }, {
         name: 'In range',
         value: 'inRange'
       }];
@@ -155,7 +152,7 @@ export class SearchForComponent implements OnInit {
       {
         headerName: 'Requested By',
         fieldType: 'requestSelect',
-        fieldName: '_requestedBy',
+        fieldName: 'requestedBy',
         filterType: 'equals',
         filterValue: '',
         serviceCol: false
@@ -163,7 +160,7 @@ export class SearchForComponent implements OnInit {
       {
         headerName: 'Responded By',
         fieldType: 'respondSelect',
-        fieldName: '_respondedBy',
+        fieldName: 'respondedBy',
         filterType: 'equals',
         filterValue: '',
         serviceCol: false
@@ -171,7 +168,7 @@ export class SearchForComponent implements OnInit {
       {
         headerName: 'Requested On',
         fieldType: 'Date',
-        fieldName: '_metadata.lastUpdated',
+        fieldName: '_metadata.createdAt',
         filterType: 'equals',
         fromDate: null,
         toDate: null,
@@ -184,7 +181,7 @@ export class SearchForComponent implements OnInit {
       {
         headerName: 'Status',
         fieldType: 'statusSelect',
-        fieldName: '_select',
+        fieldName: 'status',
         filterType: 'equals',
         filterValue: '',
         serviceCol: false
@@ -281,17 +278,6 @@ export class SearchForComponent implements OnInit {
   searchDataUpdated() {
     const self = this;
     this.tempSearchForColumn = JSON.parse(JSON.stringify(this.searchForColumn))
-    this.tempSearchForColumn.forEach(element => {
-      if (element.fieldName === '_select') {
-        element.fieldName = 'status';
-      }
-      if (element.fieldName === '_requestedBy') {
-        element.fieldName = 'requestedBy';
-      }
-      if (element.fieldName === '_respondedBy') {
-        element.fieldName = 'respondedBy';
-      }
-    });
     self.searchForUpdate.emit(this.tempSearchForColumn);
   }
 
@@ -362,16 +348,7 @@ export class SearchForComponent implements OnInit {
         const key = Object.keys(element)[0];
         isServiceCol = true;
         let tempkey1 = key;
-        if (key === 'status') {
-          tempkey1 = '_select';
-        }
-        if (key === 'respondedBy') {
-          tempkey1 = '_respondedBy';
-        }
-        if (key === 'requestedBy') {
-          tempkey1 = '_requestedBy';
-        }
-        if (key === 'status' || key === 'respondedBy' || key === 'requestedBy' || key === '_metadata.lastUpdated' || key === '_id') {
+        if (key === 'status' || key === 'respondedBy' || key === 'requestedBy' || key === '_metadata.createdAt' || key === '_id') {
           isServiceCol = false
         }
         tempkey1 = tempkey1.replace('data.new.', '')
@@ -393,7 +370,6 @@ export class SearchForComponent implements OnInit {
         tempkey = tempkey.replace('data.old.', '')
         const colObj = self.combinedColumns.find(e => e.fieldName[0] === tempkey);
         self.addSearchFor(element["$or"][0], key, colObj, isServiceCol);
-
       }
     });
 
@@ -437,22 +413,32 @@ export class SearchForComponent implements OnInit {
       filterType = 'greaterThan';
       value = tempObj[key].$gt;
     }
-    if (key === '_metadata.lastUpdated') {
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (key === '_metadata.createdAt') {
       let fromDate;
       let toDate;
       let tempfilterType = 'equals';
       if (tempObj[key].$lte && tempObj[key].$gte) {
-        fromDate = tempObj[key].$lte;
-        tempfilterType = 'equals';
-      } else if (tempObj[key].$lt && tempObj[key].$gte) {
-        fromDate = tempObj[key].$gte;
-        toDate = tempObj[key].$lt;
-        tempfilterType = 'inRange';
+        const tmp = this.appService.getMomentInTimezone(new Date(tempObj[key].$lte.slice(0, 19)), localTimezone).format();
+        this.startDate = new Date(tmp);
+        fromDate = this.startDate.toISOString();
+        if(new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
+          tempfilterType = 'inRange';
+          const tmp1 = this.appService.getMomentInTimezone(new Date(tempObj[key].$gte.slice(0, 19)), localTimezone).format();
+          this.endDate = new Date(tmp1);
+          toDate = this.endDate.toISOString();
+        } else {
+          tempfilterType = 'equals';
+        }
       } else if (tempObj[key].$gt) {
-        fromDate = tempObj[key].$gt;
+        const tmp = this.appService.getMomentInTimezone(new Date(tempObj[key].$gt.slice(0, 19)), localTimezone).format();
+        this.startDate = new Date(tmp);
+        fromDate = this.startDate.toISOString();
         tempfilterType = 'greaterThan';
       } else if (tempObj[key].$lt) {
-        fromDate = tempObj[key].$lt;
+        const tmp = this.appService.getMomentInTimezone(new Date(tempObj[key].$lt.slice(0, 19)), localTimezone).format();
+        this.startDate = new Date(tmp);
+        fromDate = this.startDate.toISOString();
         tempfilterType = 'lessThan';
       }
       const obj = {
@@ -462,7 +448,8 @@ export class SearchForComponent implements OnInit {
         filterType: tempfilterType,
         fromDate: fromDate,
         toDate: toDate,
-        serviceCol: serviceCol
+        serviceCol: serviceCol,
+        dateFieldType: 'date-time'
       };
       self.searchForColumn.push(obj);
     } else if (colObj?.fieldType === 'Date') {
@@ -480,26 +467,33 @@ export class SearchForComponent implements OnInit {
             }
           : {})
       };
-      if(colObj.filterType === 'equals') {
-        obj.fromDate = tempObj[key].$gte;
-      } else if (colObj.filterType === 'greaterThan') {
-        obj.fromDate = tempObj[key].$gt;
-      } else if (colObj.filterType === 'lessThan' || colObj.filterType === 'notEqual') {
-        obj.fromDate = tempObj[key].$lt;
-      } else if (colObj.filterType === 'inRange') {
-        obj.fromDate = tempObj[key].$gte;
-        obj.toDate = tempObj[key].$lte;
+      if (tempObj[key].$lte && tempObj[key].$gte) {
+        const foreignTime = this.appService.getMoment(tempObj[key].$lte).tz(obj.timezone).format();
+        const tmp = this.appService.getMomentInTimezone(new Date(foreignTime.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
+        this.startDate = new Date(tmp);
+        obj.fromDate = this.startDate.toISOString();
+        if(new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
+          obj.filterType = 'inRange';
+          const foreignTime1 = this.appService.getMoment(tempObj[key].$gte).tz(obj.timezone).format();
+          const tmp1 = this.appService.getMomentInTimezone(new Date(foreignTime1.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
+          this.endDate = new Date(tmp1);
+          obj.toDate = this.endDate.toISOString();
+        } else {
+          obj.filterType = 'equals';
+        }
+      } else if (tempObj[key].$gt) {
+        const foreignTime = this.appService.getMoment(tempObj[key].$gt).tz(obj.timezone).format();
+        const tmp = this.appService.getMomentInTimezone(new Date(foreignTime.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
+        this.startDate = new Date(tmp);
+        obj.fromDate = this.startDate.toISOString();
+        obj.filterType = 'greaterThan';
+      } else if (tempObj[key].$lt) {
+        const foreignTime = this.appService.getMoment(tempObj[key].$lt).tz(obj.timezone).format();
+        const tmp = this.appService.getMomentInTimezone(new Date(foreignTime.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
+        this.startDate = new Date(tmp);
+        obj.fromDate = this.startDate.toISOString();
+        obj.filterType = 'lessThan';
       }
-      self.searchForColumn.push(obj);
-    } else if (key !== '_metadata.lastUpdated') {
-      const obj = {
-        headerName: colObj?.headerName,
-        fieldType: colObj?.fieldType,
-        fieldName: colObj?.fieldName,
-        filterType: colObj?.filterType || filterType,
-        filterValue: colObj?.filterValue || value,
-        serviceCol: colObj?.serviceCol
-      };
       self.searchForColumn.push(obj);
     }
   }

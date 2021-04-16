@@ -2,10 +2,7 @@
 <input *ngIf="type==='Number'" type="number" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <input *ngIf="type==='File'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
-<input *ngIf="type==='Date'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
-<!-- <input *ngIf="type==='Date' && dateType==='date' " type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
-<!-- <input *ngIf="type==='Date' && (definition.dataKey ==='_metadata.createdAt' || definition.dataKey ==='_metadata.lastUpdated')" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
-<input *ngIf="type==='Date' && dateType!=='date' && definition.dataKey !=='_metadata.createdAt' && definition.dataKey !=='_metadata.lastUpdated'" type="datetime-local" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)"> -->
+<input *ngIf="type==='Date'" type="date" max="9999-12-31" class="border rounded bg-white w-100" [(ngModel)]="value" (change)="onChange($event.target.value)">
 <input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <select *ngIf="type==='Boolean'" class="border rounded bg-white w-100" [(ngModel)]="value" (ngModelChange)="onChange($event)">

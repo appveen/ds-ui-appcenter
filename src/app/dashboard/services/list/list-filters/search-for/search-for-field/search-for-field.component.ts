@@ -64,24 +64,15 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
     if (self.selectedFieldDef?.type === 'Date' && self.filterModel && self.filterModel.filterValue) {
       const fieldData = self.allFields.find(e => e.key === self.filterModel.dataKey);
       self.dateFieldType = fieldData.properties.dateType === 'date' ? 'date' : 'date-time';
-      const temp = new Date(self.filterModel.filterValue);
-      if (temp.toString() !== 'Invalid Date') {
-        let obj = self.filterModel.filterObject;
-        for (const key in obj) {
-          if(self.filterModel.filterType !== 'lessThan' && obj.hasOwnProperty(key) && obj[key]) {
-            if(obj[key]['$gte']) {
-              self.setStartDate(obj[key]['$gte']);
-            } else if(obj[key]['$gt']) {
-              self.setStartDate(obj[key]['$gt']);
-            }
-          }
-          if(['inRange', 'lessThan'].includes(self.filterModel.filterType) && obj.hasOwnProperty(key) && obj[key]) {
-            if(obj[key]['$lte']) {
-              self.setEndDate(obj[key]['$lte']);
-            } else if(obj[key]['$lt']) {
-              self.setEndDate(obj[key]['$lt']);
-            }
-          }
+      let filterValue = self.filterModel.filterValue;
+      if(filterValue.indexOf('[') === 0) {
+        filterValue = JSON.parse(filterValue);
+        this.setStartDate(filterValue[0]);
+        this.setEndDate(filterValue[1]);
+      } else {
+        const temp = new Date(filterValue);
+        if (temp.toString() !== 'Invalid Date') {
+          self.setStartDate(filterValue);
         }
       }
     }
@@ -292,48 +283,6 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           }
           break;
         }
-        case 'notEqual': {
-          let startDate, endDate;
-          if(self.dateFieldType === 'date') {
-            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:start');
-            endDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:end');
-          } else {
-            startDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:start');
-            endDate = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:end');
-          }
-          if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
-            self.filterModel.filterObject = {
-              $or: [
-                {
-                  [self.filterModel.dataKey]: {
-                    $lt: startDate.toISOString()
-                  }
-                },
-                {
-                  [self.filterModel.dataKey]: {
-                    $gt: endDate.toISOString()
-                  }
-                }
-              ]
-            };
-          } else {
-            self.filterModel.filterObject = {
-              $or: [
-                {
-                  [self.filterModel.dataKey + '.utc']: {
-                    $lt: startDate.toISOString()
-                  }
-                },
-                {
-                  [self.filterModel.dataKey + '.utc']: {
-                    $gt: endDate.toISOString()
-                  }
-                }
-              ]
-            };
-          }
-          break;
-        }
         case 'greaterThan': {
           let date;
           if(self.dateFieldType === 'date') {
@@ -359,9 +308,9 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         case 'lessThan': {
           let date;
           if(self.dateFieldType === 'date') {
-            date = this.appService.getMomentInTimezone(this.endDate, timezone, 'time:start');
+            date = this.appService.getMomentInTimezone(this.startDate, timezone, 'time:start');
           } else {
-            date = this.appService.getMomentInTimezone(this.endDate, timezone, 'ms:start');
+            date = this.appService.getMomentInTimezone(this.startDate, timezone, 'ms:start');
           }
           if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(self.filterModel.dataKey)) {
             self.filterModel.filterObject = {
@@ -422,25 +371,42 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
     self.filterModelChange.emit(self.filterModel);
   }
 
-  setStartDate(e) {
-    const self = this;
-    self.startDate = new Date(e);
-    self.filterModel.filterValue = self.startDate.toISOString();
-    if (self.filterModel.filterType !== 'inRange') {
-      self.valueChange();
+  setStartDate(event) {
+    if(!!event) {
+      const self = this;
+      self.startDate = new Date(event);
+      if (self.filterModel.filterType !== 'inRange') {
+        self.filterModel.filterValue = self.startDate.toISOString();
+        self.valueChange();
+      } else {
+        self.filterModel.filterValue = JSON.stringify([self.startDate.toISOString(), self.endDate?.toISOString() || null]);
+        if(!!self.endDate) {
+          if (self.endDate >= self.startDate) {
+            self.valueChange();
+          } else {
+            self.ts.warning('To Date should be more than From Date');
+            self.endDate = null;
+            self.filterModel.filterValue = null;
+          }
+        }
+      }
     }
   }
 
   setEndDate(event) {
-    const self = this;
-    self.endDate = new Date(event);
-    self.filterModel.filterValue = self.endDate.toISOString();
-    if (!!self.startDate && self.endDate >= self.startDate) {
-      self.valueChange();
-    } else {
-      self.ts.warning('To Date should be more than From Date');
-      self.endDate = null;
-      self.filterModel.filterValue = null;
+    if(!!event) {
+      const self = this;
+      self.endDate = new Date(event);
+      self.filterModel.filterValue = JSON.stringify([self.startDate?.toISOString() || null, self.endDate.toISOString()]);
+      if(!!self.startDate) {
+        if (self.endDate >= self.startDate) {
+          self.valueChange();
+        } else {
+          self.ts.warning('To Date should be more than From Date');
+          self.endDate = null;
+          self.filterModel.filterValue = null;
+        }
+      }
     }
   }
 
@@ -639,10 +605,6 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           value: 'lessThan'
         },
         {
-          name: 'Not equal',
-          value: 'notEqual'
-        },
-        {
           name: 'In range',
           value: 'inRange'
         }
@@ -661,10 +623,6 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           name: 'Less than',
           value: 'lessThan'
         },
-        {
-          name: 'Not equal',
-          value: 'notEqual'
-        }
       ];
     } else if (self.selectedFieldDef && self.selectedFieldDef.type === 'Number') {
       self.filterTypeOptions = [
