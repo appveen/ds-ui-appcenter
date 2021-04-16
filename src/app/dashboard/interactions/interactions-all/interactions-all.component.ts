@@ -112,7 +112,12 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
       self.totalCount = count;
     }).catch(err => {
       if (err.status === 403) {
-        self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+        self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+          state: {
+            noRedirect: true,
+            serviceId: null
+          }
+        });
       }
       if (!environment.production) {
         console.error(err);
@@ -191,7 +196,12 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
             } catch (e) {
               self.agGrid.api.hideOverlay();
               if (e.status === 403) {
-                self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+                self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+                  state: {
+                    noRedirect: true,
+                    serviceId: null
+                  }
+                });
               }
               if (!environment.production) {
                 console.error(e);

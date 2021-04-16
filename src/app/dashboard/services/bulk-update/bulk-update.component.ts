@@ -179,7 +179,12 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
       err => {
         self.showLazyLoader = false;
         if (err.status === 403) {
-          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+          self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+            state: {
+              noRedirect: true,
+              serviceId: null
+            }
+          });
         } else if (err.status === 404) {
           self.router.navigate(['/', this.commonService.app._id,]);
         } else {

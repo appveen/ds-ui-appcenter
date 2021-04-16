@@ -208,7 +208,12 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
             },
             err => {
               if (err.status === 403) {
-                self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+                self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+                  state: {
+                    noRedirect: true,
+                    serviceId
+                  }
+                });
               } else {
                 self.commonService.errorToast(err, 'Unable to fetch data');
               }
@@ -237,7 +242,12 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       err => {
         self.showLazyLoader = false;
         if (err.status === 403) {
-          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+          self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+            state: {
+              noRedirect: true,
+              serviceId
+            }
+          });
         } else if (err.status === 404) {
           self.router.navigate(['/', this.commonService.app._id,]);
         } else {
