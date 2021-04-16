@@ -1,7 +1,7 @@
 <input
     *ngIf="field==='dataStackTxnId' || field==='remoteTxnId' || field === 'flowData.partnerName' || field === 'flowData.flowName'"
     type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
-<input *ngIf="field==='createTimestamp' || field==='completedTimestamp'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value"
+<input *ngIf="field==='createTimestamp' || field==='completedTimestamp'" type="date" class="border rounded bg-white w-100" [(ngModel)]="value" max="9999-12-31"
     (ngModelChange)="onChange($event)">
 <select *ngIf="field==='flowData.inputType'" class="border rounded bg-white w-100" [(ngModel)]="value"
     (ngModelChange)="onChange($event)">

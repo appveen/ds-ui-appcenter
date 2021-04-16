@@ -91,22 +91,20 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   filterChange(event) {
     const self = this;
     let temp = {};
-    if (event) {
-      if (self.col.dataType === 'text') {
-        temp[self.col.key] = `/${event}/`;
-      } else if (self.col.dataType === 'select') {
-        temp[self.col.key] = event;
-      } else if (self.col.dataType === 'date') {
-        temp[self.col.key] = self.getDateQuery();
-        if(!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
-          event = JSON.stringify({
-            dateFilterType: this.dateFilterType,
-            fromDate: this.fromDate,
-            toDate: this.toDate
-          })
-        } else {
-          event = null;
-        }
+    if (self.col.dataType === 'text') {
+      temp[self.col.key] = `/${event}/`;
+    } else if (self.col.dataType === 'select') {
+      temp[self.col.key] = event;
+    } else if (self.col.dataType === 'date') {
+      temp[self.col.key] = self.getDateQuery();
+      if(!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
+        event = JSON.stringify({
+          dateFilterType: this.dateFilterType,
+          fromDate: this.fromDate,
+          toDate: this.toDate
+        })
+      } else {
+        event = null;
       }
     }
     if (!event || !event.trim()) {

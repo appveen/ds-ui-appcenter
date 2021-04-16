@@ -45,7 +45,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input [type]="dateType === 'date' ? 'date' : 'datetime-local'" class="form-control"
+                    <input [type]="dateType === 'date' ? 'date' : 'datetime-local'" 
+                        [max]="dateType === 'date' ? '9999-12-31' : '9999-12-31T23:59'" class="form-control"
                         [(ngModel)]="fromDate" (ngModelChange)="dateFilterSet = false">
                     <ng-container *ngIf="dateFilterType === 'inRange'">
                         <div class="d-flex justify-content-center">
@@ -53,10 +54,10 @@
                                 <small>TO</small>
                             </strong>
                         </div>
-                        <input #toDateRef *ngIf="dateType === 'date'" type="date"
+                        <input #toDateRef *ngIf="dateType === 'date'" type="date" max="9999-12-31"
                             [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
                             min="{{ fromDate | date: 'yyyy-MM-dd'}}" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
-                        <input #toDateRef *ngIf="dateType !== 'date'" type="datetime-local"
+                        <input #toDateRef *ngIf="dateType !== 'date'" type="datetime-local" max="9999-12-31T23:59"
                             [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
                             min="{{ fromDate | date: 'yyyy-MM-ddTHH:mm'}}" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
                         <small class="text-danger" *ngIf="toDateRef?.nativeElement?.validity?.rangeUnderflow">{{
@@ -159,7 +160,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input [type]="dateType === 'date' ? 'date' : 'datetime-local'" class="form-control"
+                    <input [type]="dateType === 'date' ? 'date' : 'datetime-local'"
+                        [max]="dateType === 'date' ? '9999-12-31' : '9999-12-31T23:59'" class="form-control"
                         [(ngModel)]="fromDate" (ngModelChange)="dateFilterSet = false">
                     <ng-container *ngIf="dateFilterType === 'inRange'">
                         <div class="d-flex justify-content-center">
@@ -167,10 +169,10 @@
                                 <small>TO</small>
                             </strong>
                         </div>
-                        <input #toDateRef *ngIf="dateType === 'date'" type="date"
+                        <input #toDateRef *ngIf="dateType === 'date'" type="date" max="9999-12-31"
                             [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
                             min="{{ fromDate | date: 'yyyy-MM-dd'}}" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
-                        <input #toDateRef *ngIf="dateType !== 'date'" type="datetime-local"
+                        <input #toDateRef *ngIf="dateType !== 'date'" type="datetime-local" max="9999-12-31T23:59"
                             [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
                             min="{{ fromDate | date: 'yyyy-MM-ddTHH:mm'}}" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
                         <small class="text-danger" *ngIf="toDateRef?.nativeElement?.validity?.rangeUnderflow">{{
