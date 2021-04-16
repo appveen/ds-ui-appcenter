@@ -506,27 +506,41 @@ export class ListComponent implements OnInit, OnDestroy {
     self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
         self.apiCalls.fetchingSchema = false;
-        const parsedDef = res.definition;
-        self.fixSchema(parsedDef);
-        res.definition = JSON.parse(JSON.stringify(parsedDef));
-        self.checkAll = false;
-        self.api = '/' + self.commonService.app._id + res.api;
-        self.appService.serviceAPI = self.api;
-        self.schema = res;
-        self.resetFilter();
-        self.buildColumns();
-        self.refineByPermissions();
-        self.getSavedViews(true);
-        self.getApprovers();
-        self.getRecordsCount();
-        this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
-          this.hasFilterFromUrl = !!queryParams && (!!queryParams.filter || !!queryParams.sort || !!queryParams.select);
-        });
+        if(!res.definition) {
+          self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+            state: {
+              noRedirect: true,
+              serviceId: null
+            }
+          });
+        } else {
+          const parsedDef = res.definition;
+          self.fixSchema(parsedDef);
+          res.definition = JSON.parse(JSON.stringify(parsedDef));
+          self.checkAll = false;
+          self.api = '/' + self.commonService.app._id + res.api;
+          self.appService.serviceAPI = self.api;
+          self.schema = res;
+          self.resetFilter();
+          self.buildColumns();
+          self.refineByPermissions();
+          self.getSavedViews(true);
+          self.getApprovers();
+          self.getRecordsCount();
+          this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
+            this.hasFilterFromUrl = !!queryParams && (!!queryParams.filter || !!queryParams.sort || !!queryParams.select);
+          });
+        }
       },
       err => {
         self.apiCalls.fetchingSchema = false;
         if (err.status === 403) {
-          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+          self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+            state: {
+              noRedirect: true,
+              serviceId
+            }
+          });
         } else if (err.status === 404) {
           self.router.navigate(['/', this.commonService.app._id]);
         } else {
@@ -731,7 +745,12 @@ export class ListComponent implements OnInit, OnDestroy {
       err => {
         self.apiCalls.fetchingCount = false;
         if (err.status === 403) {
-          self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+          self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+            state: {
+              noRedirect: true,
+              serviceId: null
+            }
+          });
         } else {
           self.commonService.errorToast(err, 'Unable to fetch count');
         }

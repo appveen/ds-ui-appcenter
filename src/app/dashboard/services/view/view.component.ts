@@ -199,7 +199,13 @@ export class ViewComponent implements OnInit, OnDestroy {
             err => {
                 self.showLazyLoader = false;
                 if (err.status === 403) {
-                    self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+                    self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+                        state: {
+                          noRedirect: true,
+                          serviceId: id
+                        }
+                      }
+                    );
                 } else if (err.status === 404) {
                     self.router.navigate(['/', this.commonService.app._id,]);
                 } else {
@@ -287,7 +293,13 @@ export class ViewComponent implements OnInit, OnDestroy {
             err => {
                 self.showLazyLoader = false;
                 if (err.status === 403) {
-                    self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+                    self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+                        state: {
+                          noRedirect: true,
+                          serviceId: self.schema._id
+                        }
+                      }
+                    );
                 } else {
                     self.commonService.errorToast(err, 'Oops, something went wrong.');
                 }

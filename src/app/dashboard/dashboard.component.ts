@@ -192,6 +192,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.selectedMenuItem.label = 'Workflows'
         } else {
             this.selectedMenuItem.key = 'INVALID';
+            this.selectedMenuItem.label = ''
         }
     }
 

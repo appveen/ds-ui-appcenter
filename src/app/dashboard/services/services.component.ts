@@ -31,7 +31,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
-    self.getServices();
+    self.getServices(true);
     self.subscriptions['appChange'] = self.appService.appChange.subscribe(data => {
       self.getServices(true);
     });
@@ -81,6 +81,12 @@ export class ServicesComponent implements OnInit, OnDestroy {
       self.fetchingServices = false;
       if (res.length === 0) {
         self.noServices = true;
+        self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+          state: {
+            noRedirect: true,
+            serviceId: null
+          }
+        });
       } else {
         res = self.orderBy.transform(res, 'name');
         if (redirect) {
@@ -94,7 +100,12 @@ export class ServicesComponent implements OnInit, OnDestroy {
     }, err => {
       self.fetchingServices = false;
       if (err.status === 403) {
-        self.router.navigate(['/', this.commonService.app._id, 'no-access']);
+        self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
+          state: {
+            noRedirect: true,
+            serviceId: null
+          }
+        });
       } else {
         self.commonService.errorToast(err, 'Unable to fetch service records please try again later');
       }

@@ -1,7 +1,7 @@
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, TemplateRef, ElementRef } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { WorkflowAgGridComponent } from './workflow-ag-grid/workflow-ag-grid.component';
