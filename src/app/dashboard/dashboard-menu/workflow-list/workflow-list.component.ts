@@ -77,8 +77,6 @@ export class WorkflowListComponent implements OnInit {
           if (!this.activeId) {
             this.loadWorkflow(res[0]);
           }
-        } else {
-          this.router.navigate(['/', this.commonService.app._id, 'no-services']);
         }
       }, err => {
         console.error(err);

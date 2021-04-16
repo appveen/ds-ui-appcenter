@@ -64,6 +64,9 @@
         border: 1px solid $border-color;
         background: $white;
       }
+      &:focus {
+        outline: none;
+      }
     }
   }
   .menu-label {
