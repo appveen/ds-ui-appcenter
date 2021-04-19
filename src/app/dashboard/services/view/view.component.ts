@@ -201,10 +201,10 @@ export class ViewComponent implements OnInit, OnDestroy {
                 if (err.status === 403) {
                     self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
                         state: {
-                          noRedirect: true,
-                          serviceId: id
+                            noRedirect: true,
+                            serviceId: id
                         }
-                      }
+                    }
                     );
                 } else if (err.status === 404) {
                     self.router.navigate(['/', this.commonService.app._id,]);
@@ -295,10 +295,10 @@ export class ViewComponent implements OnInit, OnDestroy {
                 if (err.status === 403) {
                     self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
                         state: {
-                          noRedirect: true,
-                          serviceId: self.schema._id
+                            noRedirect: true,
+                            serviceId: self.schema._id
                         }
-                      }
+                    }
                     );
                 } else {
                     self.commonService.errorToast(err, 'Oops, something went wrong.');
@@ -387,7 +387,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.subscriptions['delete'] = self.commonService.delete('api', self.api + '/' + self.id).subscribe(
             res => {
                 if (res._workflow) {
-                    self.workflowData = self.appService.cloneObject(res._workflow);
+                    self.workflowData = { _id: res._workflow };
                     self.submitWorkflowFiles();
                 } else {
                     self.ts.success('Deleted.');
@@ -486,7 +486,7 @@ export class ViewComponent implements OnInit, OnDestroy {
             ]
         };
         self.subscriptions['updateWorkflow'] = self.commonService
-            .put('api', this.api + '/utils/workflow' + self.workflowData._id, payload).subscribe(
+            .put('api', this.api + '/utils/workflow/' + self.workflowData._id, payload).subscribe(
                 res => {
                     self.ts.success('Sent for review.');
                     self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list'], {
@@ -605,7 +605,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     createData(oldData, newData, def) {
         def.forEach(element => {
             if (element.type === 'Object') {
-                if(!oldData[element.key]) {
+                if (!oldData[element.key]) {
                     oldData[element.key] = {};
                 }
                 this.createData(oldData[element.key], newData[element.key], element.definition);
