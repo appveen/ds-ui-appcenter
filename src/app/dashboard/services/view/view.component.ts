@@ -387,7 +387,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.subscriptions['delete'] = self.commonService.delete('api', self.api + '/' + self.id).subscribe(
             res => {
                 if (res._workflow) {
-                    self.workflowData = self.appService.cloneObject(res._workflow[0]);
+                    self.workflowData = self.appService.cloneObject(res._workflow);
                     self.submitWorkflowFiles();
                 } else {
                     self.ts.success('Deleted.');
