@@ -93,7 +93,9 @@ export class ServicesComponent implements OnInit, OnDestroy {
           if (self.serviceToRedirect) {
             self.appService.serviceId = self.serviceToRedirect;
             self.appService.serviceChange.emit({ _id: self.serviceToRedirect });
-            self.router.navigate(['/', this.commonService.app._id, 'services', self.serviceToRedirect, 'list']);
+            if (!self.router.url.match(/(list|manage|view)/)) {
+              self.router.navigate(['/', this.commonService.app._id, 'services', self.serviceToRedirect, 'list']);
+            }
           }
         }
       }
