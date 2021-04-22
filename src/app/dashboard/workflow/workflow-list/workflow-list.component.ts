@@ -619,6 +619,8 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         this.schema = res;
         this.appService.serviceAPI = '/' + this.commonService.app._id + res.api;
         this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
+        this.wfService.currentWorkflowApi = this.workflowApi;
+        this.appService.workflowStatus.emit(true);
         const parsedDef = this.schema.definition;
         this.wfService.serviceColumns = this.schema.definition;
         // this.recordIdName = parsedDef[0].properties.name;

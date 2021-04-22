@@ -4,6 +4,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { DashboardService } from '../../dashboard.service';
+import { WorkflowService } from '../../workflow/workflow.service'
 
 @Component({
   selector: 'odp-workflow-list',
@@ -22,6 +23,7 @@ export class WorkflowListComponent implements OnInit {
   constructor(private appService: AppService,
     private commonService: CommonService,
     private dashboardService: DashboardService,
+    private wfService: WorkflowService,
     private router: Router) {
     this.subscriptions = {};
     this.records = [];
@@ -55,9 +57,6 @@ export class WorkflowListComponent implements OnInit {
     const segments = url.split('/');
     if (segments.length > 2) {
       this.activeId = segments[3];
-      if(this.activeId){
-        this.setWorkflowApi();
-      }
     }
   }
 
@@ -121,7 +120,6 @@ export class WorkflowListComponent implements OnInit {
 
   loadWorkflow(workflow: any, force?: boolean) {
     if(force) {
-      this.updateWorflowCount();
       this.router.navigateByUrl(['', this.commonService.app._id, 'workflow'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
       });
@@ -130,20 +128,6 @@ export class WorkflowListComponent implements OnInit {
     }
   }
 
-  setWorkflowApi() {
-    if (this.subscriptions['getSchema_' + this.activeId]) {
-      this.subscriptions['getSchema_' + this.activeId].unsubscribe();
-      this.subscriptions['getSchema_' + this.activeId] = null;
-    }
-    this.subscriptions['getSchema_' + this.activeId] = this.commonService.get('sm', '/service/' + this.activeId).subscribe(
-      res => {
-        this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
-      },
-      err => {
-        this.commonService.errorToast(err, 'Unable to get the service details, please try again later');
-      }
-    );
-  }
 
   updateWorflowCount(){
     const filter = {
@@ -152,7 +136,7 @@ export class WorkflowListComponent implements OnInit {
       status: 'Pending'
     };
     this.subscriptions['getNewRecordsCount'] = this.commonService
-      .get('api', this.workflowApi + '/count', { filter, serviceId: this.activeId })
+      .get('api', this.wfService.currentWorkflowApi + '/count', { filter, serviceId: this.activeId })
       .subscribe(count => {
         this.serviceDocsCount[this.activeId] = count;
       });
