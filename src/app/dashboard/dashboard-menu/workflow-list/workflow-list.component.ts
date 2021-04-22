@@ -138,7 +138,6 @@ export class WorkflowListComponent implements OnInit {
     this.subscriptions['getSchema_' + this.activeId] = this.commonService.get('sm', '/service/' + this.activeId).subscribe(
       res => {
         this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
-        // this.updateWorflowCount()
       },
       err => {
         this.commonService.errorToast(err, 'Unable to get the service details, please try again later');
@@ -148,23 +147,9 @@ export class WorkflowListComponent implements OnInit {
 
   updateWorflowCount(){
     const filter = {
-      $or: [
-        {
-          serviceId: this.activeId,
-          operation: 'POST',
-          status: 'Pending'
-        },
-        {
-          serviceId: this.activeId,
-          operation: 'PUT',
-          status: 'Pending'
-        },
-        {
-          serviceId: this.activeId,
-          operation: 'DELETE',
-          status: 'Pending'
-        }
-      ]
+      serviceId: this.activeId,
+      operation: { $in : ['POST', 'PUT', 'DELETE']},
+      status: 'Pending'
     };
     this.subscriptions['getNewRecordsCount'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter, serviceId: this.activeId })
