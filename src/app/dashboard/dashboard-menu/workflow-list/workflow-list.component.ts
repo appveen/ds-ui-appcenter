@@ -4,7 +4,6 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { DashboardService } from '../../dashboard.service';
-import { WorkflowService } from '../../workflow/workflow.service'
 
 @Component({
   selector: 'odp-workflow-list',
@@ -19,11 +18,10 @@ export class WorkflowListComponent implements OnInit {
   activeId: string;
   searchText: string;
   serviceDocsCount: any;
-  workflowApi: string;
+  
   constructor(private appService: AppService,
     private commonService: CommonService,
     private dashboardService: DashboardService,
-    private wfService: WorkflowService,
     private router: Router) {
     this.subscriptions = {};
     this.records = [];
@@ -55,7 +53,7 @@ export class WorkflowListComponent implements OnInit {
 
   setActiveId(url: string) {
     const segments = url.split('/');
-    if (segments.length > 2) {
+    if (segments.length > 3) {
       this.activeId = segments[3];
     }
   }
@@ -120,6 +118,7 @@ export class WorkflowListComponent implements OnInit {
 
   loadWorkflow(workflow: any, force?: boolean) {
     if(force) {
+      this.updateWorflowCount();
       this.router.navigateByUrl(['', this.commonService.app._id, 'workflow'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
       });
@@ -130,13 +129,15 @@ export class WorkflowListComponent implements OnInit {
 
 
   updateWorflowCount(){
+    const serviceApi = this.records.filter(record => record._id == this.activeId).map(record => record.api)[0]
+    const workflowApi = `/${this.commonService.getCurrentAppId()}${serviceApi}/utils/workflow`;
     const filter = {
       serviceId: this.activeId,
       operation: { $in : ['POST', 'PUT', 'DELETE']},
       status: 'Pending'
     };
     this.subscriptions['getNewRecordsCount'] = this.commonService
-      .get('api', this.wfService.currentWorkflowApi + '/count', { filter, serviceId: this.activeId })
+      .get('api', workflowApi + '/count', { filter, serviceId: this.activeId })
       .subscribe(count => {
         this.serviceDocsCount[this.activeId] = count;
       });
