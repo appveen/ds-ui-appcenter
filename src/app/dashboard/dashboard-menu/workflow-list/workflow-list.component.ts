@@ -18,6 +18,7 @@ export class WorkflowListComponent implements OnInit {
   activeId: string;
   searchText: string;
   serviceDocsCount: any;
+  
   constructor(private appService: AppService,
     private commonService: CommonService,
     private dashboardService: DashboardService,
@@ -40,11 +41,19 @@ export class WorkflowListComponent implements OnInit {
       this.getServices();
       this.getWorflowItemsCount();
     });
+
+    this.appService.workflowStatus.subscribe(status =>
+      {
+        if(status){
+          this.updateWorflowCount();
+        }
+      }
+    );
   }
 
   setActiveId(url: string) {
     const segments = url.split('/');
-    if (segments.length > 2) {
+    if (segments.length > 3) {
       this.activeId = segments[3];
     }
   }
@@ -109,11 +118,28 @@ export class WorkflowListComponent implements OnInit {
 
   loadWorkflow(workflow: any, force?: boolean) {
     if(force) {
+      this.updateWorflowCount();
       this.router.navigateByUrl(['', this.commonService.app._id, 'workflow'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
       });
     } else {
       this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
     }
+  }
+
+
+  updateWorflowCount(){
+    const serviceApi = this.records.filter(record => record._id == this.activeId).map(record => record.api)[0]
+    const workflowApi = `/${this.commonService.getCurrentAppId()}${serviceApi}/utils/workflow`;
+    const filter = {
+      serviceId: this.activeId,
+      operation: { $in : ['POST', 'PUT', 'DELETE']},
+      status: 'Pending'
+    };
+    this.subscriptions['getNewRecordsCount'] = this.commonService
+      .get('api', workflowApi + '/count', { filter, serviceId: this.activeId })
+      .subscribe(count => {
+        this.serviceDocsCount[this.activeId] = count;
+      });
   }
 }

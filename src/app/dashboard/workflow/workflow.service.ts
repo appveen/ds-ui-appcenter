@@ -9,6 +9,7 @@ export class WorkflowService {
   showActionItems: boolean;
   showFilterIcon: boolean;
   refreshCall: Subject<boolean>;
+  
   constructor() {
     const self = this;
     self.serviceColumns = [];
