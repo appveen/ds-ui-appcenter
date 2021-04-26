@@ -417,10 +417,10 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       value = '/' + self.filterModel.filterValue + '/';
     } else if (self.filterModel.filterType === 'notContains') {
       value = { $not: '/' + self.filterModel.filterValue + '/' };
-    } else if (self.filterModel.filterType === 'true' || self.filterModel.filterType === 'false') {
-      if (self.filterModel.filterType === 'true') {
+    } else if (self.filterModel.filterType === 'yes' || self.filterModel.filterType === 'no') {
+      if (self.filterModel.filterType === 'yes') {
         value = true;
-      } else if (self.filterModel.filterType === 'false') {
+      } else if (self.filterModel.filterType === 'no') {
         value = { $ne: true };
       }
     } else if (self.filterModel.filterType === 'notEqual') {
@@ -651,15 +651,15 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
       self.filterTypeOptions = [
         {
           name: 'Select',
-          value: ''
+          value: '',
         },
         {
-          name: 'True',
-          value: 'true'
+          name: 'Yes',
+          value: 'yes',
         },
         {
-          name: 'False',
-          value: 'false'
+          name: 'No',
+          value: 'no',
         }
       ];
     } else if (self.selectedFieldDef && self.selectedFieldDef.properties && self.selectedFieldDef.properties.password) {
