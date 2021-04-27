@@ -5,10 +5,17 @@
     min-height: 56px;
     max-height: 56px;
 }
+
 .mapping{
     max-height: calc(100vh - 273px);
     overflow-y: auto;
 }
+
+.sub-definition-mapping{
+    max-height: calc(100vh - 308px) ;
+    overflow-y: auto;
+}
+
 .objIcon{
     min-width: 14px;
     max-width: 14px;
