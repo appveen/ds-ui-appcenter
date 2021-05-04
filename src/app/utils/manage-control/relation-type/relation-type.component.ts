@@ -294,10 +294,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
       distinctUntilChanged(),
       switchMap(val => {
         const self = this;
-        //  if (self.control.hasError('required') === false) {
-        //   self.control.markAsDirty();
-        //   self.control.setValue(val);
-        //  }
+       
         if (val) {
           self.control.patchValue({ _id: val });
         } else {
@@ -305,11 +302,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         self.control.markAsDirty();
         self.control.markAsTouched();
-        // const filter = {
-        //   $or: []
-        // };
-        // filter['$or'].push({ [self.definition.properties.relatedSearchField]: '/' + val + '/' });
-        // filter['$or'].push({ [self.definition.properties.relatedSearchField + '.value']: val });
+       
         let filter = {};
         if (this.searchFieldType === 'secureText') {
           filter = {
