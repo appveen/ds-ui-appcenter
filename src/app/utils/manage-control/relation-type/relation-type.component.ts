@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, ElementR
 import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { CommonService, GetOptions } from 'src/app/service/common.service';
@@ -25,6 +25,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('typeAhead', { static: false }) typeAhead: NgbTypeahead;
   @ViewChild('relationTypeInput', { static: false }) relationTypeInput: ElementRef;
   @ViewChild('searchBox', { static: false }) searchBox: ElementRef;
+
 
   url: string;
   relatedField: string;
@@ -87,7 +88,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
           this.searchFieldType = 'datetime'
 
         }
-        else if (this.relatedServiceDef &&  this.relatedServiceDef.type === 'Boolean') {
+        else if (this.relatedServiceDef && this.relatedServiceDef.type === 'Boolean') {
           this.searchFieldType = 'boolean'
 
         }
@@ -287,6 +288,64 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     return retValue;
   }
 
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(val => {
+        const self = this;
+        //  if (self.control.hasError('required') === false) {
+        //   self.control.markAsDirty();
+        //   self.control.setValue(val);
+        //  }
+        if (val) {
+          self.control.patchValue({ _id: val });
+        } else {
+          self.control.setValue(null);
+        }
+        self.control.markAsDirty();
+        self.control.markAsTouched();
+        // const filter = {
+        //   $or: []
+        // };
+        // filter['$or'].push({ [self.definition.properties.relatedSearchField]: '/' + val + '/' });
+        // filter['$or'].push({ [self.definition.properties.relatedSearchField + '.value']: val });
+        let filter = {};
+        if (this.searchFieldType === 'secureText') {
+          filter = {
+            [self.definition.properties.relatedSearchField + '.value']: val
+          };
+        } else if (this.searchFieldType === 'number') {
+          filter = {
+            [self.definition.properties.relatedSearchField]: +val
+          };
+        } else if (this.searchFieldType === 'boolean' && ['true', 'false'].includes(val.toLowerCase())) {
+          filter = {
+            [self.definition.properties.relatedSearchField]: JSON.parse(val.toLowerCase())
+          };
+        } else if (this.searchFieldType === 'file') {
+          filter = {
+            [self.definition.properties.relatedSearchField + '.metadata.filename']: '/' + val + '/'
+          };
+        } else if (this.searchFieldType === 'geojson') {
+          filter = {
+            [self.definition.properties.relatedSearchField + '.formattedAddress']: '/' + val + '/'
+          };
+        } else {
+          filter = { [self.definition.properties.relatedSearchField]: '/' + val + '/' };
+        }
+        const options: GetOptions = {
+          filter,
+          select: self.relatedField,
+          count: 20,
+          srvcID: self.definition.properties.relatedTo
+        };
+        return self.commonService.get('api', self.url, options).toPromise().then(res => {
+          return res;
+        }).catch(err => { self.commonService.errorToast(err, 'Unable to search'); });
+      })
+    )
+
   getHighlightedSearchItem(item: any) {
     const fullText: string = '' + this.formatter(item);
     const lowerCaseItem = fullText.toLowerCase();
@@ -329,10 +388,10 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   focusSearch() {
     setTimeout(() => {
-      if(!!this.searchBox) {
+      if (!!this.searchBox) {
         this.searchBox.nativeElement.focus();
       }
-      if(!!this.searchText) {
+      if (!!this.searchText) {
         this.searchTextSubject.next(this.searchText);
       }
     });
@@ -346,4 +405,6 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     const self = this;
     return self.control.hasError('required') && self.control.touched;
   }
+
+
 }

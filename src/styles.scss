@@ -354,3 +354,10 @@
 .pac-container{
   z-index: 1071;
 }
+
+.relation-control-wrapper{
+  ngb-typeahead-window.dropdown-menu {
+    max-height: 180px !important;
+    overflow-y: auto;
+}
+}
