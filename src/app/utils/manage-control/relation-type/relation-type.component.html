@@ -8,8 +8,8 @@
             <option *ngIf="!definition.properties.required" value="">---select---</option>
             <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
         </select>
-        <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded " [ngClass]="{'is-invalid':requiredError}"
-        [ngModel]="selectedValue" type="text" style="overflow-y:auto; max-height:80vh"        [ngbTypeahead]="search" [inputFormatter]="formatter"
+        <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError}"
+        [ngModel]="selectedValue" type="{{searchFieldType == 'number'? 'number': 'text' }}" style="overflow-y:auto; max-height:80vh"        [ngbTypeahead]="search" [inputFormatter]="formatter"
         #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
         (focus)="itemSelected = true" [disabled]="definition.properties.readonly" (keyup)="onEnter($event)"
         (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
