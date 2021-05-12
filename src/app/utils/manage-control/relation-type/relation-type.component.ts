@@ -294,7 +294,6 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
       distinctUntilChanged(),
       switchMap(val => {
         const self = this;
-       
         if (val) {
           self.control.patchValue({ _id: val });
         } else {
