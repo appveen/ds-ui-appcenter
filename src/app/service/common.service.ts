@@ -31,7 +31,7 @@ export class CommonService {
   sendHeartBeat: () => Observable<any>;
   get: (type, url, options?: GetOptions) => Observable<any>;
   put: (type, url, data, srvcID?) => Observable<any>;
-  post: (type, url, data, srvcID?)=> Observable<any>;
+  post: (type, url, data, srvcID?) => Observable<any>;
   delete: (type, url, data?, srvcID?) => Observable<any>;
   sheetSelection: (type, url, sheet, headers, filetype, srvcID) => Observable<any>;
   isFilePreviewModalOpen: boolean;
@@ -81,7 +81,7 @@ export class CommonService {
   stallRequests: boolean;
   private stallTime: number;
   private stallCount = 0;
-  
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -411,13 +411,14 @@ export class CommonService {
       fetch(ids);
     }
     function fetch(idList: Array<any>) {
-      options.count = -1;
-      options.filter = {
-        $or: idList
-      };
       promises.push(
         new Promise<any>((resolve, reject) => {
-          self.subscriptions['getRolesDetails'] = self.get('user', '/role', options).subscribe(
+          self.subscriptions['getRolesDetails'] = self.get('user', '/role', {
+            count: -1,
+            filter: {
+              $or: idList
+            }
+          }).subscribe(
             (res: Array<any>) => {
               let resList = res.map(e => {
                 return e.roles.map(r => {
@@ -657,7 +658,7 @@ export class CommonService {
 
   private _extendApi_(): Observable<any> {
     const token = this.sessionService.getToken();
-    if(!token) {
+    if (!token) {
       this.ts.error('Invalid Session');
       console.log('Invalid Session');
       this.logout();
@@ -770,9 +771,9 @@ export class CommonService {
       .set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT')
       .set('Access-Control-Allow-Origin', '*')
       .set('txnId', sh.unique(uuid() + '-' + self.randomStr(5)));
-    if(!skipAuth) {
+    if (!skipAuth) {
       const token = self.sessionService.getToken();
-      if(!token) {
+      if (!token) {
         this.ts.error('Invalid Session');
         console.log('Invalid Session');
         this.logout();
@@ -894,7 +895,7 @@ export class CommonService {
   private _upload_(type, url, data, fileMapper?) {
     const self = this;
     const token = self.sessionService.getToken();
-    if(!token) {
+    if (!token) {
       this.ts.error('Invalid Session');
       console.log('Invalid Session');
       this.logout();
@@ -917,7 +918,7 @@ export class CommonService {
   private _request_(type, url, options?) {
     const self = this;
     const token = self.sessionService.getToken();
-    if(!token) {
+    if (!token) {
       this.ts.error('Invalid Session');
       console.log('Invalid Session');
       this.logout();
@@ -1039,17 +1040,17 @@ export class CommonService {
   private _refreshToken_() {
     const self = this;
     const token = self.sessionService.getToken();
-    if(!token) {
+    if (!token) {
       this.ts.error('Invalid Session');
       console.log('Invalid Session');
       this.logout();
       return;
     }
     let user = self.sessionService.getUser();
-    if(typeof user === 'string') {
+    if (typeof user === 'string') {
       user = JSON.parse(user);
     }
-    if(!!user?.rbacUserToSingleSession) {
+    if (!!user?.rbacUserToSingleSession) {
       this.stallRequests = true;
       this.stallTime = Date.now();
     }
@@ -1065,7 +1066,7 @@ export class CommonService {
   private _sendHeartBeat_() {
     const self = this;
     const token = self.sessionService.getToken();
-    if(!token) {
+    if (!token) {
       this.ts.error('Invalid Session');
       console.log('Invalid Session');
       this.logout();
