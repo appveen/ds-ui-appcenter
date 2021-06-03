@@ -1,19 +1,34 @@
 <div class="relation-control-wrapper position-relative">
 
     <ng-container *ngIf="!definition.properties.readonly">
-        <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
-            [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
-            (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
-            [disabled]="control.disabled">
-            <option *ngIf="!definition.properties.required" value="">---select---</option>
-            <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
-        </select>
-        <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError}"
-        [ngModel]="selectedValue" type="{{searchFieldType == 'number'? 'number': 'text' }}" style="overflow-y:auto; max-height:80vh"        [ngbTypeahead]="search" [inputFormatter]="formatter"
-        #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
-        (focus)="itemSelected = true" [disabled]="definition.properties.readonly" (keyup)="onEnter($event)"
-        (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
-        
+        <div class="input-group">
+            <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control form-control-sm rounded"
+                [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
+                (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
+                [disabled]="control.disabled">
+                <option *ngIf="!definition.properties.required" value="">---select---</option>
+                <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
+            </select>
+            <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control form-control-sm rounded"
+                [ngClass]="{'is-invalid':requiredError}" [ngModel]="selectedValue"
+                type="{{searchFieldType == 'number'? 'number': 'text' }}" style="overflow-y:auto; max-height:80vh"
+                [ngbTypeahead]="search" [inputFormatter]="formatter" #typeAhead="ngbTypeahead"
+                (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
+                (focus)="itemSelected = true" [disabled]="definition.properties.readonly" (keyup)="onEnter($event)"
+                (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
+            <div class="input-group-append">
+                <a *ngIf="control?.value?._id" class="btn btn-outline-primary"
+                    [routerLink]="relationLink+control.value._id" target="_blank">
+                    <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
+                    <span class="fa fa-external-link-alt"></span>
+                </a>
+                <a *ngIf="!control?.value?._id" class="btn btn-outline-primary" [routerLink]="relationLinkList"
+                    target="_blank">
+                    <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
+                    <span class="fa fa-external-link-alt"></span>
+                </a>
+            </div>
+        </div>
     </ng-container>
 
     <ng-container *ngIf="definition.properties.readonly">

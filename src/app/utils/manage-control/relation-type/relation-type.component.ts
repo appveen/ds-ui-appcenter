@@ -39,6 +39,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   searchFieldType: string;
   relatedData: any;
   relationLink: string;
+  relationLinkList: string;
   dropdownItems: Array<any>;
   searchText: string;
   searchTextSubject: Subject<string>;
@@ -68,6 +69,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     self.itemSelected = false;
     if (self.definition.properties.relatedTo) {
       self.relationLink = `/${self.currentAppId}/services/${self.definition.properties.relatedTo}/view/`;
+      self.relationLinkList = `/${self.currentAppId}/services/${self.definition.properties.relatedTo}/list`;
       self.relatedField = (self.definition.properties as any).relatedSearchField;
       self.commonService.getService(self.definition.properties.relatedTo).then((res: any) => {
         if (res && res.definition) {
@@ -115,6 +117,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
                   this.relatedData = data;
                   this.currentItem = data;
                   this.searchText = this.formatter(data);
+                  self.typeAhead.writeValue(data);
                 }, err => {
                   self.control.setValue(null);
                   self.commonService.errorToast(err, 'Unable to fetch reference data');
@@ -226,6 +229,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     self.control.markAsDirty();
     self.itemSelected = false;
     self.currentItem = val.item;
+    this.relatedData = val.item;
   }
 
   onFocus($event) {
