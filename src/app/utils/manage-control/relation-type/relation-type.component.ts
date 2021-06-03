@@ -222,10 +222,10 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selectItem(val) {
     const self = this;
-    self.control.patchValue({ _id: val._id });
+    self.control.patchValue({ _id: val.item._id });
     self.control.markAsDirty();
     self.itemSelected = false;
-    self.currentItem = val;
+    self.currentItem = val.item;
   }
 
   onFocus($event) {
