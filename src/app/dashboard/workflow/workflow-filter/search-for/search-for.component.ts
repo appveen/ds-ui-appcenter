@@ -212,7 +212,6 @@ export class SearchForComponent implements OnInit {
         let obj;
 
         if (col.type !== 'Relation') {
-
           if (col.properties && col.properties.password) {
             obj = {
               headerName: col.properties.name,
@@ -232,16 +231,16 @@ export class SearchForComponent implements OnInit {
               serviceCol: true,
               ...(col.type === 'Date'
                 ? {
-                    dateFieldType: col.properties.dateType === 'date' ? 'date' : 'date-time',
-                    timezone: col.properties.defaultTimezone || 'Zulu'
-                  }
+                  dateFieldType: col.properties.dateType === 'date' ? 'date' : 'date-time',
+                  timezone: col.properties.defaultTimezone || 'Zulu'
+                }
                 : {})
             };
           }
           // self.combinedColumns.push(obj); // If you are uncommenting below code, then remove this line of code
         }
         // This part will be commented for this release and will be documented as a known issue
-        else if ( col.type === 'Relation') {
+        else if (col.type === 'Relation' || col.type === 'User' || col.properties.relatedTo) {
           obj = {
             headerName: col.properties.name,
             fieldType: col.type,
@@ -271,7 +270,7 @@ export class SearchForComponent implements OnInit {
       if (self.appService.workflowFilter) {
         self.setSearchFor(self.appService.workflowFilter);
       }
-    
+
     }
   }
 
@@ -422,7 +421,7 @@ export class SearchForComponent implements OnInit {
         const tmp = this.appService.getMomentInTimezone(new Date(tempObj[key].$lte.slice(0, 19)), localTimezone).format();
         this.startDate = new Date(tmp);
         fromDate = this.startDate.toISOString();
-        if(new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
+        if (new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
           tempfilterType = 'inRange';
           const tmp1 = this.appService.getMomentInTimezone(new Date(tempObj[key].$gte.slice(0, 19)), localTimezone).format();
           this.endDate = new Date(tmp1);
@@ -462,9 +461,9 @@ export class SearchForComponent implements OnInit {
         ...colObj,
         ...(!!colDef
           ? {
-              dateFieldType: colDef.properties.dateType === 'date' ? 'date' : 'date-time',
-              timezone: colDef.properties.defaultTimezone || 'Zulu'
-            }
+            dateFieldType: colDef.properties.dateType === 'date' ? 'date' : 'date-time',
+            timezone: colDef.properties.defaultTimezone || 'Zulu'
+          }
           : {})
       };
       if (tempObj[key].$lte && tempObj[key].$gte) {
@@ -472,7 +471,7 @@ export class SearchForComponent implements OnInit {
         const tmp = this.appService.getMomentInTimezone(new Date(foreignTime.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
         this.startDate = new Date(tmp);
         obj.fromDate = this.startDate.toISOString();
-        if(new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
+        if (new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
           obj.filterType = 'inRange';
           const foreignTime1 = this.appService.getMoment(tempObj[key].$gte).tz(obj.timezone).format();
           const tmp1 = this.appService.getMomentInTimezone(new Date(foreignTime1.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
