@@ -27,7 +27,7 @@
       [first]="first"></odp-form-control>
   </ng-container>
   <button type="button" class="btn btn-link pl-0 add-new"
-    *ngIf="definition.type=='Array' && definition.definition[0].type !== 'Object' && !definition?.properties?.readonly && form.enabled"
+    *ngIf="definition.type=='Array' && definition.definition[0].type !== 'Object' && !definition?.properties?.readonly && toggleEnable"
     (click)="arrayControlRef.addNew()">
     <span class="fa fa-plus-circle mr-2"></span>
     <span class="text">Add new</span>
