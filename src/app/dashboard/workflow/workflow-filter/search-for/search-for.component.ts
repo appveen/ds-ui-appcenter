@@ -211,7 +211,7 @@ export class SearchForComponent implements OnInit {
       self.allColumnsOfService.forEach((col) => {
         let obj;
 
-        if (col.type !== 'Relation') {
+        if (col.type !== 'Relation' && col.type !== 'User') {
           if (col.properties && col.properties.password) {
             obj = {
               headerName: col.properties.name,
@@ -244,18 +244,15 @@ export class SearchForComponent implements OnInit {
           obj = {
             headerName: col.properties.name,
             fieldType: col.type,
-            fieldName: [col.key],
+            fieldName: col.key + "._id",
             filterType: 'equals',
             filterValue: '',
             serviceCol: true
           };
-          if (col.properties.relatedViewFields && col.properties.relatedViewFields.length > 0) {
-            const serviceDataKey = col.key.split('.')[0];
-            col.properties.relatedViewFields.forEach((e) => {
-              obj.fieldName.push(serviceDataKey + '.' + e.key);
-            });
-          }
-        } else {
+        
+        } 
+        
+        else {
           obj = {
             headerName: 'Record Id',
             fieldType: 'String',
