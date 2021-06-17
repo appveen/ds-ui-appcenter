@@ -37,7 +37,7 @@
   .dropdown-list {
     overflow: auto;
     min-height: 147px;
-      
+
     .dropdown-itm {
       &:hover {
         background-color: rgba($primary, 0.25);
@@ -45,7 +45,7 @@
       }
       &:active {
         background-color: $primary;
-        color: white;        
+        color: white;
       }
     }
   }
@@ -55,4 +55,9 @@
     padding: 0 10px;
     grid-template-columns: 1fr auto;
   }
+}
+
+.form-control-rounded {
+  border-top-left-radius: 0.25rem !important;
+  border-bottom-left-radius: 0.25rem !important;
 }
