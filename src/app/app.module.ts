@@ -74,7 +74,7 @@ import { DashboardService } from './dashboard/dashboard.service';
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
-      maxOpened: 1,
+      maxOpened: 2,
       autoDismiss: true,
       preventDuplicates: true,
       newestOnTop: false
