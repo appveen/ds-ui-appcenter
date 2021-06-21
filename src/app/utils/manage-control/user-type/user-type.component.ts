@@ -5,7 +5,7 @@ import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { FormService } from 'src/app/service/form.service';
 import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'odp-user-type',
@@ -96,6 +96,7 @@ export class UserTypeComponent implements OnInit {
 
   search = (text$: Observable<string>) =>
     text$.pipe(
+      tap(() => this.appService.searchingRecord = true),
       debounceTime(200),
       distinctUntilChanged(),
       switchMap(_val => {
@@ -117,7 +118,8 @@ export class UserTypeComponent implements OnInit {
         return self.commonService.get('user', `/usr/app/${self.commonService.app._id}`, options).toPromise().then(res => {
           return res;
         }).catch(err => { self.commonService.errorToast(err, 'Unable to search'); });
-      })
+      }),
+      tap(() => this.appService.searchingRecord = false)
     )
 
   formatter = (obj: any) => {

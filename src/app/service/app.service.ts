@@ -62,7 +62,7 @@ export class AppService {
     workflowTab: number;
     workflowTabChange: EventEmitter<number>;
     fileMapperComponnets: any;
-
+    searchingRecord: boolean;
     constructor() {
         const self = this;
         self.serviceChange = new EventEmitter();
@@ -812,38 +812,38 @@ export class AppService {
         momentDate.year(date.getFullYear());
         momentDate.month(date.getMonth());
         momentDate.date(date.getDate());
-        switch(adjustment) {
+        switch (adjustment) {
             case 'time:start':
                 momentDate.hours(0);
                 momentDate.minutes(0);
                 momentDate.seconds(0);
                 momentDate.milliseconds(0);
-            break;
+                break;
             case 'time:end':
                 momentDate.hours(23);
                 momentDate.minutes(59);
                 momentDate.seconds(59);
                 momentDate.milliseconds(999);
-            break;
+                break;
             case 'ms:start':
                 momentDate.hours(date.getHours())
                 momentDate.minutes(date.getMinutes());
                 momentDate.seconds(date.getSeconds());
                 momentDate.milliseconds(0);
-            break;
+                break;
             case 'ms:end':
                 momentDate.hours(date.getHours())
                 momentDate.minutes(date.getMinutes());
                 momentDate.seconds(date.getSeconds());
                 momentDate.milliseconds(999);
-            break;
+                break;
             case 'exact':
             default:
                 momentDate.hours(date.getHours())
                 momentDate.minutes(date.getMinutes());
                 momentDate.seconds(date.getSeconds());
                 momentDate.milliseconds(date.getMilliseconds());
-            break;
+                break;
         }
         return momentDate;
     }

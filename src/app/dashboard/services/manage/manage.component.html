@@ -41,22 +41,22 @@
           <span class="fa fa-trash mr-2"></span>
           <span class="text">Discard</span>
         </button>
-        <button id="saveDraftBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader"
+        <button id="saveDraftBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader || searchingRecord"
           (click)="saveDraft()" *ngIf="!isEdit && isDraft">
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save draft</span>
         </button>
         <button id="submitDraftBtn" type="button" class="btn btn-primary px-4 btn-min-width"
-          [disabled]="!form.valid || !form.dirty || showLazyLoader" (click)="submitDraft()" *ngIf="isDraft">
+          [disabled]="!form.valid || !form.dirty || showLazyLoader || searchingRecord" (click)="submitDraft()" *ngIf="isDraft">
           <span class="text">Save and Proceed</span>
         </button>
         <button id="saveAsDraftBtn" type="button" class="btn btn-link mr-3"
-          [disabled]="!form.valid || draftReqInProgress || showLazyLoader" (click)="saveAsDraft()"
+          [disabled]="!form.valid || draftReqInProgress || showLazyLoader || searchingRecord" (click)="saveAsDraft()"
           *ngIf="!isDraft && hasWorkflow">
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save as draft</span>
         </button>
-        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader || reqInProgress"
+        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord"
           (click)="save(true)" *ngIf="!isEdit && !isDraft">
           <span class="fa fa-save mr-2"></span>
           <span *ngIf="!hasWorkflow" class="text">Save &amp; create another</span>
@@ -64,7 +64,7 @@
         </button>
         <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
           [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow}"
-          [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader" (click)="save()" *ngIf="!isDraft">
+          [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord" (click)="save()" *ngIf="!isDraft">
           <span *ngIf="!hasWorkflow" class="text">Save</span>
           <span *ngIf="hasWorkflow" class="text">Proceed</span>
         </button>

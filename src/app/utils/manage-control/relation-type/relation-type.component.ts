@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
@@ -148,6 +148,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.subscriptions['search'] = this.searchTextSubject.pipe(
+      tap(() => this.appService.searchingRecord = true),
       debounceTime(200),
       distinctUntilChanged(),
       switchMap(val => {
@@ -192,7 +193,8 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
           self.control.setValue(null);
           return of([]);
         }
-      })
+      }),
+      tap(() => this.appService.searchingRecord = false)
     ).subscribe(
       res => {
         this.dropdownItems = res;
@@ -305,7 +307,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         self.control.markAsDirty();
         self.control.markAsTouched();
-       
+
         let filter = {};
         if (this.searchFieldType === 'secureText') {
           filter = {

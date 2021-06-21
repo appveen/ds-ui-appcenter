@@ -881,6 +881,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     arr.fill(1);
     return arr;
   }
+
+  get searchingRecord(){
+    return this.appService.searchingRecord;
+  }
 }
 
 export interface ExpHook {
