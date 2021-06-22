@@ -59,7 +59,7 @@ export class UserTypeComponent implements OnInit {
             }
           }, err => {
             self.control.setValue(null);
-            self.commonService.errorToast(err, 'Unable to fetch reference data');
+            // self.commonService.errorToast(err, 'Unable to fetch reference data');
           });
       }
     })

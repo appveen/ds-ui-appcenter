@@ -120,7 +120,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
                   self.typeAhead.writeValue(data);
                 }, err => {
                   self.control.setValue(null);
-                  self.commonService.errorToast(err, 'Unable to fetch reference data');
+                  // self.commonService.errorToast(err, 'Unable to fetch reference data');
                 });
             } else {
               setTimeout(() => {
