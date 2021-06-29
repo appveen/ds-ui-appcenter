@@ -111,9 +111,9 @@
             <span class="text-primary pt-4 font-weight-bold ">Drag and drop your file here</span>
           </div>
         </label>
-        <label class="drop-box-logo d-flex align-items-center justify-content-center m-3 position-fixed w-100 d-1"
+        <label class="drop-box-logo d-flex align-items-center justify-content-center m-3 position-fixed w-100 d-1 hover"
           odpDragAndDrop placement="top" (fileData)="dragAndUpload($event)" (dragover)="dragOver()"
-          (dragleave)="dragOut()">
+          (dragleave)="dragOut()" for="logoFile">
         </label>
         <!-- <label class="d-flex justify-content-between align-items-center small-drop-box p-2" odpDragAndDrop
           *ngIf="uploadObj.showUploadTag">
