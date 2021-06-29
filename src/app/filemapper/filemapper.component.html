@@ -111,9 +111,9 @@
             <span class="text-primary pt-4 font-weight-bold ">Drag and drop your file here</span>
           </div>
         </label>
-        <label class="drop-box-logo d-flex align-items-center justify-content-center m-3 position-fixed w-100 d-1"
+        <label class="drop-box-logo d-flex align-items-center justify-content-center m-3 position-fixed w-100 d-1 hover"
           odpDragAndDrop placement="top" (fileData)="dragAndUpload($event)" (dragover)="dragOver()"
-          (dragleave)="dragOut()">
+          (dragleave)="dragOut()" for="logoFile">
         </label>
         <!-- <label class="d-flex justify-content-between align-items-center small-drop-box p-2" odpDragAndDrop
           *ngIf="uploadObj.showUploadTag">
@@ -316,7 +316,7 @@
           <div class="d-flex  justify-content-between">
             <span class="text-success font-bold">{{fileData?.fileName}}</span><span class="text m-0">{{title}}</span>
           </div>
-          <div class="d-flex pt-4 align-items-center">
+          <!-- <div class="d-flex pt-4 align-items-center">
             <div class="d-flex justify-content-center align-items-center bg-success small-icon-div">
               <span class="odp-record"></span>
             </div>
@@ -326,11 +326,10 @@
             <div class="d-flex justify-content-center align-items-center bg-primary small-icon-div">
               <span class="odp-record"></span>
             </div>
-          </div>
-          <div class="d-flex flex-row  justify-content-center pt-4 align-items-center ">
-            <div class="spinner-1"></div>
-            <h2>Data import in progress</h2>
-            <!-- <div>Imported 3000/3000 valid records</div> -->
+          </div> -->
+          <div class="d-flex pt-4 align-items-center">
+            <div class="spinner-1 mr-2"></div>
+            <h2 class="m-0">Data import in progress</h2>
           </div>
         </div>
       </div>
@@ -347,7 +346,7 @@
           <div class="d-flex  justify-content-between">
             <span class="text-success font-bold">{{fileData?.fileName}}</span><span class="text m-0">{{title}}</span>
           </div>
-          <div class="d-flex pt-4 align-items-center">
+          <!-- <div class="d-flex pt-4 align-items-center">
             <div class="d-flex justify-content-center align-items-center bg-success small-icon-div">
               <span class="odp-record"></span>
             </div>
@@ -358,7 +357,7 @@
               [ngClass]="{'finished':uploading==0,'bg-primary':uploading>0}">
               <span class="odp-record"></span>
             </div>
-          </div>
+          </div> -->
           <div class="d-flex flex-column pt-4 align-items-center">
             <h2 class="text-success">Data Import Successful</h2>
             <div class="mb-3">Imported {{summary?.created + summary?.updated }} / {{resultObj.totalRecords}} valid

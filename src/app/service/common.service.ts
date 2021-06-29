@@ -660,7 +660,6 @@ export class CommonService {
     const token = this.sessionService.getToken();
     if (!token) {
       this.ts.error('Invalid Session');
-      console.log('Invalid Session');
       this.logout();
       return;
     }
@@ -775,7 +774,6 @@ export class CommonService {
       const token = self.sessionService.getToken();
       if (!token) {
         this.ts.error('Invalid Session');
-        console.log('Invalid Session');
         this.logout();
         return;
       } else {
@@ -897,7 +895,6 @@ export class CommonService {
     const token = self.sessionService.getToken();
     if (!token) {
       this.ts.error('Invalid Session');
-      console.log('Invalid Session');
       this.logout();
       return;
     }
@@ -920,7 +917,6 @@ export class CommonService {
     const token = self.sessionService.getToken();
     if (!token) {
       this.ts.error('Invalid Session');
-      console.log('Invalid Session');
       this.logout();
       return;
     }
@@ -1020,9 +1016,9 @@ export class CommonService {
         }
       );
     } else {
+      self.clearData();
       self.appService.setFocus.emit('username');
-      self.apiCalls = {};
-      self.router.navigate(['/']);
+      self.router.navigate(['/auth']);
     }
   }
 
@@ -1042,7 +1038,6 @@ export class CommonService {
     const token = self.sessionService.getToken();
     if (!token) {
       this.ts.error('Invalid Session');
-      console.log('Invalid Session');
       this.logout();
       return;
     }
@@ -1068,7 +1063,6 @@ export class CommonService {
     const token = self.sessionService.getToken();
     if (!token) {
       this.ts.error('Invalid Session');
-      console.log('Invalid Session');
       this.logout();
       return;
     }
