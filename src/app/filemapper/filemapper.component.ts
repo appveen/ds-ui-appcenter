@@ -281,7 +281,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
               mapObj[element.properties.dataKey] = temp[0].item['name'];
             }
           });
-          console.log(mapObj);  
           self.form.patchValue(mapObj);
         },
         err => {
