@@ -18,7 +18,7 @@ export class DateFilterPickerComponent implements OnInit {
 
   ngOnInit(): void {
     fromEvent(document.querySelector('.ag-body-horizontal-scroll-viewport'), 'scroll').subscribe((event) => {
-      console.log((event.target as HTMLElement).offsetLeft);
+      // console.log((event.target as HTMLElement).offsetLeft);
     });
   }
 

@@ -268,7 +268,7 @@ export class NodeInfoComponent implements OnInit {
           message = self.interactionData.errorMessage;
         }
       } catch (e) {
-        console.log('Error Message is not a valid JSON');
+        console.error('Error Message is not a valid JSON', e);
         message = self.interactionData.errorMessage;
       }
     }

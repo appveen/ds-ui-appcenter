@@ -247,7 +247,6 @@ export class DataGridDirective implements AfterViewInit, AfterContentChecked, Do
         node.removeEventListener('dragstart', () => { });
         this.renderer.listen(node, 'dragenter', (event: DragEvent) => {
           event.preventDefault();
-          console.log('dragenter-node', i);
           this.switchCells(this.dragStartIndex, this.dragStartIndex > i);
         });
         this.renderer.listen(node, 'dragstart', (event: DragEvent) => {
