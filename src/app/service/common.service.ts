@@ -1016,9 +1016,9 @@ export class CommonService {
         }
       );
     } else {
+      self.clearData();
       self.appService.setFocus.emit('username');
-      self.apiCalls = {};
-      self.router.navigate(['/']);
+      self.router.navigate(['/auth']);
     }
   }
 
