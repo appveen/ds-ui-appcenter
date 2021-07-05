@@ -62,36 +62,38 @@
           <span class="text text-secondary">Columns Mapping</span>
         </div>
       </div>
-      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 3}">
-        <div class="d-flex align-items-center">
-          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
-            [ngClass]="{'bg-success border-success':activeStep >3,'bg-dark':activeStep ===3,'bg-light':'activeStep <3'} ">
-            <span *ngIf="activeStep > 3" class="fa fa-check text-white"></span>
-            <span *ngIf="activeStep ===3" class="fa fa-angle-right text-white"></span>
+      <ng-container *ngIf="activeStep>2 && !sentForValidation">
+        <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 3}">
+          <div class="d-flex align-items-center">
+            <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+              [ngClass]="{'bg-success border-success':activeStep >3,'bg-dark':activeStep ===3,'bg-light':'activeStep <3'} ">
+              <span *ngIf="activeStep > 3" class="fa fa-check text-white"></span>
+              <span *ngIf="activeStep ===3" class="fa fa-angle-right text-white"></span>
+            </div>
+            <span class="text text-secondary">Resolve Conflicts</span>
           </div>
-          <span class="text text-secondary">Resolve Conflicts</span>
         </div>
-      </div>
-      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 4}">
-        <div class="d-flex align-items-center">
-          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
-            [ngClass]="{'bg-success border-success':activeStep >4,'bg-dark':activeStep ===5,'bg-light':'activeStep <4'} ">
-            <span *ngIf="activeStep > 4" class="fa fa-check text-white"></span>
-            <span *ngIf="activeStep ===4" class="fa fa-angle-right text-white"></span>
+        <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 4}">
+          <div class="d-flex align-items-center">
+            <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+              [ngClass]="{'bg-success border-success':activeStep >4,'bg-dark':activeStep ===5,'bg-light':'activeStep <4'} ">
+              <span *ngIf="activeStep > 4" class="fa fa-check text-white"></span>
+              <span *ngIf="activeStep ===4" class="fa fa-angle-right text-white"></span>
+            </div>
+            <span class="text text-secondary">Import Valid Records</span>
           </div>
-          <span class="text text-secondary">Import Valid Records</span>
         </div>
-      </div>
-      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 5}">
-        <div class="d-flex align-items-center">
-          <div class="round-check d-flex align-items-center justify-content-center border mr-2"
-            [ngClass]="{'bg-success border-success':activeStep >5,'bg-dark':activeStep ===5,'bg-light':'activeStep < 5'} ">
-            <span *ngIf="activeStep > 5" class="fa fa-check text-white"></span>
-            <span *ngIf="activeStep ===5" class="fa fa-angle-right text-white"></span>
+        <!-- <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 5}">
+          <div class="d-flex align-items-center">
+            <div class="round-check d-flex align-items-center justify-content-center border mr-2"
+              [ngClass]="{'bg-success border-success':activeStep >5,'bg-dark':activeStep ===5,'bg-light':'activeStep < 5'} ">
+              <span *ngIf="activeStep > 5" class="fa fa-check text-white"></span>
+              <span *ngIf="activeStep ===5" class="fa fa-angle-right text-white"></span>
+            </div>
+            <span class="text text-secondary">Finish</span>
           </div>
-          <span class="text text-secondary">Finish</span>
-        </div>
-      </div>
+        </div> -->
+      </ng-container>
       <button class="btn btn-outline-danger mt-auto" *ngIf="activeStep<5" (click)="cancel()">Cancel and Exit</button>
     </div>
     <div class="d-flex flex-column w-100 h-100  mt-2 position-relative" *ngIf="activeStep==0">
@@ -308,33 +310,55 @@
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex">
           <div class="odp-cloud-upload text-primary mt-2"></div>
-          <span class="text-accent pl-2 pt-1">Importing valid records</span>
+          <span class="text-accent pl-2 pt-1">Validating Records</span>
         </div>
       </div>
       <div class=" w-100 d-flex justify-content-center align-items-center">
-        <div class="loader ">
-          <div class="d-flex  justify-content-between">
+        <div class="loader">
+          <div class="d-flex justify-content-between border rounded p-2 bg-light">
             <span class="text-success font-bold">{{fileData?.fileName}}</span><span class="text m-0">{{title}}</span>
           </div>
-          <!-- <div class="d-flex pt-4 align-items-center">
-            <div class="d-flex justify-content-center align-items-center bg-success small-icon-div">
-              <span class="odp-record"></span>
+          <div class="d-flex flex-column mt-3 align-items-center border rounded p-2 bg-light">
+            <div class="d-flex align-items-center">
+              <span class="odp-cloud-upload mr-2 text-success"></span>
+              <span class="text-primary-dark">Validation In Progress</span>
             </div>
-            <div class="gradient position-relative">
-              <div class="gradDup position-absolute" [ngStyle]="progressWidth"></div>
+            <div class="d-flex flex-column my-3 text-secondary text-center">
+              <p>The uploaded file is currently being validated. You will
+                be notified when validation is completed.<br> Click <a [routerLink]="['/', app, 'services', schema._id, 'list']">here</a> to redirect to listing page.</p>
             </div>
-            <div class="d-flex justify-content-center align-items-center bg-primary small-icon-div">
-              <span class="odp-record"></span>
-            </div>
-          </div> -->
-          <div class="d-flex pt-4 align-items-center">
-            <div class="spinner-1 mr-2"></div>
-            <h2 class="m-0">Data import in progress</h2>
           </div>
         </div>
       </div>
     </div>
+
     <div class="d-flex flex-column w-100 h-100 px-3 pt-3 overflow" *ngIf="activeStep==5">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+          <div class="odp-cloud-upload text-primary mt-2"></div>
+          <span class="text-accent pl-2 pt-1">Importing valid records</span>
+        </div>
+      </div>
+      <div class=" w-100 d-flex justify-content-center align-items-center">
+        <div class="loader">
+          <div class="d-flex justify-content-between border rounded p-2 bg-light">
+            <span class="text-success font-bold">{{fileData?.fileName}}</span><span class="text m-0">{{title}}</span>
+          </div>
+          <div class="d-flex flex-column mt-3 align-items-center border rounded p-2 bg-light">
+            <div class="d-flex align-items-center">
+              <span class="odp-cloud-upload mr-2 text-success"></span>
+              <span class="text-primary-dark">Import In Progress</span>
+            </div>
+            <div class="d-flex flex-column my-3 text-secondary text-center">
+              <p>Valid Records are being imported. You will
+                be notified when the process is completed.<br> Click <a [routerLink]="['/', app, 'services', schema._id, 'list']">here</a> to redirect to listing page.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="d-flex flex-column w-100 h-100 px-3 pt-3 overflow" *ngIf="activeStep==6">
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex">
           <div class="odp-cloud-upload text-primary mt-2"></div>

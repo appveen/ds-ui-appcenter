@@ -47,6 +47,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   importInProgressRef: NgbModalRef;
   dsKeys: Array<any>;
   hasBulkInvalidRecords: boolean;
+  sentForValidation: boolean;
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -298,19 +299,9 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     const url = self.api + '/utils/fileMapper/' + self.mappingData.fileId + '/mapping?timezone=' + new Date().getTimezoneOffset();
     self.subscriptions['fileMapperMapping'] = self.commonService.put('api', url, self.mappingData).subscribe(
       res => {
-        self.validationInProgressRef = self.modalService.open(self.validationInProgress, {
-          centered: true,
-          beforeDismiss: () => false
-        });
-        self.validationInProgressRef.result.then(
-          close => {
-            self.commonService.notification.fileImport.emit({
-              message: 'Validating'
-            });
-            self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
-          },
-          dismiss => { }
-        );
+        self.sentForValidation = true;
+        self.showLazyLoader = false;
+        self.activeStep = 4;
       },
       err => {
         self.commonService.errorToast(err, 'Unable to map the columns, please try again later.');
@@ -325,7 +316,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
 
   createRecords() {
     const self = this;
-    self.activeStep = 4;
     self.showImportLoader = true;
     self.uploading = 100;
     self.progress();
@@ -336,22 +326,10 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           self.showImportLoader = false;
+          self.activeStep = 5;
           if (res._workflow && res._workflow.failed) {
             self.ts.warning('File upload failed for ' + res._workflow.failed + ' records');
           }
-          self.importInProgressRef = self.modalService.open(self.importInProgress, {
-            centered: true,
-            beforeDismiss: () => false
-          });
-          self.importInProgressRef.result.then(
-            close => {
-              self.commonService.notification.fileImport.emit({
-                message: 'Importing'
-              });
-              self.router.navigate(['/', this.commonService.app._id, 'services', self.schema._id, 'list']);
-            },
-            dismiss => { }
-          );
         },
         err => {
           self.commonService.errorToast(err, 'unable to create records pleasetry again later');
@@ -460,5 +438,9 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+
+  get app() {
+    return this.commonService.app._id;
   }
 }
