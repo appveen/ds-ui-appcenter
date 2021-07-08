@@ -195,23 +195,23 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
     };
     self.subscriptions['respond'] = self.commonService.put('api', this.workflowApi + '/action', payload)
       .subscribe((res: any[]) => {
-        if(!!res?.length) {
+        if (!!res?.length) {
           const successArray = [];
           const failedArray = [];
           res.forEach(wfResult => {
             const errorAudit = (wfResult?.audit || []).find(audit => audit.action === 'Error');
-            if(!!errorAudit) {
-              failedArray.push({id: wfResult._id, remarks: errorAudit.remarks});
+            if (!!errorAudit) {
+              failedArray.push({ id: wfResult._id, remarks: errorAudit.remarks });
             } else {
-              successArray.push({id: wfResult._id});
+              successArray.push({ id: wfResult._id });
             }
           });
-          if(!failedArray.length) {
+          if (!failedArray.length) {
             this.ts.success(`${successArray.length} records passed`);
           } else {
             const failedMsg = failedArray.reduce((pv, cv) => pv + cv.id + ':&nbsp;' + cv.remarks + '<br/>', '');
-            this.ts.error(failedMsg, '', {enableHtml: true}).onHidden.subscribe(() => {
-              if(!!successArray.length) {
+            this.ts.error(failedMsg, '', { enableHtml: true }).onHidden.subscribe(() => {
+              if (!!successArray.length) {
                 this.ts.info(`${successArray.length} records passed and ${failedArray.length} records failed`);
               } else {
                 this.ts.error(`${failedArray.length} records failed`);
@@ -223,11 +223,14 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
         self.expandWflist(true, true);
         self.showLazyLoader = false;
       }, err => {
+        let redirect = false;
         self.showLazyLoader = false;
         if (err.error) {
           if (err.error && err.error.failed && err.error.failed.length && err.error.passed && err.error.passed.length) {
+            redirect = true;
             self.ts.warning(err.error.passed.length + ' records passed and ' + err.error.failed.length + ' records failed');
           } else if (err.error.passed && err.error.passed.length) {
+            redirect = true;
             self.ts.success(err.passed.length + ' records passed');
           } else if (err.error.failed && err.error.failed.length) {
             if (err.error.failed.length === 1 && err.error.failed[0].message.code) {
@@ -238,17 +241,31 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
             } else {
               self.ts.error(err.error.failed.length + ' records failed');
             }
-            // self.ts.error(err.error.message);
+          } else if (err.error.message) {
+            if (err.error.message && typeof err.error.message === 'object') {
+              let message = '';
+              Object.keys(err.error.message).forEach(key => {
+                if(err.error.message[key].indexOf('404')>-1){
+                  message += key+' has a value that is deleted, please remove the value and try again.\n';
+                } else {
+                  message += err.error.message[key] + '\n';
+                }
+              });
+              this.ts.error(message);
+            } else {
+              self.commonService.errorToast(err, 'Unable to respond to the workflow,please try again later');
+            }
           } else {
             self.commonService.errorToast(err, 'Unable to respond to the workflow,please try again later');
           }
-          self.appService.workflowStatus.emit(true);
-          self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
-
         } else {
           self.commonService.errorToast(err, 'Unable to respond to the workflow,please try again later');
         }
-        self.expandWflist(true, true);
+        if (redirect) {
+          self.appService.workflowStatus.emit(true);
+          self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
+          self.expandWflist(true, true);
+        }
       });
   }
 
@@ -299,7 +316,7 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
 
   downloadFile(_id) {
     const self = this;
-    window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' +_id);
+    window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + _id);
   }
 
   get canRespond() {
