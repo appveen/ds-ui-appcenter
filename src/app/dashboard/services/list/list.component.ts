@@ -1320,6 +1320,7 @@ export class ListComponent implements OnInit, OnDestroy {
   exportData(id?) {
     try {
       const self = this;
+      let reqBody = {};
       let filter = null;
       if (self.recordChecked > 0) {
         filter = {
@@ -1343,9 +1344,11 @@ export class ListComponent implements OnInit, OnDestroy {
       const query = [];
       query.push(`timezone=${new Date().getTimezoneOffset()}`);
       if (filter) {
-        query.push(`filter=${JSON.stringify(filter)}`);
+        // query.push(`filter=${JSON.stringify(filter)}`);
+        reqBody['filter'] = filter
       } else if (self.listGrid.apiConfig.filter) {
-        query.push(`filter=${JSON.stringify(self.listGrid.apiConfig.filter)}`);
+        reqBody['filter'] = self.listGrid.apiConfig.filter;
+        // query.push(`filter=${JSON.stringify(self.listGrid.apiConfig.filter)}`);
       }
       if (self.listGrid.apiConfig.sort) {
         query.push(`sort=${self.listGrid.apiConfig.sort}`);
@@ -1358,7 +1361,7 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       query.push(`totalRecords=${totalRecords}`);
       url += '?' + query.join('&') + '&count=-1';
-      self.commonService.get('api', url).subscribe(
+      self.commonService.post('api', url, reqBody).subscribe(
         res => {
           self.ts.success(`Exporting ${totalRecords} records, please wait...`);
           self.commonService.notification.fileExport.emit({

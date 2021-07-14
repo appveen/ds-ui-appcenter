@@ -1,6 +1,6 @@
 {
   "/": {
-    "target": "https://bifrost.ds.appveen.com/",
+    "target": "http://localhost:9080",
     "secure": false,
     "changeOrigin": true
   }
