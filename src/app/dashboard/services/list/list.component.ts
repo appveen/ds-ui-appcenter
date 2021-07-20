@@ -1345,22 +1345,26 @@ export class ListComponent implements OnInit, OnDestroy {
       query.push(`timezone=${new Date().getTimezoneOffset()}`);
       if (filter) {
         // query.push(`filter=${JSON.stringify(filter)}`);
-        reqBody['filter'] = filter
+        reqBody['filter'] = filter;
       } else if (self.listGrid.apiConfig.filter) {
         reqBody['filter'] = self.listGrid.apiConfig.filter;
         // query.push(`filter=${JSON.stringify(self.listGrid.apiConfig.filter)}`);
       }
       if (self.listGrid.apiConfig.sort) {
-        query.push(`sort=${self.listGrid.apiConfig.sort}`);
+        // query.push(`sort=${self.listGrid.apiConfig.sort}`);
+        reqBody['sort'] = self.listGrid.apiConfig.sort;
       }
       if (self.listGrid.apiConfig.select) {
         let select = self.listGrid.apiConfig.select;
         select = `${select}`;
         select = select.replace(',_metadata.workflow', '');
-        query.push(`select=${select}`);
+        // query.push(`select=${select}`);
+        reqBody['select'] = select;
       }
-      query.push(`totalRecords=${totalRecords}`);
-      url += '?' + query.join('&') + '&count=-1';
+      // query.push(`totalRecords=${totalRecords}`);
+      reqBody['totalRecords'] = totalRecords;
+      reqBody['count'] = -1;
+      // url += '?' + query.join('&') + '&count=-1';
       self.commonService.post('api', url, reqBody).subscribe(
         res => {
           self.ts.success(`Exporting ${totalRecords} records, please wait...`);
