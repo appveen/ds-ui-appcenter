@@ -1342,7 +1342,8 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       let url = self.api + '/utils/export';
       const query = [];
-      query.push(`timezone=${new Date().getTimezoneOffset()}`);
+      reqBody['timezone'] = new Date().getTimezoneOffset();
+      // query.push(`timezone=${new Date().getTimezoneOffset()}`);
       if (filter) {
         // query.push(`filter=${JSON.stringify(filter)}`);
         reqBody['filter'] = filter;
