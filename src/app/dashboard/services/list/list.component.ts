@@ -1320,6 +1320,7 @@ export class ListComponent implements OnInit, OnDestroy {
   exportData(id?) {
     try {
       const self = this;
+      let reqBody = {};
       let filter = null;
       if (self.recordChecked > 0) {
         filter = {
@@ -1341,24 +1342,31 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       let url = self.api + '/utils/export';
       const query = [];
-      query.push(`timezone=${new Date().getTimezoneOffset()}`);
+      reqBody['timezone'] = new Date().getTimezoneOffset();
+      // query.push(`timezone=${new Date().getTimezoneOffset()}`);
       if (filter) {
-        query.push(`filter=${JSON.stringify(filter)}`);
+        // query.push(`filter=${JSON.stringify(filter)}`);
+        reqBody['filter'] = filter;
       } else if (self.listGrid.apiConfig.filter) {
-        query.push(`filter=${JSON.stringify(self.listGrid.apiConfig.filter)}`);
+        reqBody['filter'] = self.listGrid.apiConfig.filter;
+        // query.push(`filter=${JSON.stringify(self.listGrid.apiConfig.filter)}`);
       }
       if (self.listGrid.apiConfig.sort) {
-        query.push(`sort=${self.listGrid.apiConfig.sort}`);
+        // query.push(`sort=${self.listGrid.apiConfig.sort}`);
+        reqBody['sort'] = self.listGrid.apiConfig.sort;
       }
       if (self.listGrid.apiConfig.select) {
         let select = self.listGrid.apiConfig.select;
         select = `${select}`;
         select = select.replace(',_metadata.workflow', '');
-        query.push(`select=${select}`);
+        // query.push(`select=${select}`);
+        reqBody['select'] = select;
       }
-      query.push(`totalRecords=${totalRecords}`);
-      url += '?' + query.join('&') + '&count=-1';
-      self.commonService.get('api', url).subscribe(
+      // query.push(`totalRecords=${totalRecords}`);
+      reqBody['totalRecords'] = totalRecords;
+      reqBody['count'] = -1;
+      // url += '?' + query.join('&') + '&count=-1';
+      self.commonService.post('api', url, reqBody).subscribe(
         res => {
           self.ts.success(`Exporting ${totalRecords} records, please wait...`);
           self.commonService.notification.fileExport.emit({
