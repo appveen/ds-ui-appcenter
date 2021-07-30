@@ -83,6 +83,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     const self = this;
     self.apiEndpoint = '/' + self.schema.app + self.schema.api;
     self.createColumnDefs();
+    self.gridService.initializeLastFilterSearchText(self.schema._id);
     self.getPrefrences();
     this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
       if (!!queryParams) {
