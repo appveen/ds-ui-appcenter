@@ -21,7 +21,7 @@
     </div>
 </div>
 <div class="tokens" *ngIf="definition.properties.hasTokens && definition.properties.hasTokens.length>0">
-    <button type="button" [disabled]="control.disabled" [attr.id]="definition.name+token"
+    <button type="button" [disabled]="control.disabled" [attr.id]="definition.path+ '.'+ token"
         class="btn btn-sm btn-min-width mr-2 mb-2 token"
         [ngClass]="{'btn-primary':usedTokens[token],'btn-outline-primary':!usedTokens[token]}"
         *ngFor="let token of definition.properties.hasTokens" (click)="putToken(token)">

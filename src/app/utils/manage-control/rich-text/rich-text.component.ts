@@ -90,11 +90,11 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const toolbar = 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter' +
             'alignright alignjustify  | numlist bullist outdent indent  | removeformat | image |  underline insertfile | addcomment';
-        let selector = '#' + self.definition.camelCase + 'rich';
+        let selector = '#' + self.definition.camelCase; //+ 'rich';
 
         if (self.definition.id) {
             const id = self.definition.id.replace('.', '');
-            selector = '#' + id + 'rich';
+            selector = '#' + id; //+ 'rich';
         }
         selector = selector.replace('.', '');
         tinymce.init({
@@ -178,10 +178,10 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     get Id() {
         const self = this;
-        let retVal = self.definition.camelCase + 'rich';
+        let retVal = self.definition.camelCase; // + 'rich';
         if (self.definition.id) {
             const id = self.definition.id.replace('.', '');
-            retVal = id + 'rich';
+            retVal = id ; // + 'rich';
         }
         retVal = retVal.replace('.', '');
        
