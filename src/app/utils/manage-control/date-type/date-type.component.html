@@ -1,10 +1,10 @@
 <div class="input-group">
-    <button [attr.id]="definition.name" class="btn btn-link mr-2 p-0" (click)="onClick($event)"
+    <button [attr.id]="definition.path" class="btn btn-link mr-2 p-0" (click)="onClick($event)"
         [disabled]="definition.properties.readonly || control.disabled">
         <span class="fas fa-calendar-alt mr-2" id="selectDate"></span>
         <span class="text">{{selectedDate}}</span>
     </button>
-    <button id="clearBtn{{definition.name}}" class="btn btn-link text-muted p-0" *ngIf="control.value"
+    <button id="clearBtn{{definition.path}}" class="btn btn-link text-muted p-0" *ngIf="control.value"
         (click)="clearValue()" [disabled]="definition.properties.readonly || control.disabled">
         <span class="fas fa-times-circle"></span>
     </button>
