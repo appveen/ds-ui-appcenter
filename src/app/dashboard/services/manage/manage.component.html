@@ -18,6 +18,12 @@
       </div>
       <div *ngIf="value?._id" class="text-secondary">{{value?._id}}</div>
       <div *ngIf="!value?._id" class="text-muted">New</div>
+
+      <div class='state-model-tag' *ngIf="stateModelAttr">
+        {{ 
+          stateModelAttrVal ?  stateModelAttrVal : initialState
+        }}
+      </div>
     </div>
     <div class="actions">
       <div class="text-warning align-self-end" *ngIf="hasWorkflow" id="workflowReview">
@@ -62,12 +68,41 @@
           <span *ngIf="!hasWorkflow" class="text">Save &amp; create another</span>
           <span *ngIf="hasWorkflow" class="text">Proceed &amp; create another</span>
         </button>
-        <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
+        
+        <div class='save-state-dropdown d-inline-flex '>
+          <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
           [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow}"
           [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord" (click)="save()" *ngIf="!isDraft">
-          <span *ngIf="!hasWorkflow" class="text">Save</span>
+          <span *ngIf="!hasWorkflow" class="text" [ngClass]="{'state-model-save': stateModelAttr && getNextStates().length}">Save
+          </span>
+         
           <span *ngIf="hasWorkflow" class="text">Proceed</span>
         </button>
+        <i class="fas fa-sort-down toggle-state-dropdown" *ngIf="stateModelAttr && getNextStates().length" (click)='saveDropDown = !saveDropDown'></i>
+
+          <div #selectorDropdown *ngIf='saveDropDown' 
+          class="selector-dropdown d-flex flex-column border rounded position-absolute">
+          <div class='searchBox' >
+              <input type="text" class="form-control" (odpSearchTerm)="searchTerm = $event"
+                  placeholder="Search Field">
+          </div>
+          <div class="selector-list">
+              <div class="selector-list-item d-flex align-items-center hover" *ngFor='let state of getNextStates() |searchState: searchTerm ' (click)='setStateAndSave(state)'>
+                <i class="fas fa-arrow-right"></i>
+                <span class="ml-2" >{{state}} </span>
+              </div>
+              <!-- <div class="selector-list-item d-flex align-items-center hover">
+                <i class="fas fa-arrow-right"></i>
+                <span class="ml-2">B </span>
+            </div>
+            <div class="selector-list-item d-flex align-items-center hover">
+              <i class="fas fa-arrow-right"></i>
+              <span class="ml-2"> C </span>
+          </div> -->
+          </div>
+        </div>
+        </div>
+         
       </div>
     </div>
   </div>
@@ -151,7 +186,9 @@
         <ng-container *ngIf="wizard.length == 0">
           <div class="d-flex flex-column py-3">
             <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-              <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last"></odp-manage-control>
+              <div *ngIf="!checkStateModel(def)">
+                <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last"></odp-manage-control>
+              </div>
             </ng-container>
           </div>
         </ng-container>

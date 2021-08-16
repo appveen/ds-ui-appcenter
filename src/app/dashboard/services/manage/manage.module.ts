@@ -12,6 +12,8 @@ import { ManageGuard } from 'src/app/guard/manage.guard';
 import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outside.module';
 import { RouteGuard } from 'src/app/guard/route.guard';
 import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/loading-placeholder.module';
+import { SearchTermDirective } from './search-term.directive';
+import { SearchTermPipe } from './search-term.pipe';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: ManageComponent, canActivate: [ManageGuard] , canDeactivate: [RouteGuard]},
@@ -32,7 +34,9 @@ const routes: Routes = [
     LoadingPlaceholderModule
   ],
   declarations: [
-    ManageComponent
+    ManageComponent,
+    SearchTermDirective,
+    SearchTermPipe
   ],
   exports: [
     RouterModule

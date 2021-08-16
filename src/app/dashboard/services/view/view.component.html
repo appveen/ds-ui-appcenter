@@ -12,6 +12,11 @@
                     <span class="text-secondary">/</span>
                 </div>
                 <div class="text-secondary">{{value?._id}}</div>
+                <div class='state-model-tag' *ngIf="stateModelAttr">
+                    {{ 
+                      stateModelAttrVal 
+                    }}
+                  </div>
             </div>
             <div *ngIf="documentLocked && !inReview" class="document-locked d-flex align-items-center">
                 <span class="fa fa-lock text-warning mr-2"></span>
