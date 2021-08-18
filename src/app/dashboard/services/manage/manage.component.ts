@@ -195,10 +195,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   get stateModelNextStates() {
     const self = this;
-
     if (self.form.get(self.stateModelAttr)) {
       let stateModelVal = self.form.get(self.stateModelAttr).value;
-
       // if initial state 
       if (stateModelVal == null) {
         self.form.get(self.stateModelAttr).patchValue(self.initialState)
@@ -214,7 +212,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       }
     }
     return [];
-
   }
 
   setStateAndSave(state) {

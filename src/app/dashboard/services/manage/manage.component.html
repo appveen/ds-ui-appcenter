@@ -70,8 +70,6 @@
           <span *ngIf="!hasWorkflow" class="text">Save &amp; create another</span>
           <span *ngIf="hasWorkflow" class="text">Proceed &amp; create another</span>
         </button>
-
-
         <div class="btn-group save-button">
           <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
             [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }"
@@ -81,11 +79,9 @@
             </span>
             <span *ngIf="hasWorkflow" class="text">Proceed</span>
           </button>
-
-
           <div *ngIf="(stateModelAttr && stateModelNextStates.length)" class="btn-group state-model-dropdown"
             ngbDropdown role="group" aria-label="Button group with nested dropdown">
-            <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
+            <button class="btn dropdown-toggle-split"  [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle></button>
             <div class="dropdown-menu" ngbDropdownMenu>
               <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
                 (click)='setStateAndSave(state)'>
@@ -94,33 +90,6 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class='save-state-dropdown d-inline-flex '>
-          <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
-          [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow}"
-          [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord" (click)="save()" *ngIf="!isDraft">
-          <span *ngIf="!hasWorkflow" class="text" [ngClass]="{'state-model-save': stateModelAttr && getNextStates().length}">Save
-          </span>
-         
-          <span *ngIf="hasWorkflow" class="text">Proceed</span>
-        </button>
-        <i class="fas fa-sort-down toggle-state-dropdown" *ngIf="stateModelAttr && getNextStates().length" (click)='saveDropDown = !saveDropDown'></i>
-
-          <div #selectorDropdown *ngIf='saveDropDown' 
-          class="selector-dropdown d-flex flex-column border rounded position-absolute">
-          <div class='searchBox' >
-              <input type="text" class="form-control" (odpSearchTerm)="searchTerm = $event"
-                  placeholder="Search Field">
-          </div>
-          <div class="selector-list">
-              <div class="selector-list-item d-flex align-items-center hover" *ngFor='let state of getNextStates() |searchState: searchTerm ' (click)='setStateAndSave(state)'>
-                <i class="fas fa-arrow-right"></i>
-                <span class="ml-2" >{{state}} </span>
-              </div>
-          </div>
-        </div>
-        </div> -->
-
       </div>
     </div>
   </div>
