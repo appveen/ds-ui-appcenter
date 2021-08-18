@@ -731,9 +731,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getDefinition(field: string) {
     const self = this;
     let def = self.definition.find(e => e.key === field);
-    if (def && def.key == self.stateModelAttr) {
-      return false;
-    }
     return def;
   }
 
