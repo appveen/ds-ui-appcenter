@@ -60,7 +60,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   restrictOverflow: boolean;
   stateModelAttr: string;
   saveDropDown = false;
-  nextStates : any;
+  nextStates: any;
   initialState: any;
   stateModelPath: any;
   searchTerm: string;
@@ -158,8 +158,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
   }
 
-
-
   ngOnDestroy() {
     const self = this;
     self.appService.cloneRecordId = null;
@@ -180,42 +178,46 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
   }
 
-  checkStateModel(def){
-    if(def.properties.name == this.stateModelAttr){
+  checkStateModel(def) {
+    if (def.key == this.stateModelAttr) {
       return true;
     }
     else return false;
   }
 
-  get stateModelAttrVal(){
+  get stateModelAttrVal() {
     const self = this;
-    if(self.form.get(self.stateModelAttr)){
+    if (self.form.get(self.stateModelAttr)) {
       return self.form.get(self.stateModelAttr).value;
     }
     else return null;
   }
 
-  getNextStates(){
+  get stateModelNextStates() {
     const self = this;
 
-    if(self.form.get(self.stateModelAttr))
-    {
+    if (self.form.get(self.stateModelAttr)) {
       let stateModelVal = self.form.get(self.stateModelAttr).value;
 
       // if initial state 
-      if(stateModelVal == null){
+      if (stateModelVal == null) {
         self.form.get(self.stateModelAttr).patchValue(self.initialState)
         return this.stateModelPath[self.initialState];
       }
       else {
-        return this.stateModelPath[stateModelVal];
+        if (this.stateModelPath && this.stateModelPath[stateModelVal]) {
+          return this.stateModelPath[stateModelVal];
+        }
+        else {
+          return [];
+        }
       }
     }
     return [];
 
   }
 
-  setStateAndSave(state){
+  setStateAndSave(state) {
     const self = this;
     self.form.get(self.stateModelAttr).patchValue(state);
     self.save();
@@ -229,9 +231,9 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
 
-        if(res.stateModel && res.stateModel.enabled == true){
+        if (res.stateModel && res.stateModel.enabled == true) {
           self.stateModelAttr = res.stateModel.attribute;
-          self.initialState = res.stateModel.initialState[0];
+          self.initialState = res.stateModel.initialStates[0];
           self.stateModelPath = res.stateModel.states;
         }
         const parsedDef = res.definition;
@@ -723,6 +725,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'display', 'block');
     self.allStepsDropdown.nativeElement.focus();
   }
+
   hideAllStepsDropdown(event) {
     const self = this;
     self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'display', 'none');
@@ -730,12 +733,12 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   getDefinition(field: string) {
     const self = this;
-    let def =  self.definition.find(e => e.key === field);
-    if(def && def.properties.name == self.stateModelAttr){
+    let def = self.definition.find(e => e.key === field);
+    if (def && def.properties.name == self.stateModelAttr) {
       return false;
     }
     return def;
-  }   
+  }
 
   hasPermission(method?: string): boolean {
     const self = this;
@@ -866,6 +869,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         }
       );
   }
+
   createData(oldData, newData, def) {
     def.forEach(element => {
       if (element.type === 'Object') {
@@ -945,7 +949,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     return arr;
   }
 
-  get searchingRecord(){
+  get searchingRecord() {
     return this.appService.searchingRecord;
   }
 }
