@@ -81,7 +81,10 @@
           </button>
           <div *ngIf="(stateModelAttr && stateModelNextStates.length)" class="btn-group state-model-dropdown"
             ngbDropdown role="group" aria-label="Button group with nested dropdown">
-            <button class="btn dropdown-toggle-split"  [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle></button>
+            <button class="btn dropdown-toggle-split"  [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle
+            [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord" >
+
+            </button>
             <div class="dropdown-menu" ngbDropdownMenu>
               <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
                 (click)='setStateAndSave(state)'>
