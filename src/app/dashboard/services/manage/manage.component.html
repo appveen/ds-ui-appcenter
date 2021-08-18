@@ -18,6 +18,11 @@
       </div>
       <div *ngIf="value?._id" class="text-secondary">{{value?._id}}</div>
       <div *ngIf="!value?._id" class="text-muted">New</div>
+      <span class='badge badge-primary ml-2' *ngIf='!showLazyLoader'>
+        {{
+        stateModelAttrVal ? stateModelAttrVal : initialState
+        }}
+      </span>
     </div>
     <div class="actions">
       <div class="text-warning align-self-end" *ngIf="hasWorkflow" id="workflowReview">
@@ -41,13 +46,15 @@
           <span class="fa fa-trash mr-2"></span>
           <span class="text">Discard</span>
         </button>
-        <button id="saveDraftBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader || searchingRecord"
-          (click)="saveDraft()" *ngIf="!isEdit && isDraft">
+        <button id="saveDraftBtn" type="button" class="btn btn-link mr-3"
+          [disabled]="!form.valid || showLazyLoader || searchingRecord" (click)="saveDraft()"
+          *ngIf="!isEdit && isDraft">
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save draft</span>
         </button>
         <button id="submitDraftBtn" type="button" class="btn btn-primary px-4 btn-min-width"
-          [disabled]="!form.valid || !form.dirty || showLazyLoader || searchingRecord" (click)="submitDraft()" *ngIf="isDraft">
+          [disabled]="!form.valid || !form.dirty || showLazyLoader || searchingRecord" (click)="submitDraft()"
+          *ngIf="isDraft">
           <span class="text">Save and Proceed</span>
         </button>
         <button id="saveAsDraftBtn" type="button" class="btn btn-link mr-3"
@@ -56,18 +63,36 @@
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save as draft</span>
         </button>
-        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3" [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord"
-          (click)="save(true)" *ngIf="!isEdit && !isDraft">
+        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3"
+          [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord" (click)="save(true)"
+          *ngIf="!isEdit && !isDraft">
           <span class="fa fa-save mr-2"></span>
           <span *ngIf="!hasWorkflow" class="text">Save &amp; create another</span>
           <span *ngIf="hasWorkflow" class="text">Proceed &amp; create another</span>
         </button>
-        <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
-          [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow}"
-          [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord" (click)="save()" *ngIf="!isDraft">
-          <span *ngIf="!hasWorkflow" class="text">Save</span>
-          <span *ngIf="hasWorkflow" class="text">Proceed</span>
-        </button>
+        <div class="btn-group save-button">
+          <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
+            [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }"
+            [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord"
+            (click)="save()" *ngIf="!isDraft">
+            <span *ngIf="!hasWorkflow" class="text">Save
+            </span>
+            <span *ngIf="hasWorkflow" class="text">Proceed</span>
+          </button>
+          <div *ngIf="(stateModelAttr && stateModelNextStates.length)" class="btn-group state-model-dropdown"
+            ngbDropdown role="group" aria-label="Button group with nested dropdown">
+            <button class="btn dropdown-toggle-split"
+              [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle
+              [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord">
+            </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
+                (click)='setStateAndSave(state)'>
+                {{state}}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -151,7 +176,9 @@
         <ng-container *ngIf="wizard.length == 0">
           <div class="d-flex flex-column py-3">
             <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-              <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last"></odp-manage-control>
+              <div *ngIf="!checkStateModel(def)">
+                <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last"></odp-manage-control>
+              </div>
             </ng-container>
           </div>
         </ng-container>
@@ -200,7 +227,8 @@
           <span class="text-secondary mr-1">Submitted by</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length <= 32">{{workflowModalOptions?.requestedBy}}</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length > 32" class="text-truncate requestedBy high-zIndex"
-            [ngbTooltip]="workflowModalOptions?.requestedBy" placement="top">{{workflowModalOptions?.requestedBy}}</span>
+            [ngbTooltip]="workflowModalOptions?.requestedBy"
+            placement="top">{{workflowModalOptions?.requestedBy}}</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="d-flex align-items-center">
           <span class="text-secondary mr-1">Fields affected</span>

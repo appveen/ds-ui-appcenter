@@ -5,11 +5,13 @@ import { NgbTooltipConfig, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootst
 import { ToastrService } from 'ngx-toastr';
 
 import { FormService } from 'src/app/service/form.service';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { HttpEventType } from '@angular/common/http';
 import { CanComponentDeactivate } from 'src/app/guard/route.guard';
+import { DashboardService } from '../../dashboard.service';
+import { SelectorFlags } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'odp-manage',
@@ -56,6 +58,12 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   draftReqInProgress: boolean;
   isClone: boolean;
   restrictOverflow: boolean;
+  stateModelAttr: string;
+  saveDropDown = false;
+  nextStates: any;
+  initialState: any;
+  stateModelPath: any;
+  searchTerm: string;
 
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
@@ -74,7 +82,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     private ts: ToastrService,
     private shortcutService: ShortcutService,
     private ngbToolTipConfig: NgbTooltipConfig,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private dashboardService: DashboardService,
   ) {
     const self = this;
     self.workflowModalOptions = {};
@@ -88,6 +97,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.reqInProgress = false;
     self.draftReqInProgress = false;
     this.restrictOverflow = false;
+    this.stateModelAttr = null;
   }
 
   ngOnInit() {
@@ -168,13 +178,68 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
   }
 
+  checkStateModel(def) {
+    if (this.stateModelAttr && def.key == this.stateModelAttr) {
+      return true;
+    }
+    else return false;
+  }
+
+  checkStateModelExperience(field) {
+    if (this.stateModelAttr && field == this.stateModelAttr) {
+      return true;
+    }
+    else return false;
+  }
+
+  get stateModelAttrVal() {
+    const self = this;
+    if (self.form.get(self.stateModelAttr)) {
+      return self.form.get(self.stateModelAttr).value;
+    }
+    else return null;
+  }
+
+  get stateModelNextStates() {
+    const self = this;
+    if (self.form.get(self.stateModelAttr)) {
+      let stateModelVal = self.form.get(self.stateModelAttr).value;
+      // if initial state 
+      if (stateModelVal == null) {
+        self.form.get(self.stateModelAttr).patchValue(self.initialState)
+        return this.stateModelPath[self.initialState];
+      }
+      else {
+        if (this.stateModelPath && this.stateModelPath[stateModelVal]) {
+          return this.stateModelPath[stateModelVal];
+        }
+        else {
+          return [];
+        }
+      }
+    }
+    return [];
+  }
+
+  setStateAndSave(state) {
+    const self = this;
+    self.form.get(self.stateModelAttr).patchValue(state);
+    self.save();
+  }
+
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard'
+      select: 'api definition name relatedSchemas wizard stateModel'
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
+
+        if (res.stateModel && res.stateModel.enabled == true) {
+          self.stateModelAttr = res.stateModel.attribute;
+          self.initialState = res.stateModel.initialStates[0];
+          self.stateModelPath = res.stateModel.states;
+        }
         const parsedDef = res.definition;
         self.formService.patchType(parsedDef);
         self.formService.fixReadonly(parsedDef);
@@ -664,6 +729,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'display', 'block');
     self.allStepsDropdown.nativeElement.focus();
   }
+
   hideAllStepsDropdown(event) {
     const self = this;
     self.renderer.setStyle(self.allStepsDropdown.nativeElement, 'display', 'none');
@@ -671,7 +737,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   getDefinition(field: string) {
     const self = this;
-    return self.definition.find(e => e.key === field);
+    let def = self.definition.find(e => e.key === field);
+    if (self.stateModelAttr) {
+      if (def.key != self.stateModelAttr) {
+        return def;
+      }
+      else {
+        return null;
+      }
+    }
+    return def;
   }
 
   hasPermission(method?: string): boolean {
@@ -803,6 +878,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         }
       );
   }
+
   createData(oldData, newData, def) {
     def.forEach(element => {
       if (element.type === 'Object') {
@@ -882,7 +958,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     return arr;
   }
 
-  get searchingRecord(){
+  get searchingRecord() {
     return this.appService.searchingRecord;
   }
 }

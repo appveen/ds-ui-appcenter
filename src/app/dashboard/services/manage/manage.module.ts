@@ -14,7 +14,7 @@ import { RouteGuard } from 'src/app/guard/route.guard';
 import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/loading-placeholder.module';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: ManageComponent, canActivate: [ManageGuard] , canDeactivate: [RouteGuard]},
+  { path: '', pathMatch: 'full', component: ManageComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard] },
 ];
 
 @NgModule({
@@ -32,7 +32,7 @@ const routes: Routes = [
     LoadingPlaceholderModule
   ],
   declarations: [
-    ManageComponent
+    ManageComponent,
   ],
   exports: [
     RouterModule

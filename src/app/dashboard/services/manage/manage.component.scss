@@ -137,6 +137,13 @@
   max-width: 150px;
 }
 
-.no-focus{
+.no-focus {
   box-shadow: none !important;
+}
+
+.state-model-option {
+  &:active {
+    background: white !important;
+    color: black;
+  }
 }
