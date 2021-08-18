@@ -162,7 +162,7 @@
           <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
             <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
               <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
-                <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
+                <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="field != stateModelAttr">
                   <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
                   </odp-manage-control>
                 </div>
