@@ -9,7 +9,6 @@
     .text-primary {
       font-size: 16px !important;
     }
-
   }
   .actions {
     .text-warning {
@@ -138,12 +137,12 @@
   max-width: 150px;
 }
 
-.no-focus{
+.no-focus {
   box-shadow: none !important;
 }
 
-.state-model-option{
-  &:active{
+.state-model-option {
+  &:active {
     background: white !important;
     color: black;
   }

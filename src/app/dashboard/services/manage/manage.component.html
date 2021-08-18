@@ -81,9 +81,9 @@
           </button>
           <div *ngIf="(stateModelAttr && stateModelNextStates.length)" class="btn-group state-model-dropdown"
             ngbDropdown role="group" aria-label="Button group with nested dropdown">
-            <button class="btn dropdown-toggle-split"  [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle
-            [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord" >
-
+            <button class="btn dropdown-toggle-split"
+              [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle
+              [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord">
             </button>
             <div class="dropdown-menu" ngbDropdownMenu>
               <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
@@ -165,7 +165,7 @@
           <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
             <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
               <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
-                <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="field != stateModelAttr">
+                <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
                   <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
                   </odp-manage-control>
                 </div>

@@ -179,7 +179,14 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   }
 
   checkStateModel(def) {
-    if (def.key == this.stateModelAttr) {
+    if (this.stateModelAttr && def.key == this.stateModelAttr) {
+      return true;
+    }
+    else return false;
+  }
+
+  checkStateModelExperience(field) {
+    if (this.stateModelAttr && field == this.stateModelAttr) {
       return true;
     }
     else return false;
@@ -731,6 +738,14 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getDefinition(field: string) {
     const self = this;
     let def = self.definition.find(e => e.key === field);
+    if (self.stateModelAttr) {
+      if (def.key != self.stateModelAttr) {
+        return def;
+      }
+      else {
+        return null;
+      }
+    }
     return def;
   }
 
