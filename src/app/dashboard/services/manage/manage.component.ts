@@ -185,13 +185,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     else return false;
   }
 
-  checkStateModelExperience(field) {
-    if (this.stateModelAttr && field == this.stateModelAttr) {
-      return true;
-    }
-    else return false;
-  }
-
   get stateModelAttrVal() {
     const self = this;
     if (self.form.get(self.stateModelAttr)) {
@@ -204,18 +197,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const self = this;
     if (self.form.get(self.stateModelAttr)) {
       let stateModelVal = self.form.get(self.stateModelAttr).value;
-      // if initial state 
-      if (stateModelVal == null) {
-        self.form.get(self.stateModelAttr).patchValue(self.initialState)
-        return this.stateModelPath[self.initialState];
-      }
-      else {
-        if (this.stateModelPath && this.stateModelPath[stateModelVal]) {
-          return this.stateModelPath[stateModelVal];
-        }
-        else {
-          return [];
-        }
+      if (stateModelVal != null && this.stateModelPath && this.stateModelPath[stateModelVal]) {
+        return this.stateModelPath[stateModelVal];
       }
     }
     return [];
@@ -576,6 +559,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   save(reset?) {
     const self = this;
     self.reqInProgress = true;
+    // add initial state for state model in create mode
+    if (!self.ID && self.stateModelAttr) {
+      self.form.get(self.stateModelAttr).patchValue(self.initialState);
+    }
     if (self.hasWorkflow) {
       self
         .simulatePayload()
@@ -738,7 +725,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getDefinition(field: string) {
     const self = this;
     let def = self.definition.find(e => e.key === field);
-    if (self.stateModelAttr) {
+    if (self.stateModelAttr && def) {
       if (def.key != self.stateModelAttr) {
         return def;
       }

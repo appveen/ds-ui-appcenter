@@ -222,6 +222,13 @@ export class ViewComponent implements OnInit, OnDestroy {
         );
     }
 
+    checkStateModel(def) {
+        if (this.stateModelAttr && def.key == this.stateModelAttr) {
+            return true;
+        }
+        else return false;
+    }
+
     getApprovers() {
         const self = this;
         self.subscriptions['getApprovers'] = self.commonService
@@ -322,7 +329,16 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     getDefinition(field: string) {
         const self = this;
-        return self.definition.find(e => e.key === field);
+        let def = self.definition.find(e => e.key === field);
+        if (self.stateModelAttr && def) {
+            if (def.key != self.stateModelAttr) {
+                return def;
+            }
+            else {
+                return null;
+            }
+        }
+        return def;
     }
 
     compareVersion() {

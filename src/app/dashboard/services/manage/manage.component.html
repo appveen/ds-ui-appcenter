@@ -18,11 +18,6 @@
       </div>
       <div *ngIf="value?._id" class="text-secondary">{{value?._id}}</div>
       <div *ngIf="!value?._id" class="text-muted">New</div>
-      <span class='badge badge-primary ml-2' *ngIf='!showLazyLoader'>
-        {{
-        stateModelAttrVal ? stateModelAttrVal : initialState
-        }}
-      </span>
     </div>
     <div class="actions">
       <div class="text-warning align-self-end" *ngIf="hasWorkflow" id="workflowReview">
@@ -31,7 +26,12 @@
       </div>
     </div>
   </div>
-  <div class="sub-header bg-light px-3 d-flex align-items-center justify-content-end">
+  <div class="sub-header bg-light px-3 d-flex align-items-center justify-content-between">
+    <div class='d-flex state-model'>
+      <span class='mr-2 text-secondary'>{{stateModelAttr}}</span>
+      <span class='mr-2'>:</span>
+      <span class='badge badge-primary mt-1'>{{stateModelAttrVal}}</span>
+    </div>
     <div class="d-flex align-items-center justify-content-between">
       <div class="title d-flex align-items-center">
         &nbsp;
@@ -79,7 +79,7 @@
             </span>
             <span *ngIf="hasWorkflow" class="text">Proceed</span>
           </button>
-          <div *ngIf="(stateModelAttr && stateModelNextStates.length)" class="btn-group state-model-dropdown"
+          <div *ngIf="(stateModelAttr && stateModelNextStates.length && ID)" class="btn-group state-model-dropdown"
             ngbDropdown role="group" aria-label="Button group with nested dropdown">
             <button class="btn dropdown-toggle-split"
               [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle
