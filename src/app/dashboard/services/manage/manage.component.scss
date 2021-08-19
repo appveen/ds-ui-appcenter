@@ -19,6 +19,10 @@
 .sub-header {
   min-height: 48px;
   max-height: 48px;
+
+  .state-model {
+    font-size: 16px;
+  }
 }
 .form-body {
   min-height: calc(100vh - 186px);

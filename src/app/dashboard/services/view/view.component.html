@@ -12,11 +12,7 @@
                     <span class="text-secondary">/</span>
                 </div>
                 <div class="text-secondary">{{value?._id}}</div>
-                <span class='badge badge-primary ml-2' *ngIf="!showLazyLoader">
-                    {{
-                    stateModelAttrVal
-                    }}
-                </span>
+
             </div>
             <div *ngIf="documentLocked && !inReview" class="document-locked d-flex align-items-center">
                 <span class="fa fa-lock text-warning mr-2"></span>
@@ -26,7 +22,7 @@
         <div
             class="bg-light actions d-flex align-items-center justify-content-between position-relative border-bottom pr-3">
             <div class="d-flex align-items-center bg-light pl-3 position-relative">
-                <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between">
+                <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between mr-2">
                     <div class="d-flex align-items-center">
                         <div class="d-flex align-items-center justify-content-between">
                             <button (click)="toggleVerHistory($event)"
@@ -51,6 +47,13 @@
                     </div>
                 </div>
                 &nbsp;
+                <div class='state-model d-flex' *ngIf='!showLazyLoader'>
+                    <span class='text-secondary mr-2'>{{stateModelAttr}}</span>
+                    <span class='mr-2'>:</span>
+                    <span class='badge badge-primary mt-1' *ngIf="!showLazyLoader">
+                        {{stateModelAttrVal}}
+                    </span>
+                </div>
             </div>
             <div *ngIf="inReview" class="d-flex align-items-center">
                 <span class="text-warning mr-1 odp-lock"></span>
@@ -205,9 +208,11 @@
             <ng-container *ngIf="wizard.length == 0">
                 <div class="d-flex flex-column w-100 px-3">
                     <ng-container *ngFor="let def of definition;let l=last">
-                        <odp-view-control [definition]="def" [newValue]="activeAuditNewData"
-                            [oldValue]="activeAuditOldData" [value]="value" [last]="l" [workflowDoc]='workflowData'>
-                        </odp-view-control>
+                        <ng-container *ngIf="!checkStateModel(def)">
+                            <odp-view-control [definition]="def" [newValue]="activeAuditNewData"
+                                [oldValue]="activeAuditOldData" [value]="value" [last]="l" [workflowDoc]='workflowData'>
+                            </odp-view-control>
+                        </ng-container>
                     </ng-container>
                 </div>
             </ng-container>
