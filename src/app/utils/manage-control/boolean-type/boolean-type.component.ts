@@ -21,6 +21,6 @@ export class BooleanTypeComponent implements OnInit {
     if (self.control && self.control.value === null) {
       self.control.setValue(false);
     }
-    self.controlId= self.definition.path +Math.random();
+    self.controlId= self.definition.path;
   }
 }

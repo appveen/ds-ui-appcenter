@@ -67,6 +67,8 @@ export class ViewComponent implements OnInit, OnDestroy {
     showVersionHistoryWF: boolean;
     auditAvailable: boolean;
     selectedAudit: any;
+    stateModelAttr: any;
+    stateModelAttrVal: any;
 
     get currentAppId() {
         return this.commonService?.getCurrentAppId();
@@ -178,6 +180,11 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.id = recordId;
         self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + id).subscribe(
             res => {
+
+                if (res.stateModel && res.stateModel.enabled == true) {
+                    self.stateModelAttr = res.stateModel.attribute;
+
+                }
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);
                 self.formService.patchType(parsedDef);
@@ -213,6 +220,13 @@ export class ViewComponent implements OnInit, OnDestroy {
                 }
             }
         );
+    }
+
+    checkStateModel(def) {
+        if (this.stateModelAttr && def.key == this.stateModelAttr) {
+            return true;
+        }
+        else return false;
     }
 
     getApprovers() {
@@ -284,6 +298,12 @@ export class ViewComponent implements OnInit, OnDestroy {
                 self.showLazyLoader = false;
                 self.value = data;
                 self.definition = self.formService.parseDefinition(self.schema, data, false);
+                if (self.stateModelAttr) {
+                    let stateModelDef = self.definition.find(def => def.key == self.stateModelAttr)
+                    if (stateModelDef) {
+                        self.stateModelAttrVal = stateModelDef.value;
+                    }
+                }
                 if (self.schema.wizard && self.schema.wizard.length > 0) {
                     self.active[0] = true;
                     self.wizard = self.schema.wizard;
@@ -309,7 +329,16 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     getDefinition(field: string) {
         const self = this;
-        return self.definition.find(e => e.key === field);
+        let def = self.definition.find(e => e.key === field);
+        if (self.stateModelAttr && def) {
+            if (def.key != self.stateModelAttr) {
+                return def;
+            }
+            else {
+                return null;
+            }
+        }
+        return def;
     }
 
     compareVersion() {

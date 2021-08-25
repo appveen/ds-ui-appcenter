@@ -12,15 +12,17 @@
                     <span class="text-secondary">/</span>
                 </div>
                 <div class="text-secondary">{{value?._id}}</div>
+
             </div>
             <div *ngIf="documentLocked && !inReview" class="document-locked d-flex align-items-center">
                 <span class="fa fa-lock text-warning mr-2"></span>
                 <span class="text-secondary mr-2">This record is under review.</span>
             </div>
         </div>
-        <div class="bg-light actions d-flex align-items-center justify-content-between position-relative border-bottom pr-3">
+        <div
+            class="bg-light actions d-flex align-items-center justify-content-between position-relative border-bottom pr-3">
             <div class="d-flex align-items-center bg-light pl-3 position-relative">
-                <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between">
+                <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between mr-2">
                     <div class="d-flex align-items-center">
                         <div class="d-flex align-items-center justify-content-between">
                             <button (click)="toggleVerHistory($event)"
@@ -45,6 +47,13 @@
                     </div>
                 </div>
                 &nbsp;
+                <div class='state-model d-flex' *ngIf='!showLazyLoader'>
+                    <span class='text-secondary mr-2'>{{stateModelAttr}}</span>
+                    <span class='mr-2'>:</span>
+                    <span class='badge badge-primary mt-1' *ngIf="!showLazyLoader">
+                        {{stateModelAttrVal}}
+                    </span>
+                </div>
             </div>
             <div *ngIf="inReview" class="d-flex align-items-center">
                 <span class="text-warning mr-1 odp-lock"></span>
@@ -53,7 +62,8 @@
                     class="btn btn-primary px-3 ignore-outside responseBtncls" type="button">
                     <span class="text ignore-outside">Respond</span>
                 </button>
-                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3" type="button">
+                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3"
+                    type="button">
                     <span class="fa fa-angle-left mr-2"></span>
                     <span class="text">Back</span>
                 </button>
@@ -75,7 +85,8 @@
                     <span class="odp-edit mr-2 font-13"></span>
                     <span class="text font-13">Edit</span>
                 </button>
-                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3" type="button">
+                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3"
+                    type="button">
                     <span class="fa fa-angle-left mr-2 font-13"></span>
                     <span class="text font-13">Back</span>
                 </button>
@@ -197,9 +208,11 @@
             <ng-container *ngIf="wizard.length == 0">
                 <div class="d-flex flex-column w-100 px-3">
                     <ng-container *ngFor="let def of definition;let l=last">
-                        <odp-view-control [definition]="def" [newValue]="activeAuditNewData"
-                            [oldValue]="activeAuditOldData" [value]="value" [last]="l" [workflowDoc]='workflowData'>
-                        </odp-view-control>
+                        <ng-container *ngIf="!checkStateModel(def)">
+                            <odp-view-control [definition]="def" [newValue]="activeAuditNewData"
+                                [oldValue]="activeAuditOldData" [value]="value" [last]="l" [workflowDoc]='workflowData'>
+                            </odp-view-control>
+                        </ng-container>
                     </ng-container>
                 </div>
             </ng-container>
@@ -230,7 +243,8 @@
 <ng-template #confirmDeleteModal>
     <div class="modal-header alert">
         <h4 class="modal-title">Delete record</h4>
-        <button (click)="confirmDeleteModalRef.close(false)" aria-label="Close" class="btn no-focus close" type="button">
+        <button (click)="confirmDeleteModalRef.close(false)" aria-label="Close" class="btn no-focus close"
+            type="button">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -248,8 +262,8 @@
 <ng-template #workflowModal id="_workflowModal">
     <div class="modal-header bg-dark p-2">
         <h4 class="modal-title text-white">Document delete request</h4>
-        <button (click)="workflowModalRef.close(false)" aria-label="Close" class="btn no-focus close" id="workflowModalCloseBtn"
-            type="button">
+        <button (click)="workflowModalRef.close(false)" aria-label="Close" class="btn no-focus close"
+            id="workflowModalCloseBtn" type="button">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
