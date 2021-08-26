@@ -47,8 +47,8 @@
                     </div>
                 </div>
                 &nbsp;
-                <div class='state-model d-flex' *ngIf='!showLazyLoader'>
-                    <span class='text-secondary mr-2'>{{stateModelAttr}}</span>
+                <div class='state-model d-flex' *ngIf='!showLazyLoader && stateModelAttr'>
+                    <span class='text-secondary mr-2'>{{stateModelName}}</span>
                     <span class='mr-2'>:</span>
                     <span class='badge badge-primary mt-1' *ngIf="!showLazyLoader">
                         {{stateModelAttrVal}}
