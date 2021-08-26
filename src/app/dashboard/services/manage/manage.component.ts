@@ -98,7 +98,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.draftReqInProgress = false;
     this.restrictOverflow = false;
     this.stateModelAttr = null;
-    self.stateModelName = null;
+    self.stateModelName = '';
   }
 
   ngOnInit() {

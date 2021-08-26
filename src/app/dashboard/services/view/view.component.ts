@@ -69,7 +69,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     selectedAudit: any;
     stateModelAttr: any;
     stateModelAttrVal: any;
-    stateModelName: any;
+    stateModelName: string;
 
     get currentAppId() {
         return this.commonService?.getCurrentAppId();
