@@ -59,7 +59,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   isClone: boolean;
   restrictOverflow: boolean;
   stateModelAttr: string;
-  saveDropDown = false;
+  stateModelName: string;
   nextStates: any;
   initialState: any;
   stateModelPath: any;
@@ -98,6 +98,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.draftReqInProgress = false;
     this.restrictOverflow = false;
     this.stateModelAttr = null;
+    self.stateModelName = '';
   }
 
   ngOnInit() {
@@ -217,16 +218,19 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
-
-        if (res.stateModel && res.stateModel.enabled == true) {
-          self.stateModelAttr = res.stateModel.attribute;
-          self.initialState = res.stateModel.initialStates[0];
-          self.stateModelPath = res.stateModel.states;
-        }
         const parsedDef = res.definition;
         self.formService.patchType(parsedDef);
         self.formService.fixReadonly(parsedDef);
         res.definition = JSON.parse(JSON.stringify(parsedDef));
+        if (res.stateModel && res.stateModel.enabled == true) {
+          self.stateModelAttr = res.stateModel.attribute;
+          self.initialState = res.stateModel.initialStates[0];
+          self.stateModelPath = res.stateModel.states;
+          let stateModelDefIndex = res.definition.findIndex(data => data.key == self.stateModelAttr);
+          if (stateModelDefIndex > -1) {
+            self.stateModelName = res.definition[stateModelDefIndex].properties.name;
+          }
+        }
         self.title = res.name;
         self.api = '/' + self.commonService.app._id + res.api;
         self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
