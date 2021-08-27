@@ -286,6 +286,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
             self.buildForm(res);
           }
         }
+        // add initial state for state model in create mode
+        if (!self.ID && self.stateModelAttr) {
+          self.form.get(self.stateModelAttr).patchValue(self.initialState);
+        }
       },
       err => {
         self.showLazyLoader = false;
@@ -559,10 +563,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   save(reset?) {
     const self = this;
     self.reqInProgress = true;
-    // add initial state for state model in create mode
-    if (!self.ID && self.stateModelAttr) {
-      self.form.get(self.stateModelAttr).patchValue(self.initialState);
-    }
     if (self.hasWorkflow) {
       self
         .simulatePayload()
