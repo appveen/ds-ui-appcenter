@@ -228,7 +228,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           self.stateModelPath = res.stateModel.states;
           let stateModelDefIndex = res.definition.findIndex(data => data.key == self.stateModelAttr);
           if (stateModelDefIndex > -1) {
-            self.stateModelName = res.definition[stateModelDefIndex].properties.name;
+            const customLabel = res.definition[stateModelDefIndex].properties?.label;
+            self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
           }
         }
         self.title = res.name;

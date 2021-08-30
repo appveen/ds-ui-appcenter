@@ -190,7 +190,8 @@ export class ViewComponent implements OnInit, OnDestroy {
                     self.stateModelAttr = res.stateModel.attribute;
                     let stateModelDefIndex = res.definition.findIndex(data => data.key == self.stateModelAttr);
                     if (stateModelDefIndex > -1) {
-                        self.stateModelName = res.definition[stateModelDefIndex].properties.name;
+                        const customLabel = res.definition[stateModelDefIndex].properties?.label;
+                        self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
                     }
                 }
                 self.schema = res;
