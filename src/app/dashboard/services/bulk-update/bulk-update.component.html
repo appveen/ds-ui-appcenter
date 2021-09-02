@@ -25,7 +25,7 @@
     <div class="actions">
       <div class="text-warning align-self-end" *ngIf="hasWorkflow" id="workflowReview">
         {{ isEdit ? 'Any changes to this record will require approval(s).' : 'Approval(s) will be required to publish
-          this record.' }}
+        this record.' }}
       </div>
     </div>
   </div>
@@ -124,7 +124,8 @@
             <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
               <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
                 <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
-                  <odp-manage-control markEnable="true" [form]="form" [definition]="getDefinition(field)" [first]="first">
+                  <odp-manage-control markEnable="true" [form]="form" [definition]="getDefinition(field)"
+                    [first]="first">
                   </odp-manage-control>
                 </div>
               </ng-container>
@@ -134,7 +135,10 @@
         <ng-container *ngIf="wizard.length == 0">
           <div class="d-flex flex-column py-3">
             <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-              <odp-manage-control markEnable="true" [form]="form" [definition]="def" [first]="first" [last]="last"></odp-manage-control>
+              <ng-container *ngIf="!checkStateModel(def)">
+                <odp-manage-control markEnable="true" [form]="form" [definition]="def" [first]="first" [last]="last">
+                </odp-manage-control>
+              </ng-container>
             </ng-container>
           </div>
         </ng-container>
@@ -183,7 +187,8 @@
           <span class="text-secondary mr-1">Submitted by</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length <= 32">{{workflowModalOptions?.requestedBy}}</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length > 32" class="text-truncate requestedBy high-zIndex"
-            [ngbTooltip]="workflowModalOptions?.requestedBy" placement="top">{{workflowModalOptions?.requestedBy}}</span>
+            [ngbTooltip]="workflowModalOptions?.requestedBy"
+            placement="top">{{workflowModalOptions?.requestedBy}}</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="d-flex align-items-center">
           <span class="text-secondary mr-1">Fields affected</span>

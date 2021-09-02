@@ -61,6 +61,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   draftReqInProgress: boolean;
   bulkEditIds: Array<string>;
   result: Array<any>;
+  stateModelAttr: string;
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -94,6 +95,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     self.form = self.fb.group({});
     self.bulkEditIds = [];
     self.result = [];
+    self.stateModelAttr = null;
   }
 
   ngOnInit() {
@@ -151,10 +153,17 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     });
   }
 
+  checkStateModel(def) {
+    if (this.stateModelAttr && def.key == this.stateModelAttr) {
+      return true;
+    }
+    else return false;
+  }
+
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard'
+      select: 'api definition name relatedSchemas wizard stateModel'
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
@@ -162,6 +171,9 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
         self.formService.patchType(parsedDef);
         self.formService.fixReadonly(parsedDef);
         res.definition = JSON.parse(JSON.stringify(parsedDef));
+        if (res.stateModel && res.stateModel.enabled == true) {
+          self.stateModelAttr = res.stateModel.attribute;
+        }
         self.title = res.name;
         self.api = '/' + self.commonService.app._id + res.api;
         self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
@@ -456,7 +468,16 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
 
   getDefinition(field: string) {
     const self = this;
-    return self.definition.find(e => e.key === field);
+    let def = self.definition.find(e => e.key === field);
+    if (self.stateModelAttr && def) {
+      if (def.key != self.stateModelAttr) {
+        return def;
+      }
+      else {
+        return null;
+      }
+    }
+    return def;
   }
 
   hasPermission(method?: string): boolean {
@@ -537,7 +558,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
         }
       ]
     };
-    return self.commonService.put('api', this.api+'/utils/workflow' + wfId, payload).toPromise();
+    return self.commonService.put('api', this.api + '/utils/workflow' + wfId, payload).toPromise();
   }
 
   triggerHook(hook: ExpHook) {
@@ -582,7 +603,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     def.forEach(element => {
       if (element.type === 'Object') {
         this.createData(oldData[element.key], newData[element.key], element.definition);
-      } else if (newData && newData.hasOwnProperty(element.key)&& !element.properties.createOnly) {
+      } else if (newData && newData.hasOwnProperty(element.key) && !element.properties.createOnly) {
         oldData[element.key] = newData[element.key];
       }
     });
