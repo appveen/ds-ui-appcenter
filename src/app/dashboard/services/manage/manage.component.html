@@ -26,9 +26,9 @@
       </div>
     </div>
   </div>
-  <div class="sub-header bg-light px-3 d-flex align-items-center justify-content-between"
-    [ngClass]='{"justify-content-between": ID && stateModelAttr , "justify-content-end": !(ID && stateModelAttr)}'>
-    <div class='d-flex state-model' *ngIf="ID && stateModelAttr">
+  <div class="sub-header bg-light px-3 d-flex align-items-center"
+    [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
+    <div class='d-flex state-model' *ngIf="stateModelAttr">
       <span class='mr-2 text-secondary'>{{stateModelName}}</span>
       <span class='mr-2'>:</span>
       <span class='badge badge-primary mt-1'>{{stateModelAttrVal}}</span>
