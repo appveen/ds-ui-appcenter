@@ -69,6 +69,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     selectedAudit: any;
     stateModelAttr: any;
     stateModelAttrVal: any;
+    stateModelName: string;
 
     get currentAppId() {
         return this.commonService?.getCurrentAppId();
@@ -102,6 +103,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         };
         self.approversList = [];
         self.respondControl = new FormControl('', Validators.required);
+        self.stateModelName = '';
     }
 
     ngOnInit() {
@@ -180,15 +182,18 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.id = recordId;
         self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + id).subscribe(
             res => {
-
-                if (res.stateModel && res.stateModel.enabled == true) {
-                    self.stateModelAttr = res.stateModel.attribute;
-
-                }
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);
                 self.formService.patchType(parsedDef);
                 res.definition = JSON.parse(JSON.stringify(parsedDef));
+                if (res.stateModel && res.stateModel.enabled == true) {
+                    self.stateModelAttr = res.stateModel.attribute;
+                    let stateModelDefIndex = res.definition.findIndex(data => data.key == self.stateModelAttr);
+                    if (stateModelDefIndex > -1) {
+                        const customLabel = res.definition[stateModelDefIndex].properties?.label;
+                        self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
+                    }
+                }
                 self.schema = res;
                 if (res.wizard && res.wizard.length > 0) {
                     self.active[0] = true;
