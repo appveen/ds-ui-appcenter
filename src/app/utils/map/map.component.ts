@@ -9,7 +9,7 @@ declare let google;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent  implements AfterContentInit {
+export class MapComponent implements AfterContentInit {
 
   @Input() control: FormControl;
   @Input() definition: any;
@@ -246,4 +246,10 @@ export class MapComponent  implements AfterContentInit {
     const self = this;
     self.keyupEvent.emit(event);
   }
+
+  get requiredError() {
+    const self = this;
+    return self.control.hasError('required') && self.control.touched;
+  }
+
 }
