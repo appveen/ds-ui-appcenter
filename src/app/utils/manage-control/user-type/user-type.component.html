@@ -3,7 +3,7 @@
         [ngModel]="selectedValue" type="text" [ngbTypeahead]="search" [inputFormatter]="formatter"
         #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
         (focus)="itemSelected = true" [disabled]="definition.properties.readonly ||  control.disabled" (keyup)="onEnter($event)"
-        (focus)="onFocus($event)" [attr.id]="definition.path">
+        (focus)="onFocus($event)" [attr.id]="definition.path" (blur)='control.markAsTouched()'>
     <select *ngIf="recordsCount<=10" class="form-control form-control-sm rounded"
         [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
         (keyup)="onEnter($event)" (focus)="onFocus($event)" [(ngModel)]="selectedValue"
