@@ -257,6 +257,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   if (self.stateModelAttr && data[self.stateModelAttr] && self.initialState) {
                     data[self.stateModelAttr] = self.initialState;
                   }
+                  self.ID = null;
                 }
                 self.value = self.appService.cloneObject(data);
                 self.buildForm(res, data);
