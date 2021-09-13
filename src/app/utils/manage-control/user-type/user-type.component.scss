@@ -1,8 +1,11 @@
 .error-exclamation {
-    top: 9px;
-    right: 6px;
-  }
-  .relation-control-wrapper{
-    min-width: 340px;
-    max-width: 340px;
-  }
+  top: 9px;
+  right: 6px;
+}
+.relation-control-wrapper {
+  min-width: 340px;
+  max-width: 340px;
+}
+.bg-error {
+  background-color: #f8dcdc !important;
+}
