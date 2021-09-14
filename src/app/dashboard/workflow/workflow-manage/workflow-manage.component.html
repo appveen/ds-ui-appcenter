@@ -59,8 +59,8 @@
                 </ng-container>
             </button>
             <button type="button" class="btn btn-link ignore-outside" id="saveDraft" *ngIf="canEditDraft"
-            (click)="saveDraft()">Save
-            Draft</button>
+                (click)="saveDraft()">Save
+                Draft</button>
             <button type="button" class="btn btn-link ignore-outside" *ngIf="!canRespond" id="canReview"
                 (click)="showRespondView=true;" [disabled]="showLazyLoader">Remarks</button>
             <button type="button" class="btn btn-link text-danger" *ngIf="canEditDraft" id="discardDraft"
@@ -70,7 +70,6 @@
                 id="canRespond" (click)="showRespondView=true;" [disabled]="showLazyLoader">Respond</button>
             <button type="button" class="btn btn-primary btn-min-width ml-3" *ngIf="canResubmit" id="canResubmit"
                 (click)="resubmit()" [disabled]="showLazyLoader">Re-Submit</button>
-          
             <div class="btn-group" *ngIf="canEditDraft">
                 <button type="button" class="btn btn-primary btn-min-width ml-3" id="submitDraft"
                     (click)="submitDraft()" [disabled]="showLazyLoader">Proceed</button>
