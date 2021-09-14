@@ -63,17 +63,20 @@
                 id="canRespond" (click)="showRespondView=true;" [disabled]="showLazyLoader">Respond</button>
             <button type="button" class="btn btn-primary btn-min-width ml-3" *ngIf="canResubmit" id="canResubmit"
                 (click)="resubmit()" [disabled]="showLazyLoader">Re-Submit</button>
+            <button type="button" class="btn btn-link ignore-outside" id="saveDraft" (click)="saveDraft()">Save
+                Draft</button>
             <div class="btn-group" *ngIf="canEditDraft">
                 <button type="button" class="btn btn-primary btn-min-width ml-3" id="submitDraft"
                     (click)="submitDraft()" [disabled]="showLazyLoader">Proceed</button>
-                <div class="btn-group" ngbDropdown>
+                <div class="btn-group" ngbDropdown *ngIf="(stateModelAttr && stateModelNextStates.length)">
                     <button type="button" class="btn btn-primary-dark" ngbDropdownToggle [disabled]="showLazyLoader">
                         <!-- <span class="fa fa-angle-down"></span> -->
                     </button>
                     <div class="dropdown-menu" ngbDropdownMenu>
-                        <button ngbDropdownItem type="button" class="btn btn-link" id="saveDraft"
-                            (click)="saveDraft()">Save
-                            Draft</button>
+                        <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
+                            (click)='setStateAndSave(state)'>
+                            {{state}}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -197,8 +200,10 @@
         <ng-container *ngIf="wizard.length == 0">
             <div class="d-flex flex-column py-3">
                 <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-                    <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
-                    </odp-manage-control>
+                    <ng-container *ngIf="!checkStateModel(def)">
+                        <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
+                        </odp-manage-control>
+                    </ng-container>
                 </ng-container>
             </div>
         </ng-container>
