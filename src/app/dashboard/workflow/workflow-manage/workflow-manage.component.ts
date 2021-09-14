@@ -67,6 +67,11 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   expandList: Array<any>;
   workflowApi: string;
   api: string;
+  stateModelAttr: string;
+  stateModelName: string;
+  nextStates: any;
+  initialState: any;
+  stateModelPath: any;
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -97,6 +102,8 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     self.active = {};
     self.active[0] = true;
     self.respondControl = new FormControl();
+    this.stateModelAttr = null;
+    self.stateModelName = '';
   }
 
   ngOnInit(): void {
@@ -240,6 +247,16 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
         // self.rowClicked = true;
 
         self.definition = self.formService.parseDefinition(self.schema, self.value, false);
+        if (self.schema.stateModel && self.schema.stateModel.enabled == true) {
+          self.stateModelAttr = self.schema.stateModel.attribute;
+          self.initialState = self.schema.stateModel.initialStates[0];
+          self.stateModelPath = self.schema.stateModel.states;
+          let stateModelDefIndex = self.schema.definition.findIndex(data => data.key == self.stateModelAttr);
+          if (stateModelDefIndex > -1) {
+            const customLabel = self.schema.definition[stateModelDefIndex].properties?.label;
+            self.stateModelName = customLabel ? customLabel : self.schema.definition[stateModelDefIndex].properties.name;
+          }
+        }
         self.wizard = self.schema.wizard;
         const isEdit = self.selectedData.operation === 'PUT' ? true : false;
         const tempDef = self.formService.parseDefinition(self.schema, self.value, { isEdit });
@@ -396,6 +413,32 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       );
   }
 
+  checkStateModel(def) {
+    if (this.stateModelAttr && def.key == this.stateModelAttr) {
+      return true;
+    }
+    else return false;
+  }
+
+  get stateModelAttrVal() {
+    const self = this;
+    if (self.form.get(self.stateModelAttr)) {
+      return self.form.get(self.stateModelAttr).value;
+    }
+    else return null;
+  }
+
+  get stateModelNextStates() {
+    const self = this;
+    if (self.form.get(self.stateModelAttr)) {
+      let stateModelVal = self.form.get(self.stateModelAttr).value;
+      if (stateModelVal != null && this.stateModelPath && this.stateModelPath[stateModelVal]) {
+        return this.stateModelPath[stateModelVal];
+      }
+    }
+    return [];
+  }
+
   saveDraft(reset?) {
     const self = this;
     self
@@ -451,6 +494,12 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
         self.showLazyLoader = false;
         self.commonService.errorToast(err, 'Validation Failed');
       });
+  }
+
+  setStateAndSave(state) {
+    const self = this;
+    self.form.get(self.stateModelAttr).patchValue(state);
+    self.submitDraft();
   }
 
   submitDraft() {
@@ -559,14 +608,21 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
         );
     }
   }
+
   getDefinition(field: string) {
     const self = this;
-    let retValue;
-    if (self.definition) {
-      retValue = self.definition.find(e => e.key === field);
+    let def = self.definition.find(e => e.key === field);
+    if (self.stateModelAttr && def) {
+      if (def.key != self.stateModelAttr) {
+        return def;
+      }
+      else {
+        return null;
+      }
     }
-    return retValue;
+    return def;
   }
+
   closeData() {
     const self = this;
     self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);

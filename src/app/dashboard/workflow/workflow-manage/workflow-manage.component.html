@@ -12,6 +12,10 @@
 <div class="d-flex flex-column border-top p-3  bg-white">
     <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center ">
+            <div class="d-flex flex-column ml-4 record-detail" *ngIf="stateModelAttr && !canEditDraft">
+                <span class='mr-2 font-weight-bold text-muted'>{{stateModelName}}</span>
+                <span class='badge badge-primary mt-1 state-model-badge'>{{stateModelAttrVal}}</span>
+            </div>
             <div class="d-flex flex-column record-detail">
                 <span class="font-weight-bold text-muted"> Data Service</span>
                 <div class="text-truncate " [odpTruncated]="schema.name">{{schema?.name}}</div>
@@ -54,6 +58,9 @@
                     <span class="text">Back</span>
                 </ng-container>
             </button>
+            <button type="button" class="btn btn-link ignore-outside" id="saveDraft" *ngIf="canEditDraft"
+                (click)="saveDraft()">Save
+                Draft</button>
             <button type="button" class="btn btn-link ignore-outside" *ngIf="!canRespond" id="canReview"
                 (click)="showRespondView=true;" [disabled]="showLazyLoader">Remarks</button>
             <button type="button" class="btn btn-link text-danger" *ngIf="canEditDraft" id="discardDraft"
@@ -66,14 +73,15 @@
             <div class="btn-group" *ngIf="canEditDraft">
                 <button type="button" class="btn btn-primary btn-min-width ml-3" id="submitDraft"
                     (click)="submitDraft()" [disabled]="showLazyLoader">Proceed</button>
-                <div class="btn-group" ngbDropdown>
+                <div class="btn-group" ngbDropdown *ngIf="(stateModelAttr && stateModelNextStates.length)">
                     <button type="button" class="btn btn-primary-dark" ngbDropdownToggle [disabled]="showLazyLoader">
                         <!-- <span class="fa fa-angle-down"></span> -->
                     </button>
                     <div class="dropdown-menu" ngbDropdownMenu>
-                        <button ngbDropdownItem type="button" class="btn btn-link" id="saveDraft"
-                            (click)="saveDraft()">Save
-                            Draft</button>
+                        <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
+                            (click)='setStateAndSave(state)'>
+                            {{state}}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -82,8 +90,11 @@
               </button> -->
         </div>
     </div>
-
-
+    <div class='d-flex state-model record-detail' *ngIf="stateModelAttr && canEditDraft">
+        <span class='mr-2 font-weight-bold text-muted'>{{stateModelName}}</span>
+        <span class='mr-2'>:</span>
+        <span class='badge badge-primary mt-1 state-model-badge'>{{stateModelAttrVal}}</span>
+    </div>
 </div>
 <div id="workflowData" class="bg-white  border-top d-flex flex-column data-container">
     <div *ngIf="wizard.length > 0"
@@ -173,8 +184,10 @@
         <ng-container *ngIf="wizard.length == 0">
             <div class="container-fluid">
                 <ng-container *ngFor="let def of definition;let i=index; let l=last">
-                    <odp-view-control [definition]="def" [value]="value" [oldValue]="activeAuditOldData" [last]="l"
-                        [newValue]="activeAuditNewData" [workflowDoc]="selectedData"></odp-view-control>
+                    <ng-container *ngIf="!checkStateModel(def)">
+                        <odp-view-control [definition]="def" [value]="value" [oldValue]="activeAuditOldData" [last]="l"
+                            [newValue]="activeAuditNewData" [workflowDoc]="selectedData"></odp-view-control>
+                    </ng-container>
                 </ng-container>
             </div>
         </ng-container>
@@ -197,8 +210,10 @@
         <ng-container *ngIf="wizard.length == 0">
             <div class="d-flex flex-column py-3">
                 <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-                    <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
-                    </odp-manage-control>
+                    <ng-container *ngIf="!checkStateModel(def)">
+                        <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
+                        </odp-manage-control>
+                    </ng-container>
                 </ng-container>
             </div>
         </ng-container>

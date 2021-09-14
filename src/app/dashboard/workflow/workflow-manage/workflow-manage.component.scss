@@ -29,7 +29,6 @@
     max-height: calc(100vh - 158px);
     // margin-top: 60px;
   }
-  
 }
 
 .steps-wrapper {
@@ -84,8 +83,12 @@
   }
 }
 .record-detail {
-  min-width: 108px;
-  max-width: 150px;
+  min-width: 100px;
+  max-width: 100px;
+  .state-model-badge {
+    min-width: 20px;
+    max-width: fit-content;
+  }
 }
 .respond-header {
   min-width: 640px;
@@ -119,7 +122,6 @@
   bottom: 15px;
 }
 
-
 .experience-hooks {
   min-height: 40px;
   max-height: 40px;
@@ -152,13 +154,13 @@
   max-height: 234px;
   overflow: auto;
 }
-.dropdown-menu{
+.dropdown-menu {
   max-height: 35px;
-  button{
+  button {
     margin-top: -6px;
   }
 }
 
-.no-focus{
+.no-focus {
   box-shadow: none !important;
 }
