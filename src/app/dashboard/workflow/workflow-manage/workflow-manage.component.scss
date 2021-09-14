@@ -86,6 +86,10 @@
 .record-detail {
   min-width: 100px;
   max-width: 100px;
+  .state-model-badge{
+    min-width: 20px;
+    max-width: fit-content;
+  }
 }
 .respond-header {
   min-width: 640px;
