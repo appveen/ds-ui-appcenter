@@ -151,3 +151,9 @@
     color: black;
   }
 }
+
+.dropdown-menu {
+  &.show{
+    transform: translate(-132px, 32px) !important;
+  }
+}
