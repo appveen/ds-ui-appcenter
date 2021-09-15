@@ -89,6 +89,10 @@
     min-width: 20px;
     max-width: fit-content;
   }
+  &.extra {
+    min-width: 146px;
+    max-width: 146px;
+  }
 }
 .respond-header {
   min-width: 640px;
