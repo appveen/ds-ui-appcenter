@@ -86,8 +86,8 @@
   min-width: 100px;
   max-width: 100px;
   .state-model-badge {
-    min-width: 20px;
-    max-width: fit-content;
+    min-width: 100px;
+    max-width: 100px;
   }
   &.extra {
     min-width: 146px;
@@ -159,7 +159,6 @@
   overflow: auto;
 }
 .dropdown-menu {
-  max-height: 35px;
   button {
     margin-top: -6px;
   }
