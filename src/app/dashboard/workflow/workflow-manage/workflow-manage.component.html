@@ -67,7 +67,7 @@
 
 
                 <div class="btn-group mr-3">
-                    <button type="button" class="btn btn-link text-danger" id="closeReview" (click)="closeData()">
+                    <button type="button" class="btn btn-outline-danger" id="closeReview" (click)="closeData()">
                         <ng-container *ngIf="canEditDraft">
                             <span class="fa fa-times mr-2"></span>
                             <span class="text">Cancel</span>
@@ -77,15 +77,15 @@
                             <span class="text">Back</span>
                         </ng-container>
                     </button>
-                    <div class="btn-group" ngbDropdown *ngIf="canEditDraft && canResubmit">
-                        <button type="button" class="btn btn-link text-danger" ngbDropdownToggle
+                    <div class="btn-group" ngbDropdown *ngIf="canEditDraft || canResubmit">
+                        <button type="button" class="btn btn-outline-danger" ngbDropdownToggle
                             [disabled]="showLazyLoader">
                         </button>
                         <div class="dropdown-menu" ngbDropdownMenu>
-                            <button ngbDropdownItem type="button" class="btn btn-link text-danger" *ngIf="canEditDraft"
+                            <button ngbDropdownItem type="button" class="btn btn-outline-danger" *ngIf="canEditDraft"
                                 id="discardDraft" (click)="discardDraft()" [disabled]="showLazyLoader">Discard
                             </button>
-                            <button ngbDropdownItem type="button" class="btn btn-primary btn-min-width ml-3"
+                            <button ngbDropdownItem type="button" class="btn btn-outline-primary"
                                 *ngIf="canResubmit" id="canResubmit" (click)="resubmit()"
                                 [disabled]="showLazyLoader">Re-Submit
                             </button>
