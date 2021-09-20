@@ -77,6 +77,11 @@
                             <span class="text">Back</span>
                         </ng-container>
                     </button>
+                    <button type="button" class="btn btn-primary ignore-outside" *ngIf="!canRespond"
+                        id="canReview" (click)="showRespondView=true;" [disabled]="showLazyLoader">
+                        <span class="fa fa-comment-alt mr-2"></span>
+                        <span class="text">Remarks</span>
+                    </button>
                     <div class="btn-group" ngbDropdown *ngIf="canEditDraft || canResubmit">
                         <button type="button" class="btn btn-outline-danger" ngbDropdownToggle
                             [disabled]="showLazyLoader">
@@ -97,9 +102,6 @@
                 <div class="btn-group" *ngIf="canEditDraft">
                     <button type="button" class="btn btn-outline-primary ignore-outside" *ngIf="canRespond"
                         id="canRespond" (click)="showRespondView=true;" [disabled]="showLazyLoader">Respond
-                    </button>
-                    <button type="button" class="btn btn-outline-primary ignore-outside" *ngIf="!canRespond"
-                        id="canReview" (click)="showRespondView=true;" [disabled]="showLazyLoader">Remarks
                     </button>
                     <button type="button" class="btn btn-outline-primary ignore-outside" id="saveDraft"
                         *ngIf="canEditDraft" (click)="saveDraft()">Save Draft
