@@ -108,7 +108,8 @@
                     <button type="button" class="btn btn-primary btn-min-width" id="submitDraft" (click)="submitDraft()"
                         [disabled]="showLazyLoader">Proceed
                     </button>
-                    <div class="btn-group" ngbDropdown *ngIf="(stateModelAttr && stateModelNextStates.length)">
+                    <div class="btn-group" ngbDropdown
+                        *ngIf="(stateModelAttr && stateModelNextStates.length && selectedData.operation != 'POST')">
                         <button type="button" class="btn btn-primary-dark" ngbDropdownToggle
                             [disabled]="showLazyLoader">
                             <!-- <span class="fa fa-angle-down"></span> -->
