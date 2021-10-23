@@ -26,7 +26,6 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   @Input() applySavedView: EventEmitter<any>;
   @Input() srvcId: string;
   @Input() selectAll: EventEmitter<any>;
-  @Input() approversList: Array<any>;
   @Output() removedSavedView: EventEmitter<any>;
   @Output() selectedRecords: EventEmitter<Array<any>>;
   @Output() viewRecord: EventEmitter<any>;
@@ -75,6 +74,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const self = this;
     const parsedDef = self.schema.definition;
+    this.appService.serviceData = self.schema;
     this.workflowApi = `/${this.commonService.app._id}${this.schema.api}/utils/workflow`;
     self.formService.patchType(parsedDef);
     self.formService.fixReadonly(parsedDef);
@@ -217,7 +217,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
                   self.configureView(viewModel || {});
                 }
               },
-              dismiss => {}
+              dismiss => { }
             );
           } else {
             self.gridService.selectedSavedView = viewModel;
@@ -339,7 +339,6 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         // temp.tooltipComponentFramework = RelationTooltipComponent;
       }
       temp.cellRendererFramework = AgGridCellComponent;
-      // e.approverList = self.approversList;
       temp.refData = e;
       temp.hide = !e.show;
       self.columnDefs.push(temp);
@@ -496,7 +495,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       if (viewModel.filter && viewModel.filter.$and) {
         self.apiConfig.filter.$and = [self.apiConfig.filter.$and[0]];
         viewModel.filter.$and.forEach(element => {
-          if(!!Object.keys(element).length) {
+          if (!!Object.keys(element).length) {
             self.apiConfig.filter.$and.push(element);
           }
         });
@@ -542,24 +541,23 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   canRespond(selectedData) {
     const self = this;
-    let flag = false;
     let audit;
     if (selectedData && selectedData.audit) {
       audit = selectedData.audit[selectedData.audit.length - 1];
     }
-    if (selectedData.requestedBy !== self.commonService.userDetails._id) {
-      flag = true;
+    if (selectedData.requestedBy == self.commonService.userDetails._id) {
+      return false;
     }
-    if (audit && audit.id !== self.commonService.userDetails._id && audit.action !== 'Error') {
-      flag = true;
+    if (audit && audit.id == self.commonService.userDetails._id) {
+      return false;
     }
     if (selectedData.status !== 'Pending') {
-      flag = false;
+      return false;
     }
-    if (!self.approversList.find(e => e === self.commonService.userDetails._id)) {
-      flag = false;
+    if (!this.commonService.canRespondToWF(this.schema, selectedData.checkerStep)) {
+      return false;
     }
-    return flag;
+    return true;
   }
   clearSavedView() {
     const self = this;

@@ -8,6 +8,7 @@ import { delayWhen, filter, flatMap, map, switchMap, take } from 'rxjs/operators
 import * as sh from 'shorthash';
 import * as uuid from 'uuid/v1';
 import * as io from 'socket.io-client';
+import * as _ from 'lodash';
 
 import { environment } from 'src/environments/environment';
 import { UserDetails } from 'src/app/interfaces/userDetails';
@@ -1267,9 +1268,28 @@ export class CommonService {
     }
   }
 
-  isDataServiceAdmin(serviceId): boolean {
+  isDataServiceAdmin(serviceId: string): boolean {
     if (this.permissions.find(p => p.entity === serviceId && p.id === `ADMIN_${serviceId}`)) {
       return true;
+    }
+    return false;
+  }
+
+  canRespondToWF(service: any, stepName: string): boolean {
+    if (!service.workflowConfig || !service.workflowConfig.makerCheckers || service.workflowConfig.makerCheckers.length == 0) {
+      return false;
+    }
+    let wfStepIds = service.workflowConfig.makerCheckers[0].steps.filter(s => s.name === stepName).map(s => s.id);
+    wfStepIds = _.flatten(wfStepIds);
+    if (_.intersection(this.permissions.map(p => p.id), wfStepIds).length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  hasWorkflow(service: any) {
+    if (service && service.workflowConfig) {
+      return service.workflowConfig.enabled && !this.isDataServiceAdmin(service._id);
     }
     return false;
   }
@@ -1394,8 +1414,12 @@ export class CommonService {
   getUser(userId: string): Promise<UserDetails> {
     const self = this;
     if (!self.userMap[userId]) {
+      let path = `/usr/app/${this.app._id}/${userId}`;
+      if (this.userDetails.isSuperAdmin) {
+        path = `/usr/${userId}`
+      }
       self.userMap[userId] = self
-        .get('user', '/usr/' + userId, {
+        .get('user', path, {
           select: '_id,isSuperAdmin,username,basicDetails,lastLogin,attributes'
         })
         .toPromise();
@@ -1408,8 +1432,12 @@ export class CommonService {
     if (!self.userMapFilter[userId]) {
       const filter = {};
       filter['$or'] = [{ _id: userId }, { '_metadata.oldUserId': userId }];
+      let path = `/usr/app/${this.app._id}`;
+      if (this.userDetails.isSuperAdmin) {
+        path = `/usr`
+      }
       self.userMapFilter[userId] = self
-        .get('user', '/usr/', {
+        .get('user', path, {
           select: '_id,isSuperAdmin,username,basicDetails,lastLogin,attributes',
           filter,
           count: 2
@@ -1424,7 +1452,7 @@ export class CommonService {
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
         .get('sm', '/service/' + serviceId, {
-          select: '_id,name,app,api,definition,attributeList'
+          select: '_id,name,app,api,definition,attributeList,workflowConfig'
         })
         .toPromise();
     }

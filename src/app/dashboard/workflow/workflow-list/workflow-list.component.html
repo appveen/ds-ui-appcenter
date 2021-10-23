@@ -191,7 +191,7 @@
             <div #dataContainer class="data-container p-0 w-100" *ngIf="totalRecords>0">
                 <odp-workflow-ag-grid #listGrid [schema]="schema" [columns]="columnDefs" *ngIf="totalRecords>0"
                     [srvcId]="srvcId" (viewRecord)="view($event)" [selectAll]="selectAll"
-                    [applySavedView]="applySavedView" [approversList]=approversList
+                    [applySavedView]="applySavedView"
                     (selectedRecords)="selectedRecords($event)"
                     (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
                     (removedSavedView)="removedSavedView($event)">
@@ -200,8 +200,8 @@
         </div>
 
     </div>
-    <odp-workflow-respond-view #respondView *ngIf="showRespondPannel" [selectedData]="selectedData"
-        (actionResponse)=" onAction($event);" [ids]="allCheckedRecordIds" [approversList]="approversList"
+    <odp-workflow-respond-view #respondView *ngIf="showRespondPannel" [schema]="schema" [selectedData]="selectedData"
+        (actionResponse)=" onAction($event);" [ids]="allCheckedRecordIds"
         [requestedByList]="requestedByList" [serviceStatus]="schema.status"
         [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
         [respondControl]="respondControl" [workflowApi]="workflowApi"></odp-workflow-respond-view>

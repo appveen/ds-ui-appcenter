@@ -49,7 +49,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     showHistoryDropdown: boolean;
     documentLocked: boolean;
     canReview: boolean;
-    hasWorkflow: boolean;
     workflowModalOptions: any;
     workflowData: any;
     workflowUploadedFiles: Array<any>;
@@ -58,7 +57,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     showBlackOutModal: boolean;
     actionArray: any = {};
     remarksData: any = {};
-    approversList: Array<any>;
     toggleAllActionsDropDown: boolean;
     showHeaderOnly: boolean;
     showRespondView: boolean;
@@ -70,7 +68,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     stateModelAttr: any;
     stateModelAttrVal: any;
     stateModelName: string;
-
     get currentAppId() {
         return this.commonService?.getCurrentAppId();
     }
@@ -92,7 +89,6 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.workflowUploadedFiles = [];
         self.workflowFilesList = [];
         self.definition = [];
-        self.approversList = [];
         self.showBlackOutModal = false;
         self.actionArray = {
             Submit: 'Submited',
@@ -101,7 +97,6 @@ export class ViewComponent implements OnInit, OnDestroy {
             SentForRework: 'Rework',
             Draft: 'Draft'
         };
-        self.approversList = [];
         self.respondControl = new FormControl('', Validators.required);
         self.stateModelName = '';
     }
@@ -205,7 +200,6 @@ export class ViewComponent implements OnInit, OnDestroy {
                 }
                 self.api = '/' + self.commonService.app._id + res.api;
                 self.appService.serviceAPI = self.api;
-                self.getApprovers();
                 self.getPermissions(res.definition);
             },
             err => {
@@ -232,21 +226,6 @@ export class ViewComponent implements OnInit, OnDestroy {
             return true;
         }
         else return false;
-    }
-
-    getApprovers() {
-        const self = this;
-        self.subscriptions['getApprovers'] = self.commonService
-            .get('user', `/approvers?entity=${self.schema._id}&app=${self.commonService.app._id}`)
-            .subscribe(
-                res => {
-                    if (res && res.approvers && res.approvers.length > 0) {
-                        self.approversList = res.approvers;
-                        self.hasWorkflow = true;
-                    }
-                },
-                err => { }
-            );
     }
 
     showStep(val) {
@@ -468,11 +447,7 @@ export class ViewComponent implements OnInit, OnDestroy {
                         self.canReview = true;
                         self.getUserDetails();
                     }
-                    setTimeout(() => {
-                        if (self.approversList.length > 0 && !self.approversList.find(e => e === self.commonService.userDetails._id)) {
-                            self.canReview = false;
-                        }
-                    }, 300);
+                    self.canReview = this.commonService.canRespondToWF(this.schema, self.workflowData.checkerStep);
                 }
             },
             err => { }
@@ -710,6 +685,13 @@ export class ViewComponent implements OnInit, OnDestroy {
         const arr = new Array(10);
         arr.fill(1);
         return arr;
+    }
+
+    get hasWorkflow() {
+        if (this.schema) {
+            return this.commonService.hasWorkflow(this.schema)
+        }
+        return false;
     }
 }
 

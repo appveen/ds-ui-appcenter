@@ -957,8 +957,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   }
 
   get hasWorkflow() {
-    if (this.schema && this.schema.workflowConfig) {
-      return this.schema.workflowConfig.enabled && !this.commonService.isDataServiceAdmin(this.schema._id);
+    if (this.schema) {
+      return this.commonService.hasWorkflow(this.schema)
     }
     return false;
   }

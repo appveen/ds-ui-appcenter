@@ -261,10 +261,10 @@
         <span class="fa fa-angle-up text-white ml-auto font-lg" id='angle-down'></span>
     </div>
 
-    <!-- <odp-respond-view [approversList]="approversList" *ngIf="showRespondView" [selectedData]='selectedData' [ids]='ids'
+    <!-- <odp-respond-view *ngIf="showRespondView" [selectedData]='selectedData' [ids]='ids'
           (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList" [serviceStatus]="schema.status">
         </odp-respond-view> -->
-    <odp-workflow-respond-view [approversList]="approversList" *ngIf="showRespondView" [selectedData]='selectedData'
+    <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema" [selectedData]='selectedData'
         [ids]='ids' (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList"
         [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
         [respondControl]="respondControl" [serviceStatus]="schema.status" [workflowApi]="workflowApi">
@@ -273,7 +273,7 @@
     <!-- <odp-respond-view *ngIf="showRespondPannel" [records]="records" [presentAudit]="presentAudit"
          [selectedData]="selectedData"
         (actionResponse)="showRespondPannel =!showRespondPannel;getWFData(false,true)" 
-        [ids]="allCheckedRecordIds" [approversList]="approversList"></odp-respond-view> -->
+        [ids]="allCheckedRecordIds"></odp-respond-view> -->
 </div>
 
 <ng-template #confirmDiscardModal>

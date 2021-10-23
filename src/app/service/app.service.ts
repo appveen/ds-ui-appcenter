@@ -6,6 +6,7 @@ import { Definition } from 'src/app/interfaces/definition';
 
 @Injectable()
 export class AppService {
+    serviceData: any;
     serviceId: string;
     serviceName: string;
     serviceAPI: string;

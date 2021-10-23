@@ -50,7 +50,7 @@ export class UserTypeComponent implements OnInit {
           select: (<any>self.definition.properties).relatedSearchField,
         };
         self.commonService
-          .get('user', `/usr/` + self.control.value._id, options)
+          .get('user', `/usr/app/${self.commonService.app._id}/${self.control.value._id}`, options)
           .subscribe(_data => {
             if (self.typeAhead) {
               self.typeAhead.writeValue(_data);
@@ -69,7 +69,7 @@ export class UserTypeComponent implements OnInit {
   getNoOfRecords(): Promise<any> {
     const self = this;
     return new Promise<any>((resolve, reject) => {
-      self.commonService.get('user', `/usr` + '/count').toPromise().then(res => {
+      self.commonService.get('user', `/usr/app/${self.commonService.app._id}/count`).toPromise().then(res => {
         self.recordsCount = res;
         resolve(res);
         return res;
@@ -115,7 +115,11 @@ export class UserTypeComponent implements OnInit {
           filter: filter,
           select: self.attrs,
         };
-        return self.commonService.get('user', `/usr/app/${self.commonService.app._id}`, options).toPromise().then(res => {
+        let path = `/usr/app/${this.commonService.app._id}`;
+        if (this.commonService.userDetails.isSuperAdmin) {
+          path = `/usr`
+        }
+        return self.commonService.get('user', path, options).toPromise().then(res => {
           return res;
         }).catch(err => { self.commonService.errorToast(err, 'Unable to search'); });
       }),

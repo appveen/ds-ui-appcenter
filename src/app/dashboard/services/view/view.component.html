@@ -226,7 +226,7 @@
                     </div>
                 </div>
             </div>
-            <odp-workflow-respond-view [approversList]="approversList" *ngIf="showRespondView"
+            <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema"
                 [selectedData]='workflowData' (actionResponse)='actionResponse($event);' [serviceStatus]="schema.status"
                 [ids]='[workflowData._id]'> </odp-workflow-respond-view>
             <div class="respond-header d-flex p-2 position-fixed ignore-outside" id='ignore' *ngIf='showHeaderOnly '

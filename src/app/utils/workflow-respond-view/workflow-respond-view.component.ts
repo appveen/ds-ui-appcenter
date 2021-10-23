@@ -45,9 +45,9 @@ import { Router } from '@angular/router';
 export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
   @ViewChild('inputBox', { static: false }) ele: ElementRef;
   @Input() showCard: any;
+  @Input() schema: any;
   @Input() presentAudit: any;
   @Input() selectedData: any;
-  @Input() approversList: Array<any>;
   @Input() ids: Array<any>;
   @Input() isWorkflowViewPage: boolean;
   @Input() requestedByList: Array<any>;
@@ -245,8 +245,8 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
             if (err.error.message && typeof err.error.message === 'object') {
               let message = '';
               Object.keys(err.error.message).forEach(key => {
-                if(err.error.message[key].indexOf('404')>-1){
-                  message += key+' has a value that is deleted, please remove the value and try again.\n';
+                if (err.error.message[key].indexOf('404') > -1) {
+                  message += key + ' has a value that is deleted, please remove the value and try again.\n';
                 } else {
                   message += err.error.message[key] + '\n';
                 }
@@ -321,30 +321,26 @@ export class WorkflowRespondViewComponent implements OnInit, OnDestroy {
 
   get canRespond() {
     const self = this;
-    let flag = false;
     let audit;
     if (self.selectedData && self.selectedData.audit) {
       audit = self.selectedData.audit[self.selectedData.audit.length - 1];
     }
-    if (self.selectedData && self.selectedData.requestedBy !== self.commonService.userDetails._id) {
-      flag = true;
+    if (self.selectedData && self.selectedData.requestedBy == self.commonService.userDetails._id) {
+      return false;
     }
-    if (audit && audit.id !== self.commonService.userDetails._id && audit.action !== 'Error') {
-      flag = true;
+    if (audit && audit.id == self.commonService.userDetails._id) {
+      return false;
     }
     if (self.selectedData && self.selectedData.status !== 'Pending') {
-      flag = false;
+      return false;
     }
-    if (!self.approversList.find(e => e === self.commonService.userDetails._id)) {
-      flag = false;
+    if (!this.commonService.canRespondToWF(this.schema, self.selectedData.checkerStep)) {
+      return false;
     }
     if (self.serviceStatus !== 'Active') {
-      flag = false;
+      return false;
     }
-    // if (self.ids && self.ids.length > 1) {
-    //   flag = true;
-    // }
-    return flag;
+    return true;
   }
   resetAction() {
     const self = this;

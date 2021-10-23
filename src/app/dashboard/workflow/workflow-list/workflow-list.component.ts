@@ -88,7 +88,6 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   activeTab = 0;
   loading: any;
   schema: any;
-  approversList: Array<any>;
   expandList: Array<any>;
   columnDefs: Array<any>;
   totalRecords;
@@ -152,7 +151,6 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       serviceId: ''
     };
     this.loading = {};
-    this.approversList = [];
     this.expandList = [];
     this.columnDefs = [];
     this.allFilters = [];
@@ -634,7 +632,6 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
           serviceId,
         };
         this.config.page = 1;
-        this.getApprovers();
         this.createColumnDefs();
         this.getTotalRecords();
         this.getCounts();
@@ -734,17 +731,6 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     }
     this.dataColumns.forEach(e => (e.dataKey = prefix + e.dataKey));
     this.columnDefs = this.columnDefs.concat(this.dataColumns);
-  }
-  getApprovers() {
-    this.subscriptions['getApprovers'] = this.commonService
-      .get('user', `/approvers?entity=${this.schema._id}&app=${this.commonService.app._id}`)
-      .subscribe(
-        res => {
-          this.approversList = res.approvers;
-          this.gridService.approversList = this.approversList;
-        },
-        err => { }
-      );
   }
   parseDefinition(def, parentKey?: string, parentName?: string): Definition[] {
     let tempArr: Definition[] = [];
@@ -1195,24 +1181,23 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   }
 
   canRespond(selectedData) {
-    let flag = false;
     let audit;
     if (selectedData && selectedData.audit) {
       audit = selectedData.audit[selectedData.audit.length - 1];
     }
-    if (selectedData && selectedData.requestedBy !== this.commonService.userDetails._id) {
-      flag = true;
+    if (selectedData && selectedData.requestedBy == this.commonService.userDetails._id) {
+      return false;
     }
-    if (audit && audit.id !== this.commonService.userDetails._id && audit.action !== 'Error') {
-      flag = true;
+    if (audit && audit.id == this.commonService.userDetails._id) {
+      return false;
     }
     if (selectedData && selectedData.status !== 'Pending') {
-      flag = false;
+      return false;
     }
-    if (!this.approversList.find(e => e === this.commonService.userDetails._id)) {
-      flag = false;
+    if (!this.commonService.canRespondToWF(this.schema, selectedData.checkerStep)) {
+      return false;
     }
-    return flag;
+    return true;
   }
   respondToMultipleWorkflow() {
     let rowData = [];
@@ -1286,6 +1271,13 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   get hasFilters() {
     if (!this.selectedSavedView && this.listGrid && this.listGrid.filterModel) {
       return true;
+    }
+    return false;
+  }
+
+  get hasWorkflow() {
+    if (this.schema) {
+      return this.commonService.hasWorkflow(this.schema)
     }
     return false;
   }

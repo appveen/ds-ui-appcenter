@@ -10,7 +10,6 @@ export class WorkflowAgGridService {
   inlineFilterActive: any;
   requestedByList: Array<any>;
   respondedByList: Array<any>;
-  approversList: Array<any>;
   constructor() {
     const self = this;
     self.selectAll = new EventEmitter();

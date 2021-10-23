@@ -42,7 +42,6 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   serviceAPI: string;
   loading: boolean;
   schema: any;
-  approversList: Array<any>;
   wizard: any;
   active: any;
   recordIdName: string;
@@ -92,7 +91,6 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     self.selectedData = {};
     self.wizard = [];
     self.requestedByList = [];
-    self.approversList = [];
     self.expandList = [];
     self.ids = [];
     self.workflowUploadedFiles = [];
@@ -164,7 +162,6 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       res => {
         self.showLazyLoader = false;
         self.schema = res;
-        self.getApprovers();
         self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
         this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
         this.api = `/${this.commonService.app._id}${res.api}`;
@@ -265,17 +262,6 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       });
   }
 
-  getApprovers() {
-    const self = this;
-    self.subscriptions['getApprovers'] = self.commonService
-      .get('user', `/approvers?entity=${self.schema._id}&app=${self.commonService.app._id}`)
-      .subscribe(
-        res => {
-          self.approversList = res.approvers;
-        },
-        err => { }
-      );
-  }
   addUserDetailsToAudit(audit: any) {
     const self = this;
     self.commonService
@@ -805,28 +791,27 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
 
   get canRespond() {
     const self = this;
-    let flag = false;
     let audit;
     if (self.selectedData && self.selectedData.audit) {
       audit = self.selectedData.audit[self.selectedData.audit.length - 1];
     }
-    if (self.selectedData.requestedBy !== self.commonService.userDetails._id) {
-      flag = true;
+    if (self.selectedData.requestedBy == self.commonService.userDetails._id) {
+      return false;
     }
-    if (audit && audit.id !== self.commonService.userDetails._id && audit.action !== 'Error') {
-      flag = true;
+    if (audit && audit.id == self.commonService.userDetails._id) {
+      return false;
     }
     if (self.selectedData.status !== 'Pending') {
-      flag = false;
+      return false;
     }
-    if (!self.approversList.find(e => e === self.commonService.userDetails._id)) {
-      flag = false;
+    if (!this.commonService.canRespondToWF(this.schema, self.selectedData.checkerStep)) {
+      return false;
     }
 
     if (self.schema.status !== 'Active') {
-      flag = false;
+      return false;
     }
-    return flag;
+    return true;
   }
   get auditLength() {
     const self = this;

@@ -160,24 +160,23 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   }
   get canRespond() {
     const self = this;
-    let flag = false;
     let audit;
     if (self.data && self.data.audit) {
       audit = self.data.audit[self.data.audit.length - 1];
     }
-    if (self.data.requestedBy !== self.commonService.userDetails._id) {
-      flag = true;
+    if (self.data.requestedBy == self.commonService.userDetails._id) {
+      return false;
     }
-    if (audit && audit.id !== self.commonService.userDetails._id) {
-      flag = true;
+    if (audit && audit.id == self.commonService.userDetails._id) {
+      return false;
     }
     if (self.data.status !== 'Pending') {
-      flag = false;
+      return false;
     }
-    if (!self.gridService.approversList.find(e => e === self.commonService.userDetails._id)) {
-      flag = false;
+    if (!this.commonService.canRespondToWF(this.appService.serviceData, this.data.checkerStep)) {
+      return false;
     }
-    return flag;
+    return true;
   }
   get checked() {
     const self = this;
