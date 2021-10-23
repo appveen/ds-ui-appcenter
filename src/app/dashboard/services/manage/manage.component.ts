@@ -632,6 +632,18 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
     self.appService.cleanPayload(payload, self.definition, self.isEdit);
     let response;
+    payload._workflow = {
+      audit: [
+        {
+          by: 'user',
+          id: this.commonService.userDetails._id,
+          action: draft ? 'Draft' : 'Submit',
+          remarks: self.workflowModalOptions.remarks,
+          timestamp: Date.now(),
+          attachments: self.workflowUploadedFiles
+        }
+      ]
+    };
     if (self.isEdit) {
       let url = self.api + '/' + self.ID;
       if (draft) {
@@ -647,19 +659,23 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     }
     self.subscriptions['saveRecord'] = response.subscribe(
       res => {
+        // if (res._workflow) {
+        //   self.workflowData = { _id: res._workflow };
+        //   self.submitWorkflowFiles(reset, draft);
+        // } else if (draft) {
+        //   self.submitWorkflowFiles(reset, draft);
+        // } else {
+        self.commonService.fewDocumentsMap[self.api] = null;
+        self.showLazyLoader = false;
+        self.reqInProgress = false;
+        self.draftReqInProgress = false;
         if (res._workflow) {
-          self.workflowData = { _id: res._workflow };
-          self.submitWorkflowFiles(reset, draft);
-        } else if (draft) {
-          self.submitWorkflowFiles(reset, draft);
+          self.ts.success('Work item submitted for review.');
         } else {
-          self.commonService.fewDocumentsMap[self.api] = null;
-          self.showLazyLoader = false;
-          self.reqInProgress = false;
-          self.draftReqInProgress = false;
           self.ts.success('Saved.');
-          self.afterSubmit(reset);
         }
+        self.afterSubmit(reset);
+        // }
       },
       err => {
         self.showLazyLoader = false;
@@ -942,7 +958,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   get hasWorkflow() {
     if (this.schema && this.schema.workflowConfig) {
-      return this.schema.workflowConfig.enabled;
+      return this.schema.workflowConfig.enabled && !this.commonService.isDataServiceAdmin(this.schema._id);
     }
     return false;
   }

@@ -1251,12 +1251,12 @@ export class CommonService {
       return true;
     }
     /**
-     * App Admin Permission Check
+     * Data Servie Admin Permission Check
      */
 
-    /* if (self.isAppAdmin) {
+    if (self.isDataServiceAdmin(serviceId)) {
       return true;
-    } */
+    }
     /**
      * Normal User Permission Check
      */
@@ -1267,19 +1267,12 @@ export class CommonService {
     }
   }
 
-  /*  get isAppAdmin(): boolean {
-     const self = this;
-     if (!self.userDetails.accessControl.apps) {
-       self.userDetails.accessControl.apps = [];
-     }
-     const index = self.userDetails.accessControl.apps.findIndex(a => a._id === self.app._id);
-     if (index > -1) {
-       return true;
-     } else {
-       return false;
-     }
-     // return true;
-   } */
+  isDataServiceAdmin(serviceId): boolean {
+    if (this.permissions.find(p => p.entity === serviceId && p.id === `ADMIN_${serviceId}`)) {
+      return true;
+    }
+    return false;
+  }
 
   get servicesWithAccess() {
     const self = this;
