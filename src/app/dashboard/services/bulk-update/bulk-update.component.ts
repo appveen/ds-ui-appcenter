@@ -50,7 +50,6 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   showLazyLoaderPage: boolean;
   value: any;
   prevUrl: string;
-  hasWorkflow: boolean;
   workflowModalOptions: any;
   workflowData: any;
   workflowUploadedFiles: Array<any>;
@@ -163,7 +162,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard stateModel'
+      select: 'api definition name relatedSchemas wizard stateModel workflowConfig'
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
@@ -179,7 +178,6 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
         self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
         self.version = res.version;
         self.schema = res;
-        self.getApprovers();
         if (res.wizard && res.wizard.length > 0) {
           self.wizard = res.wizard;
           self.active[0] = true;
@@ -485,22 +483,6 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     return self.commonService.hasPermission(self.schema._id, method);
   }
 
-  getApprovers() {
-    const self = this;
-    // const path =  `/approvers?entity=${self.schema._id}&app=${self.commonService.app._id}`;
-    const path = `/usr/reviewpermissionservice/${self.schema._id}?user=${self.commonService.userDetails._id}`;
-    self.subscriptions['getApprovers'] = self.commonService.get('user', path).subscribe(
-      res => {
-        self.hasWorkflow = true;
-      },
-      err => {
-        if (err.status === 404) {
-          self.hasWorkflow = false;
-        }
-      }
-    );
-  }
-
   uploadWorkflowFile(ev) {
     const self = this;
     const file = ev.target.files[0];
@@ -671,6 +653,13 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     const arr = new Array(10);
     arr.fill(1);
     return arr;
+  }
+
+  get hasWorkflow() {
+    if (this.schema && this.schema.workflowConfig) {
+      return this.schema.workflowConfig.enabled;
+    }
+    return false;
   }
 }
 

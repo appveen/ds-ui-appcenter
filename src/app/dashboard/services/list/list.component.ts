@@ -93,7 +93,6 @@ export class ListComponent implements OnInit, OnDestroy {
   totalRecords: number;
   apiCalls: any;
   subscriptions: any;
-  hasWorkflow: boolean;
   workflowModalOptions: any;
   workflowData: Array<any>;
   workflowUploadedFiles: Array<any>;
@@ -525,7 +524,6 @@ export class ListComponent implements OnInit, OnDestroy {
           self.buildColumns();
           self.refineByPermissions();
           self.getSavedViews(true);
-          self.getApprovers();
           self.getRecordsCount();
           this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
             this.hasFilterFromUrl = !!queryParams && (!!queryParams.filter || !!queryParams.sort || !!queryParams.select);
@@ -710,27 +708,6 @@ export class ListComponent implements OnInit, OnDestroy {
         filter.user = filter.createdBy;
         console.error('Unable to fetch name of User:', filter.createdBy);
       });
-  }
-
-  getApprovers() {
-    const self = this;
-    if (self.subscriptions['getApprovers']) {
-      self.subscriptions['getApprovers'].unsubscribe();
-      self.subscriptions['getApprovers'] = null;
-    }
-    const path = `/usr/reviewpermissionservice/${self.schema._id}?user=${self.commonService.userDetails._id}`;
-    self.subscriptions['getApprovers'] = self.commonService.get('user', path).subscribe(
-      res => {
-        self.hasWorkflow = true;
-      },
-      err => {
-        if (err.status === 404) {
-          self.hasWorkflow = false;
-        } else {
-          console.error(err.message, 'Error While checking if Workflow Enabled');
-        }
-      }
-    );
   }
 
   getRecordsCount() {
@@ -1467,6 +1444,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
   get selectedAppId() {
     return this.commonService.getCurrentAppId();
+  }
+
+  get hasWorkflow() {
+    if (this.schema && this.schema.workflowConfig) {
+      return this.schema.workflowConfig.enabled;
+    }
+    return false;
   }
 }
 
