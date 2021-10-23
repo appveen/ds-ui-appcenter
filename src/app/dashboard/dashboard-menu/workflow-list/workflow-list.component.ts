@@ -18,7 +18,7 @@ export class WorkflowListComponent implements OnInit {
   activeId: string;
   searchText: string;
   serviceDocsCount: any;
-  
+
   constructor(private appService: AppService,
     private commonService: CommonService,
     private dashboardService: DashboardService,
@@ -42,12 +42,11 @@ export class WorkflowListComponent implements OnInit {
       this.getWorflowItemsCount();
     });
 
-    this.appService.workflowStatus.subscribe(status =>
-      {
-        if(status){
-          this.updateWorflowCount();
-        }
+    this.appService.workflowStatus.subscribe(status => {
+      if (status) {
+        this.updateWorflowCount();
       }
+    }
     );
   }
 
@@ -59,7 +58,7 @@ export class WorkflowListComponent implements OnInit {
   }
 
   getServices() {
-    const filter: any = { app: this.commonService.app._id, 'role.roles.operations': { $elemMatch: { method: 'REVIEW' } } };
+    const filter: any = { app: this.commonService.app._id, 'workflowConfig.enabled': true };
     if (!this.commonService.userDetails.isSuperAdmin
       && this.commonService.servicesWithAccess.length > 0) {
       filter._id = {
@@ -117,7 +116,7 @@ export class WorkflowListComponent implements OnInit {
   }
 
   loadWorkflow(workflow: any, force?: boolean) {
-    if(force) {
+    if (force) {
       this.updateWorflowCount();
       this.router.navigateByUrl(['', this.commonService.app._id, 'workflow'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
@@ -128,12 +127,12 @@ export class WorkflowListComponent implements OnInit {
   }
 
 
-  updateWorflowCount(){
+  updateWorflowCount() {
     const serviceApi = this.records.filter(record => record._id == this.activeId).map(record => record.api)[0]
     const workflowApi = `/${this.commonService.getCurrentAppId()}${serviceApi}/utils/workflow`;
     const filter = {
       serviceId: this.activeId,
-      operation: { $in : ['POST', 'PUT', 'DELETE']},
+      operation: { $in: ['POST', 'PUT', 'DELETE'] },
       status: 'Pending'
     };
     this.subscriptions['getNewRecordsCount'] = this.commonService
