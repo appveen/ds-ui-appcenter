@@ -10,8 +10,8 @@
     <div class="d-flex flex-column">
         <div class="step-head d-flex align-items-center">
             <div
-                class="rounded-circle d-flex align-items-center justify-content-center border border-success bg-success text-white">
-                <span class="fa fa-check fa-xs"></span>
+                class="rounded-circle d-flex align-items-center justify-content-center border border-primary bg-primary text-white">
+                <span class="fa fa-arrow-right fa-xs"></span>
             </div>
             <div class="step-name font-weight-bold ml-3 text-dark">Document Submitted</div>
         </div>
@@ -20,8 +20,8 @@
             <div class="step-remarks p-3">
                 <div class="step-action-head d-flex align-items-center">
                     <div
-                        class="step-action rounded-circle d-flex align-items-center justify-content-center border border-warning bg-warning text-white mr-2">
-                        <span class="fa fa-upload font-7"></span>
+                        class="step-action rounded-circle d-flex align-items-center justify-content-center border border-primary bg-primary text-white mr-2">
+                        <span class="fa fa-arrow-right font-7"></span>
                     </div>
                     <div class="step-action-user">{{submitRemarks.id}}</div>
                 </div>
@@ -57,26 +57,28 @@
         </div>
         <div class="step-body d-flex align-items-stretch">
             <div class="step-line border border-dashed mr-3" [ngClass]="{'border-0':l}"></div>
-            <div class="step-remarks p-3" *ngFor="let remark of stepRemarks(item);let rl=last">
-                <div class="step-action-head d-flex align-items-center">
-                    <div
-                        class="step-action rounded-circle d-flex align-items-center justify-content-center border border-warning bg-warning text-white mr-2">
-                        <span class="fa fa-upload font-7"></span>
-                    </div>
-                    <div class="step-action-user">{{remark.id}}</div>
-                </div>
-                <div class="step-action-body d-flex align-items-stretch">
-                    <div class="step-line inner border border-dashed mr-3" [ngClass]="{'border-0':rl}"></div>
-                    <div class="step-action-data">
-                        <div class="step-comments d-flex align-items-center">
-                            <div class="step-action-comment text-muted">{{remark.remarks}}</div>
+            <div class="remarks p-3">
+                <div class="step-remarks" *ngFor="let remark of stepRemarks(item);let rl=last">
+                    <div class="step-action-head d-flex align-items-center">
+                        <div
+                            class="step-action rounded-circle d-flex align-items-center justify-content-center border border-success bg-success text-white mr-2">
+                            <span class="fa fa-check font-7"></span>
                         </div>
-                        <div *ngIf="remark.attachments && remark.attachments.length>0 "
-                            class="step-attachments d-flex flex-wrap">
-                            <div class="step-attachments-file border rounded-sm p-2 mr-2 mt-2 d-flex align-items-center justify-content-between"
-                                *ngFor="let file of remark.attachments">
-                                <span class="filename">{{file.metadata.filename}}</span>
-                                <span class="fa fa-download hover ml-4"></span>
+                        <div class="step-action-user">{{remark.id}}</div>
+                    </div>
+                    <div class="step-action-body d-flex align-items-stretch">
+                        <div class="step-line inner border border-dashed mr-3" [ngClass]="{'border-0':rl}"></div>
+                        <div class="step-action-data p-2 mb-3">
+                            <div class="step-comments d-flex align-items-center">
+                                <div class="step-action-comment text-muted">{{remark.remarks}}</div>
+                            </div>
+                            <div *ngIf="remark.attachments && remark.attachments.length>0 "
+                                class="step-attachments d-flex flex-wrap">
+                                <div class="step-attachments-file border rounded-sm p-2 mr-2 mt-2 d-flex align-items-center justify-content-between"
+                                    *ngFor="let file of remark.attachments">
+                                    <span class="filename">{{file.metadata.filename}}</span>
+                                    <span class="fa fa-download hover ml-4"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
