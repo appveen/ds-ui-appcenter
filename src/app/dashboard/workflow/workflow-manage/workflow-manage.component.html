@@ -16,10 +16,10 @@
                 <span class='mr-2 font-weight-bold text-muted text-truncate' [odpTruncated]="stateModelName">{{stateModelName}}</span>
                 <span class='badge badge-primary mt-1 state-model-badge text-truncate' [odpTruncated]="stateModelAttrVal" >{{stateModelAttrVal}}</span>
             </div> -->
-            <div class="d-flex flex-column record-detail">
+            <!-- <div class="d-flex flex-column record-detail">
                 <span class="font-weight-bold text-muted"> Data Service</span>
                 <div class="text-truncate " [odpTruncated]="schema.name">{{schema?.name}}</div>
-            </div>
+            </div> -->
             <div class="d-flex flex-column ml-3 record-detail">
                 <span class="font-weight-bold text-muted">Record ID</span>
                 <div class="text-truncate " [odpTruncated]="selectedData.documentId">{{selectedData?.documentId}}
@@ -48,25 +48,71 @@
         </div>
         <div class="d-flex flex-column justify-content-end">
             <div class="d-flex">
-                <!-- <button type="button" class="btn btn-link" id="closeReview" (click)="closeData()">
-                    <ng-container *ngIf="canEditDraft">
+
+                <ng-container *ngIf="editMode">
+                    <button type="button" class="btn btn-link" id="closeReview" (click)="closeData()">
                         <span class="fa fa-times mr-2"></span>
                         <span class="text">Cancel</span>
-                    </ng-container>
-                    <ng-container *ngIf="!canEditDraft">
-                        <span class="fa fa-angle-left mr-2"></span>
+                    </button>
+                    <button type="button" class="btn btn-link mx-2" *ngIf="canEditDraft" id="discardDraft"
+                        (click)="discardDraft()" [disabled]="showLazyLoader">
+                        <span class="fa fa-trash mr-2"></span>
+                        <span class="text">Discard</span>
+                    </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-min-width" id="submitDraft"
+                            (click)="submitDraft()" [disabled]="showLazyLoader">
+                            <span class="fa fa-arrow-circle-right mr-2"></span>
+                            <span class="text">Submit</span>
+                        </button>
+                        <div class="btn-group" ngbDropdown *ngIf="canEditDraft">
+                            <button type="button" class="btn btn-primary-dark" ngbDropdownToggle
+                                [disabled]="showLazyLoader">
+                            </button>
+                            <div class="dropdown-menu" ngbDropdownMenu>
+                                <button ngbDropdownItem type="button" id="saveDraft" (click)="saveDraft()">Save Draft
+                                </button>
+                                <button class="state-model-option" ngbDropdownItem
+                                    *ngFor="let state of stateModelNextStates" (click)="setStateAndSave(state)">
+                                    {{state}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="!editMode">
+                    <button type="button" class="btn btn-link" id="closeReview" (click)="closeData()">
+                        <span class="fa fa-arrow-left mr-2"></span>
                         <span class="text">Back</span>
+                    </button>
+                    <ng-container *ngIf="!canResubmit">
+                        <button *ngIf="canEditDocument && (canEditDraft || canRespond)" type="button" class="btn btn-link ml-2" id="canEditDocument"
+                            (click)="editMode=true;" [disabled]="showLazyLoader">
+                            <span class="fa fa-pencil-alt mr-2"></span>
+                            <span class="text">Edit</span>
+                        </button>
+                        <button type="button" class="btn btn-primary ml-2 btn-min-width" id="canReview"
+                            (click)="openRemarksModal()" [disabled]="showLazyLoader">
+                            <ng-container *ngIf="canRespond">
+                                <span class="fa fa-reply mr-2"></span>
+                                <span class="text">Respond</span>
+                            </ng-container>
+                            <ng-container *ngIf="!canRespond">
+                                <span class="fa fa-comment-alt mr-2"></span>
+                                <span class="text">Remarks</span>
+                            </ng-container>
+                        </button>
                     </ng-container>
-                </button>
-                <button type="button" class="btn btn-link text-danger" *ngIf="canEditDraft" id="discardDraft"
-                    (click)="discardDraft()" [disabled]="showLazyLoader">Discard
-                </button>
-                <button type="button" class="btn btn-primary btn-min-width ml-3" *ngIf="canResubmit" id="canResubmit"
-                    (click)="resubmit()" [disabled]="showLazyLoader">Re-Submit
-                </button> -->
+                    <button *ngIf="canResubmit" ngbDropdownItem type="button" class="btn btn-primary" id="canResubmit"
+                        (click)="resubmit()" [disabled]="showLazyLoader">
+                        <span class="fa fa-redo mr-2"></span>
+                        <span class="text">Re-Submit</span>
+                    </button>
+                </ng-container>
 
 
-                <div class="btn-group">
+                <!-- <div class="btn-group">
                     <button type="button" class="btn btn-outline-primary" id="closeReview" (click)="closeData()">
                         <ng-container *ngIf="canEditDraft">
                             <span class="fa fa-times mr-2"></span>
@@ -80,7 +126,8 @@
                     <button type="button" class="btn btn-primary ignore-outside" id="canReview"
                         (click)="openRemarksModal()" [disabled]="showLazyLoader">
                         <span class="fa fa-comment-alt mr-2"></span>
-                        <span class="text">Remarks</span>
+                        <span *ngIf="!canRespond" class="text">Remarks</span>
+                        <span *ngIf="canRespond" class="text">Respond</span>
                     </button>
                     <div class="btn-group" ngbDropdown *ngIf="canEditDraft || canResubmit">
                         <button type="button" class="btn btn-outline-primary" ngbDropdownToggle
@@ -95,10 +142,10 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
 
-                <div class="btn-group ml-3" *ngIf="canEditDraft">
+                <!-- <div class="btn-group ml-3" *ngIf="canEditDraft">
                     <button type="button" class="btn btn-outline-primary ignore-outside" *ngIf="canRespond"
                         id="canRespond" (click)="openRemarksModal()" [disabled]="showLazyLoader">Respond
                     </button>
@@ -112,7 +159,6 @@
                         *ngIf="(stateModelAttr && stateModelNextStates.length && selectedData.operation != 'POST')">
                         <button type="button" class="btn btn-primary-dark" ngbDropdownToggle
                             [disabled]="showLazyLoader">
-                            <!-- <span class="fa fa-angle-down"></span> -->
                         </button>
                         <div class="dropdown-menu" ngbDropdownMenu>
                             <button class='state-model-option' ngbDropdownItem
@@ -121,7 +167,8 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> -->
+
             </div>
             <div class="d-flex align-items-center justify-content-end mt-2" *ngIf="stateModelAttr">
                 <span class="font-weight-bold text-muted">{{stateModelName}}</span>
@@ -173,7 +220,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="canEditDraft " class="d-flex align-items-center px-3 border-bottom bg-white">
+    <div *ngIf="canEditDraft" class="d-flex align-items-center px-3 border-bottom bg-white">
         <ng-container *ngFor="let step of wizard;let stepIndex = index">
             <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
                 class="d-flex experience-hooks px-3 align-items-center">
@@ -198,7 +245,7 @@
             </div>
         </ng-container>
     </div>
-    <div *ngIf="!canEditDraft" class="view-body  bg-white " [ngClass]="{'no-steps':wizard.length == 0}">
+    <div *ngIf="!editMode" class="view-body bg-white" [ngClass]="{'no-steps':wizard.length == 0}">
         <ng-container *ngIf="wizard.length > 0">
             <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
                 <div class="container-fluid mt-3 d-none" [ngClass]="{'d-block':active[stepIndex]}">
@@ -227,7 +274,7 @@
             </div>
         </ng-container>
     </div>
-    <div *ngIf="canEditDraft" class="view-body pt-3 pb-5 bg-white" [ngClass]="{'no-steps':wizard.length == 0}">
+    <div *ngIf="editMode" class="view-body pt-3 pb-5 bg-white" [ngClass]="{'no-steps':wizard.length == 0}">
         <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
             <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
                 <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
@@ -253,47 +300,7 @@
             </div>
         </ng-container>
     </div>
-    <!-- <div class="respond-header d-flex p-2 position-fixed ignore-outside" id='ignore'
-        [ngClass]="{'b-0':!isScrollExist,'b-15':isScrollExist}" *ngIf='showHeaderOnly '
-        (click)="showRespondView=true;showHeaderOnly=false">
-        <span class="text-white" id='respond' *ngIf="canRespond">Respond</span>
-        <span class="text-white" id='remark' *ngIf="!canRespond">Remarks</span>
-        <span class="fa fa-angle-up text-white ml-auto font-lg" id='angle-down'></span>
-    </div> -->
-
-    <!-- <odp-respond-view *ngIf="showRespondView" [selectedData]='selectedData' [ids]='ids'
-          (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList" [serviceStatus]="schema.status">
-        </odp-respond-view> -->
-    <!-- <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema" [selectedData]='selectedData'
-        [ids]='ids' (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList"
-        [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
-        [respondControl]="respondControl" [serviceStatus]="schema.status" [workflowApi]="workflowApi">
-    </odp-workflow-respond-view> -->
-
-    <!-- <odp-respond-view *ngIf="showRespondPannel" [records]="records" [presentAudit]="presentAudit"
-         [selectedData]="selectedData"
-        (actionResponse)="showRespondPannel =!showRespondPannel;getWFData(false,true)" 
-        [ids]="allCheckedRecordIds"></odp-respond-view> -->
 </div>
-
-<ng-template #confirmDiscardModal>
-    <div class="modal-header alert ignore">
-        <h4 class="modal-title text-danger ignore">Discard draft</h4>
-        <button id="discardModalCloseBtn ignore" type="button" class="close" aria-label="Close"
-            (click)="confirmDiscardModalRef.close(false)">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body ignore">
-        <p class="text-center">Are you sure, you want to discard this draft?</p>
-    </div>
-    <div class="modal-footer ignore">
-        <button id="discardModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width ignore"
-            (click)="confirmDiscardModalRef.close(false)">No</button>
-        <button id="discardModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width ignore"
-            (click)="confirmDiscardModalRef.close(true)">Yes</button>
-    </div>
-</ng-template>
 
 <ng-template #confirmCancelModal>
     <div class="modal-header alert ignore">

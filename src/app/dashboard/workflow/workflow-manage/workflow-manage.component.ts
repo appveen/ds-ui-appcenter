@@ -21,8 +21,6 @@ import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-vie
 export class WorkflowManageComponent implements OnInit, OnDestroy {
   @ViewChild('allStepsDropdown', { static: false })
   allStepsDropdown: ElementRef;
-  @ViewChild('confirmDiscardModal', { static: false })
-  confirmDiscardModal: TemplateRef<HTMLElement>;
   @ViewChild('confirmCancelModal', { static: false })
   confirmCancelModal: TemplateRef<HTMLElement>;
   @ViewChild('discardModal', { static: false })
@@ -34,7 +32,6 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   @ViewChild('inputBox', { static: false }) ele: ElementRef;
   form: FormGroup;
   workflowModalDeleteRef: NgbModalRef;
-  confirmDiscardModalRef: NgbModalRef;
   confirmCancelModalRef: NgbModalRef;
   discardModalRef: NgbModalRef;
   workflowModalRef: NgbModalRef;
@@ -73,6 +70,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   nextStates: any;
   initialState: any;
   stateModelPath: any;
+  editMode: boolean;
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -421,7 +419,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     if (self.form.get(self.stateModelAttr)) {
       let stateModelVal = self.form.get(self.stateModelAttr).value;
       if (stateModelVal != null && this.stateModelPath && this.stateModelPath[stateModelVal]) {
-        return this.stateModelPath[stateModelVal];
+        return (this.stateModelPath[stateModelVal] || []);
       }
     }
     return [];
@@ -613,6 +611,10 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
 
   closeData() {
     const self = this;
+    if (this.editMode) {
+      this.editMode = false;
+      return;
+    }
     self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
   }
   discardDraft() {
@@ -838,6 +840,17 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       return false;
     }
     return true;
+  }
+
+  get canEditDocument() {
+    if (
+      this.selectedData &&
+      this.hasPermission('PUT') &&
+      this.selectedData.status !== 'Rejected' &&
+      this.selectedData.status !== 'Approved') {
+      return true;
+    }
+    return false;
   }
   get auditLength() {
     const self = this;
