@@ -8,6 +8,9 @@ import { CommonService } from 'src/app/service/common.service';
 import { Properties } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
 import { Md5 } from 'ts-md5';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { WorkflowRemarksViewComponent } from 'src/app/utils/workflow-remarks-view/workflow-remarks-view.component';
+import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-view/workflow-respond-view.component';
 
 @Component({
   selector: 'odp-ag-grid-cell',
@@ -37,7 +40,8 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     private appService: AppService,
     private commonService: CommonService,
     private gridService: WorkflowAgGridService,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
   ) {
     const self = this;
     self.properties = {};
@@ -82,12 +86,25 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   respond(event) {
     event.stopPropagation();
     const self = this;
-    self.gridService.respond.emit(self.data);
+    // self.gridService.respond.emit(self.data);
+    const remarksModal: NgbModalRef = this.modalService.open(WorkflowRemarksViewComponent, { centered: true, size: 'lg' });
+    remarksModal.componentInstance.workflowData = this.data;
+    remarksModal.componentInstance.serviceData = this.appService.serviceData;
+    remarksModal.result.then(close => {
+      if (close) {
+        const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg' });
+        respondModal.componentInstance.workflowData = this.data;
+        respondModal.componentInstance.serviceData = this.appService.serviceData;
+        respondModal.result.then(res => {
+          this.params.api.purgeInfiniteCache();
+        }, err => { });
+      }
+    }, dismiss => { });
   }
 
   view() {
     const self = this;
-    self.gridService.respond.emit(self.data);
+    // self.gridService.respond.emit(self.data);
     self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId, self.id]);
   }
 
