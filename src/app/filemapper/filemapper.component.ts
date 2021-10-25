@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonService } from '../service/common.service';
-import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { AppService } from '../service/app.service';
 import { HttpEventType } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { FormService } from '../service/form.service';
+import { ToastrService } from 'ngx-toastr';
 import Fuse from 'fuse.js';
+
+import { CommonService } from '../service/common.service';
+import { AppService } from '../service/app.service';
+import { FormService } from '../service/form.service';
+
 @Component({
   selector: 'odp-filemapper',
   templateUrl: './filemapper.component.html',
@@ -96,23 +98,10 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       self.hasBulkInvalidRecords = true;
     }
     self.showLazyLoader = true;
-    self.subscriptions['getRoles'] = self.commonService
-      .get('user', '/usr/role?entity=' + self.appService.serviceId + '&app=' + self.commonService.app._id)
-      .subscribe(
-        res => {
-          self.showLazyLoader = false;
-          const roles = res.map(e => e.method);
-          if (roles.indexOf('POST') === -1 && roles.indexOf('PUT') === -1) {
-            self.router.navigate(['../list'], { relativeTo: self.route });
-            return;
-          }
-          self.getSchema(self.appService.serviceId);
-        },
-        err => {
-          self.ts.error('Oops, something went wrong.');
-          self.showLazyLoader = false;
-        }
-      );
+    if (!this.commonService.hasPermission(self.appService.serviceId, 'PUT') && !this.commonService.hasPermission(self.appService.serviceId, 'POST')) {
+      return self.router.navigate(['../list'], { relativeTo: self.route });
+    }
+    self.getSchema(self.appService.serviceId);
 
     self.appService.objMappingData.subscribe(data => {
       self.isChildDom = !!data;
