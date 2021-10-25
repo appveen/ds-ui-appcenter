@@ -10,6 +10,8 @@ import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms'
 import { HttpEventType } from '@angular/common/http';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { filter } from 'rxjs/operators';
+import { WorkflowRemarksViewComponent } from 'src/app/utils/workflow-remarks-view/workflow-remarks-view.component';
+import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-view/workflow-respond-view.component';
 
 @Component({
   selector: 'odp-workflow-manage',
@@ -768,6 +770,30 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  openRemarksModal() {
+    const remarksModal: NgbModalRef = this.modalService.open(WorkflowRemarksViewComponent, { centered: true });
+    remarksModal.componentInstance.workflowData = this.selectedData;
+    remarksModal.componentInstance.serviceData = this.schema;
+    remarksModal.result.then(close => {
+      if (close) {
+        this.openRespondModal();
+      }
+    }, dismiss => { });
+  }
+
+  openRespondModal() {
+    const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg' });
+    respondModal.componentInstance.workflowData = this.selectedData;
+    respondModal.componentInstance.serviceData = this.schema;
+    respondModal.result.then(close => {
+      if (close) {
+        console.log(close);
+      }
+    }, dismiss => { });
+  }
+
+
 
   get canEditDraft() {
     const self = this;

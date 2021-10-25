@@ -1,0 +1,175 @@
+<div class="respond align-items-center position-fixed" [@cardAction]="respondAnimation['card']?'collapse':'expand'"
+  odpClickOutside (outside)="closeRespondView()" [ignore]="['.fa-times']">
+  <div class="respond-header d-flex p-2" (click)="expandWflist()"
+    [ngClass]="{'respond-header-expand':!respondAnimation['card']}">
+    <span class="text-white" *ngIf="canRespond && allCheckedRecords < 2"
+      [ngClass]="{'text-dark':!respondAnimation['card']}">Respond</span>
+    <span class="text-white" *ngIf="!canRespond" [ngClass]="{'text-dark':!respondAnimation['card']}">Remarks</span>
+    <span class="text-white" *ngIf="canRespond && allCheckedRecords >= 2"
+      [ngClass]="{'text-dark':!respondAnimation['card']}">Batch
+      Response </span>
+    <span class="text-white ml-2" *ngIf="canRespond && allCheckedRecords >= 2"
+      [ngClass]="{'text-dark':!respondAnimation['card']}">(
+      {{allCheckedRecords}} Worflows)</span>
+    <span class="fa fa-angle-up text-white ml-auto font-lg" *ngIf="respondAnimation['card']"></span>
+    <span class="fa fa-angle-down text-muted ml-auto font-lg" *ngIf="!respondAnimation['card']"></span>
+  </div>
+  <!-- <div class="respond-body" [@cardAction]="respondAnimation['card']?'collapse':'expand'" *ngIf="allCheckedRecords < 2"> -->
+  <div class="respond-body" *ngIf="allCheckedRecords < 2">
+    <div class="d-flex flex-column p-3">
+      <div class="d-flex" *ngFor="let audit of selectedData?.audit ;let l=last">
+        <div *ngIf="!l" class="d-flex sideLine" [ngClass]="{'border-primary':audit?.action=='Submit',
+        'border-danger':audit?.action=='Rejected',
+        'border-success':audit.action=='Approved',
+     'border-info':audit?.action=='SentForRework' || audit?.action=='Draft' || audit?.action=='Edit'  || audit?.action=='Discard'}">
+        </div>
+        <div class="d-flex">
+          <div class="icon-circle d-flex align-items-center justify-content-center rounded-circle bg-primary mr-2"
+            [ngClass]="{'bg-primary':audit?.action=='Submit' || audit?.action=='Save & Submit',
+                'bg-danger':audit?.action=='Rejected',
+                'bg-success':audit.action=='Approved',
+             'bg-info':audit?.action=='SentForRework' || audit?.action=='Draft' || audit?.action=='Edit'  || audit?.action=='Discard'}">
+
+            <span class="text-white" [ngClass]="{'odp-arrow-right':audit?.action=='Submit' || audit?.action=='Save & Submit',
+            'odp-times font-xsm':audit?.action=='Rejected',
+            'odp-check font-xsm':audit.action=='Approved',
+            'fa fa-circle':audit?.action=='Discard',
+         'odp-rework':audit?.action=='SentForRework',
+          'far fa-file': audit?.action=='Draft' || audit?.action=='Edit' }"></span>
+          </div>
+          <div>
+            <div class="text-dark font-weight-bold font-13">
+              {{audit?.userName}}
+            </div>
+            <div>
+              <span class=" font-weight-bold mr-1 font-xsm11" [ngClass]="{'text-primary':audit?.action=='Submit',
+                'text-danger':audit?.action=='Rejected',
+                'text-success':audit.action=='Approved',
+             'text-info':audit?.action=='SentForRework' || audit?.action=='Draft' || audit?.action=='Edit'  || audit?.action=='Discard'}">
+                {{actionArray[audit.action]}}</span>
+              <!-- <span class="text-primary">{{audit?.action}}</span> -->
+              <span class="text-muted font-xsm11 ml-1">{{ audit.timestamp | date: 'd MMM y hh:mm'}} </span>
+            </div>
+            <div class="d-flex  ml-3 mt-2 commentSection pb-3">
+              <span class=" odp-comment text-muted  mt-1"></span>
+              <span class="font-13 ml-2" *ngIf="audit.remarks">{{audit?.remarks}}</span>
+              <span class="font-13 ml-2 text-muted" *ngIf="!audit.remarks">No Comments</span>
+            </div>
+            <div class="d-flex flex-wrap ml-3">
+              <!-- <span></span> -->
+              <div class="d-flex flex-column attach-width" *ngFor="let data of audit.attachments"
+                (click)="downloadFile(data.filename)">
+                <button class="btn btn-link d-flex align-items-center" type="button">
+                  <div class="text-primary text-truncate">{{data?.metadata?.filename}}</div>
+                  <small class="text-secondary">{{data?.chunkSize|filesize}}</small>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+  <div *ngIf="allCheckedRecords >= 2" class="text-muted p-2 batch-msg">Worflow history is unavailable for batch
+    response.</div>
+  <!-- <div class="actionPannel" [@cardAction]="respondAnimation['card']?'repondBodyClose':'repondBodyOpen'"> -->
+  <div class="default-loader d-flex justify-content-center h-100 w-100" *ngIf="showLazyLoader">
+    <div class="align-self-center text-center">
+      <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+      <div class="text-secondary mt-2">Processing...</div>
+    </div>
+  </div>
+  <div class="action-window d-flex flex-column align-items-center" *ngIf="!actionClicked && canRespond">
+    <div class="p-4">Select your response</div>
+    <div class="d-flex">
+
+      <button class="btn respond-btn approve bg-white mx-3 hover ignore-outside" id="saveBtn" type="button"
+        (click)=" createControl('approve')">
+        <span class="text ignore-outside">Approve</span></button>
+      <button class="btn respond-btn reject bg-white mx-3 hover ignore-outside" id="saveBtn" type="button"
+        (click)="createControl('reject')">
+        <span class="text ignore-outside">Reject</span></button>
+      <button class="btn respond-btn rework bg-white mx-3 hover ignore-outside" id="saveBtn" type="button"
+        (click)="createControl('rework')">
+        <span class="text ignore-outside">Rework</span></button>
+    </div>
+  </div>
+  <div class="response-window position-relative" *ngIf="actionClicked && canRespond">
+    <div class="d-flex p-2">
+      <div class="icon-circle d-flex align-items-center justify-content-center rounded-circle  mr-2 bg-white">
+
+        <span [ngClass]="{
+        'odp-times font-xsm text-danger':actionObj.reject,
+        'odp-check font-xsm text-success':actionObj.approve,
+     'odp-rework text-info':actionObj.rework
+     }"></span>
+      </div>
+      <div class="d-flex flex-column">
+        <span class="text-success text-bold" *ngIf="actionObj.approve">Approve</span>
+        <span class="text-danger text-bold" *ngIf="actionObj.reject">Reject</span>
+        <span class="text-info text-bold" *ngIf="actionObj.rework">Rework</span>
+        <span class="text-muted hover ignore-outside" (click)="resetAction()">click to change</span>
+      </div>
+    </div>
+    <div class="d-flex flex-column">
+      <div class="d-flex m-50 ">
+        <span class=" odp-comment mt-2"></span>
+        <textarea *ngIf="actionObj.approve" class="input-comment ml-2 form-control" #inputBox
+          [ngClass]="{'increasedHeight':focused,'initialHeight':!focused , 'is-invalid':requiredError}"
+          (focus)="focused=true" placeholder="Enter comments to justify your response. Attach document if necessary"
+          [formControl]="respondControl" (onchange)="onBlur()"></textarea>
+        <textarea *ngIf="!actionObj.approve" class="input-comment ml-2 form-control" #inputBox
+          [ngClass]="{'increasedHeight':focused,'initialHeight':!focused , 'is-invalid':requiredError}"
+          (focus)="focused=true"
+          placeholder="Comments are required to justify your response. Attach document if necessary."
+          [formControl]="respondControl" (onchange)="onBlur()"></textarea>
+      </div>
+      <div class="d-flex flex-column m-50">
+        <input #workflowFileUploadInput class="d-none" type="file" name="workflowFileUpload" id="workflowFileUpload"
+          (change)="uploadWorkflowFile($event)">
+        <button class="btn btn-link attachment-btn" (click)="workflowFileUploadInput.click()">
+          <span class="fa fa-plus mr-1 font-xsm"></span>
+          <span class="text font-bold font-sm" id="addFile">Add Attachment(s)</span>
+        </button>
+        <div class="d-flex align-items-center  ml-4" *ngFor="let file of workflowFilesList;let fileIndex=index;">
+          <div class="d-flex align-items-center ">
+            <span class="text-primary text-truncate fileName-width">{{file.name}}</span>
+            <small class="text-secondary ml-2">({{file.size|filesize}})</small>
+          </div>
+          <span class='fa fa-times text text-muted ml-1' (click)="removeWorkflowFile(fileIndex)"></span>
+          <!-- <button class="btn btn-sm btn-link text-danger" (click)="removeWorkflowFile(fileIndex)"></button> -->
+        </div>
+      </div>
+      <!-- <div class="d-flex flex-column m-50">
+        <input #respondFileInput type="file" class="d-none" (change)="uploadWorkflowFile($event)">
+        <button class="btn btn-link attachment-btn" (click)="respondFileInput.click()">
+          <input #respondFileInput type="file" class="d-none">
+          <span class="fa fa-plus mr-2"></span>
+          <span class="text">Add Attachment</span>
+        </button>
+        <div class="d-flex align-items-center justify-content-between w-100" *ngFor="let file of workflowFilesList;let fileIndex=index;">
+          <div class="d-flex align-items-center">
+            <span class="text-primary text-truncate fileName-width">{{file.name}}</span>
+            <small class="text-secondary ml-2">({{file.size|filesize}})</small>
+          </div>
+          <button class="btn btn-sm btn-link text-danger" (click)="removeWorkflowFile(fileIndex)">Remove</button>
+        </div>
+      </div> -->
+      <div class="d-flex px-4 position-absolut justify-content-end action-btn">
+        <button class="btn btn-link ignore-outside" (click)="resetAction()">Back</button>
+        <button class="btn btn-primary" *ngIf="actionObj.approve" (click)="respond('Approve')"
+          type="button">Approve</button>
+        <button class="btn btn-primary" *ngIf="actionObj.reject" (click)="respond('Reject')"
+          type="button">Reject</button>
+        <button class="btn btn-primary" *ngIf="actionObj.rework" (click)="respond('Rework')"
+          type="button">Rework</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="overlay w-100 h-100 overlay-div" *ngIf="!respondAnimation['card']"></div>

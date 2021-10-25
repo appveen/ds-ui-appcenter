@@ -67,7 +67,7 @@
 
 
                 <div class="btn-group">
-                    <button type="button" class="btn btn-outline-danger" id="closeReview" (click)="closeData()">
+                    <button type="button" class="btn btn-outline-primary" id="closeReview" (click)="closeData()">
                         <ng-container *ngIf="canEditDraft">
                             <span class="fa fa-times mr-2"></span>
                             <span class="text">Cancel</span>
@@ -78,16 +78,16 @@
                         </ng-container>
                     </button>
                     <button type="button" class="btn btn-primary ignore-outside" id="canReview"
-                        (click)="showRespondView=true;" [disabled]="showLazyLoader">
+                        (click)="openRemarksModal()" [disabled]="showLazyLoader">
                         <span class="fa fa-comment-alt mr-2"></span>
                         <span class="text">Remarks</span>
                     </button>
                     <div class="btn-group" ngbDropdown *ngIf="canEditDraft || canResubmit">
-                        <button type="button" class="btn btn-outline-danger" ngbDropdownToggle
+                        <button type="button" class="btn btn-outline-primary" ngbDropdownToggle
                             [disabled]="showLazyLoader">
                         </button>
                         <div class="dropdown-menu" ngbDropdownMenu>
-                            <button ngbDropdownItem type="button" class="btn btn-outline-danger" *ngIf="canEditDraft"
+                            <button ngbDropdownItem type="button" class="btn btn-outline-primary" *ngIf="canEditDraft"
                                 id="discardDraft" (click)="discardDraft()" [disabled]="showLazyLoader">Discard
                             </button>
                             <button ngbDropdownItem type="button" class="btn btn-outline-primary" *ngIf="canResubmit"
@@ -100,7 +100,7 @@
 
                 <div class="btn-group ml-3" *ngIf="canEditDraft">
                     <button type="button" class="btn btn-outline-primary ignore-outside" *ngIf="canRespond"
-                        id="canRespond" (click)="showRespondView=true;" [disabled]="showLazyLoader">Respond
+                        id="canRespond" (click)="openRemarksModal()" [disabled]="showLazyLoader">Respond
                     </button>
                     <button type="button" class="btn btn-outline-primary ignore-outside" id="saveDraft"
                         *ngIf="canEditDraft" (click)="saveDraft()">Save Draft
@@ -253,22 +253,22 @@
             </div>
         </ng-container>
     </div>
-    <div class="respond-header d-flex p-2 position-fixed ignore-outside" id='ignore'
+    <!-- <div class="respond-header d-flex p-2 position-fixed ignore-outside" id='ignore'
         [ngClass]="{'b-0':!isScrollExist,'b-15':isScrollExist}" *ngIf='showHeaderOnly '
         (click)="showRespondView=true;showHeaderOnly=false">
         <span class="text-white" id='respond' *ngIf="canRespond">Respond</span>
         <span class="text-white" id='remark' *ngIf="!canRespond">Remarks</span>
         <span class="fa fa-angle-up text-white ml-auto font-lg" id='angle-down'></span>
-    </div>
+    </div> -->
 
     <!-- <odp-respond-view *ngIf="showRespondView" [selectedData]='selectedData' [ids]='ids'
           (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList" [serviceStatus]="schema.status">
         </odp-respond-view> -->
-    <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema" [selectedData]='selectedData'
+    <!-- <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema" [selectedData]='selectedData'
         [ids]='ids' (actionResponse)='actionResponse($event);' [requestedByList]="requestedByList"
         [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
         [respondControl]="respondControl" [serviceStatus]="schema.status" [workflowApi]="workflowApi">
-    </odp-workflow-respond-view>
+    </odp-workflow-respond-view> -->
 
     <!-- <odp-respond-view *ngIf="showRespondPannel" [records]="records" [presentAudit]="presentAudit"
          [selectedData]="selectedData"

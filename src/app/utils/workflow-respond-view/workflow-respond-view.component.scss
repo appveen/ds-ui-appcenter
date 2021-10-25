@@ -1,167 +1,24 @@
-@import 'src/assets/scss/bootstrap/_functions.scss';
-@import 'src/assets/scss/bootstrap/_variables.scss';
-
-.respond {
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    width: 640px;
-    margin: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
-    z-index: 9;
+.footer {
+  .rounded-circle {
+    width: 20px;
+    height: 20px;
+    font-size: 8px;
   }
-  .respond-body {
-    min-height: 350px;
-    max-height: 350px;
-    overflow: auto;
-    background: #F4F5F5;
-  }
-  .circle{
-      width: 32px;
-      height: 32px;
-      background: #0082C9;
-      border-radius: 20px;
-      text-align: center;
-  }
-  .respond-header{
-    min-width: 640px;
-    max-width: 640px;
-    min-height: 40px;
-    max-height: 40px;
-    box-shadow: 0 0px rgba(0, 0, 0, 1 );
-    background-color: #0082C9;
-    border-radius: 8px 8px 0px 0px;
-
 }
-.overlay-div{
-    position: fixed;
-    z-index: 8;
-    background-color: rgba(0, 0, 0, 0.24)
+
+.step-box {
+  .step-action {
+    width: 24px;
+    height: 24px;
+  }
 }
-.respond-header-expand {
-    min-width: 640px;
-    max-width: 640px;
-    min-height: 40px;
-    max-height: 40px;
-    background-color: #efefef;
-    border-radius: 8px 8px 0px 0px;
-  }
-  .sideLine{
-    border-left: 2px solid green;
-    min-height: 64px;
-    position: relative;
-    left: 15px;
-    top: 32px;
-  }
-  .actionPannel{
-    // height: 100px;
-    position: absolute;
-    bottom: 0px;
-    width: 640px;
-      background-color: #EFEFEF;
-
-  }
-  .action-window{
-    // position: absolute;
-    bottom: 0px;
-    width: 640px;
-    background-color: #EFEFEF;
-    min-height: 128px;
-    max-height: 128px;
-  }
-  .response-window{
-    bottom: 0px;
-    width: 640px;
-    background-color: #EFEFEF;
-    min-height: 188px;
-    max-height: 200px;
-    overflow: auto
-  }
-  .icon-circle {
-    min-width: 32px;
-    max-width: 32px;
-    min-height: 32px;
-    max-height: 32px;
-    z-index: 10;
-  }
-  .m-50{
-    margin-left: 50px;
-  }
-  .input-comment{
-    // max-height: 32px;
-    min-width: 520px;
-    max-width: 520px;
-    border: 1px #B5B8BC;
-  }
-  .initialHeight{
-    min-height: 32px;
-    transition: height 5s ease-in;     
-  }
-  .increasedHeight{
-    min-height: 65px;
-    transition: height 5s ease-in;
-  }
-  .attachment-btn{
-    width: 100px;
-  }
-  .respond-btn{
-    min-width: 96px;
-    max-width: 96px;
-    border: 2px solid;
-    min-height: 32px;
-    max-height: 32px;
-    border-radius: 32px;
-  }
-  .approve{
-    border-color: #1CAD49;
-    &:hover {
-      background-color: #D1EFDA !important;
-    }
-  }
-
-  .reject{
-    border-color: #DB0404;
-    &:hover {
-      background-color: #F8DCDC !important;
-    }
-  }
-  .rework{
-    border-color: #FBA200;
-    &:hover {
-      background-color: #FBF2D2 !important;
-    }
-  }
-  .action-btn{
-    bottom: 0;
-    right: 0;
-  }
-  .batch-msg{
-    min-height: 32px;
-    background-color: #F4F5F5;
-  }
-  .font-xsm{
-    font-size: 10px;
-  }
-
-  .font-xsm11{
-    font-size: 11px;
-  }
-  .commentSection{
-    min-height: 32px;
-  }
-  .attach-width{
-    min-width: 175px;
-    max-width: 175px;
-    .attach-width{
-      width:100px;
-    }
-  }
-  .btn-link {
-    &:focus,
-    &.focus {
-      text-decoration: $link-hover-decoration;
-      border-color: transparent;
-      box-shadow: none;
-    }
-  }
-  
+.step-line {
+  min-width: 94px;
+  border-width: 1px;
+}
+.box {
+  height: 140px;
+}
+.hidden-input {
+  z-index: -100;
+}

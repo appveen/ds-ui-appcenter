@@ -2,20 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { WorkflowRespondViewComponent } from './workflow-respond-view.component';
+import { WorkflowRemarksViewComponent } from './workflow-remarks-view.component';
 
 
 
 @NgModule({
-  declarations: [WorkflowRespondViewComponent],
+  declarations: [WorkflowRemarksViewComponent],
   imports: [
     CommonModule,
     FormsModule,
     NgbModule,
     ReactiveFormsModule
   ],
-  exports: [
-    WorkflowRespondViewComponent
-  ]
+  exports: [WorkflowRemarksViewComponent]
 })
-export class WorkflowRespondViewModule { }
+export class WorkflowRemarksViewModule { }

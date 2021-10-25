@@ -158,6 +158,11 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   get status() {
     return this.data.status;
   }
+
+  get checkerStep() {
+    return this.data.checkerStep;
+  }
+
   get canRespond() {
     const self = this;
     let audit;

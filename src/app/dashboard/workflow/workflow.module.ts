@@ -27,6 +27,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 import { WorkflowAgGridModule } from './workflow-list/workflow-ag-grid/workflow-ag-grid.module';
 import { WorkflowManageComponent } from './workflow-manage/workflow-manage.component';
+import { WorkflowRemarksViewModule } from 'src/app/utils/workflow-remarks-view/workflow-remarks-view.module';
 
 const routes: Routes = [
   {
@@ -61,7 +62,8 @@ const routes: Routes = [
     OnChangeModule,
     WorkflowRespondViewModule,
     PdfViewerModule,
-    WorkflowAgGridModule
+    WorkflowAgGridModule,
+    WorkflowRemarksViewModule
   ],
   declarations: [
     WorkflowComponent,

@@ -411,4 +411,11 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     }
     return self.col.properties.defaultTimezone;
   }
+
+  get workflowSteps() {
+    if (this.appService.serviceData && this.appService.serviceData.workflowConfig && this.appService.serviceData.workflowConfig.makerCheckers && this.appService.serviceData.workflowConfig.makerCheckers[0]) {
+      return this.appService.serviceData.workflowConfig.makerCheckers[0].steps;
+    }
+    return [];
+  }
 }

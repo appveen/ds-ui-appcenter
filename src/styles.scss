@@ -17,7 +17,7 @@
   background-color: rgba($danger, 0.1);
 }
 
-.bg-primary-0-1{
+.bg-primary-0-1 {
   background: rgba($primary, 0.1) !important;
 }
 
@@ -102,6 +102,10 @@
   border-width: 5px;
   border-style: solid;
   border-color: #555 transparent transparent transparent;
+}
+
+.font-7 {
+  font-size: 7px;
 }
 
 .font-13 {
@@ -222,16 +226,16 @@
   }
   .ag-header {
     background: #fff;
-    .ag-header-row:last-child{
-      .ag-header-cell{
+    .ag-header-row:last-child {
+      .ag-header-cell {
         border-top: 0;
       }
     }
   }
-  .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right){
+  .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right) {
     border-style: dashed !important;
   }
-  .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left){
+  .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left) {
     border-style: dashed !important;
   }
   .ag-floating-filter-button {
@@ -350,14 +354,17 @@
 }
 /*---- ODP DATA GRID END ----*/
 
-
-.pac-container{
+.pac-container {
   z-index: 1071;
 }
 
-.relation-control-wrapper{
+.relation-control-wrapper {
   ngb-typeahead-window.dropdown-menu {
     max-height: 180px !important;
     overflow-y: auto;
+  }
 }
+
+.border-dashed {
+  border-style: dashed !important;
 }

@@ -202,7 +202,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       this.showRespondPannel = true;
     });
 
-    this.setupShortcuts();
+    // this.setupShortcuts();
     // this.setActiveId(this.router.url);
     // this.router.events.pipe(
     //   filter(e => e instanceof NavigationEnd)
@@ -236,374 +236,374 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   //   });
   // }
 
-  setupShortcuts() {
-    this.shortcutService.unregisterAllShortcuts(690);
+  // setupShortcuts() {
+  //   this.shortcutService.unregisterAllShortcuts(690);
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Next Page',
-      keys: ['Shift', '>']
-    });
-    this.subscriptions['nextPage'] = this.shortcutService.shiftDotKey
-      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
-      .subscribe(() => {
-        const scrollElement = this.dataContainer?.nativeElement?.querySelector(
-          'odp-workflow-ag-grid>ag-grid-angular>.ag-root-wrapper>.ag-root-wrapper-body>.ag-root>.ag-body-viewport'
-        );
-        if (!!scrollElement) {
-          scrollElement.scrollTop += scrollElement.clientHeight;
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Next Page',
+  //     keys: ['Shift', '>']
+  //   });
+  //   this.subscriptions['nextPage'] = this.shortcutService.shiftDotKey
+  //     .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+  //     .subscribe(() => {
+  //       const scrollElement = this.dataContainer?.nativeElement?.querySelector(
+  //         'odp-workflow-ag-grid>ag-grid-angular>.ag-root-wrapper>.ag-root-wrapper-body>.ag-root>.ag-body-viewport'
+  //       );
+  //       if (!!scrollElement) {
+  //         scrollElement.scrollTop += scrollElement.clientHeight;
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Previous Page',
-      keys: ['Shift', '<']
-    });
-    this.subscriptions['prevPage'] = this.shortcutService.shiftDotKey
-      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
-      .subscribe(() => {
-        const scrollElement = this.dataContainer?.nativeElement?.querySelector(
-          'odp-workflow-ag-grid>ag-grid-angular>.ag-root-wrapper>.ag-root-wrapper-body>.ag-root>.ag-body-viewport'
-        );
-        if (!!scrollElement) {
-          scrollElement.scrollTop -= scrollElement.clientHeight;
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Previous Page',
+  //     keys: ['Shift', '<']
+  //   });
+  //   this.subscriptions['prevPage'] = this.shortcutService.shiftDotKey
+  //     .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+  //     .subscribe(() => {
+  //       const scrollElement = this.dataContainer?.nativeElement?.querySelector(
+  //         'odp-workflow-ag-grid>ag-grid-angular>.ag-root-wrapper>.ag-root-wrapper-body>.ag-root>.ag-body-viewport'
+  //       );
+  //       if (!!scrollElement) {
+  //         scrollElement.scrollTop -= scrollElement.clientHeight;
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Focus on Next Record',
-      keys: ['Down']
-    });
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Focus on Previous Record',
-      keys: ['Up']
-    });
-    this.subscriptions['focusRecord'] = this.shortcutService.key
-      .pipe(filter(event => event.key === 'ArrowUp' || event.key === 'ArrowDown'))
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const focusedCell = gridApi?.getFocusedCell();
-        if (!focusedCell) {
-          gridApi?.setFocusedCell(0, 'workflowId');
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Focus on Next Record',
+  //     keys: ['Down']
+  //   });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Focus on Previous Record',
+  //     keys: ['Up']
+  //   });
+  //   this.subscriptions['focusRecord'] = this.shortcutService.key
+  //     .pipe(filter(event => event.key === 'ArrowUp' || event.key === 'ArrowDown'))
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const focusedCell = gridApi?.getFocusedCell();
+  //       if (!focusedCell) {
+  //         gridApi?.setFocusedCell(0, 'workflowId');
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Select Focused Record',
-      keys: ['S']
-    });
-    this.subscriptions['selectRecord'] = this.shortcutService.key
-      .pipe(
-        filter(
-          event =>
-            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'S'
-        )
-      )
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const focusedCell = gridApi?.getFocusedCell();
-        if (!!focusedCell) {
-          const node = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-          if (!!node && !!node.data && node.data.status === 'Pending' && this.canRespond(node.data)) {
-            node.setSelected(true);
-          }
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Select Focused Record',
+  //     keys: ['S']
+  //   });
+  //   this.subscriptions['selectRecord'] = this.shortcutService.key
+  //     .pipe(
+  //       filter(
+  //         event =>
+  //           document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'S'
+  //       )
+  //     )
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const focusedCell = gridApi?.getFocusedCell();
+  //       if (!!focusedCell) {
+  //         const node = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //         if (!!node && !!node.data && node.data.status === 'Pending' && this.canRespond(node.data)) {
+  //           node.setSelected(true);
+  //         }
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Unselect Focused Record',
-      keys: ['U']
-    });
-    this.subscriptions['unselectRecord'] = this.shortcutService.key
-      .pipe(
-        filter(
-          event =>
-            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'U'
-        )
-      )
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const focusedCell = gridApi?.getFocusedCell();
-        if (!!focusedCell) {
-          const node = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-          node.setSelected(false);
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Unselect Focused Record',
+  //     keys: ['U']
+  //   });
+  //   this.subscriptions['unselectRecord'] = this.shortcutService.key
+  //     .pipe(
+  //       filter(
+  //         event =>
+  //           document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'U'
+  //       )
+  //     )
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const focusedCell = gridApi?.getFocusedCell();
+  //       if (!!focusedCell) {
+  //         const node = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //         node.setSelected(false);
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Select Next Record',
-      keys: ['K']
-    });
-    this.subscriptions['selectNextRecord'] = this.shortcutService.key
-      .pipe(
-        filter(
-          event =>
-            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'K'
-        )
-      )
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const focusedCell = gridApi?.getFocusedCell();
-        const nextRowIndex = !!focusedCell ? focusedCell.rowIndex + 1 : 0;
-        if (nextRowIndex <= gridApi?.getLastDisplayedRow()) {
-          const nextNode = gridApi?.getDisplayedRowAtIndex(nextRowIndex);
-          gridApi?.setFocusedCell(nextRowIndex, '_id');
-          if (!!nextNode && !!nextNode.data && nextNode.data.status === 'Pending' && this.canRespond(nextNode.data)) {
-            nextNode.setSelected(true);
-          }
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Select Next Record',
+  //     keys: ['K']
+  //   });
+  //   this.subscriptions['selectNextRecord'] = this.shortcutService.key
+  //     .pipe(
+  //       filter(
+  //         event =>
+  //           document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'K'
+  //       )
+  //     )
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const focusedCell = gridApi?.getFocusedCell();
+  //       const nextRowIndex = !!focusedCell ? focusedCell.rowIndex + 1 : 0;
+  //       if (nextRowIndex <= gridApi?.getLastDisplayedRow()) {
+  //         const nextNode = gridApi?.getDisplayedRowAtIndex(nextRowIndex);
+  //         gridApi?.setFocusedCell(nextRowIndex, '_id');
+  //         if (!!nextNode && !!nextNode.data && nextNode.data.status === 'Pending' && this.canRespond(nextNode.data)) {
+  //           nextNode.setSelected(true);
+  //         }
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Select Previous Record',
-      keys: ['J']
-    });
-    this.subscriptions['selectPrevRecord'] = this.shortcutService.key
-      .pipe(
-        filter(
-          event =>
-            document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'J'
-        )
-      )
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const focusedCell = gridApi?.getFocusedCell();
-        const prevRowIndex = !!focusedCell ? focusedCell.rowIndex - 1 : 0;
-        if (prevRowIndex >= 0) {
-          const prevNode = gridApi?.getDisplayedRowAtIndex(prevRowIndex);
-          gridApi?.setFocusedCell(prevRowIndex, '_id');
-          if (!!prevNode && !!prevNode.data && prevNode.data.status === 'Pending' && this.canRespond(prevNode.data)) {
-            prevNode?.setSelected(true);
-          }
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Select Previous Record',
+  //     keys: ['J']
+  //   });
+  //   this.subscriptions['selectPrevRecord'] = this.shortcutService.key
+  //     .pipe(
+  //       filter(
+  //         event =>
+  //           document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key.toUpperCase() === 'J'
+  //       )
+  //     )
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const focusedCell = gridApi?.getFocusedCell();
+  //       const prevRowIndex = !!focusedCell ? focusedCell.rowIndex - 1 : 0;
+  //       if (prevRowIndex >= 0) {
+  //         const prevNode = gridApi?.getDisplayedRowAtIndex(prevRowIndex);
+  //         gridApi?.setFocusedCell(prevRowIndex, '_id');
+  //         if (!!prevNode && !!prevNode.data && prevNode.data.status === 'Pending' && this.canRespond(prevNode.data)) {
+  //           prevNode?.setSelected(true);
+  //         }
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Select All Records',
-      keys: ['Ctrl', 'A']
-    });
-    this.subscriptions['selectAll'] = this.shortcutService.ctrlAKey.subscribe(() => {
-      const gridApi = this.listGrid?.agGrid?.api;
-      gridApi?.forEachNode(node => {
-        if (!!node.data && node.data.status === 'Pending' && this.canRespond(node.data)) {
-          node.setSelected(true);
-        }
-      });
-    });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Select All Records',
+  //     keys: ['Ctrl', 'A']
+  //   });
+  //   this.subscriptions['selectAll'] = this.shortcutService.ctrlAKey.subscribe(() => {
+  //     const gridApi = this.listGrid?.agGrid?.api;
+  //     gridApi?.forEachNode(node => {
+  //       if (!!node.data && node.data.status === 'Pending' && this.canRespond(node.data)) {
+  //         node.setSelected(true);
+  //       }
+  //     });
+  //   });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Unselect All Records',
-      keys: ['Esc']
-    });
-    this.subscriptions['selectNone'] = this.shortcutService.key
-      .pipe(filter(event => event.key.toUpperCase() === 'ESCAPE'))
-      .subscribe(() => {
-        if (this.showFilterList) {
-          this.showFilterList = false;
-        } else if (this.showfilterOptions && this.wfService.showFilterIcon) {
-          this.toggleFilterOptions();
-        } else if (this.showRespondPannel) {
-          this.respondView.expandWflist();
-        } else {
-          const gridApi = this.listGrid?.agGrid?.api;
-          gridApi?.forEachNode(node => node.setSelected(false));
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Unselect All Records',
+  //     keys: ['Esc']
+  //   });
+  //   this.subscriptions['selectNone'] = this.shortcutService.key
+  //     .pipe(filter(event => event.key.toUpperCase() === 'ESCAPE'))
+  //     .subscribe(() => {
+  //       if (this.showFilterList) {
+  //         this.showFilterList = false;
+  //       } else if (this.showfilterOptions && this.wfService.showFilterIcon) {
+  //         this.toggleFilterOptions();
+  //       } else if (this.showRespondPannel) {
+  //         this.respondView.expandWflist();
+  //       } else {
+  //         const gridApi = this.listGrid?.agGrid?.api;
+  //         gridApi?.forEachNode(node => node.setSelected(false));
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'View Focused Record',
-      keys: ['Enter']
-    });
-    this.shortcutService.registerShortcut({
-      section: 'Table',
-      label: 'Close Record',
-      keys: ['Esc']
-    });
-    this.subscriptions['openRecord'] = this.shortcutService.key.pipe(filter(event => event.key.toUpperCase() === 'ENTER')).subscribe(() => {
-      const gridApi = this.listGrid?.agGrid?.api;
-      const focusedCell = gridApi?.getFocusedCell();
-      if (!!focusedCell) {
-        const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-        this.listGrid?.rowDoubleClicked(row);
-      }
-    });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'View Focused Record',
+  //     keys: ['Enter']
+  //   });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Table',
+  //     label: 'Close Record',
+  //     keys: ['Esc']
+  //   });
+  //   this.subscriptions['openRecord'] = this.shortcutService.key.pipe(filter(event => event.key.toUpperCase() === 'ENTER')).subscribe(() => {
+  //     const gridApi = this.listGrid?.agGrid?.api;
+  //     const focusedCell = gridApi?.getFocusedCell();
+  //     if (!!focusedCell) {
+  //       const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //       this.listGrid?.rowDoubleClicked(row);
+  //     }
+  //   });
 
-    this.shortcutService.registerShortcut({
-      section: 'Filters',
-      label: 'Show Advanced Filters',
-      keys: ['Shift', 'F']
-    });
-    this.shortcutService.registerShortcut({
-      section: 'Filters',
-      label: 'Hide Advanced Filters',
-      keys: ['Esc']
-    });
-    this.subscriptions['openFilter'] = this.shortcutService.shiftFKey
-      .pipe(
-        filter(
-          () => this.wfService.showFilterIcon && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'
-        )
-      )
-      .subscribe(() => {
-        this.toggleFilterOptions();
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Filters',
+  //     label: 'Show Advanced Filters',
+  //     keys: ['Shift', 'F']
+  //   });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Filters',
+  //     label: 'Hide Advanced Filters',
+  //     keys: ['Esc']
+  //   });
+  //   this.subscriptions['openFilter'] = this.shortcutService.shiftFKey
+  //     .pipe(
+  //       filter(
+  //         () => this.wfService.showFilterIcon && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'
+  //       )
+  //     )
+  //     .subscribe(() => {
+  //       this.toggleFilterOptions();
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Filters',
-      label: 'Show Saved Views',
-      keys: ['Alt', 'Shift', 'F']
-    });
-    this.shortcutService.registerShortcut({
-      section: 'Filters',
-      label: 'Hide Saved Views',
-      keys: ['Esc']
-    });
-    this.subscriptions['openSavedView'] = this.shortcutService.altShiftFKey.subscribe(() => {
-      this.showFilterList = true;
-    });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Filters',
+  //     label: 'Show Saved Views',
+  //     keys: ['Alt', 'Shift', 'F']
+  //   });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Filters',
+  //     label: 'Hide Saved Views',
+  //     keys: ['Esc']
+  //   });
+  //   this.subscriptions['openSavedView'] = this.shortcutService.altShiftFKey.subscribe(() => {
+  //     this.showFilterList = true;
+  //   });
 
-    this.shortcutService.registerShortcut({
-      section: 'Filters',
-      label: 'Clear/Reset Filters',
-      keys: ['Shift', 'X']
-    });
-    this.subscriptions['resetFilter'] = this.shortcutService.shiftXKey
-      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
-      .subscribe(() => {
-        if (this.hasFilters) {
-          this.clearFilters();
-        } else if (this.selectedSavedView) {
-          this.resetFilter();
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Filters',
+  //     label: 'Clear/Reset Filters',
+  //     keys: ['Shift', 'X']
+  //   });
+  //   this.subscriptions['resetFilter'] = this.shortcutService.shiftXKey
+  //     .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+  //     .subscribe(() => {
+  //       if (this.hasFilters) {
+  //         this.clearFilters();
+  //       } else if (this.selectedSavedView) {
+  //         this.resetFilter();
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Workflow',
-      label: 'Open Respond Box',
-      keys: ['R']
-    });
-    this.shortcutService.registerShortcut({
-      section: 'Workflow',
-      label: 'Close Respond Box',
-      keys: ['Esc']
-    });
-    this.subscriptions['respond'] = this.shortcutService.key
-      .pipe(
-        filter(event => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key === 'r')
-      )
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const selectedNodes = gridApi?.getSelectedNodes();
-        if (selectedNodes?.length > 0) {
-          this.respondToMultipleWorkflow();
-        } else {
-          const focusedCell = gridApi?.getFocusedCell();
-          if (!!focusedCell) {
-            const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-            if (row.data.status === 'Pending' && this.canRespond(row.data)) {
-              this.gridService.respond.emit(row.data);
-            }
-          }
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Workflow',
+  //     label: 'Open Respond Box',
+  //     keys: ['R']
+  //   });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Workflow',
+  //     label: 'Close Respond Box',
+  //     keys: ['Esc']
+  //   });
+  //   this.subscriptions['respond'] = this.shortcutService.key
+  //     .pipe(
+  //       filter(event => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && event.key === 'r')
+  //     )
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const selectedNodes = gridApi?.getSelectedNodes();
+  //       if (selectedNodes?.length > 0) {
+  //         this.respondToMultipleWorkflow();
+  //       } else {
+  //         const focusedCell = gridApi?.getFocusedCell();
+  //         if (!!focusedCell) {
+  //           const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //           if (row.data.status === 'Pending' && this.canRespond(row.data)) {
+  //             this.gridService.respond.emit(row.data);
+  //           }
+  //         }
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Workflow',
-      label: 'Instant Approve',
-      keys: ['Shift', 'A']
-    });
-    this.subscriptions['approve'] = this.shortcutService.shiftAKey
-      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const selectedNodes = gridApi?.getSelectedNodes();
-        if (selectedNodes?.length > 0) {
-          this.respondToMultipleWorkflow();
-          setTimeout(() => {
-            this.respondView.createControl('approve');
-          });
-        } else {
-          const focusedCell = gridApi?.getFocusedCell();
-          if (!!focusedCell && !this.showRespondPannel) {
-            const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-            if (row.data.status === 'Pending' && this.canRespond(row.data)) {
-              this.gridService.respond.emit(row.data);
-              setTimeout(() => {
-                this.respondView.createControl('approve');
-              });
-            }
-          }
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Workflow',
+  //     label: 'Instant Approve',
+  //     keys: ['Shift', 'A']
+  //   });
+  //   this.subscriptions['approve'] = this.shortcutService.shiftAKey
+  //     .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const selectedNodes = gridApi?.getSelectedNodes();
+  //       if (selectedNodes?.length > 0) {
+  //         this.respondToMultipleWorkflow();
+  //         setTimeout(() => {
+  //           this.respondView.createControl('approve');
+  //         });
+  //       } else {
+  //         const focusedCell = gridApi?.getFocusedCell();
+  //         if (!!focusedCell && !this.showRespondPannel) {
+  //           const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //           if (row.data.status === 'Pending' && this.canRespond(row.data)) {
+  //             this.gridService.respond.emit(row.data);
+  //             setTimeout(() => {
+  //               this.respondView.createControl('approve');
+  //             });
+  //           }
+  //         }
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Workflow',
-      label: 'Instant Reject',
-      keys: ['Shift', 'R']
-    });
-    this.subscriptions['reject'] = this.shortcutService.shiftRKey
-      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const selectedNodes = gridApi?.getSelectedNodes();
-        if (selectedNodes?.length > 0) {
-          this.respondToMultipleWorkflow();
-          setTimeout(() => {
-            this.respondView.createControl('reject');
-          });
-        } else {
-          const focusedCell = gridApi?.getFocusedCell();
-          if (!!focusedCell && !this.showRespondPannel) {
-            const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-            if (row.data.status === 'Pending' && this.canRespond(row.data)) {
-              this.gridService.respond.emit(row.data);
-              setTimeout(() => {
-                this.respondView.createControl('reject');
-              });
-            }
-          }
-        }
-      });
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Workflow',
+  //     label: 'Instant Reject',
+  //     keys: ['Shift', 'R']
+  //   });
+  //   this.subscriptions['reject'] = this.shortcutService.shiftRKey
+  //     .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const selectedNodes = gridApi?.getSelectedNodes();
+  //       if (selectedNodes?.length > 0) {
+  //         this.respondToMultipleWorkflow();
+  //         setTimeout(() => {
+  //           this.respondView.createControl('reject');
+  //         });
+  //       } else {
+  //         const focusedCell = gridApi?.getFocusedCell();
+  //         if (!!focusedCell && !this.showRespondPannel) {
+  //           const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //           if (row.data.status === 'Pending' && this.canRespond(row.data)) {
+  //             this.gridService.respond.emit(row.data);
+  //             setTimeout(() => {
+  //               this.respondView.createControl('reject');
+  //             });
+  //           }
+  //         }
+  //       }
+  //     });
 
-    this.shortcutService.registerShortcut({
-      section: 'Workflow',
-      label: 'Instant Rework',
-      keys: ['Shift', 'W']
-    });
-    this.subscriptions['rework'] = this.shortcutService.shiftWKey
-      .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
-      .subscribe(() => {
-        const gridApi = this.listGrid?.agGrid?.api;
-        const selectedNodes = gridApi?.getSelectedNodes();
-        if (selectedNodes?.length > 0) {
-          this.respondToMultipleWorkflow();
-          setTimeout(() => {
-            this.respondView.createControl('rework');
-          });
-        } else {
-          const focusedCell = gridApi?.getFocusedCell();
-          if (!!focusedCell && !this.showRespondPannel) {
-            const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
-            if (row.data.status === 'Pending' && this.canRespond(row.data)) {
-              this.gridService.respond.emit(row.data);
-              setTimeout(() => {
-                this.respondView.createControl('rework');
-              });
-            }
-          }
-        }
-      });
-  }
+  //   this.shortcutService.registerShortcut({
+  //     section: 'Workflow',
+  //     label: 'Instant Rework',
+  //     keys: ['Shift', 'W']
+  //   });
+  //   this.subscriptions['rework'] = this.shortcutService.shiftWKey
+  //     .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
+  //     .subscribe(() => {
+  //       const gridApi = this.listGrid?.agGrid?.api;
+  //       const selectedNodes = gridApi?.getSelectedNodes();
+  //       if (selectedNodes?.length > 0) {
+  //         this.respondToMultipleWorkflow();
+  //         setTimeout(() => {
+  //           this.respondView.createControl('rework');
+  //         });
+  //       } else {
+  //         const focusedCell = gridApi?.getFocusedCell();
+  //         if (!!focusedCell && !this.showRespondPannel) {
+  //           const row = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex);
+  //           if (row.data.status === 'Pending' && this.canRespond(row.data)) {
+  //             this.gridService.respond.emit(row.data);
+  //             setTimeout(() => {
+  //               this.respondView.createControl('rework');
+  //             });
+  //           }
+  //         }
+  //       }
+  //     });
+  // }
 
   fetchSchema(serviceId: string) {
     if (this.subscriptions['getSchema_' + serviceId]) {
@@ -710,6 +710,16 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         type: 'status',
         properties: {
           name: 'Status'
+        },
+        dataType: 'select'
+      },
+      {
+        show: true,
+        key: 'checkerStep',
+        dataKey: 'checkerStep',
+        type: 'checkerStep',
+        properties: {
+          name: 'Checker Step'
         },
         dataType: 'select'
       },

@@ -1,0 +1,28 @@
+.step-head {
+  .rounded-circle {
+    width: 24px;
+    height: 24px;
+  }
+}
+.step-body {
+  .step-line:not(.border-0) {
+    margin-left: 12px;
+    min-height: 48px;
+    border-width: 1px !important;
+    &.inner {
+      min-height: 12px;
+      margin-left: 8px;
+    }
+  }
+  .step-remarks {
+    .step-action-head {
+      .step-action {
+        width: 16px;
+        height: 16px;
+      }
+    }
+    .step-attachments-file {
+      font-size: 10px;
+    }
+  }
+}

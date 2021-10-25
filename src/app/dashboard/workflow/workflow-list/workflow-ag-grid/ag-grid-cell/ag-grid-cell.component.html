@@ -28,6 +28,11 @@
       <span class="text-muted ml-2" *ngIf="status!='Pending'">{{status}}</span>
     </div>
   </ng-container>
+  <ng-container *ngIf="type === 'checkerStep'">
+    <div class="d-flex align-items-center">
+      <span class="font-bold text-dark ml-2">{{checkerStep}}</span>
+    </div>
+  </ng-container>
 
   <ng-container *ngIf="type === 'Checkbox'">
     <div class="d-flex align-items-center mt-1">
