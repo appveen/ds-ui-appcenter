@@ -50,7 +50,7 @@
             <div class="rounded-circle d-flex align-items-center justify-content-center border {{getIconClass(item)}}">
                 <span *ngIf="item.action=='Draft'" class="fa fa-file font-xs"></span>
                 <span *ngIf="item.action=='Edit'" class="fa fa-pencil-alt font-xs"></span>
-                <span *ngIf="item.action=='Submit'" class="fa fa-arrow-right font-xs"></span>
+                <span *ngIf="item.action=='Submit' || item.action=='Save & Submit'" class="fa fa-arrow-right font-xs"></span>
                 <span *ngIf="item.action=='Reject'" class="fa fa-times font-xs"></span>
                 <span *ngIf="item.action=='Rework'" class="fa fa-reload font-xs"></span>
                 <span *ngIf="isWorkflowStep(item)" class="fa fa-check font-xs"></span>

@@ -427,22 +427,48 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
 
   saveDraft(reset?) {
     const self = this;
-    self.showLazyLoader = true;
     self
       .simulatePayload()
       .then(data => {
-        const wfData = JSON.parse(JSON.stringify(this.selectedData));
-        wfData.data.new = this.form.value;
-        const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
-        respondModal.componentInstance.title = 'Save Draft';
-        respondModal.componentInstance.workflowData = wfData;
-        respondModal.componentInstance.serviceData = this.schema;
-        respondModal.componentInstance.actions = ['saveDraft'];
-        respondModal.result.then(
+        self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+        if (self.commonService.userDetails.basicDetails.name) {
+          self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
+        }
+        self.workflowModalOptions.remarks = null;
+        self.workflowUploadedFiles = [];
+        self.workflowModalOptions._id = self.value._id;
+        self.workflowModalOptions.operation = self.value._id ? 'PUT' : 'POST';
+        self.workflowModalOptions.title = 'Save Draft';
+        self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.form.getRawValue()) + ' fields';
+        self.workflowModalRef = self.modalService.open(self.workflowModal, {
+          centered: true
+        });
+        self.workflowModalRef.result.then(
           close => {
-            self.showLazyLoader = false;
             if (close) {
-              this.router.navigate(['/', this.commonService.app._id, 'workflow', this.appService.serviceId]);
+              // self.form.patchValue(data);
+              const isEdit = true;
+              const tempDef = self.formService.parseDefinition(self.schema, data, { isEdit });
+              self.form = self.fb.group(self.formService.createForm(tempDef));
+              const payload = {
+                remarks: self.respondModalOptions.remarks,
+                attachments: self.workflowUploadedFiles,
+                data: self.form.getRawValue()
+              };
+              self.showLazyLoader = true;
+              self.subscriptions['saveDraft'] = self.commonService
+                .put('api', this.workflowApi + '/doc/' + self.selectedData._id, payload).subscribe(
+                  res => {
+                    self.showLazyLoader = false;
+                    self.ts.success('Draft saved.');
+                  },
+                  err => {
+                    self.showLazyLoader = false;
+                    self.commonService.errorToast(err, 'Unable to save the draft, please try again later');
+                  }
+                );
+            } else {
+              self.showLazyLoader = false;
             }
           },
           dismiss => {
@@ -468,22 +494,41 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     self
       .simulatePayload()
       .then(data => {
-        const wfData = JSON.parse(JSON.stringify(this.selectedData));
-        wfData.data.new = this.form.value;
-        const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
-        respondModal.componentInstance.title = 'Submit Draft';
-        respondModal.componentInstance.workflowData = wfData;
-        respondModal.componentInstance.serviceData = this.schema;
-        respondModal.componentInstance.actions = ['submit'];
-        respondModal.result.then(
+        self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+        if (self.commonService.userDetails.basicDetails.name) {
+          self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
+        }
+        self.workflowModalOptions._id = self.selectedData._id;
+        self.workflowModalOptions.operation = self.selectedData.operation;
+        if (self.selectedData.operation === 'PUT') {
+          self.workflowModalOptions.title = 'Submit Draft';
+          self.workflowModalOptions.fields = self.appService.countChangedFields(self.value, self.value) + ' fields';
+        } else {
+          self.workflowModalOptions.title = 'Submit Draft';
+          self.workflowModalOptions.fields = 'New document';
+        }
+        if (!self.workflowModalRef) {
+          self.workflowModalRef = self.modalService.open(self.workflowModal, {
+            centered: true
+          });
+        }
+        self.workflowModalRef.result.then(
           close => {
-            self.showLazyLoader = false;
             if (close) {
-              this.router.navigate(['/', this.commonService.app._id, 'workflow', this.appService.serviceId]);
+              // self.form.patchValue(data);
+              const isEdit = true;
+              const tempDef = self.formService.parseDefinition(self.schema, data, { isEdit });
+              self.form = self.fb.group(self.formService.createForm(tempDef));
+              self.value = data;
+              self.respond('Submit', self.form.getRawValue());
+            } else {
+              self.showLazyLoader = false;
+              self.workflowModalRef = null;
             }
           },
           dismiss => {
             self.showLazyLoader = false;
+            self.workflowModalRef = null;
           }
         );
       })
@@ -513,7 +558,6 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       );
     });
   }
-
   uploadWorkflowFile(ev) {
     const self = this;
     const file = ev.target.files[0];
@@ -573,23 +617,27 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     }
     self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
   }
-
   discardDraft() {
-    const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
-    respondModal.componentInstance.title = '';
-    respondModal.componentInstance.workflowData = this.value;
-    respondModal.componentInstance.serviceData = this.schema;
-    respondModal.componentInstance.actions = ['discard'];
-    respondModal.result.then(
+    const self = this;
+    self.workflowModalOptions._id = self.value._id;
+    self.workflowModalOptions.requestedBy = self.commonService.userDetails.username;
+    if (self.commonService.userDetails.basicDetails.name) {
+      self.workflowModalOptions.requestedBy = self.commonService.userDetails.basicDetails.name;
+    }
+    self.discardModalRef = self.modalService.open(self.discardModal, {
+      centered: true
+    });
+    self.discardModalRef.result.then(
       close => {
         if (close) {
-          this.router.navigate(['/', this.commonService.app._id, 'workflow', this.appService.serviceId]);
+          self.respondModalOptions.remarks = self.respondControl.value;
+
+          self.respond('Discard');
         }
       },
       dismiss => { }
     );
   }
-
   showStep(id) {
     const self = this;
     if (id < 0) {
@@ -742,7 +790,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     respondModal.componentInstance.serviceData = this.schema;
     respondModal.result.then(close => {
       if (close) {
-        this.router.navigate(['/', this.commonService.app._id, 'workflow', this.appService.serviceId]);
+        console.log(close);
       }
     }, dismiss => { });
   }

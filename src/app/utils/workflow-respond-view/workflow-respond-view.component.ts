@@ -12,8 +12,10 @@ import { environment } from 'src/environments/environment';
 })
 export class WorkflowRespondViewComponent implements OnInit {
 
+  @Input() title: string;
   @Input() workflowData: any;
   @Input() serviceData: any;
+  @Input() actions: Array<string>;
   workflowFilesList: Array<any>;
   workflowUploadedFiles: Array<any>;
   remarks: string;
@@ -26,6 +28,7 @@ export class WorkflowRespondViewComponent implements OnInit {
     this.workflowFilesList = [];
     this.workflowUploadedFiles = [];
     this.fileProgress = {};
+    this.actions = ['discard', 'submit', 'rework', 'approve', 'reject'];
     this.actionMap = {
       'discard': 'Discard',
       'submit': 'Submit',
@@ -37,7 +40,14 @@ export class WorkflowRespondViewComponent implements OnInit {
 
   ngOnInit(): void {
     if (!environment.production) {
+      console.log(this.actions);
       console.log(this.workflowData);
+    }
+    if (!this.title) {
+      this.title = this.workflowData?._id;
+    }
+    if (!this.actions || this.actions.length == 0) {
+      this.actions = ['discard', 'submit', 'rework', 'approve', 'reject'];
     }
   }
 
@@ -67,26 +77,24 @@ export class WorkflowRespondViewComponent implements OnInit {
     const file = ev.target.files[0];
     const formData: FormData = new FormData();
     formData.append('file', file);
-    console.log(file);
-    this.workflowFilesList.push(file);
-    // const indexOfValue = this.workflowFilesList.findIndex(val => val.name === file.name);
-    // if (indexOfValue < 0) {
-    //   this.commonService
-    //     .upload('api', this.api, formData, false).subscribe(
-    //       event => {
-    //         if (event.type === HttpEventType.UploadProgress) {
-    //           this.fileProgress[file.name] = Math.floor(event.loaded / event.total * 100);
-    //         }
-    //         if (event.type === HttpEventType.Response) {
-    //           this.workflowFilesList.push(file);
-    //           this.workflowUploadedFiles.push(event.body);
-    //         }
-    //       },
-    //       err => {
-    //         this.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
-    //       }
-    //     );
-    // }
+    const indexOfValue = this.workflowFilesList.findIndex(val => val.name === file.name);
+    if (indexOfValue < 0) {
+      this.commonService
+        .upload('api', this.api, formData, false).subscribe(
+          event => {
+            if (event.type === HttpEventType.UploadProgress) {
+              this.fileProgress[file.name] = Math.floor(event.loaded / event.total * 100);
+            }
+            if (event.type === HttpEventType.Response) {
+              this.workflowFilesList.push(file);
+              this.workflowUploadedFiles.push(event.body);
+            }
+          },
+          err => {
+            this.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
+          }
+        );
+    }
     ev.target.value = '';
   }
 
@@ -101,7 +109,8 @@ export class WorkflowRespondViewComponent implements OnInit {
       action,
       remarks: this.remarks,
       attachments: this.workflowUploadedFiles,
-      ids: [this.workflowData._id]
+      ids: [this.workflowData._id],
+      data: this.workflowData.data.new
     };
     this.commonService.put('api', `${this.api}/utils/workflow/action`, payload)
       .subscribe((res: any) => {
@@ -118,13 +127,62 @@ export class WorkflowRespondViewComponent implements OnInit {
         } else {
           this.ts.warning(temp.message);
         }
-        this.activeModal.close(res);
+        this.activeModal.close({ status: 200, data: temp });
       }, err => {
         this.showLazyLoader = false;
         this.commonService.errorToast(err);
         console.log(err);
-        this.activeModal.dismiss(err);
+        this.activeModal.close({ status: 400, data: err });
       });
+  }
+
+  saveDraft() {
+    this.showLazyLoader = true;
+    const payload = {
+      remarks: this.remarks,
+      attachments: this.workflowUploadedFiles,
+      ids: [this.workflowData._id],
+      data: this.workflowData.data.new
+    };
+    this.commonService
+      .put('api', `${this.api}/utils/workflow/doc/${this.workflowData._id}`, payload).subscribe(res => {
+        this.showLazyLoader = false;
+        this.ts.success('Draft saved.');
+        this.activeModal.close({ status: 200, data: res });
+      }, err => {
+        this.showLazyLoader = false;
+        this.commonService.errorToast(err, 'Unable to save the draft, please try again later');
+        console.log(err);
+        this.activeModal.close({ status: 400, data: err });
+      });
+  }
+
+  get hasSubmit() {
+    return (this.actions || []).indexOf('submit') > -1;
+  }
+
+  get hasSaveDraft() {
+    return (this.actions || []).indexOf('saveDraft') > -1;
+  }
+
+  get hasDiscardDraft() {
+    return (this.actions || []).indexOf('discard') > -1;
+  }
+
+  get hasApprove() {
+    return (this.actions || []).indexOf('approve') > -1 && this.canRespond;
+  }
+
+  get hasRework() {
+    return (this.actions || []).indexOf('rework') > -1 && this.canRespond;
+  }
+
+  get hasRevert() {
+    return (this.actions || []).indexOf('revert') > -1 && this.canRespond;
+  }
+
+  get hasReject() {
+    return (this.actions || []).indexOf('reject') > -1 && this.canRespond;
   }
 
   get workflowSteps() {

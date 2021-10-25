@@ -54,7 +54,7 @@ export class WorkflowRemarksViewComponent implements OnInit {
       return 'border-primary bg-primary text-white';
     } else if (item.action == 'Edit') {
       return 'border-warning bg-warning text-white';
-    } else if (item.action == 'Submit') {
+    } else if (item.action == 'Submit' || item.action === 'Save & Submit') {
       return 'border-primary bg-primary text-white';
     } else if (item.action == 'Reject') {
       return 'border-danger bg-danger text-white';

@@ -1,6 +1,6 @@
 <div class="modal-header border-0 p-4">
     <div class="d-flex align-items-center justify-content-between w-100">
-        <h4>{{workflowData?._id}}</h4>
+        <h4>{{title}}</h4>
         <button type="button" class="btn btn-link text-dark" (click)="dismiss()">
             <span class="fa fa-times"></span>
         </button>
@@ -30,7 +30,8 @@
             </div>
             <div class="file-attachment w-50 ml-2">
                 <label for="attachments">Attach File</label>
-                <div *ngIf="workflowFilesList.length>0" class="box form-control border-dashed border-primary d-flex flex-column justify-content-end p-0">
+                <div *ngIf="workflowFilesList.length>0"
+                    class="box form-control border-dashed border-primary d-flex flex-column justify-content-end p-0">
                     <div class="files">
                         <div class="file-details d-flex align-items-center justify-content-between ng-star-inserted mx-3 py-2 border-bottom"
                             *ngFor="let file of workflowFilesList;let fileIndex=index">
@@ -52,46 +53,69 @@
                     </label>
                 </div>
                 <label *ngIf="workflowFilesList.length==0"
-                class="box form-control border-dashed border-primary d-flex align-items-center justify-content-center bg-primary-0-1 text-primary hover">
-                <input id="attachments" type="file" class="hidden-input hidden position-fixed" (change)="uploadWorkflowFile($event)">
-                <div class="d-flex align-items-center">
-                    <span class="fa fa-upload mr-2"></span>
-                    <span class="text">Upload file</span>
-                </div>
-            </label>
+                    class="box form-control border-dashed border-primary d-flex align-items-center justify-content-center bg-primary-0-1 text-primary hover">
+                    <input id="attachments" type="file" class="hidden-input hidden position-fixed"
+                        (change)="uploadWorkflowFile($event)">
+                    <div class="d-flex align-items-center">
+                        <span class="fa fa-upload mr-2"></span>
+                        <span class="text">Upload file</span>
+                    </div>
+                </label>
             </div>
         </div>
     </div>
-    <div *ngIf="canRespond" class="footer border-0 mt-5">
+    <div class="footer border-0 mt-5">
         <div class="d-flex align-items-center justify-content-end">
-            <button type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+            <button *ngIf="hasSaveDraft" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2" (click)="saveDraft()">
+                <span
+                    class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-primary">
+                    <span class="fa fa-save"></span>
+                </span>
+                <span class="text">Save Draft</span>
+            </button>
+            <button *ngIf="hasDiscardDraft" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+                (click)="saveDraft()">
+                <span class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-danger">
+                    <span class="fa fa-trash"></span>
+                </span>
+                <span class="text">Discard Draft</span>
+            </button>
+            <button *ngIf="hasReject" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
                 (click)="respond('Reject')">
                 <span class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-danger">
                     <span class="fa fa-times"></span>
                 </span>
                 <span class="text">Reject</span>
             </button>
-            <button type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+            <button *ngIf="hasRework" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
                 (click)="respond('Rework')">
                 <span class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-dark">
                     <span class="fa fa-sync"></span>
                 </span>
                 <span class="text">Rework</span>
             </button>
-            <!-- <button type="button" class="btn btn-light bg-white d-flex align-items-center ml-2" (click)="respond('Revert')">
+            <button *ngIf="hasRevert" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2" (click)="respond('Revert')">
                 <span
                     class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-warning">
                     <span class="fa fa-arrow-left"></span>
                 </span>
                 <span class="text">Revert</span>
-            </button> -->
-            <button type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+            </button>
+            <button *ngIf="hasApprove" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
                 (click)="respond('Approve')">
                 <span
                     class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-success">
                     <span class="fa fa-check"></span>
                 </span>
                 <span class="text">Approve</span>
+            </button>
+            <button *ngIf="hasSubmit" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+                (click)="respond('Submit')">
+                <span
+                    class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-primary">
+                    <span class="fa fa-arrow-right"></span>
+                </span>
+                <span class="text">Submit</span>
             </button>
         </div>
     </div>
