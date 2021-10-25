@@ -92,7 +92,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     remarksModal.componentInstance.serviceData = this.appService.serviceData;
     remarksModal.result.then(close => {
       if (close) {
-        const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg' });
+        const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
         respondModal.componentInstance.workflowData = this.data;
         respondModal.componentInstance.serviceData = this.appService.serviceData;
         respondModal.result.then(res => {

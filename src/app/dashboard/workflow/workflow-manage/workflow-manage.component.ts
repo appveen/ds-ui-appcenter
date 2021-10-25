@@ -772,7 +772,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   }
 
   openRemarksModal() {
-    const remarksModal: NgbModalRef = this.modalService.open(WorkflowRemarksViewComponent, { centered: true });
+    const remarksModal: NgbModalRef = this.modalService.open(WorkflowRemarksViewComponent, { centered: true, size: 'lg' });
     remarksModal.componentInstance.workflowData = this.selectedData;
     remarksModal.componentInstance.serviceData = this.schema;
     remarksModal.result.then(close => {
@@ -783,7 +783,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   }
 
   openRespondModal() {
-    const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg' });
+    const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
     respondModal.componentInstance.workflowData = this.selectedData;
     respondModal.componentInstance.serviceData = this.schema;
     respondModal.result.then(close => {

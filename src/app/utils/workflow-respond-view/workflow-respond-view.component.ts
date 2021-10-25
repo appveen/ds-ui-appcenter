@@ -46,7 +46,7 @@ export class WorkflowRespondViewComponent implements OnInit {
   }
 
   dismiss() {
-    this.activeModal.dismiss(false);
+    this.activeModal.close(false);
   }
 
   stepRemarks(item) {
@@ -67,25 +67,26 @@ export class WorkflowRespondViewComponent implements OnInit {
     const file = ev.target.files[0];
     const formData: FormData = new FormData();
     formData.append('file', file);
-
-    const indexOfValue = this.workflowFilesList.findIndex(val => val.name === file.name);
-    if (indexOfValue < 0) {
-      this.commonService
-        .upload('api', this.api, formData, false).subscribe(
-          event => {
-            if (event.type === HttpEventType.UploadProgress) {
-              this.fileProgress[file.name] = Math.floor(event.loaded / event.total * 100);
-            }
-            if (event.type === HttpEventType.Response) {
-              this.workflowFilesList.push(file);
-              this.workflowUploadedFiles.push(event.body);
-            }
-          },
-          err => {
-            this.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
-          }
-        );
-    }
+    console.log(file);
+    this.workflowFilesList.push(file);
+    // const indexOfValue = this.workflowFilesList.findIndex(val => val.name === file.name);
+    // if (indexOfValue < 0) {
+    //   this.commonService
+    //     .upload('api', this.api, formData, false).subscribe(
+    //       event => {
+    //         if (event.type === HttpEventType.UploadProgress) {
+    //           this.fileProgress[file.name] = Math.floor(event.loaded / event.total * 100);
+    //         }
+    //         if (event.type === HttpEventType.Response) {
+    //           this.workflowFilesList.push(file);
+    //           this.workflowUploadedFiles.push(event.body);
+    //         }
+    //       },
+    //       err => {
+    //         this.commonService.errorToast(err, 'Unable to upload the file, please try again later.');
+    //       }
+    //     );
+    // }
     ev.target.value = '';
   }
 

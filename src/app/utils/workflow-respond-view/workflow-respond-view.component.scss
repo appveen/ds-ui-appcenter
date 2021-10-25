@@ -18,6 +18,13 @@
 }
 .box {
   height: 140px;
+  .files {
+    height: 100%;
+    overflow: auto;
+  }
+  .file-upload-btn {
+    border-top-style: dashed !important;
+  }
 }
 .hidden-input {
   z-index: -100;

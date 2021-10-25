@@ -30,14 +30,35 @@
             </div>
             <div class="file-attachment w-50 ml-2">
                 <label for="attachments">Attach File</label>
-                <label
-                    class="box form-control border-dashed border-primary d-flex align-items-center justify-content-center bg-primary-0-1 text-primary hover">
-                    <input id="attachments" type="file" class="hidden-input hidden position-fixed" (change)="uploadWorkflowFile($event)">
-                    <div class="d-flex align-items-center">
-                        <span class="fa fa-upload mr-2"></span>
-                        <span class="text">Upload</span>
+                <div *ngIf="workflowFilesList.length>0" class="box form-control border-dashed border-primary d-flex flex-column justify-content-end p-0">
+                    <div class="files">
+                        <div class="file-details d-flex align-items-center justify-content-between ng-star-inserted mx-3 py-2 border-bottom"
+                            *ngFor="let file of workflowFilesList;let fileIndex=index">
+                            <div class="d-flex flex-column">
+                                <span class="filename font-weight-bold">{{file.name}}</span>
+                                <span class="font-xs text-muted">{{file.size|filesize}} . {{file.type}}</span>
+                            </div>
+                            <span class="fa fa-times hover" (click)="removeWorkflowFile(fileIndex)"></span>
+                        </div>
                     </div>
-                </label>
+                    <label
+                        class="file-upload-btn d-flex align-items-center justify-content-start border-top border-primary bg-primary-0-1 text-primary hover m-0 p-2 font-xs">
+                        <input id="attachments" type="file" class="hidden-input hidden position-fixed"
+                            (change)="uploadWorkflowFile($event)">
+                        <div class="d-flex align-items-center">
+                            <span class="fa fa-upload mr-2"></span>
+                            <span class="text">Upload more files</span>
+                        </div>
+                    </label>
+                </div>
+                <label *ngIf="workflowFilesList.length==0"
+                class="box form-control border-dashed border-primary d-flex align-items-center justify-content-center bg-primary-0-1 text-primary hover">
+                <input id="attachments" type="file" class="hidden-input hidden position-fixed" (change)="uploadWorkflowFile($event)">
+                <div class="d-flex align-items-center">
+                    <span class="fa fa-upload mr-2"></span>
+                    <span class="text">Upload file</span>
+                </div>
+            </label>
             </div>
         </div>
     </div>
