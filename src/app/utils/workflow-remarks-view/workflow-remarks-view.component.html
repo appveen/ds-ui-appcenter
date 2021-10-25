@@ -1,4 +1,4 @@
-<div class="modal-header border-0 p-4">
+<div class="modal-header border-white p-4">
     <div class="d-flex align-items-center justify-content-between w-100">
         <h4>{{workflowData?._id}}</h4>
         <button type="button" class="btn btn-link text-dark" (click)="dismiss()">
@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="modal-body p-4">
-    <div class="d-flex flex-column">
+    <!-- <div class="d-flex flex-column">
         <div class="step-head d-flex align-items-center">
             <div
                 class="rounded-circle d-flex align-items-center justify-content-center border border-primary bg-primary text-white">
@@ -26,7 +26,7 @@
                     <div class="step-action-user">{{submitRemarks.id}}</div>
                 </div>
                 <div class="step-action-body d-flex align-items-stretch">
-                    <div class="step-line inner border border-dashed mr-3 border-0"></div>
+                    <div class="step-line inner border border-dashed mr-3 border-white"></div>
                     <div class="step-action-data">
                         <div class="step-comments d-flex align-items-center">
                             <div class="step-action-comment text-muted">{{submitRemarks.remarks}}</div>
@@ -43,8 +43,57 @@
                 </div>
             </div>
         </div>
+    </div> -->
+
+    <div class="d-flex flex-column" *ngFor="let item of this.workflowData.audit;let i=index;let l=last">
+        <div class="step-head d-flex align-items-center">
+            <div class="rounded-circle d-flex align-items-center justify-content-center border {{getIconClass(item)}}">
+                <span *ngIf="item.action=='Draft'" class="fa fa-file font-xs"></span>
+                <span *ngIf="item.action=='Edit'" class="fa fa-pencil-alt font-xs"></span>
+                <span *ngIf="item.action=='Submit'" class="fa fa-arrow-right font-xs"></span>
+                <span *ngIf="item.action=='Reject'" class="fa fa-times font-xs"></span>
+                <span *ngIf="item.action=='Rework'" class="fa fa-reload font-xs"></span>
+                <span *ngIf="isWorkflowStep(item)" class="fa fa-check font-xs"></span>
+            </div>
+            <div class="step-name ml-3 text-dark font-weight-bold">
+                {{item.action}}
+            </div>
+        </div>
+        <div class="step-body d-flex align-items-stretch">
+            <div class="step-line border border-dashed mr-3" [ngClass]="{'border-white':l}"></div>
+            <div class="remarks p-3">
+                <div class="step-remarks">
+                    <div class="step-action-head d-flex align-items-center">
+                        <div
+                            class="step-action rounded-circle d-flex align-items-center justify-content-center border mr-2 {{getIconClass(item)}}">
+                            <span class="fa fa-user font-7"></span>
+                        </div>
+                        <div class="step-action-user">{{item.id}}</div>
+                    </div>
+                    <div class="step-action-body d-flex align-items-stretch">
+                        <div class="step-line inner mr-3"></div>
+                        <div class="step-action-data p-2 mb-3">
+                            <div class="step-comments d-flex align-items-center">
+                                <div *ngIf="item.remarks" class="step-action-comment text-muted">{{item.remarks}}</div>
+                                <div *ngIf="!item.remarks" class="step-action-comment text-muted font-xs">No Remarks</div>
+                            </div>
+                            <div *ngIf="item.attachments && item.attachments.length>0"
+                                class="step-attachments d-flex flex-wrap">
+                                <div class="step-attachments-file border rounded p-2 mr-2 mt-2 d-flex align-items-center justify-content-between"
+                                    *ngFor="let file of item.attachments">
+                                    <span class="filename">{{file.metadata.filename}}</span>
+                                    <span class="fa fa-download hover ml-4"
+                                        (click)="downloadFile(file.filename)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="d-flex flex-column" *ngFor="let item of workflowSteps;let i=index;let l=last">
+
+    <!-- <div class="d-flex flex-column" *ngFor="let item of workflowSteps;let i=index;let l=last">
         <div class="step-head d-flex align-items-center">
             <div class="rounded-circle d-flex align-items-center justify-content-center"
                 [ngClass]="{'border border-success bg-success text-white':stepRemarks(item).length > 0,'border border-dashed':stepRemarks(item).length==0}">
@@ -56,7 +105,7 @@
                 {{item.name}}</div>
         </div>
         <div class="step-body d-flex align-items-stretch">
-            <div class="step-line border border-dashed mr-3" [ngClass]="{'border-0':l}"></div>
+            <div class="step-line border border-dashed mr-3" [ngClass]="{'border-white':l}"></div>
             <div class="remarks p-3">
                 <div class="step-remarks" *ngFor="let remark of stepRemarks(item);let rl=last">
                     <div class="step-action-head d-flex align-items-center">
@@ -67,7 +116,7 @@
                         <div class="step-action-user">{{remark.id}}</div>
                     </div>
                     <div class="step-action-body d-flex align-items-stretch">
-                        <div class="step-line inner border border-dashed mr-3" [ngClass]="{'border-0':rl}"></div>
+                        <div class="step-line inner border border-dashed mr-3" [ngClass]="{'border-white':rl}"></div>
                         <div class="step-action-data p-2 mb-3">
                             <div class="step-comments d-flex align-items-center">
                                 <div class="step-action-comment text-muted">{{remark.remarks}}</div>
@@ -85,9 +134,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
-<div *ngIf="canRespond" class="modal-footer border-0 p-4">
+<div *ngIf="canRespond" class="modal-footer border-white p-4">
     <div class="d-flex align-items-center justify-content-end">
         <button type="button" class="btn btn-primary" (click)="close()">Respond</button>
     </div>
