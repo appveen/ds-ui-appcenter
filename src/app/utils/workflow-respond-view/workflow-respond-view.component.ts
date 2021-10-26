@@ -28,7 +28,7 @@ export class WorkflowRespondViewComponent implements OnInit {
     this.workflowFilesList = [];
     this.workflowUploadedFiles = [];
     this.fileProgress = {};
-    this.actions = ['discard', 'submit', 'rework', 'approve', 'reject'];
+    this.actions = ['rework', 'approve', 'reject'];
     this.actionMap = {
       'discard': 'Discard',
       'submit': 'Submit',
@@ -47,7 +47,7 @@ export class WorkflowRespondViewComponent implements OnInit {
       this.title = this.workflowData?._id;
     }
     if (!this.actions || this.actions.length == 0) {
-      this.actions = ['discard', 'submit', 'rework', 'approve', 'reject'];
+      this.actions = ['rework', 'approve', 'reject'];
     }
   }
 
