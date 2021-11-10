@@ -175,7 +175,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     getSchema(id, recordId) {
         const self = this;
         self.id = recordId;
-        self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + id).subscribe(
+        self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + id, { filter: { app: this.commonService.app._id } }).subscribe(
             res => {
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);

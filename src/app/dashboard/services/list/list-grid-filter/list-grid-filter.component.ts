@@ -187,7 +187,8 @@ export class ListGridFilterComponent implements OnInit, OnDestroy {
       }
       self.subscriptions['fetchRelatedSchema_' + self.definition.properties.relatedTo] = self.commonService
         .get('sm', '/service/' + self.definition.properties.relatedTo, {
-          select: 'definition'
+          select: 'definition',
+          filter: { app: this.commonService.app._id }
         })
         .subscribe(
           res => {

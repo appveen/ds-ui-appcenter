@@ -172,36 +172,36 @@ export class CommonService {
     const self = this;
     return new Promise((resolve, reject) => {
       // if (!self.userDetails.isSuperAdmin) {
-        self.fetchUserRoles().then(
-          res1 => {
-            if (res1.status != 401) {
-              self.apiCalls.afterAuthentication = true;
-              self.fetchLastActiveApp().then(
-                app => {
-                  self
-                    .getAppDetails(self.app)
-                    .then(() => {
-                      self.loadTheme(self.app);
-                    })
-                    .catch(console.error);
-                  self.apiCalls.afterAuthentication = false;
-                  resolve(res1);
-                },
-                err => {
-                  self.apiCalls.afterAuthentication = false;
-                  reject(err);
-                }
-              );
-            } else {
-              self.apiCalls.afterAuthentication = false;
-              resolve(res1);
-            }
-          },
-          err => {
+      self.fetchUserRoles().then(
+        res1 => {
+          if (res1.status != 401) {
+            self.apiCalls.afterAuthentication = true;
+            self.fetchLastActiveApp().then(
+              app => {
+                self
+                  .getAppDetails(self.app)
+                  .then(() => {
+                    self.loadTheme(self.app);
+                  })
+                  .catch(console.error);
+                self.apiCalls.afterAuthentication = false;
+                resolve(res1);
+              },
+              err => {
+                self.apiCalls.afterAuthentication = false;
+                reject(err);
+              }
+            );
+          } else {
             self.apiCalls.afterAuthentication = false;
-            reject(err);
+            resolve(res1);
           }
-        );
+        },
+        err => {
+          self.apiCalls.afterAuthentication = false;
+          reject(err);
+        }
+      );
       // } else {
       //   self.apiCalls.afterAuthentication = true;
 
@@ -1168,7 +1168,7 @@ export class CommonService {
       self.subscriptions['getServiceDetails_' + serviceId].unsubscribe();
     }
     return new Promise((resolve, reject) => {
-      self.subscriptions['getServiceDetails_' + serviceId] = self.get('sm', '/service/' + serviceId, { select: 'api app' }).subscribe(
+      self.subscriptions['getServiceDetails_' + serviceId] = self.get('sm', '/service/' + serviceId, { select: 'api app', filter: { app: this.app._id } }).subscribe(
         service => {
           if (self.subscriptions['getDocumentVersion_' + serviceId + '_' + documentId]) {
             self.subscriptions['getDocumentVersion_' + serviceId + '_' + documentId].unsubscribe();
@@ -1452,7 +1452,8 @@ export class CommonService {
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
         .get('sm', '/service/' + serviceId, {
-          select: '_id,name,app,api,definition,attributeList,workflowConfig'
+          select: '_id,name,app,api,definition,attributeList,workflowConfig',
+          filter: { app: this.app._id }
         })
         .toPromise();
     }

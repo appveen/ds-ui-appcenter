@@ -158,7 +158,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   fetchSchema(serviceId: string) {
     const self = this;
     self.showLazyLoader = true;
-    self.subscriptions['getServiceDetails'] = self.commonService.get('sm', '/service/' + serviceId).subscribe(
+    self.subscriptions['getServiceDetails'] = self.commonService.get('sm', '/service/' + serviceId, { filter: { app: this.commonService.app._id } }).subscribe(
       res => {
         self.showLazyLoader = false;
         self.schema = res;

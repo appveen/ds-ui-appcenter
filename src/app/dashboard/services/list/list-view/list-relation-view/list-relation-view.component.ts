@@ -21,7 +21,7 @@ export class ListRelationViewComponent implements OnInit {
   get currentAppId() {
     return this.commonService?.getCurrentAppId();
   }
-  
+
   constructor(private appService: AppService, private commonService: CommonService, private datePipe: DatePipe) {
     const self = this;
     self.subscriptions = {};
@@ -59,7 +59,8 @@ export class ListRelationViewComponent implements OnInit {
       }
       self.subscriptions['fetchRelatedSchema_' + self.definition.properties.relatedTo] = self.commonService
         .get('sm', '/service/' + self.definition.properties.relatedTo, {
-          select: 'definition'
+          select: 'definition',
+          filter: { app: this.commonService.app._id }
         })
         .subscribe(
           res => {
