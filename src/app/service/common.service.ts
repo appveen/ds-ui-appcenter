@@ -171,7 +171,7 @@ export class CommonService {
   afterAuthentication(): Promise<any> {
     const self = this;
     return new Promise((resolve, reject) => {
-      if (!self.userDetails.isSuperAdmin) {
+      // if (!self.userDetails.isSuperAdmin) {
         self.fetchUserRoles().then(
           res1 => {
             if (res1.status != 401) {
@@ -202,40 +202,40 @@ export class CommonService {
             reject(err);
           }
         );
-      } else {
-        self.apiCalls.afterAuthentication = true;
+      // } else {
+      //   self.apiCalls.afterAuthentication = true;
 
-        const arr = [];
-        // self.appList.forEach(app => {
-        //   arr.push(self.getAppDetails(app));
-        // });
-        arr.push(self.fetchAllApps());
-        // arr.push(self.getAppsDetails(self.appList));
-        Promise.all(arr).then(
-          r => {
-            self.fetchLastActiveApp().then(
-              app => {
-                self
-                  .getAppDetails(self.app)
-                  .then(() => {
-                    self.loadTheme(self.app);
-                  })
-                  .catch(console.error);
-                self.apiCalls.afterAuthentication = false;
-                resolve({ status: 200 });
-              },
-              err => {
-                self.apiCalls.afterAuthentication = false;
-                reject(err);
-              }
-            );
-          },
-          err => {
-            self.apiCalls.afterAuthentication = false;
-            reject(err);
-          }
-        );
-      }
+      //   const arr = [];
+      //   // self.appList.forEach(app => {
+      //   //   arr.push(self.getAppDetails(app));
+      //   // });
+      //   arr.push(self.fetchAllApps());
+      //   // arr.push(self.getAppsDetails(self.appList));
+      //   Promise.all(arr).then(
+      //     r => {
+      //       self.fetchLastActiveApp().then(
+      //         app => {
+      //           self
+      //             .getAppDetails(self.app)
+      //             .then(() => {
+      //               self.loadTheme(self.app);
+      //             })
+      //             .catch(console.error);
+      //           self.apiCalls.afterAuthentication = false;
+      //           resolve({ status: 200 });
+      //         },
+      //         err => {
+      //           self.apiCalls.afterAuthentication = false;
+      //           reject(err);
+      //         }
+      //       );
+      //     },
+      //     err => {
+      //       self.apiCalls.afterAuthentication = false;
+      //       reject(err);
+      //     }
+      //   );
+      // }
     });
   }
 
