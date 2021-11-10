@@ -814,21 +814,23 @@ export class ListComponent implements OnInit, OnDestroy {
   refineByPermissions() {
     const self = this;
     if (!(self.hasPermission('POST') && self.hasPermission('PUT') && self.hasPermission('DELETE'))) {
-      const fieldsList: any[] = self.commonService.getViewFieldsList(self.schema._id);
-      const fields = fieldsList.reduce((pv, cv) => {
+      // const fieldsList: any[] = self.commonService.getViewFieldsList(self.schema._id);
+      const originalFields = self.schema.role.fields;
+      const roles: any[] = self.schema.role.roles;
+      const fields = roles.reduce((prev, role) => {
         const temp = {};
-        Object.keys(cv.fields)
-          .filter(key => !!cv.fields[key]._p)
+        Object.keys(originalFields)
+          .filter(key => !!originalFields[key]._p)
           .forEach(key => {
-            if (!!pv[key]?._p) {
-              const tag1 = pv[key]?._p.charCodeAt(0);
-              const tag2 = cv.fields[key]._p[cv.id].charCodeAt(0);
+            if (!!prev[key]?._p) {
+              const tag1 = prev[key]?._p.charCodeAt(0);
+              const tag2 = originalFields[key]._p[role.id].charCodeAt(0);
               temp[key] = {
                 _p: String.fromCharCode(Math.max(tag1, tag2))
               }
             } else {
               temp[key] = {
-                _p: cv.fields[key]._p[cv.id]
+                _p: originalFields[key]._p[role.id]
               }
             }
           });
