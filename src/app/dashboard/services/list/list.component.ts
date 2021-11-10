@@ -180,10 +180,10 @@ export class ListComponent implements OnInit, OnDestroy {
     }, 100);
 
     this.commonService.notification.fileImport
-    .pipe(filter(data => data?.status === 'Created'))
-    .subscribe(() => {
-      this.getRecordsCount();
-    })
+      .pipe(filter(data => data?.status === 'Created'))
+      .subscribe(() => {
+        this.getRecordsCount();
+      })
   }
 
   ngOnDestroy() {
@@ -505,7 +505,7 @@ export class ListComponent implements OnInit, OnDestroy {
     self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
       res => {
         self.apiCalls.fetchingSchema = false;
-        if(!res.definition) {
+        if (!res.definition) {
           self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
             state: {
               noRedirect: true,
@@ -820,7 +820,7 @@ export class ListComponent implements OnInit, OnDestroy {
         Object.keys(cv.fields)
           .filter(key => !!cv.fields[key]._p)
           .forEach(key => {
-            if(!!pv[key]?._p) {
+            if (!!pv[key]?._p) {
               const tag1 = pv[key]?._p.charCodeAt(0);
               const tag2 = cv.fields[key]._p[cv.id].charCodeAt(0);
               temp[key] = {
@@ -832,7 +832,7 @@ export class ListComponent implements OnInit, OnDestroy {
               }
             }
           });
-          return temp;
+        return temp;
       }, {});
       self.configureByPermission(self.flattenPermission(fields), self.definition);
     }
@@ -1447,8 +1447,8 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   get hasWorkflow() {
-    if (this.schema && this.schema.workflowConfig) {
-      return this.schema.workflowConfig.enabled;
+    if (this.schema) {
+      return this.commonService.hasWorkflow(this.schema)
     }
     return false;
   }

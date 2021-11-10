@@ -656,8 +656,8 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   get hasWorkflow() {
-    if (this.schema && this.schema.workflowConfig) {
-      return this.schema.workflowConfig.enabled;
+    if (this.schema) {
+      return this.commonService.hasWorkflow(this.schema)
     }
     return false;
   }
