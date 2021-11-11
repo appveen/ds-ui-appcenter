@@ -267,7 +267,8 @@ export class ViewComponent implements OnInit, OnDestroy {
             return;
         }
         if (!self.hasPermission('POST') && !self.hasPermission('PUT') && !self.hasPermission('DELETE')) {
-            const fields = self.commonService.getViewFieldsList(self.schema._id);
+            // const fields = self.commonService.getViewFieldsList(self.schema._id);
+            const fields = [self.schema.role]
             newDefinition = self.appService.configureByPermission(newDefinition, fields);
         }
         // newDefinition.push({
