@@ -26,7 +26,7 @@ export class NoAccessComponent  implements OnInit {
           sessionStorage.removeItem('serviceToRedirect');
           if(!!serviceId) {
             setTimeout(() => {
-              if(this.commonService.hasPermission(serviceId)) {
+              if(this.commonService.hasPermissionOld(serviceId)) {
                 this.router.navigate(['/', this.commonService.app._id, 'services', serviceId, 'list']);
               }
             }, 2000);

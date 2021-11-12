@@ -68,7 +68,7 @@
                     <span class="text">Back</span>
                 </button>
             </div>
-            <div *ngIf="!showVersionHistory && !inReview" class="d-flex align-items-center">
+            <div *ngIf="!showVersionHistory && !inReview && !showLazyLoader" class="d-flex align-items-center">
                 <button (click)="workflowAlert()" *ngIf="hasPermission('DELETE') && !documentLocked"
                     class="btn btn-link px-3" type="button">
                     <span class="fa fa-trash mr-2 font-13"></span>

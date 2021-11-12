@@ -483,7 +483,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
 
   hasPermission(method?: string): boolean {
     const self = this;
-    return self.commonService.hasPermission(self.schema._id, method);
+    return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
   }
 
   uploadWorkflowFile(ev) {

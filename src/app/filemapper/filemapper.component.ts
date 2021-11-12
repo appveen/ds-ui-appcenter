@@ -98,9 +98,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       self.hasBulkInvalidRecords = true;
     }
     self.showLazyLoader = true;
-    if (!this.commonService.hasPermission(self.appService.serviceId, 'PUT') && !this.commonService.hasPermission(self.appService.serviceId, 'POST')) {
-      return self.router.navigate(['../list'], { relativeTo: self.route });
-    }
     self.getSchema(self.appService.serviceId);
 
     self.appService.objMappingData.subscribe(data => {
@@ -128,6 +125,9 @@ export class FilemapperComponent implements OnInit, OnDestroy {
         self.updateSchema(parsedDef);
         res.definition = JSON.parse(JSON.stringify(parsedDef));
         self.schema = res;
+        if (!this.commonService.hasPermission(self.appService.serviceId,self.schema.role.roles,'PUT') && !this.commonService.hasPermission(self.appService.serviceId,self.schema.role.roles,'POST')) {
+          return self.router.navigate(['../list'], { relativeTo: self.route });
+        }
         self.title = res.name;
         self.version = res.version;
         self.api = '/' + self.commonService.app._id + res.api;
