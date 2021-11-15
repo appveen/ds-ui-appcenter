@@ -213,7 +213,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard stateModel workflowConfig',
+      select: 'api definition name relatedSchemas wizard stateModel workflowConfig role',
       filter: { app: this.commonService.app._id }
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
