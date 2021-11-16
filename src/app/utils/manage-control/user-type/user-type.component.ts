@@ -116,9 +116,9 @@ export class UserTypeComponent implements OnInit {
           select: self.attrs,
         };
         let path = `/usr/app/${this.commonService.app._id}`;
-        if (this.commonService.userDetails.isSuperAdmin) {
-          path = `/usr`
-        }
+        // if (this.commonService.userDetails.isSuperAdmin) {
+        //   path = `/usr`
+        // }
         return self.commonService.get('user', path, options).toPromise().then(res => {
           return res;
         }).catch(err => { self.commonService.errorToast(err, 'Unable to search'); });
