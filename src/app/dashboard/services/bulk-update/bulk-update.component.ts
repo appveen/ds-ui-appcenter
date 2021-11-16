@@ -162,7 +162,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard stateModel workflowConfig',
+      select: 'api definition name relatedSchemas wizard stateModel workflowConfig role',
       filter: {
         app: this.commonService.app._id
       }
@@ -483,7 +483,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
 
   hasPermission(method?: string): boolean {
     const self = this;
-    return self.commonService.hasPermission(self.schema._id, method);
+    return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
   }
 
   uploadWorkflowFile(ev) {

@@ -20,7 +20,8 @@ export class ViewGuard implements CanActivate {
     } else {
       const serviceId = state.url.split('/')[3];
       const documentId = state.url.split('/')[5];
-      if (this.commonService.hasPermission(serviceId)) {
+
+      if (this.commonService.hasPermissionOld(serviceId)) {
         return true;
       } else {
         this.router.navigate(['/', this.commonService.app._id, `no-access`], {
@@ -31,6 +32,8 @@ export class ViewGuard implements CanActivate {
         });
         return false;
       }
+
+
     }
   }
 }

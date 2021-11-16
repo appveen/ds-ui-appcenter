@@ -969,7 +969,7 @@ export class ListComponent implements OnInit, OnDestroy {
   hasPermission(method?: string): boolean {
     const self = this;
     if (self.schema) {
-      return self.commonService.hasPermission(self.schema._id, method);
+      return self.commonService.hasPermission(self.schema._id,self.schema.role.roles,method);
     }
     return false;
   }

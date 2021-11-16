@@ -20,7 +20,7 @@ export class ListGuard implements CanActivate {
       return true;
     } else {
       const serviceId = state.url.split('/')[3];
-      if (this.commonService.hasPermission(serviceId)) {
+      if (this.commonService.hasPermissionOld(serviceId)) {
         return true;
       } else {
         this.router.navigate(['/', this.commonService.app._id, `no-access`], {

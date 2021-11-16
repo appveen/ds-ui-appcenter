@@ -1243,7 +1243,33 @@ export class CommonService {
     return self.permissions.filter(p => p.entity === serviceId && p.app === this.app._id);
   }
 
-  hasPermission(serviceId: string, method?: string): boolean {
+
+  hasPermission(serviceId: string, permissions: any,  method?: string): boolean {
+    const self = this;
+    /**
+     * Super Admin Permission Check
+     */
+    if (self.userDetails.isSuperAdmin) {
+      return true;
+    }
+    /**
+     * Data Servie Admin Permission Check
+     */
+
+    if (self.isDataServiceAdmin(serviceId)) {
+      return true;
+    }
+    /**
+     * Normal User Permission Check
+     */
+    if (method) {
+      return Boolean(permissions.find(p => p.operations.find(o => o.method === method)));
+    } else {
+      return permissions.length > 0;
+    }
+  }
+
+  hasPermissionOld(serviceId: string, method?: string): boolean {
     const self = this;
     /**
      * Super Admin Permission Check
@@ -1452,7 +1478,7 @@ export class CommonService {
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
         .get('sm', '/service/' + serviceId, {
-          select: '_id,name,app,api,definition,attributeList,workflowConfig',
+          select: '_id,name,app,api,definition,attributeList,workflowConfig,role',
           filter: { app: this.app._id }
         })
         .toPromise();
