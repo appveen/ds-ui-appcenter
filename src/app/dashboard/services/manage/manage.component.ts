@@ -63,6 +63,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   initialState: any;
   stateModelPath: any;
   searchTerm: string;
+  tempState: string;
+  isInitialStateOnEdit: boolean;
 
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
@@ -98,6 +100,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     this.restrictOverflow = false;
     this.stateModelAttr = null;
     self.stateModelName = '';
+    self.tempState = null;
+    self.isInitialStateOnEdit = false;
   }
 
   ngOnInit() {
@@ -206,7 +210,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   setStateAndSave(state) {
     const self = this;
-    self.form.get(self.stateModelAttr).patchValue(state);
+    if(!self.hasWorkflow){
+      self.form.get(self.stateModelAttr).patchValue(state);
+    }else{
+      self.tempState = state;
+    }
     self.save();
   }
 
@@ -257,6 +265,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                     data[self.stateModelAttr] = self.initialState;
                   }
                   self.ID = null;
+                }
+                if(self.stateModelAttr && !data.hasOwnProperty(self.stateModelAttr) && self.initialState){
+                  data[self.stateModelAttr] = self.initialState;
+                  self.isInitialStateOnEdit = true;
                 }
                 self.value = self.appService.cloneObject(data);
                 self.buildForm(res, data);
@@ -382,6 +394,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.workflowModalRef.result.then(
       close => {
         if (close) {
+          if(self.tempState){
+            self.form.get(self.stateModelAttr).patchValue(self.tempState);
+          }
+          self.tempState = null;
           self.submitValue(reset, true);
         } else {
           self.draftReqInProgress = false;
@@ -600,10 +616,15 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           self.workflowModalRef.result.then(
             close => {
               if (close) {
+                if(self.tempState){
+                  self.form.get(self.stateModelAttr).patchValue(self.tempState);
+                  self.tempState = null;
+                }
                 self.submitValue(reset);
               }
             },
-            dismiss => { }
+            dismiss => { 
+            }
           );
         })
         .catch(err => {
