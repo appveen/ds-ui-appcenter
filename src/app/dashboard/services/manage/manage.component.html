@@ -80,8 +80,9 @@
             </span>
             <span *ngIf="hasWorkflow" class="text">Proceed</span>
           </button>
-          <div *ngIf="(stateModelAttr && stateModelNextStates.length && ID && !isInitialStateOnEdit)" class="btn-group state-model-dropdown"
-            ngbDropdown role="group" aria-label="Button group with nested dropdown">
+          <div *ngIf="(stateModelAttr && stateModelNextStates.length && ID && !isInitialStateOnEdit)"
+            class="btn-group state-model-dropdown" ngbDropdown role="group"
+            aria-label="Button group with nested dropdown">
             <button class="btn dropdown-toggle-split"
               [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }" ngbDropdownToggle
               [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord">

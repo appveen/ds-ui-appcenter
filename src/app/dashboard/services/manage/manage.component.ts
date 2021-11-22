@@ -210,9 +210,9 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   setStateAndSave(state) {
     const self = this;
-    if(!self.hasWorkflow){
+    if (!self.hasWorkflow) {
       self.form.get(self.stateModelAttr).patchValue(state);
-    }else{
+    } else {
       self.tempState = state;
     }
     self.save();
@@ -266,7 +266,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   }
                   self.ID = null;
                 }
-                if(self.stateModelAttr && !data.hasOwnProperty(self.stateModelAttr) && self.initialState){
+                if (self.stateModelAttr && !data.hasOwnProperty(self.stateModelAttr) && self.initialState) {
                   data[self.stateModelAttr] = self.initialState;
                   self.isInitialStateOnEdit = true;
                 }
@@ -394,7 +394,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.workflowModalRef.result.then(
       close => {
         if (close) {
-          if(self.tempState){
+          if (self.tempState) {
             self.form.get(self.stateModelAttr).patchValue(self.tempState);
           }
           self.tempState = null;
@@ -616,14 +616,14 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           self.workflowModalRef.result.then(
             close => {
               if (close) {
-                if(self.tempState){
+                if (self.tempState) {
                   self.form.get(self.stateModelAttr).patchValue(self.tempState);
                   self.tempState = null;
                 }
                 self.submitValue(reset);
               }
             },
-            dismiss => { 
+            dismiss => {
             }
           );
         })
