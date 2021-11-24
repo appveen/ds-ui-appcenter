@@ -368,3 +368,8 @@
 .border-dashed {
   border-style: dashed !important;
 }
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  filter: invert(0.5);
+}

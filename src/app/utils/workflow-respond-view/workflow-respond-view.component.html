@@ -7,21 +7,30 @@
     </div>
 </div>
 <div class="modal-body p-4">
-    <div class="content">
-        <div class="steps-view d-flex align-items-start justify-content-center">
-            <div class="d-flex flex-column" *ngFor="let item of workflowSteps;let i=index;let f=first;let l=last">
-                <div class="step-box d-flex align-items-center">
-                    <div class="step-line border-top border-dashed" [ngClass]="{'border-0':f}"></div>
-                    <div class="step-action rounded-circle d-flex align-items-center justify-content-center"
-                        [ngClass]="{'border border-success bg-success text-white':stepRemarks(item).length > 0,'border border-dashed':stepRemarks(item).length==0}">
-                        <span *ngIf="stepRemarks(item).length>0" class="fa fa-check fa-xs"></span>
-                        <span *ngIf="stepRemarks(item).length==0" class="text-muted fa-sm">{{i+1}}</span>
+    <div class="content" *ngIf="totalPagesArray.length > 0">
+        <ngb-carousel [wrap]="false" [activeId]="activeStepId" [interval]="false">
+            <ng-template ngbSlide *ngFor="let pageNo of totalPagesArray" id="slide{{pageNo}}">
+                <div class="steps-view d-flex align-items-start justify-content-center">
+                    <div class="d-flex flex-column"
+                        *ngFor="let item of itemsInPage(pageNo);let i=index;let f=first;let l=last">
+                        <div class="step-box d-flex align-items-center">
+                            <div class="step-line border-top border-dashed" [ngClass]="{'border-0':f}"></div>
+                            <div class="step-action rounded-circle d-flex align-items-center justify-content-center"
+                                [ngClass]="{'border border-success bg-success text-white':stepRemarks(item).length > 0,'border border-dashed':stepRemarks(item).length==0}">
+                                <span *ngIf="stepRemarks(item).length>0" class="fa fa-check fa-xs"></span>
+                                <span *ngIf="stepRemarks(item).length==0"
+                                    class="text-muted fa-sm">{{(pageNo*totalStepsInPage)+i+1}}</span>
+                            </div>
+                            <div class="step-line border-top border-dashed" [ngClass]="{'border-0':l}"></div>
+                        </div>
+                        <div class="step-name mt-2 text-center">{{item.name}}</div>
                     </div>
-                    <div class="step-line border-top border-dashed" [ngClass]="{'border-0':l}"></div>
                 </div>
-                <div class="step-name mt-2 text-center">{{item.name}}</div>
-            </div>
-        </div>
+
+            </ng-template>
+
+        </ngb-carousel>
+
         <div class="content-2 d-flex mt-5">
             <div class="comment w-50 mr-2">
                 <label for="comments">Comments</label>
@@ -66,7 +75,8 @@
     </div>
     <div class="footer border-0 mt-5">
         <div class="d-flex align-items-center justify-content-end">
-            <button *ngIf="hasSaveDraft" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2" (click)="saveDraft()">
+            <button *ngIf="hasSaveDraft" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+                (click)="saveDraft()">
                 <span
                     class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-primary">
                     <span class="fa fa-save"></span>
@@ -94,7 +104,8 @@
                 </span>
                 <span class="text">Rework</span>
             </button>
-            <button *ngIf="hasRevert" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2" (click)="respond('Revert')">
+            <button *ngIf="hasRevert" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
+                (click)="respond('Revert')">
                 <span
                     class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-warning">
                     <span class="fa fa-arrow-left"></span>

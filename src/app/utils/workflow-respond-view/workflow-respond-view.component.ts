@@ -22,6 +22,7 @@ export class WorkflowRespondViewComponent implements OnInit {
   fileProgress: any;
   showLazyLoader: boolean;
   actionMap: any;
+  totalStepsInPage: any;
   constructor(public activeModal: NgbActiveModal,
     public commonService: CommonService,
     public ts: ToastrService) {
@@ -36,6 +37,7 @@ export class WorkflowRespondViewComponent implements OnInit {
       'approve': 'Approve',
       'reject': 'Reject'
     }
+    this.totalStepsInPage = 3;
   }
 
   ngOnInit(): void {
@@ -72,6 +74,7 @@ export class WorkflowRespondViewComponent implements OnInit {
     }
     return false;
   }
+
 
   uploadWorkflowFile(ev) {
     const file = ev.target.files[0];
@@ -183,6 +186,33 @@ export class WorkflowRespondViewComponent implements OnInit {
 
   get hasReject() {
     return (this.actions || []).indexOf('reject') > -1 && this.canRespond;
+  }
+
+  get totalPagesArray() {
+    if (this.workflowSteps.length > 0) {
+      return Array.from(Array(Math.ceil(this.workflowSteps.length / this.totalStepsInPage)).keys());
+    }
+    else {
+      return [];
+    }
+  }
+
+  get activeStepId() {
+    if (this.workflowData && this.workflowData.checkerStep) {
+      const stepIndex = this.workflowSteps.findIndex(data => data.name == this.workflowData.checkerStep);
+      if (stepIndex != -1) {
+        return 'slide' + (Math.ceil((stepIndex + 1) / this.totalStepsInPage) - 1);
+      } else {
+        return 'slide' + 0;
+      }
+    }
+    return 'slide' + 0;
+  }
+
+  itemsInPage(page) {
+    const begin = page * this.totalStepsInPage;
+    const end = begin + this.totalStepsInPage;
+    return this.workflowSteps.slice(begin, end);
   }
 
   get workflowSteps() {
