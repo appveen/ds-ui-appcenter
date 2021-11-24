@@ -159,7 +159,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         audit.name = audit.user;
       }
     }).catch(err => {
-      self.commonService.errorToast(err, 'Unable to find User: ' + audit.user);
+      audit.name = audit.user;
+      // self.commonService.errorToast(err, 'Unable to find User: ' + audit.user);
     });
   }
 
@@ -172,7 +173,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         wfAudit.name = wfAudit.id;
       }
     }).catch(err => {
-      self.commonService.errorToast(err, 'Unable to find User: ' + wfAudit.id);
+      wfAudit.name = wfAudit.user;
+      // self.commonService.errorToast(err, 'Unable to find User: ' + wfAudit.id);
     });
   }
 
