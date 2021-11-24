@@ -228,6 +228,36 @@ export class ViewComponent implements OnInit, OnDestroy {
         else return false;
     }
 
+    get stateModelCreated() {
+        const self = this;
+        if (self.activeAuditNewData && self.activeAuditNewData.hasOwnProperty(self.stateModelAttr) && self.activeAuditOldData && !self.activeAuditOldData.hasOwnProperty(self.stateModelAttr)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    get stateModelUpdated() {
+        const self = this;
+        if (self.activeAuditOldData && self.activeAuditOldData.hasOwnProperty(self.stateModelAttr)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    stateModelVersionData(auditData) {
+        const self = this;
+        if (auditData.hasOwnProperty(self.stateModelAttr)) {
+            return auditData[self.stateModelAttr];
+        }
+        else {
+            return 'N.A'
+        }
+    }
+
     showStep(val) {
         const self = this;
         if (val < 0) {
