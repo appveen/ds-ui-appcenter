@@ -47,12 +47,31 @@
                     </div>
                 </div>
                 &nbsp;
-                <div class='state-model d-flex' *ngIf='!showLazyLoader && stateModelAttr'>
-                    <span class='text-secondary mr-2'>{{stateModelName}}</span>
-                    <span class='mr-2'>:</span>
-                    <span class='badge badge-primary mt-1' *ngIf="!showLazyLoader">
+                <div class='state-model d-flex align-items-center font-weight-bold'
+                    *ngIf='!showLazyLoader && stateModelAttr'>
+                    <span class='text-secondary mr-2 font-sm state-version hover'
+                        title="{{stateModelName}}">{{stateModelName}}</span>
+                    <span class='mr-2 font-sm'>:</span>
+                    <span class='badge badge-primary'
+                        *ngIf="(!showVersionHistory || (showVersionHistory && !stateModelCreated && !stateModelUpdated))">
                         {{stateModelAttrVal}}
                     </span>
+                    <div class='history-value p-2 font-sm' *ngIf="showVersionHistory && stateModelCreated">
+                        <span class='text-secondary mr-2'>Created</span>
+                        <span class='text-success'>{{ activeAuditNewData[stateModelAttr] }}</span>
+                    </div>
+                    <div class='d-flex' *ngIf="showVersionHistory && stateModelUpdated">
+                        <div class='history-value p-2 font-sm mr-2 state-version'>
+                            <span class='text-secondary mr-2'>From</span>
+                            <span class='text-danger hover' title="{{stateModelVersionData(activeAuditOldData)}}">{{
+                                stateModelVersionData(activeAuditOldData) }}</span>
+                        </div>
+                        <div class='history-value p-2 font-sm state-version'>
+                            <span class='text-secondary mr-2'>To</span>
+                            <span class='text-success hover' title="{{stateModelVersionData(activeAuditNewData)}}">{{
+                                stateModelVersionData(activeAuditNewData) }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div *ngIf="inReview" class="d-flex align-items-center">
