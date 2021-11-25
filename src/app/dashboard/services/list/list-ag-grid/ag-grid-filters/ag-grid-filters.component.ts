@@ -58,9 +58,6 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   ngOnInit() {
     const self = this;
     this.gridService.initializeLastFilterSearchText(this.appService.serviceId);
-    if (self.definition.properties.relatedTo) {
-      self.fetchRelatedSchema();
-    }
     self.appService.clearFilterEvent.subscribe(() => {
       self.value = null;
       self.fromDate = null;
@@ -87,10 +84,15 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       this.toDate = obj?.toDate;
       this.dateFilterSet = true;
     }
-
-    if(this.value){
-      this.onChange(this.value)
+    let promise = Promise.resolve();
+    if (self.definition.properties.relatedTo) {
+      promise = self.fetchRelatedSchema();
     }
+    promise.then(() => {
+      if (this.value) {
+        this.onChange(this.value)
+      }
+    });
   }
 
   onParentModelChanged(parentModel: any, filterChangedEvent?: FilterChangedEvent): void {
@@ -242,7 +244,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   fetchRelatedSchema() {
     const self = this;
-    self.commonService
+    return self.commonService
       .getService(self.definition.properties.relatedTo)
       .then(res => {
         if (res.definition) {
