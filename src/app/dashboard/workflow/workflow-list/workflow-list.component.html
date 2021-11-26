@@ -57,129 +57,136 @@
     </div>
 
     <div class="d-flex align-items-center justify-content-between pr-3 list-options bg-white"
-        [ngClass]="{'border-bottom': !showfilterOptions}" *ngIf="totalRecords>0">
-        <div class="d-flex align-items-center ml-2">
-            <div class="d-flex align-items-center hover" *ngIf="pendingRecords>0">
-                <odp-round-check [(checked)]="checkAll " [white]="true"></odp-round-check>
-                <strong class="text-primary ml-2" (click)="checkAll=!checkAll">Select all</strong>
-            </div>
-            <button id="respond" type="button" class="btn btn-link ignore-outside" (click)="clearFilters()"
-                *ngIf="hasFilters">
-                <span class="fa fa-times mr-2"></span>
-                <span class="text font-bold ignore-outside">Clear Filter</span>
-            </button>
-
-            <button id="respond" type="button" class="btn btn-link ignore-outside" *ngIf="allCheckedRecords>0"
-                (click)="respondToMultipleWorkflow()">
-                <span class="text font-bold ignore-outside">Respond</span>
-            </button>
-        </div>
-        <div class="d-flex align-items-center">
-            <p class="text-muted mt-2" *ngIf="allCheckedRecords>0">
-                {{allCheckedRecords}} of {{pendingRecords}} pending workflows selected.
-                <span class="text-primary hover" *ngIf="allCheckedRecords!=pendingRecords"
-                    (click)="checkAll=true">
-                    Select all pending instead
-                </span>.
-                <span class="text-primary hover" *ngIf="allCheckedRecords===pendingRecords"
-                    (click)="checkAll=false">
-                    Click here to deselect all
-                </span>.
-            </p>
-        </div>
-        <div class="d-flex align-items-center">
-            <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
-                *ngIf="selectedSavedView" (click)="resetFilter()">
-                <span class="fas fa-redo fa-flip-horizontal"></span>
-                <span class="pl-2">Reset Filter</span>
-            </div>
-            <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
-                <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
-            </div>
-            <div
-                class="bg-white border p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside">
-                <div class="d-flex align-items-center w-100 ignore-outside"
-                    (click)="showFilterList = !showFilterList; ">
-                    <div class="ignore-outside">
-                        <span class="fa fa-search text-gray-medium mr-1 ignore-outside"
-                            *ngIf="!selectedSavedView?.name"></span>
-                        <span class="fa fa-search text-primary mr-1 ignore-outside"
-                            *ngIf="selectedSavedView?.name"></span>
-                        <span class="ignore-outside"
-                            [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{ selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
-                    </div>
-                    <div class="ml-auto ignore-outside">
-                        <span class="fas fa-angle-down text-primary ignore-outside"></span>
-                    </div>
+        [ngClass]="{'border-bottom': !showfilterOptions}">
+        <ng-container *ngIf="totalRecords>0">
+            <div class="d-flex align-items-center ml-2">
+                <div class="d-flex align-items-center hover" *ngIf="pendingRecords>0">
+                    <odp-round-check [(checked)]="checkAll " [white]="true"></odp-round-check>
+                    <strong class="text-primary ml-2" (click)="checkAll=!checkAll">Select all</strong>
                 </div>
-                <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside"
-                    *ngIf="showFilterList" odpClickOutside (outside)="showFilterList = false"
-                    [ignore]="['.ignore-outside']">
-                    <div class="py-2 px-3 w-100 text-secondary filter-list-type d-flex align-items-center ignore-outside"
-                        [ngClass]="{'border-bottom': !showSearchFilter}">
-                        <span class="mr-2 pr-2 border-right ignore-outside hover" *ngIf="!showSearchFilter"
-                            (click)="filterAllFilter('public')"
-                            [ngClass]="{'text-primary': allFiltersListed}"><strong>Everyone</strong></span>
-                        <span *ngIf="!showSearchFilter" class="ignore-outside hover"
-                            [ngClass]="{'text-primary': !allFiltersListed}"
-                            (click)="filterAllFilter('private')"><strong>Only Me</strong></span>
-                        <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchFilter"
-                            (click)="showSearchFilter = false"></span>
-                        <div class="ml-auto hover ignore-outside" *ngIf="!showSearchFilter && allFilters.length > 0"
-                            (click)="showSearchFilter = true">
-                            <span class="fas fa-search text-muted ignore-outside"></span>
+                <button id="respond" type="button" class="btn btn-link ignore-outside" (click)="clearFilters()"
+                    *ngIf="hasFilters">
+                    <span class="fa fa-times mr-2"></span>
+                    <span class="text font-bold ignore-outside">Clear Filter</span>
+                </button>
+
+                <button id="respond" type="button" class="btn btn-link ignore-outside" *ngIf="allCheckedRecords>0"
+                    (click)="respondToMultipleWorkflow()">
+                    <span class="text font-bold ignore-outside">Respond</span>
+                </button>
+            </div>
+            <div class="d-flex align-items-center">
+                <p class="text-muted mt-2" *ngIf="allCheckedRecords>0">
+                    {{allCheckedRecords}} of {{pendingRecords}} pending workflows selected.
+                    <span class="text-primary hover" *ngIf="allCheckedRecords!=pendingRecords" (click)="checkAll=true">
+                        Select all pending instead
+                    </span>.
+                    <span class="text-primary hover" *ngIf="allCheckedRecords===pendingRecords"
+                        (click)="checkAll=false">
+                        Click here to deselect all
+                    </span>.
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
+                    *ngIf="selectedSavedView" (click)="resetFilter()">
+                    <span class="fas fa-redo fa-flip-horizontal"></span>
+                    <span class="pl-2">Reset Filter</span>
+                </div>
+                <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
+                    <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
+                </div>
+                <div
+                    class="bg-white border p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside">
+                    <div class="d-flex align-items-center w-100 ignore-outside"
+                        (click)="showFilterList = !showFilterList; ">
+                        <div class="ignore-outside">
+                            <span class="fa fa-search text-gray-medium mr-1 ignore-outside"
+                                *ngIf="!selectedSavedView?.name"></span>
+                            <span class="fa fa-search text-primary mr-1 ignore-outside"
+                                *ngIf="selectedSavedView?.name"></span>
+                            <span class="ignore-outside"
+                                [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{
+                                selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
                         </div>
-                        <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchFilter">
-                            <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside"
-                                placeholder="Search save view" #searchFilter odpAutoFocus>
-                            <span
-                                class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+                        <div class="ml-auto ignore-outside">
+                            <span class="fas fa-angle-down text-primary ignore-outside"></span>
                         </div>
                     </div>
-                    <div *ngIf="allFilters.length > 0; else noFilters" class="h-100 sub-container">
-                        <div *ngFor="let filter of allFilters"
-                            class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
-                            (mouseenter)="filter.hasOptions && filter.showOptions = true" (mouseleave)="filter.hasOptions && filter.showOptions = false">
-                            <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
-                            <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
-                            <span class="hover text-truncate filterNameWidth" (click)="selectSavedView({'view':filter})"
-                                [odpTruncated]="filter.name">{{ filter.name }}</span>
-                            <span *ngIf="!filter.showOptions"
-                                class="text-secondary ml-auto position-absolute un-pos">{{ filter.user }}</span>
-                            <span *ngIf="filter.hasOptions && !filter.showOptions"
-                                class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
-                            <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover">
-                                <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
-                                <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
-                                <div class="left-radius position-relative hover"
-                                    [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
-                                    (click)="changeFilterType(filter, 'private')">
-                                    <span class="fas fa-unlock-alt position-absolute icon-pos"
-                                        [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
-                                </div>
-                                <div class="right-radius bg-white position-relative hover mr-2"
-                                    [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
-                                    (click)="changeFilterType(filter, 'public')">
-                                    <span class="fas fa-globe position-absolute icon-pos"
-                                        [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
+                    <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside"
+                        *ngIf="showFilterList" odpClickOutside (outside)="showFilterList = false"
+                        [ignore]="['.ignore-outside']">
+                        <div class="py-2 px-3 w-100 text-secondary filter-list-type d-flex align-items-center ignore-outside"
+                            [ngClass]="{'border-bottom': !showSearchFilter}">
+                            <span class="mr-2 pr-2 border-right ignore-outside hover" *ngIf="!showSearchFilter"
+                                (click)="filterAllFilter('public')"
+                                [ngClass]="{'text-primary': allFiltersListed}"><strong>Everyone</strong></span>
+                            <span *ngIf="!showSearchFilter" class="ignore-outside hover"
+                                [ngClass]="{'text-primary': !allFiltersListed}"
+                                (click)="filterAllFilter('private')"><strong>Only Me</strong></span>
+                            <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchFilter"
+                                (click)="showSearchFilter = false"></span>
+                            <div class="ml-auto hover ignore-outside" *ngIf="!showSearchFilter && allFilters.length > 0"
+                                (click)="showSearchFilter = true">
+                                <span class="fas fa-search text-muted ignore-outside"></span>
+                            </div>
+                            <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchFilter">
+                                <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside"
+                                    placeholder="Search save view" #searchFilter odpAutoFocus>
+                                <span
+                                    class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+                            </div>
+                        </div>
+                        <div *ngIf="allFilters.length > 0; else noFilters" class="h-100 sub-container">
+                            <div *ngFor="let filter of allFilters"
+                                class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
+                                (mouseenter)="filter.hasOptions && filter.showOptions = true"
+                                (mouseleave)="filter.hasOptions && filter.showOptions = false">
+                                <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
+                                <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
+                                <span class="hover text-truncate filterNameWidth"
+                                    (click)="selectSavedView({'view':filter})" [odpTruncated]="filter.name">{{
+                                    filter.name }}</span>
+                                <span *ngIf="!filter.showOptions"
+                                    class="text-secondary ml-auto position-absolute un-pos">{{
+                                    filter.user }}</span>
+                                <span *ngIf="filter.hasOptions && !filter.showOptions"
+                                    class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
+                                <div *ngIf="filter.hasOptions && filter.showOptions"
+                                    class="ml-auto d-flex align-items-center hover">
+                                    <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
+                                    <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
+                                    <div class="left-radius position-relative hover"
+                                        [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
+                                        (click)="changeFilterType(filter, 'private')">
+                                        <span class="fas fa-unlock-alt position-absolute icon-pos"
+                                            [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
+                                    </div>
+                                    <div class="right-radius bg-white position-relative hover mr-2"
+                                        [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
+                                        (click)="changeFilterType(filter, 'public')">
+                                        <span class="fas fa-globe position-absolute icon-pos"
+                                            [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <ng-template #noFilters>
+                            <div class="text-secondary p-3">No filters are defined for this service yet</div>
+                        </ng-template>
                     </div>
-                    <ng-template #noFilters>
-                        <div class="text-secondary p-3">No filters are defined for this service yet</div>
-                    </ng-template>
+                </div>
+                <div *ngIf="wfService.showFilterIcon" class="p-1 filter-icon position-relative hover"
+                    [ngClass]="{'full-br': !showfilterOptions, 'half-br': showfilterOptions,
+                  'bg-white': !selectedSavedView || showfilterOptions, 'bg-primary': selectedSavedView && !showfilterOptions}" (click)="toggleFilterOptions()">
+                    <span *ngIf="!showfilterOptions" class="fas fa-filter position-absolute"
+                        [ngClass]="{'text-primary': !selectedSavedView, 'text-white': selectedSavedView}"></span>
+                    <div *ngIf="selectedSavedView" class="bg-white position-absolute sm-circle"></div>
+                    <span *ngIf="showfilterOptions" class="fas fa-times text-muted position-absolute"></span>
                 </div>
             </div>
-            <div *ngIf="wfService.showFilterIcon" class="p-1 filter-icon position-relative hover"
-                [ngClass]="{'full-br': !showfilterOptions, 'half-br': showfilterOptions,
-              'bg-white': !selectedSavedView || showfilterOptions, 'bg-primary': selectedSavedView && !showfilterOptions}" (click)="toggleFilterOptions()">
-                <span *ngIf="!showfilterOptions" class="fas fa-filter position-absolute"
-                    [ngClass]="{'text-primary': !selectedSavedView, 'text-white': selectedSavedView}"></span>
-                <div *ngIf="selectedSavedView" class="bg-white position-absolute sm-circle"></div>
-                <span *ngIf="showfilterOptions" class="fas fa-times text-muted position-absolute"></span>
-            </div>
-        </div>
+        </ng-container>
+
     </div>
     <odp-workflow-filter *ngIf="showfilterOptions" (filterString)="selectSavedView($event)" [serviceId]="srvcId"
         [allFilters]="allFilters" [dataColumns]="dataColumns" [definition]="schema?.definition"
@@ -188,10 +195,9 @@
     </odp-workflow-filter>
     <div class="list-wrapper d-flex flex-column w-100 bg-light">
         <div class="list-page-wrapper row m-0 position-relative bg-white" [ngClass]="{'has-records':totalRecords>0}">
-            <div #dataContainer class="data-container p-0 w-100" *ngIf="totalRecords>0">
-                <odp-workflow-ag-grid #listGrid [schema]="schema" [columns]="columnDefs" *ngIf="totalRecords>0"
-                    [srvcId]="srvcId" (viewRecord)="view($event)" [selectAll]="selectAll"
-                    [applySavedView]="applySavedView"
+            <div #dataContainer class="data-container p-0 w-100" *ngIf="!loading.serviceDetails">
+                <odp-workflow-ag-grid #listGrid [schema]="schema" [columns]="columnDefs" [srvcId]="srvcId"
+                    (viewRecord)="view($event)" [selectAll]="selectAll" [applySavedView]="applySavedView"
                     (selectedRecords)="selectedRecords($event)"
                     (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
                     (removedSavedView)="removedSavedView($event)">

@@ -613,7 +613,6 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.loading.serviceDetails = true;
     this.subscriptions['getSchema_' + serviceId] = this.commonService.get('sm', '/service/' + serviceId, { filter: { app: this.commonService.app._id } }).subscribe(
       res => {
-        this.loading.serviceDetails = false;
         this.schema = res;
         this.appService.serviceAPI = '/' + this.commonService.app._id + res.api;
         this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
@@ -636,6 +635,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         this.getTotalRecords();
         this.getCounts();
         this.getReqAndResUsers(serviceId);
+        this.loading.serviceDetails = false;
         this.appService.navigateToWorkflow.emit(this.config.serviceId);
       },
       err => {
