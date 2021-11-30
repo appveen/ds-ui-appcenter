@@ -180,15 +180,15 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     self.bookmarkList = [];
     self.apiConfig.page = 1;
     self.apiConfig.sort = 'name';
-    if (!self.commonService.userDetails.isSuperAdmin) {
-      self.apiConfig.filter = {
-        _id: {
-          $in: self.commonService.bookmarksWithAccess
-        }
-      };
-    } else {
+    // if (!self.commonService.userDetails.isSuperAdmin) {
+    //   self.apiConfig.filter = {
+    //     _id: {
+    //       $in: self.commonService.bookmarksWithAccess
+    //     }
+    //   };
+    // } else {
       self.apiConfig.filter = null;
-    }
+    // }
     self.getBookMarksCount();
     self.getBookMarks();
   }
