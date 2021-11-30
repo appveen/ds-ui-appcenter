@@ -164,16 +164,15 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         const tempObj = {};
         tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = '/' + value + '/';
         temp['$or'].push(tempObj);
-      } else {
-        temp['$or'].push(
-          Object.defineProperty({}, self.definition.dataKey + '._id', {
-            value: '/' + value + '/',
-            enumerable: true,
-            configurable: true,
-            writable: true
-          })
-        );
       }
+      temp['$or'].push(
+        Object.defineProperty({}, self.definition.dataKey + '._id', {
+          value: '/' + value + '/',
+          enumerable: true,
+          configurable: true,
+          writable: true
+        })
+      );
     } else if (self.definition.type === 'Geojson') {
       temp['$or'] = [];
       temp['$or'].push({ [self.definition.dataKey + '.formattedAddress']: '/' + value + '/' });
