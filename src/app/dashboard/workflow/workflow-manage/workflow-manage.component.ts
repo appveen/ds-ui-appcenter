@@ -71,6 +71,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   initialState: any;
   stateModelPath: any;
   editMode: boolean;
+  oldValue: any;
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -494,6 +495,10 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   }
   simulatePayload() {
     const self = this;
+    if (this.editMode) {
+      this.oldValue = self.appService.cloneObject(self.value);
+      this.value = this.form.value;
+    }
     let payload = self.appService.cloneObject(self.value);
     if (self.canEditDraft) {
       payload = self.form.getRawValue();
@@ -569,6 +574,8 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     const self = this;
     if (this.editMode) {
       this.editMode = false;
+      this.value = this.appService.cloneObject(this.oldValue);
+      this.oldValue = null;
       return;
     }
     self.router.navigate(['/', this.commonService.app._id, 'workflow', self.appService.serviceId]);
@@ -849,6 +856,9 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   }
   hasPermission(method?: string) {
     const self = this;
-    return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
+    if (self.schema.role && self.schema.role.roles) {
+      return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
+    }
+    return false;
   }
 }
