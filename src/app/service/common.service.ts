@@ -1244,7 +1244,7 @@ export class CommonService {
   }
 
 
-  hasPermission(serviceId: string, permissions: any,  method?: string): boolean {
+  hasPermission(serviceId: string, permissions: any, method?: string): boolean {
     const self = this;
     /**
      * Super Admin Permission Check
@@ -1323,11 +1323,10 @@ export class CommonService {
   get servicesWithAccess() {
     const self = this;
     if (self.permissions && self.permissions.length > 0) {
-      return self.permissions
+      const permission = self.permissions
         .filter(e => e.app === self.app._id)
-        .filter(e => e.id.match(/^P[0-9]+$/))
-        .map(e => e.entity)
-        .filter((e, i, a) => a.indexOf(e) === i);
+        .map(e => e.entity);
+      return _.uniq(permission);
     }
     return [];
   }
