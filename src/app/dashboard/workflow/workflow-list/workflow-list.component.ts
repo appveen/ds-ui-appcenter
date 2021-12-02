@@ -850,6 +850,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.getDraftRecordsCount();
   }
   getTotalRecords() {
+    this.loading.serviceDetails = false;
     this.totalRecords = 0;
     const filter = {
       serviceId: this.srvcId,
@@ -857,6 +858,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.subscriptions['getTotalRecords'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
       .subscribe(count => {
+        this.loading.serviceDetails = true;
         this.totalRecords = count;
         this.getLastFilterApplied();
       });
