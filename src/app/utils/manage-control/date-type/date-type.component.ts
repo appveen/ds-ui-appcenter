@@ -37,6 +37,7 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this._elementRef.nativeElement.classList.add('position-relative');
     this.selectClickSubscription = this.appService.selectClicked.subscribe(_clicked => {
       this.showDatePicker = _clicked;
     });
