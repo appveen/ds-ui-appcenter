@@ -72,10 +72,12 @@
                             <div class="dropdown-menu" ngbDropdownMenu>
                                 <button ngbDropdownItem type="button" id="saveDraft" (click)="saveDraft()">Save Draft
                                 </button>
-                                <button class="state-model-option" ngbDropdownItem
-                                    *ngFor="let state of stateModelNextStates" (click)="setStateAndSave(state)">
-                                    {{state}}
-                                </button>
+                                <ng-container *ngIf="selectedData.status == 'Draft'  && selectedData.operation != 'POST' ">
+                                    <button class="state-model-option" ngbDropdownItem
+                                        *ngFor="let state of stateModelNextStates" (click)="setStateAndSave(state)">
+                                        {{state}}
+                                    </button>
+                                </ng-container> 
                             </div>
                         </div>
                     </div>
@@ -87,8 +89,9 @@
                         <span class="text">Back</span>
                     </button>
                     <ng-container *ngIf="!canResubmit">
-                        <button *ngIf="canEditDocument && (canEditDraft || canRespond)" type="button" class="btn btn-link ml-2" id="canEditDocument"
-                            (click)="editMode=true;" [disabled]="showLazyLoader">
+                        <button *ngIf="canEditDocument && (canEditDraft || canRespond)" type="button"
+                            class="btn btn-link ml-2" id="canEditDocument" (click)="editMode=true;"
+                            [disabled]="showLazyLoader">
                             <span class="fa fa-pencil-alt mr-2"></span>
                             <span class="text">Edit</span>
                         </button>
