@@ -471,6 +471,9 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       .then(data => {
         const wfData = JSON.parse(JSON.stringify(this.selectedData));
         wfData.data.new = this.form.value;
+        if (this.selectedData.operation !== 'DELETE') {
+          self.appService.cleanPayload(wfData.data.new, self.definition, false);
+        }
         const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
         respondModal.componentInstance.title = 'Submit Draft';
         respondModal.componentInstance.workflowData = wfData;
