@@ -587,7 +587,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   discardDraft() {
     const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
     respondModal.componentInstance.title = '';
-    respondModal.componentInstance.workflowData = this.value;
+    respondModal.componentInstance.workflowData = this.selectedData;
     respondModal.componentInstance.serviceData = this.schema;
     respondModal.componentInstance.actions = ['discard'];
     respondModal.result.then(
