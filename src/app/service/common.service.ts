@@ -1247,15 +1247,22 @@ export class CommonService {
   hasPermission(serviceId: string, permissions: any, method?: string): boolean {
     const self = this;
     /**
-     * Super Admin Permission Check
+     * Super Admin Check
      */
     if (self.userDetails.isSuperAdmin) {
       return true;
     }
-    /**
-     * Data Servie Admin Permission Check
-     */
 
+    /**
+     * App Admin Check
+     */
+    if (this.isAppAdmin()) {
+      return true;
+    }
+
+    /**
+     * Data Servie Admin Check
+     */
     if (self.isDataServiceAdmin(serviceId)) {
       return true;
     }
@@ -1272,15 +1279,22 @@ export class CommonService {
   hasPermissionOld(serviceId: string, method?: string): boolean {
     const self = this;
     /**
-     * Super Admin Permission Check
+     * Super Admin Check
      */
     if (self.userDetails.isSuperAdmin) {
       return true;
     }
-    /**
-     * Data Servie Admin Permission Check
-     */
 
+    /**
+     * App Admin Check
+     */
+    if (this.isAppAdmin()) {
+      return true;
+    }
+
+    /**
+     * Data Servie Admin Check
+     */
     if (self.isDataServiceAdmin(serviceId)) {
       return true;
     }
@@ -1296,6 +1310,23 @@ export class CommonService {
 
   isDataServiceAdmin(serviceId: string): boolean {
     if (this.permissions.find(p => p.entity === serviceId && p.id === `ADMIN_${serviceId}`)) {
+      return true;
+    }
+    return false;
+  }
+
+  isAppAdmin(): boolean {
+    if (!this.userDetails) {
+      this.userDetails = {};
+    }
+    if (!this.userDetails.accessControl) {
+      this.userDetails.accessControl = {};
+    }
+    if (!this.userDetails.accessControl.apps) {
+      this.userDetails.accessControl.apps = [];
+    }
+    const index = this.userDetails.accessControl.apps.findIndex(a => a._id === this.app._id);
+    if (index > -1) {
       return true;
     }
     return false;
