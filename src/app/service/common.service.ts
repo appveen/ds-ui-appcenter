@@ -1270,9 +1270,9 @@ export class CommonService {
      * Normal User Permission Check
      */
     if (method) {
-      return Boolean(permissions.find(p => p.operations.find(o => o.method === method)));
+      return Boolean(self.permissions.find(p => p.entity === serviceId && Boolean(p.operations.find(o => o.method === method))));
     } else {
-      return permissions.length > 0;
+      return Boolean(self.permissions.find(p => p.entity === serviceId));
     }
   }
 
