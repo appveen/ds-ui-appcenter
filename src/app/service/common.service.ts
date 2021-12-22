@@ -393,39 +393,35 @@ export class CommonService {
     roleList.forEach(e => {
       e.operations = [];
     });
-    const options: GetOptions = {};
-    const ids = roleList
+    const appGroup = {};
+    roleList
       .filter(e => e.id && !e.id.startsWith('PN'))
-      .map(e => {
-        const temp: any = {};
-        temp['roles.id'] = e.id;
-        temp.app = e.app;
-        temp.entity = e.entity;
-        return temp;
+      .forEach(e => {
+        if (!appGroup[e.app]) {
+          appGroup[e.app] = [];
+        }
+        appGroup[e.app].push(e.entity);
       });
     const promises = [];
-    if (ids.length > 20) {
-      while (ids.length > 0) {
-        fetch(ids.splice(0, 20));
-      }
-    } else {
-      fetch(ids);
-    }
-    function fetch(idList: Array<any>) {
+    Object.keys(appGroup).forEach(app => {
+      fetch(app, appGroup[app]);
+    });
+    function fetch(app: string, serviceIds: Array<string>) {
       promises.push(
         new Promise<any>((resolve, reject) => {
-          self.subscriptions['getRolesDetails'] = self.get('user', '/role', {
+          self.subscriptions['getRolesDetails'] = self.get('sm', '/service?app=' + app, {
             count: -1,
+            select: 'role',
             filter: {
-              $or: idList
+              _id: { $in: serviceIds }
             }
           }).subscribe(
             (res: Array<any>) => {
               let resList = res.map(e => {
-                return e.roles.map(r => {
-                  r.fields = e.fields;
-                  r.app = e.app;
-                  r.entity = e.entity;
+                return e.role.roles.map(r => {
+                  r.fields = e.role.fields;
+                  r.app = e.role.app;
+                  r.entity = e.role.entity;
                   return r;
                 });
               });
@@ -452,6 +448,77 @@ export class CommonService {
     }
     return Promise.all(promises);
   }
+
+  // getRolesDetails(roleList: Array<Role>): Promise<any> {
+  //   const self = this;
+  //   if (self.subscriptions['getRolesDetails']) {
+  //     self.subscriptions['getRolesDetails'].unsubscribe();
+  //   }
+  //   if (!roleList) {
+  //     roleList = [];
+  //   }
+  //   roleList.forEach(e => {
+  //     e.operations = [];
+  //   });
+  //   const options: GetOptions = {};
+  //   const ids = roleList
+  //     .filter(e => e.id && !e.id.startsWith('PN'))
+  //     .map(e => {
+  //       const temp: any = {};
+  //       temp['roles.id'] = e.id;
+  //       temp.app = e.app;
+  //       temp.entity = e.entity;
+  //       return temp;
+  //     });
+  //   const promises = [];
+  //   if (ids.length > 20) {
+  //     while (ids.length > 0) {
+  //       fetch(ids.splice(0, 20));
+  //     }
+  //   } else {
+  //     fetch(ids);
+  //   }
+  //   function fetch(idList: Array<any>) {
+  //     promises.push(
+  //       new Promise<any>((resolve, reject) => {
+  //         self.subscriptions['getRolesDetails'] = self.get('user', '/role', {
+  //           count: -1,
+  //           filter: {
+  //             $or: idList
+  //           }
+  //         }).subscribe(
+  //           (res: Array<any>) => {
+  //             let resList = res.map(e => {
+  //               return e.roles.map(r => {
+  //                 r.fields = e.fields;
+  //                 r.app = e.app;
+  //                 r.entity = e.entity;
+  //                 return r;
+  //               });
+  //             });
+  //             resList = [].concat.apply([], resList);
+  //             roleList.forEach(role => {
+  //               const temp = resList.find(r => r.id === role.id && r.entity === role.entity && r.app === role.app);
+  //               if (temp) {
+  //                 role.operations = temp.operations;
+  //                 if (typeof temp.fields === 'string') {
+  //                   role.fields = JSON.parse(temp.fields);
+  //                 } else {
+  //                   role.fields = self.appService.cloneObject(temp.fields);
+  //                 }
+  //               }
+  //             });
+  //             resolve(res);
+  //           },
+  //           err => {
+  //             resolve(err);
+  //           }
+  //         );
+  //       })
+  //     );
+  //   }
+  //   return Promise.all(promises);
+  // }
 
   getAppsDetails(appList: Array<App>): Promise<any> {
     const self = this;
