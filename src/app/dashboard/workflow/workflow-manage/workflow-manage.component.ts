@@ -505,8 +505,8 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     let payload = self.appService.cloneObject(self.value);
     if (self.canEditDraft) {
       payload = self.form.getRawValue();
-      self.appService.cleanPayload(payload, self.definition, false);
     }
+    self.appService.cleanPayload(payload, self.definition, false);
     const operation = self.selectedData.operation;
     const apiPath = self.appService.serviceAPI + '/utils/simulate?operation=' + operation + '&source=Draft Submitted';
     return new Promise((resolve, reject) => {
