@@ -328,15 +328,22 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     const payload = self.form.value;
     const url = self.api + '/bulkUpdate?id=' + self.bulkEditIds.join(',');
     self.showLazyLoader = true;
+    payload._workflow = {
+      audit: [
+        {
+          by: 'user',
+          id: this.commonService.userDetails._id,
+          action: draft ? 'Draft' : 'Submit',
+          remarks: self.workflowModalOptions.remarks,
+          timestamp: Date.now(),
+          attachments: self.workflowUploadedFiles
+        }
+      ]
+    };
     self.subscriptions['saveRecord'] = self.commonService.put('api', url, payload).subscribe(
       res => {
         const arr = [];
-        if (res._workflow) {
-          res._workflow.forEach(wf => {
-            arr.push(self.submitWorkflowFiles(wf._id, reset, draft));
-          });
-          self.resolveAll(reset, draft, res, arr);
-        } else if (draft) {
+        if (draft) {
           res._workflow.forEach(wf => {
             arr.push(self.submitWorkflowFiles(wf._id, reset, draft));
           });
