@@ -1,6 +1,6 @@
 {
   "/": {
-    "target": "https://cloud.appveen.com/",
+    "target": "https://bifrost.ds.appveen.com/",
     "secure": false,
     "changeOrigin": true
   }
