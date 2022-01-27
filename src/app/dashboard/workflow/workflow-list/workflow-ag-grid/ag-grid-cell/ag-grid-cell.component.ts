@@ -118,7 +118,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
         self.decryptedValue = value.value;
       }
       else {
-        self.commonService.post('sec', '/enc/' + this.commonService.app._id + '/decrypt', { data: value.value }).subscribe(res => {
+        self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
           self.decryptedValue = res.data;
         }, err => {
           self.decryptedValue = value.value;
