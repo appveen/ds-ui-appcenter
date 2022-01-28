@@ -14,10 +14,10 @@
                     target="_blank">{{searchFieldValue}}</a>
                 <span *ngIf="!serviceAccess">{{searchFieldValue}}</span>
             </ng-container>
-            <button type="button" class="btn btn-sm btn-link p-0 ml-2"
-                (click)="showPassword=!showPassword;$event.stopPropagation();">
-                {{showPassword?'Hide':'Show'}}
-            </button>
+            <span class="fa p-0 ml-2" 
+                (click)="showPassword=!showPassword;$event.stopPropagation();"
+                [ngClass]="{'fa-eye-slash':showPassword,'fa-eye':!showPassword}">
+            </span>
         </ng-container>
     </ng-container>
 
