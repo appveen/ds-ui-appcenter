@@ -267,7 +267,9 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     const self = this;
     let retValue = self.appService.getValue(self.definition.properties.relatedSearchField, obj);
 
-    if (self.relatedServiceDef && self.relatedServiceDef.properties && self.relatedServiceDef.properties.password && retValue) {
+    if (self.definition.properties.relatedViewFields.filter(data => data.properties.dataPath 
+    == self.definition.properties.relatedSearchField && data.properties.password == true).length > 0
+      && retValue) {
       retValue = retValue.value;
     } else if (self.relatedServiceDef?.type === 'User' && !!retValue) {
       retValue = retValue?._id;
