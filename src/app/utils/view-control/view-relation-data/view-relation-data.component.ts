@@ -84,8 +84,16 @@ export class ViewRelationDataComponent implements OnInit {
         properties.relatedViewFields.forEach((element) => {
           if(!!element.properties.dataPath) {
             const val = self.appService.getValue(element.properties.dataPath, self.value);
-            const retVal = self.getValue(val, element.key)
-            temp.push(retVal);
+            const retVal = self.getValue(val, element.key);
+            if(element.properties.password){
+              self.isSecureTextPresent = true;
+              temp.push({
+                value: val.value,
+                type: 'secureText'
+              })
+            }else{
+              temp.push(retVal);
+            }
           } else {
             self.isSecureTextPresent = true;
             temp.push({
