@@ -406,6 +406,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       },
       dismiss => {
         self.showLazyLoader = false;
+        self.draftReqInProgress = false;
       }
     );
   }
