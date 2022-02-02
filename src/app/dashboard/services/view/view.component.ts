@@ -186,10 +186,10 @@ export class ViewComponent implements OnInit, OnDestroy {
             res => {
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);
-                //self.isSchemaFree = true;
-                if(res.schemaFree){
-                  self.isSchemaFree = res.schemaFree;
-                }
+                self.isSchemaFree = true;
+                // if(res.schemaFree){
+                //   self.isSchemaFree = res.schemaFree;
+                // }
                 self.formService.patchType(parsedDef);
                 res.definition = JSON.parse(JSON.stringify(parsedDef));
                 if (res.stateModel && res.stateModel.enabled == true) {
@@ -327,6 +327,9 @@ export class ViewComponent implements OnInit, OnDestroy {
                     self.schemaFreeCode = JSON.parse(JSON.stringify(data));
                     delete self.schemaFreeCode["_metadata"]
                     delete self.schemaFreeCode["__v"]
+                    if(self.schemaFreeCode["_workflow"]){
+                        delete self.schemaFreeCode["_workflow"];
+                    }
                 }
                 self.definition = self.formService.parseDefinition(self.schema, data, false);
                 if (self.stateModelAttr) {
