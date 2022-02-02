@@ -1,0 +1,10 @@
+.code-editor {
+  height: calc(100%);
+
+  &.hide-cursor{
+    .monaco-editor .cursors-layer > .cursor {
+      display: none !important;
+    }
+  }
+  
+}

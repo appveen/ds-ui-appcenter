@@ -74,7 +74,7 @@
         <div class="btn-group save-button">
           <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
             [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }"
-            [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord"
+            [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord || invalidSchemaFreeRecord"
             (click)="save()" *ngIf="!isDraft">
             <span *ngIf="!hasWorkflow" class="text">Save
             </span>
@@ -163,26 +163,34 @@
     <div class="d-flex flex-column w-100 h-100 bg-white rounded">
       <div *ngIf="!showLazyLoader" class="form-body position-relative" [class.restrict-overflow]="restrictOverflow"
         [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
-        <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
-          <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
-            <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
-              <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
-                <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
-                  <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
+        <ng-container *ngIf="!isSchemaFree">
+          <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
+            <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
+              <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
+                <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
+                  <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
+                    <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
+                    </odp-manage-control>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="wizard.length == 0">
+            <div class="d-flex flex-column py-3">
+              <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
+                <div *ngIf="!checkStateModel(def)">
+                  <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
                   </odp-manage-control>
                 </div>
               </ng-container>
             </div>
           </ng-container>
         </ng-container>
-        <ng-container *ngIf="wizard.length == 0">
-          <div class="d-flex flex-column py-3">
-            <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-              <div *ngIf="!checkStateModel(def)">
-                <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last"></odp-manage-control>
-              </div>
-            </ng-container>
-          </div>
+        <ng-container *ngIf="isSchemaFree">
+          <odp-code-editor class="code-editor" [edit]="{status:true}" [theme]="selectedEditorTheme"
+          [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
+        </odp-code-editor>
         </ng-container>
       </div>
       <div class="loading" *ngIf="showLazyLoader">

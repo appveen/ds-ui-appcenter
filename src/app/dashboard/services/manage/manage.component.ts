@@ -65,6 +65,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   searchTerm: string;
   tempState: string;
   isInitialStateOnEdit: boolean;
+  isSchemaFree: boolean;
+  selectedEditorTheme: any;
+  selectedFontSize: any;
+  schemaFreeCode: string;
+  invalidSchemaFreeRecord: boolean;
 
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
@@ -102,6 +107,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.stateModelName = '';
     self.tempState = null;
     self.isInitialStateOnEdit = false;
+    self.isSchemaFree = false;
+    this.selectedEditorTheme = 'vs-light';
+    this.selectedFontSize = 14;
+    this.schemaFreeCode = null;
+    self.invalidSchemaFreeRecord = false;
   }
 
   ngOnInit() {
@@ -182,6 +192,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
   }
 
+  schemaFreeCodeError($event){
+    this.invalidSchemaFreeRecord = $event;
+  }
+
   checkStateModel(def) {
     if (this.stateModelAttr && def.key == this.stateModelAttr) {
       return true;
@@ -221,7 +235,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard stateModel workflowConfig role',
+      select: 'api definition name relatedSchemas wizard stateModel workflowConfig role schemaFree',
       filter: { app: this.commonService.app._id }
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
@@ -240,6 +254,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
             self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
           }
         }
+        self.isSchemaFree = true;
+        // if(res.schemaFree){
+        //   self.isSchemaFree = res.schemaFree;
+        // }
         self.title = res.name;
         self.api = '/' + self.commonService.app._id + res.api;
         self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
@@ -342,6 +360,9 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       isEdit: self.isEdit
     });
     self.form = self.fb.group(self.formService.createForm(tempDef));
+    if(self.isSchemaFree){
+      self.schemaFreeCode = self.form.getRawValue();
+    }
     self.definition = tempDef;
     self.form.markAsDirty();
   }
@@ -470,6 +491,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         self.commonService.errorToast(err, 'Validation Failed');
       });
   }
+
 
   discardDraft(reset?) {
     const self = this;
@@ -646,13 +668,18 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       return;
     }
     self.showLazyLoader = true;
-    const payload = self.appService.cloneObject(self.form.getRawValue());
-    Object.keys(payload).forEach(item => {
-      if (Array.isArray(payload[item]) && payload[item].length === 0) {
-        payload[item] = null;
-      }
-    });
-    self.appService.cleanPayload(payload, self.definition, self.isEdit);
+    let payload;
+    if(!self.isSchemaFree){
+      payload = self.appService.cloneObject(self.form.getRawValue());
+      Object.keys(payload).forEach(item => {
+        if (Array.isArray(payload[item]) && payload[item].length === 0) {
+          payload[item] = null;
+        }
+      });
+      self.appService.cleanPayload(payload, self.definition, self.isEdit);
+    }else{
+      payload = this.schemaFreeCode;
+    }
     let response;
     payload._workflow = {
       audit: [
