@@ -520,10 +520,10 @@ export class ListComponent implements OnInit, OnDestroy {
           self.api = '/' + self.commonService.app._id + res.api;
           self.appService.serviceAPI = self.api;
           self.schema = res;
-          self.isSchemaFree = true;
-          // if(res.schemaFree){
-          //   self.isSchemaFree = res.schemaFree;
-          // }
+          // self.isSchemaFree = true;
+          if(res.schemaFree){
+            self.isSchemaFree = res.schemaFree;
+          }
           self.resetFilter();
           self.buildColumns();
           self.refineByPermissions();
