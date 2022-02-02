@@ -254,10 +254,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
             self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
           }
         }
-        self.isSchemaFree = true;
-        // if(res.schemaFree){
-        //   self.isSchemaFree = res.schemaFree;
-        // }
+        //self.isSchemaFree = true;
+        if(res.schemaFree){
+          self.isSchemaFree = res.schemaFree;
+        }
         self.title = res.name;
         self.api = '/' + self.commonService.app._id + res.api;
         self.appService.serviceAPI = '/' + self.commonService.app._id + res.api;
