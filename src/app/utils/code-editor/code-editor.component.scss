@@ -1,5 +1,5 @@
-#code-editor {
-  min-height: 76vh !important;
+.code-editor {
+  height: calc(100%);
 
   &.hide-cursor{
     .monaco-editor .cursors-layer > .cursor {
