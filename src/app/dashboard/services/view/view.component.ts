@@ -186,10 +186,10 @@ export class ViewComponent implements OnInit, OnDestroy {
             res => {
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);
-                //self.isSchemaFree = true;
-                if(res.schemaFree){
-                  self.isSchemaFree = res.schemaFree;
-                }
+                self.isSchemaFree = true;
+                // if(res.schemaFree){
+                //   self.isSchemaFree = res.schemaFree;
+                // }
                 self.formService.patchType(parsedDef);
                 res.definition = JSON.parse(JSON.stringify(parsedDef));
                 if (res.stateModel && res.stateModel.enabled == true) {
