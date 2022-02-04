@@ -65,7 +65,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   searchTerm: string;
   tempState: string;
   isInitialStateOnEdit: boolean;
-
+  isSchemaFree: boolean;
+  selectedEditorTheme: any;
+  selectedFontSize: any;
+  schemaFreeCode: any;
+  invalidSchemaFreeRecord: boolean;
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -102,6 +106,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.stateModelName = '';
     self.tempState = null;
     self.isInitialStateOnEdit = false;
+    self.isSchemaFree = false;
+    this.selectedEditorTheme = 'vs-light';
+    this.selectedFontSize = 14;
+    this.schemaFreeCode = null;
+    self.invalidSchemaFreeRecord = false;
   }
 
   ngOnInit() {
@@ -182,6 +191,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
   }
 
+  schemaFreeCodeError($event){
+    this.invalidSchemaFreeRecord = $event;
+  }
+
   checkStateModel(def) {
     if (this.stateModelAttr && def.key == this.stateModelAttr) {
       return true;
@@ -221,7 +234,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getSchema(serviceId: string) {
     const self = this;
     const options = {
-      select: 'api definition name relatedSchemas wizard stateModel workflowConfig role',
+      select: 'api definition name relatedSchemas wizard stateModel workflowConfig role schemaFree',
       filter: { app: this.commonService.app._id }
     };
     self.subscriptions['getSchema'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
@@ -239,6 +252,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
             const customLabel = res.definition[stateModelDefIndex].properties?.label;
             self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
           }
+        }
+        //self.isSchemaFree = true;
+        if(res.schemaFree){
+          self.isSchemaFree = res.schemaFree;
         }
         self.title = res.name;
         self.api = '/' + self.commonService.app._id + res.api;
@@ -271,7 +288,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   self.isInitialStateOnEdit = true;
                 }
                 self.value = self.appService.cloneObject(data);
-                self.buildForm(res, data);
+                if(!self.isSchemaFree){
+                  self.buildForm(res, data);
+                }else{
+                  self.schemaFreeCode = JSON.parse(JSON.stringify(data));
+                  delete self.schemaFreeCode["_metadata"]
+                  delete self.schemaFreeCode["__v"]
+                  if(self.schemaFreeCode["_workflow"]){
+                      delete self.schemaFreeCode["_workflow"];  
+                  }
+                }
               }
             },
             err => {
@@ -472,6 +498,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       });
   }
 
+
   discardDraft(reset?) {
     const self = this;
     self.confirmDiscardModalRef = self.modalService.open(self.confirmDiscardModal, { centered: true });
@@ -647,13 +674,18 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       return;
     }
     self.showLazyLoader = true;
-    const payload = self.appService.cloneObject(self.form.getRawValue());
-    Object.keys(payload).forEach(item => {
-      if (Array.isArray(payload[item]) && payload[item].length === 0) {
-        payload[item] = null;
-      }
-    });
-    self.appService.cleanPayload(payload, self.definition, self.isEdit);
+    let payload;
+    if(!self.isSchemaFree){
+      payload = self.appService.cloneObject(self.form.getRawValue());
+      Object.keys(payload).forEach(item => {
+        if (Array.isArray(payload[item]) && payload[item].length === 0) {
+          payload[item] = null;
+        }
+      });
+      self.appService.cleanPayload(payload, self.definition, self.isEdit);
+    }else{
+      payload = this.schemaFreeCode;
+    }
     let response;
     payload._workflow = {
       audit: [
@@ -692,7 +724,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         self.showLazyLoader = false;
         self.reqInProgress = false;
         self.draftReqInProgress = false;
-        if (res._workflow) {
+        if (res._workflow && !self.isSchemaFree) {
           self.ts.success('Work item submitted for review.');
         } else {
           self.ts.success('Saved.');

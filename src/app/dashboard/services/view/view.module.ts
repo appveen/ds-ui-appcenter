@@ -15,6 +15,7 @@ import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/load
 import { ViewComponent } from './view.component';
 import { WorkflowRespondViewModule } from 'src/app/utils/workflow-respond-view/workflow-respond-view.module';
 import { HistoryComponent } from './history/history.component';
+import { CodeEditorModule } from 'src/app/utils/code-editor/code-editor.module'
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: ViewComponent, canActivate: [ViewGuard] },
@@ -34,8 +35,8 @@ const routes: Routes = [
     DatePickerModule,
     ClickOutsideModule,
     LoadingPlaceholderModule,
-    WorkflowRespondViewModule
-    
+    WorkflowRespondViewModule,
+    CodeEditorModule
   ],
   declarations: [
     ViewComponent,

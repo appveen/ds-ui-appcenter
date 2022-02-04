@@ -139,7 +139,7 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex flex-column w-100 bg-light">
+    <div class="d-flex flex-column w-100 bg-light" *ngIf="!isSchemaFree">
         <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
             class="steps-wrapper wizard-steps position-relative d-flex justify-content-between bg-white rounded px-3">
             <div class="step-tabs d-flex align-items-center">
@@ -256,6 +256,11 @@
             </div>
         </div>
     </div>
+    <ng-container *ngIf="isSchemaFree && !showLazyLoader">
+        <odp-code-editor class="code-editor" [edit]="{status:false}" [theme]="selectedEditorTheme"
+        [fontSize]="selectedFontSize" [(code)]="schemaFreeCode">
+      </odp-code-editor>
+    </ng-container>
 </div>
 
 
