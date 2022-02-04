@@ -74,7 +74,7 @@
         <div class="btn-group save-button">
           <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
             [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow }"
-            [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord || invalidSchemaFreeRecord"
+            [disabled]="((!form.valid || !form.dirty) && !isSchemaFree) || reqInProgress || showLazyLoader || searchingRecord || invalidSchemaFreeRecord"
             (click)="save()" *ngIf="!isDraft">
             <span *ngIf="!hasWorkflow" class="text">Save
             </span>

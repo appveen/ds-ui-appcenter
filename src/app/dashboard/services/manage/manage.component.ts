@@ -68,9 +68,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   isSchemaFree: boolean;
   selectedEditorTheme: any;
   selectedFontSize: any;
-  schemaFreeCode: string;
+  schemaFreeCode: any;
   invalidSchemaFreeRecord: boolean;
-
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -289,7 +288,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   self.isInitialStateOnEdit = true;
                 }
                 self.value = self.appService.cloneObject(data);
-                self.buildForm(res, data);
+                if(!self.isSchemaFree){
+                  self.buildForm(res, data);
+                }else{
+                  self.schemaFreeCode = JSON.parse(JSON.stringify(data));
+                  delete self.schemaFreeCode["_metadata"]
+                  delete self.schemaFreeCode["__v"]
+                  if(self.schemaFreeCode["_workflow"]){
+                      delete self.schemaFreeCode["_workflow"];  
+                  }
+                }
               }
             },
             err => {
@@ -360,9 +368,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       isEdit: self.isEdit
     });
     self.form = self.fb.group(self.formService.createForm(tempDef));
-    if(self.isSchemaFree){
-      self.schemaFreeCode = self.form.getRawValue();
-    }
     self.definition = tempDef;
     self.form.markAsDirty();
   }
@@ -718,7 +723,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         self.showLazyLoader = false;
         self.reqInProgress = false;
         self.draftReqInProgress = false;
-        if (res._workflow) {
+        if (res._workflow && !self.isSchemaFree) {
           self.ts.success('Work item submitted for review.');
         } else {
           self.ts.success('Saved.');
