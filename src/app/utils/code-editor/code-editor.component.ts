@@ -19,7 +19,7 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
   @Input() code: any;
   @Input() edit: { status: boolean, id?: string };
   @Output() codeChange: EventEmitter<string>;
-  @Output() codeError : EventEmitter<boolean>;
+  @Output() codeError: EventEmitter<boolean>;
 
   codeEditorInstance: monaco.editor.IStandaloneCodeEditor;
   typesString: string;
@@ -80,7 +80,6 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
   }
 
   initMonaco(): void {
-
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
       noSyntaxValidation: false,
@@ -94,8 +93,14 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
     monaco.editor.getModels().forEach(model => model.dispose());
     const modelUri = monaco.Uri.parse("json://grid/settings.json");
-    const jsonModel = monaco.editor.createModel(JSON.stringify(this.code, null, '\t'), "json", modelUri);
-
+    let stringifiedCode = "{}";
+    if (this.code != null) {
+      stringifiedCode = JSON.stringify(this.code, null, '\t');
+    }
+    else {
+      stringifiedCode = "{\n\t\n}"
+    }
+    const jsonModel = monaco.editor.createModel(stringifiedCode, "json", modelUri);
     this.codeEditorInstance = monaco.editor.create(document.getElementById('code-editor'), {
       model: jsonModel,
       language: 'javascript',
@@ -104,33 +109,28 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
       scrollBeyondLastLine: false,
       fontSize: this.fontSize,
       readOnly: !this.edit.status,
-      contextmenu: this.edit.status, 
-      
+      contextmenu: this.edit.status
     });
 
     this.codeEditorInstance.getModel().onDidChangeContent(e => {
       const val = this.codeEditorInstance.getValue();
-
-      if(this.isJSON(val)){
+      if (this.isJSON(val)) {
         this.codeError.emit(false);
         this.codeChange.emit(JSON.parse(val));
       }
-      else{
+      else {
         this.codeError.emit(true);
       }
     });
-
     const errors = monaco.editor.getModelMarkers({});
-
-
     this.codeEditorInstance.layout();
   }
 
   isJSON(str) {
     try {
-        return (JSON.parse(str) && !!str);
+      return (JSON.parse(str) && !!str);
     } catch (e) {
-        return false;
+      return false;
     }
-}
+  }
 }
