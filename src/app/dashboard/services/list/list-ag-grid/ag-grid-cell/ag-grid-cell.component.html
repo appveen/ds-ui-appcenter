@@ -72,6 +72,9 @@
                 {{parsedDate | date:'MMM dd, y'}} <span *ngIf="showTimezone">({{timezoneValue}})</span>
             </ng-container>
         </ng-container>
+        <ng-container *ngIf="definition.properties.type === 'schemafree'">
+            {{data.data | json}}
+        </ng-container>
         <ng-container *ngIf="type === 'Boolean'">
             <span *ngIf="value" class="text-muted">
                 <span class="fa fa-check-circle text-primary"></span>
