@@ -119,7 +119,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   const colId = col.getColId();
                   return selectItem === colId || selectItem.indexOf(colId + '.') === 0;
                 });
-                if(!!column) {
+                if (!!column) {
                   this.agGrid.columnApi.setColumnVisible(column, true);
                   this.agGrid.columnApi.moveColumn(column, index);
                 }
@@ -164,7 +164,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             }
           });
           definitionList = sc;
-          if(!self.schema.schemaFree){
+          if (!self.schema.schemaFree) {
             self.apiConfig.select = self.gridService.getSelect(definitionList);
           }
           self.agGrid.api.showLoadingOverlay();
@@ -182,9 +182,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   if (loaded > self.currentRecordsCount) {
                     loaded = self.currentRecordsCount;
                   }
-                  if(self.schema.schemaFree){
+                  if (self.schema.schemaFree) {
                     let data = JSON.parse(JSON.stringify(records))
-                    data.forEach((element,index) => {
+                    data.forEach((element, index) => {
                       delete element['_metadata'];
                       delete element['_workflow'];
                       delete element['__v'];
@@ -205,7 +205,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   }
                   self.rowSelected(null);
                 },
-                err => {}
+                err => { }
               );
             } else {
               self.agGrid.api.hideOverlay();
@@ -243,7 +243,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   self.configureView(viewModel || {});
                 }
               },
-              dismiss => {}
+              dismiss => { }
             );
           } else {
             self.gridService.selectedSavedView = viewModel;
@@ -423,7 +423,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       }
       if (viewModel.filter && viewModel.filter.length > 0) {
         viewModel.filter.forEach(item => {
-          if(!!Object.keys(item.filterObject).length) {
+          if (!!Object.keys(item.filterObject).length) {
             filters.push(item.filterObject);
           }
         });
@@ -479,49 +479,6 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   createColumnDefs() {
     const self = this;
 
-    if(self.schema.schemaFree){
-      let temp: any = {};
-      (temp as AgGridColumn).headerName = 'ID';
-      (temp as AgGridColumn).sortable = true;
-      (temp as AgGridColumn).filter = false;
-      (temp as AgGridColumn).suppressMenu = true;
-      (temp as AgGridColumn).headerClass = 'hide-filter-icon';
-      (temp as AgGridColumn).resizable = true;
-      (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
-      (temp as AgGridColumn).refData = {
-        dataKey: "_id",
-        'definition': [],
-        'key': "_id",
-        properties: {name: 'ID', type: 'String'},
-        show: true,
-        type: "Identifier"
-      };
-
-      // (temp as AgGridColumn).refData = e;
-      (temp as AgGridColumn).hide = false;
-      self.columnDefs.push(temp);
-
-      temp =  {};
-      (temp as AgGridColumn).headerName = 'Data';
-      (temp as AgGridColumn).sortable = true;
-      (temp as AgGridColumn).filter = false;
-      (temp as AgGridColumn).suppressMenu = true;
-      (temp as AgGridColumn).headerClass = 'hide-filter-icon';
-      (temp as AgGridColumn).resizable = true;
-      (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
-      (temp as AgGridColumn).refData = {
-        dataKey: "data",
-        'definition': [],
-        'key': "data",
-        properties: {name: 'data', type: 'schemafree'},
-        show: true      
-      };
-
-      // (temp as AgGridColumn).refData = e;
-      (temp as AgGridColumn).hide = false;
-      self.columnDefs.push(temp);
-    }
-
     self.columns.forEach((e, i) => {
       const temp: any = {};
       if (e.properties) {
@@ -537,7 +494,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         (temp as AgGridColumn).pinned = 'left';
       } else {
         (temp as AgGridColumn).sortable = true;
-        if(!self.schema.schemaFree){
+        if (!self.schema.schemaFree) {
           (temp as AgGridColumn).filter = 'agTextColumnFilter';
           (temp as AgGridColumn).floatingFilterComponentFramework = AgGridFiltersComponent;
           (temp as AgGridColumn).filterParams = {
@@ -549,7 +506,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         (temp as AgGridColumn).suppressMenu = true;
         (temp as AgGridColumn).headerClass = 'hide-filter-icon';
         (temp as AgGridColumn).resizable = true;
-       
+
       }
       if (e.type === 'Relation') {
         (temp as AgGridColumn).tooltipField = e.dataKey;
@@ -559,7 +516,31 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       (temp as AgGridColumn).refData = e;
       (temp as AgGridColumn).hide = !e.show;
       self.columnDefs.push(temp);
+
+      if (self.schema.schemaFree && e.type == "Identifier") {
+        let temp: any = {};
+        temp = {};
+        (temp as AgGridColumn).headerName = 'Data';
+        (temp as AgGridColumn).sortable = true;
+        (temp as AgGridColumn).filter = false;
+        (temp as AgGridColumn).suppressMenu = true;
+        (temp as AgGridColumn).headerClass = 'hide-filter-icon';
+        (temp as AgGridColumn).resizable = true;
+        (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
+        (temp as AgGridColumn).refData = {
+          dataKey: "data",
+          'definition': [],
+          'key': "data",
+          properties: { name: 'data', type: 'schemafree' },
+          show: true
+        };
+
+        // (temp as AgGridColumn).refData = e;
+        (temp as AgGridColumn).hide = false;
+        self.columnDefs.push(temp);
+      }
     });
+
 
   }
 
