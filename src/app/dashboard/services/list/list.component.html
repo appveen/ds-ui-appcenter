@@ -16,7 +16,8 @@
           <span class="text">Upload</span>
         </button>-->
       <div class="btn-group">
-        <button type="button" class="btn btn-success active" *ngIf="(hasPermission('POST') || hasPermission('PUT')) && !isSchemaFree "
+        <button type="button" class="btn btn-success active"
+          *ngIf="(hasPermission('POST') || hasPermission('PUT')) && !isSchemaFree "
           [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
           <span class="fas fa-cloud-upload-alt text-white"></span>
         </button>
@@ -68,8 +69,9 @@
         <span class="odp-edit mr-2"></span>
         <span class="text">Edit</span>
       </button>
-      <button type="button" class="btn btn-link" *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit"
-        (click)="bulkEdit()" id="bulkEditButton">
+      <button type="button" class="btn btn-link"
+        *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit && !isSchemaFree" (click)="bulkEdit()"
+        id="bulkEditButton">
         <span class="odp-edit mr-2"></span>
         <span class="text">Bulk Edit ({{recordChecked}})</span>
       </button>
@@ -83,7 +85,8 @@
       <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
         <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
       </div>
-      <div class="bg-white p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside" *ngIf="!isSchemaFree">
+      <div class="bg-white p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside"
+        *ngIf="!isSchemaFree">
         <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
           (click)="showSaveViewDropDown=!showSaveViewDropDown">
           <div class="ignore-outside">
@@ -124,7 +127,8 @@
           <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
             <div *ngFor="let filter of savedViews"
               class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
-              (mouseenter)="filter.hasOptions && filter.showOptions = true" (mouseleave)="filter.hasOptions && filter.showOptions = false">
+              (mouseenter)="filter.hasOptions && filter.showOptions = true"
+              (mouseleave)="filter.hasOptions && filter.showOptions = false">
               <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
               <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
               <span class="hover text-truncate filterNameWidth"
@@ -135,7 +139,8 @@
               </span>
               <span *ngIf="filter.hasOptions && !filter.showOptions"
                 class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
-              <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover" [@slideIn]>
+              <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
+                [@slideIn]>
                 <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
                 <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
                 <div class="left-radius position-relative hover"
@@ -289,7 +294,8 @@
           <span class="text-secondary mr-1">Submitted by</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length <= 52">{{workflowModalOptions?.requestedBy}}</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length > 52" class="text-truncate requestedBy high-zIndex"
-            [ngbTooltip]="workflowModalOptions?.requestedBy" placement="top">{{workflowModalOptions?.requestedBy}}</span>
+            [ngbTooltip]="workflowModalOptions?.requestedBy"
+            placement="top">{{workflowModalOptions?.requestedBy}}</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="d-flex align-items-center">
           <span class="text-secondary mr-1">Field(s) affected</span>
