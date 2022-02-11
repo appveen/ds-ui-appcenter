@@ -191,7 +191,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
   }
 
-  schemaFreeCodeError($event){
+  schemaFreeCodeError($event) {
     this.invalidSchemaFreeRecord = $event;
   }
 
@@ -254,7 +254,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           }
         }
         //self.isSchemaFree = true;
-        if(res.schemaFree){
+        if (res.schemaFree) {
           self.isSchemaFree = res.schemaFree;
         }
         self.title = res.name;
@@ -288,14 +288,14 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   self.isInitialStateOnEdit = true;
                 }
                 self.value = self.appService.cloneObject(data);
-                if(!self.isSchemaFree){
+                if (!self.isSchemaFree) {
                   self.buildForm(res, data);
-                }else{
+                } else {
                   self.schemaFreeCode = JSON.parse(JSON.stringify(data));
                   delete self.schemaFreeCode["_metadata"]
                   delete self.schemaFreeCode["__v"]
-                  if(self.schemaFreeCode["_workflow"]){
-                      delete self.schemaFreeCode["_workflow"];  
+                  if (self.schemaFreeCode["_workflow"]) {
+                    delete self.schemaFreeCode["_workflow"];
                   }
                 }
               }
@@ -675,7 +675,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     }
     self.showLazyLoader = true;
     let payload;
-    if(!self.isSchemaFree){
+    if (!self.isSchemaFree) {
       payload = self.appService.cloneObject(self.form.getRawValue());
       Object.keys(payload).forEach(item => {
         if (Array.isArray(payload[item]) && payload[item].length === 0) {
@@ -683,8 +683,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         }
       });
       self.appService.cleanPayload(payload, self.definition, self.isEdit);
-    }else{
-      payload = this.schemaFreeCode;
+    } else {
+      payload = this.schemaFreeCode ? this.schemaFreeCode : {};
     }
     let response;
     payload._workflow = {
