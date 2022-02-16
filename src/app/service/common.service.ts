@@ -858,8 +858,11 @@ export class CommonService {
     if (!options) {
       options = {};
     }
-    if (options.sort) {
+    if (options.sort && typeof options.sort !== 'object') {
       urlParams = urlParams.set('sort', options.sort);
+    }
+    else if (options.sort && typeof options.sort === 'object') {
+      urlParams = urlParams.set('sort', JSON.stringify(options.sort));
     }
     if (options.page) {
       urlParams = urlParams.set('page', options.page.toString());
@@ -872,6 +875,9 @@ export class CommonService {
     }
     if (options.filter) {
       urlParams = urlParams.set('filter', JSON.stringify(options.filter));
+    }
+    if (options.project) {
+      urlParams = urlParams.set('project', JSON.stringify(options.project));
     }
     if (options.expand) {
       urlParams = urlParams.set('expand', options.expand.toString());
