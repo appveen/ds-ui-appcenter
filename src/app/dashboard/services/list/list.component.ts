@@ -1532,6 +1532,7 @@ export class ListComponent implements OnInit, OnDestroy {
       } else {
         self.ts.success('New Filter created Successfully');
       }
+
     }, err => self.commonService.errorToast(err));
 
   }

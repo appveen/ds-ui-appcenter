@@ -289,8 +289,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
     }
     if (!!config.project) {
-      let columns = Object.keys(config.project).filter(key => config.project[key] == 1);
-      urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(columns);
+      urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(config.project);
     }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
