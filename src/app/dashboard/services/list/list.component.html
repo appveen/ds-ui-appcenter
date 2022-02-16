@@ -41,22 +41,29 @@
         <div class="schemaFreeFiltersLabel pr-4">Filter :</div>
       </div>
       <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters" >
+      <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
+
     </div>
     <div class="input-group mb-2">
       <div class="input-group-prepend">
         <div class="schemaFreeFiltersLabel pr-4">Project :</div>
       </div>
       <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters" >
+      <small class='text-danger' *ngIf="searchForm.get('project').hasError('validJSON')">Invalid Format</small>
     </div>
     <div class="input-group mb-2">
       <div class="input-group-prepend">
         <div class="schemaFreeFiltersLabel pr-4">Sort :</div>
       </div>
       <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters" >
+      <small class='text-danger' *ngIf="searchForm.get('sort').hasError('validJSON')">Invalid Format</small>
+
     </div>
     <div>
       <div>
-        <button class="btn btn-primary" (click)='saveSearchViewModal()'>Save View</button>
+        <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!searchForm.valid">
+          Save View
+        </button>
       </div>
     </div>
   </div>

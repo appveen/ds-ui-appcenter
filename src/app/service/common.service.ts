@@ -877,7 +877,9 @@ export class CommonService {
       urlParams = urlParams.set('filter', JSON.stringify(options.filter));
     }
     if (options.project) {
-      urlParams = urlParams.set('project', JSON.stringify(options.project));
+      let columns: any = Object.keys(options.project).filter(key => options.project[key] == 1);
+      columns = columns + ['_metadata.createdAt', '_metadata.lastUpdated'];
+      urlParams = urlParams.set('select', columns);
     }
     if (options.expand) {
       urlParams = urlParams.set('expand', options.expand.toString());

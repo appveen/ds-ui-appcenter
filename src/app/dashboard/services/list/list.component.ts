@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Validators, FormControl, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormControl, FormBuilder, FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -167,10 +167,10 @@ export class ListComponent implements OnInit, OnDestroy {
       count: 10
     };
     self.searchForm = self.fb.group({
-      name: ['', [Validators.required]],
-      filter: ['', [Validators.required]],
-      project: ['', [Validators.required]],
-      sort: ['', [Validators.required]],
+      name: ['', [Validators.minLength(1)]],
+      filter: ['', [validJSON()]],
+      project: ['', [validJSON()]],
+      sort: ['', [validJSON()]],
     });
     self.filterPayload = {
       serviceId: '',
@@ -1542,3 +1542,29 @@ export interface RefineQuery {
   select?: string;
   filter?: any;
 }
+
+export function validJSON(): ValidatorFn {
+  return (control: FormControl) => {
+      if(!control.value){
+        return null;
+      }
+      
+      try {
+          if(JSON.parse(control.value)){
+            return null;
+          }
+      } catch (e) { 
+        return { validJSON : true };
+      }
+      }
+      return null;
+      // if (!newPassword.value || !control.value) {
+      //     return { match: 'Passwords do not match' };
+      // }
+      // if (newPassword.value === control.value) {
+      //     return null;
+      // } else {
+      //     return { match: 'Passwords do not match' };
+      // }
+  };
+

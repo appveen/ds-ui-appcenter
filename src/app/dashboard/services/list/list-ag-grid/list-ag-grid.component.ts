@@ -289,7 +289,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
     }
     if (!!config.project) {
-      urlParams += (!!urlParams ? '&project=' : 'project=') + JSON.stringify(config.project);
+      let columns = Object.keys(config.project).filter(key => config.project[key] == 1);
+      urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(columns);
     }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
@@ -484,7 +485,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.agGrid.api.setSortModel(null);
       }
       if (self.schema.schemaFree && viewModel.value.project){
-        self.apiConfig.project = JSON.parse(viewModel.value.sort);
+        self.apiConfig.project = JSON.parse(viewModel.value.project);
         reload = true;
       }
       
@@ -644,6 +645,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.gridService.selectedSavedView = null;
     self.apiConfig.filter = null;
     self.apiConfig.sort = null;
+    self.apiConfig.project = null;
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
