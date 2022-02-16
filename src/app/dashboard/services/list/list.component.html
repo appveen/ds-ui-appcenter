@@ -29,7 +29,7 @@
       </div>
     </div>
   </div>
-  <div class='bg-white p-2' [formGroup]="searchForm">
+  <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree">
     <div ngbDropdown class="d-inline-block mb-2">
       <button class="btn btn-outline btn-link p-0" id="dropdownBasic1" ngbDropdownToggle>Select Filter</button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
