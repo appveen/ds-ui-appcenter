@@ -232,9 +232,6 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           if (typeof data.value === 'string') {
             data.value = JSON.parse(data.value);
           }
-          if(self.schema.schemaFree){
-            self.apiConfig.filter = {}
-          }
           const viewModel = data.value;
           const temp = self.agGrid.api.getFilterModel();
           if (temp && Object.keys(temp).length > 0) {
@@ -424,12 +421,15 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
       }
-      if (viewModel.filter && viewModel.filter.length > 0) {
+      if (viewModel.filter && viewModel.filter.length > 0 && !self.schema.schemaFree) {
         viewModel.filter.forEach(item => {
           if (!!Object.keys(item.filterObject).length) {
             filters.push(item.filterObject);
           }
         });
+      }
+      else if (viewModel.value.filter && self.schema.schemaFree){
+        filters.push(JSON.parse(viewModel.value.filter));
       }
       if (viewModel.sort && viewModel.sort.length > 0) {
         viewModel.sort.forEach(item => {
@@ -444,7 +444,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         });
       }
       if (filters.length > 0) {
-        self.apiConfig.filter = { $and: filters };
+        if(self.schema.schemaFree){
+          self.apiConfig.filter =  filters[0];
+        }else{
+          self.apiConfig.filter = { $and: filters };
+        }
         reload = true;
         if (!environment.production) {
           console.log('Setting Filter Model');

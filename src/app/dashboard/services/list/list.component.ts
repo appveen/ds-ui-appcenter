@@ -1518,12 +1518,7 @@ export class ListComponent implements OnInit, OnDestroy {
     let data = self.searchForm.getRawValue();
     self.filterPayload.name =  data['name'];
     delete data['name']
-    data['filter'] =  JSON.stringify(data['filter']);
-    data['project'] =  JSON.stringify(data['project']);
-    data['sort'] =  JSON.stringify(data['sort']);
-
     self.filterPayload.value = JSON.stringify(data);
-    
     let request: Observable<any>;
     if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
       request = self.commonService.put('user', `/filter/${self.filterId}`, self.filterPayload);
