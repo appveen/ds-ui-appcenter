@@ -1635,6 +1635,7 @@ export interface GetOptions {
   select?: string;
   filter?: any;
   sort?: string;
+  project?: string;
   srvcID?: string;
   expand?: boolean;
   expandKeys?: string;

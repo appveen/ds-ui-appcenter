@@ -288,6 +288,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (!!config.sort) {
       urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
     }
+    if (!!config.project) {
+      urlParams += (!!urlParams ? '&project=' : 'project=') + JSON.stringify(config.project);
+    }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
       const compSelect = config.select;
@@ -421,7 +424,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
       }
-      if (viewModel.filter && viewModel.filter.length > 0 && !self.schema.schemaFree) {
+      if (!self.schema.schemaFree && viewModel.filter && viewModel.filter.length > 0) {
         viewModel.filter.forEach(item => {
           if (!!Object.keys(item.filterObject).length) {
             filters.push(item.filterObject);
@@ -431,7 +434,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       else if (viewModel.value.filter && self.schema.schemaFree){
         filters.push(JSON.parse(viewModel.value.filter));
       }
-      if (viewModel.sort && viewModel.sort.length > 0) {
+      if (!self.schema.schemaFree && viewModel.sort && viewModel.sort.length > 0) {
         viewModel.sort.forEach(item => {
           if (typeof item.selectedOption === 'string') {
             item.selectedOption = parseInt(item.selectedOption, 10);
@@ -464,17 +467,27 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.filter = null;
         self.agGrid.api.setFilterModel(null);
       }
-      if (sort.length > 0) {
+      if (sort.length > 0 && !self.schema.schemaFree) {
         self.apiConfig.sort = sort.join(',');
         if (!environment.production) {
           console.log('Setting Sort Model');
         }
         reload = true;
         self.agGrid.api.setSortModel(sortModel);
-      } else {
+      } 
+      else if (self.schema.schemaFree && viewModel.value.sort){
+        self.apiConfig.sort = JSON.parse(viewModel.value.sort);
+        reload = true;
+      }
+      else {
         self.apiConfig.sort = null;
         self.agGrid.api.setSortModel(null);
       }
+      if (self.schema.schemaFree && viewModel.value.project){
+        self.apiConfig.project = JSON.parse(viewModel.value.sort);
+        reload = true;
+      }
+      
       if (reload) {
         self.initRows();
       }
