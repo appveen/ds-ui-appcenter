@@ -232,6 +232,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           if (typeof data.value === 'string') {
             data.value = JSON.parse(data.value);
           }
+          if(self.schema.schemaFree){
+            self.apiConfig.filter = {}
+          }
           const viewModel = data.value;
           const temp = self.agGrid.api.getFilterModel();
           if (temp && Object.keys(temp).length > 0) {

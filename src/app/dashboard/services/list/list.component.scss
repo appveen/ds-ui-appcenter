@@ -195,3 +195,18 @@
 .no-focus{
   box-shadow: none !important;
 }
+
+.schemaFreeFilters, .schemaFreeFiltersLabel{
+  outline: none;
+  border: 0;
+  background: none;
+  border-bottom: 1px solid #ECECEC;
+}
+
+.schemaFreeFilters{
+  width: 93%;
+}
+
+.schemaFreeFiltersLabel{
+  min-width: 70px;
+}

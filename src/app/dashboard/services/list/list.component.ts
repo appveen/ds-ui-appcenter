@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Validators, FormControl } from '@angular/forms';
+import { Validators, FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +16,7 @@ import { SessionService } from 'src/app/service/session.service';
 import { ListAgGridComponent } from './list-ag-grid/list-ag-grid.component';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { ListFiltersComponent } from './list-filters/list-filters.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'odp-list',
@@ -80,6 +81,9 @@ export class ListComponent implements OnInit, OnDestroy {
   confirmDeleteModal: TemplateRef<HTMLElement>;
   @ViewChild('workflowModal', { static: false })
   workflowModal: TemplateRef<HTMLElement>;
+  @ViewChild('createNewFilter', { static: false })
+  createNewFilter: TemplateRef<ElementRef>;
+  createNewFilterRef: NgbModalRef;
   @ViewChild('clearFilterModal', { static: false })
   clearFilterModal: TemplateRef<ElementRef>;
   @ViewChild('dataContainer', { static: false }) dataContainer: ElementRef;
@@ -123,6 +127,10 @@ export class ListComponent implements OnInit, OnDestroy {
   showContextMenu: boolean;
   hasFilterFromUrl = false;
   isSchemaFree = false;
+  searchForm: FormGroup;
+  filterPayload: any;
+  filterId: any;
+  filterCreatedBy: any;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -133,7 +141,8 @@ export class ListComponent implements OnInit, OnDestroy {
     private ts: ToastrService,
     private shortcutService: ShortcutService,
     private ngbToolTipConfig: NgbTooltipConfig,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder,
   ) {
     const self = this;
     self.workflowModalOptions = {};
@@ -157,6 +166,22 @@ export class ListComponent implements OnInit, OnDestroy {
       page: 1,
       count: 10
     };
+    self.searchForm = self.fb.group({
+      name: ['', [Validators.required]],
+      filter: ['', [Validators.required]],
+      project: ['', [Validators.required]],
+      sort: ['', [Validators.required]],
+    });
+    self.filterPayload = {
+      serviceId: '',
+      name: '',
+      private: false,
+      value: '',
+      app: self.commonService.app._id,
+      createdBy: self.sessionService.getUser(true)._id,
+      type: 'dataService'
+    };
+    self.filterId = null;
   }
 
   ngOnInit() {
@@ -494,6 +519,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   fetchSchema(serviceId: string) {
     const self = this;
+    self.filterPayload.serviceId = serviceId;
     const options: GetOptions = {
       filter: { status: 'Active', app: self.commonService.app._id }
     };
@@ -587,7 +613,7 @@ export class ListComponent implements OnInit, OnDestroy {
             if (typeof view.value === 'string') {
               view.value = JSON.parse(view.value);
             }
-            if (view.value.filter && view.value.filter.length > 0) {
+            if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0 ) {
               view.value.filter.forEach(item => {
                 item.dataKey = item.dataKey;
                 delete item.headerName;
@@ -626,7 +652,7 @@ export class ListComponent implements OnInit, OnDestroy {
               if (typeof view.value === 'string') {
                 view.value = JSON.parse(view.value);
               }
-              if (view.value.filter && view.value.filter.length > 0) {
+              if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
                 view.value.filter.forEach(item => {
                   item.dataKey = item.dataKey;
                   delete item.headerName;
@@ -1457,6 +1483,62 @@ export class ListComponent implements OnInit, OnDestroy {
       return this.commonService.hasWorkflow(this.schema)
     }
     return false;
+  }
+
+  selectFilter(filterValue) {
+    const self = this;
+    self.filterId = filterValue._id;
+    self.filterCreatedBy = filterValue.createdBy;  
+    self.searchForm.patchValue({
+      name: filterValue.name,
+      filter: filterValue.value.filter,
+      project: filterValue.value.project,
+      sort: filterValue.value.sort
+    });
+    self.applySavedView.emit({ value: filterValue });
+  }
+   
+  saveSearchViewModal() {
+    const self = this;
+    self.createNewFilterRef = self.modalService.open(self.createNewFilter, { centered: true });
+    self.createNewFilterRef.result.then(
+      close => {
+        if (close) {
+          self.saveView();
+        }
+      },
+      dismiss => { }
+    );
+   
+  }
+
+  saveView(){
+    const self = this;
+    const currentUser = self.sessionService.getUser(true);
+    let data = self.searchForm.getRawValue();
+    self.filterPayload.name =  data['name'];
+    delete data['name']
+    data['filter'] =  JSON.stringify(data['filter']);
+    data['project'] =  JSON.stringify(data['project']);
+    data['sort'] =  JSON.stringify(data['sort']);
+
+    self.filterPayload.value = JSON.stringify(data);
+    
+    let request: Observable<any>;
+    if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
+      request = self.commonService.put('user', `/filter/${self.filterId}`, self.filterPayload);
+    } else if ((self.filterId && (self.filterCreatedBy !== currentUser._id)) || (self.filterId === null || self.filterId === '' || self.filterId === undefined)) {
+      self.filterId = null;
+      request = self.commonService.post('user', '/filter/', self.filterPayload);
+    }
+    request.subscribe(res => {
+      if (self.filterCreatedBy === currentUser._id) {
+        self.ts.success('Filter Saved Successfully');
+      } else {
+        self.ts.success('New Filter created Successfully');
+      }
+    }, err => self.commonService.errorToast(err));
+
   }
 }
 
