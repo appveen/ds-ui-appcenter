@@ -131,6 +131,8 @@ export class ListComponent implements OnInit, OnDestroy {
   filterPayload: any;
   filterId: any;
   filterCreatedBy: any;
+  isCollapsed: any;
+  selectedSearch: any;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -182,6 +184,8 @@ export class ListComponent implements OnInit, OnDestroy {
       type: 'dataService'
     };
     self.filterId = null;
+    self.isCollapsed = true;
+    self.selectedSearch = "";
   }
 
   ngOnInit() {
@@ -1489,6 +1493,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const self = this;
     self.filterId = filterValue._id;
     self.filterCreatedBy = filterValue.createdBy;  
+    self.selectedSearch = filterValue.name;
     self.searchForm.patchValue({
       name: filterValue.name,
       filter: filterValue.value.filter,

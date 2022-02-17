@@ -30,41 +30,53 @@
     </div>
   </div>
   <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree">
+   <div class='d-flex align-items-center justify-content-between'>
     <div ngbDropdown class="d-inline-block mb-2">
-      <button class="btn btn-outline btn-link p-0" id="dropdownBasic1" ngbDropdownToggle>Select Filter</button>
+      <button class="btn btn-outline bg-white shadow-none p-0" id="dropdownBasic1" ngbDropdownToggle>{{selectedSearch ? selectedSearch: "Select Filter"}}</button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
         <button ngbDropdownItem *ngFor="let filter of savedViews" (click)='selectFilter(filter)'>{{filter.name}}</button>
       </div>
     </div>
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="schemaFreeFiltersLabel pr-4">Filter :</div>
-      </div>
-      <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters" >
-      <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
-
-    </div>
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="schemaFreeFiltersLabel pr-4">Project :</div>
-      </div>
-      <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters" >
-      <small class='text-danger' *ngIf="searchForm.get('project').hasError('validJSON')">Invalid Format</small>
-    </div>
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="schemaFreeFiltersLabel pr-4">Sort :</div>
-      </div>
-      <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters" >
-      <small class='text-danger' *ngIf="searchForm.get('sort').hasError('validJSON')">Invalid Format</small>
-
-    </div>
     <div>
-      <div>
-        <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!searchForm.valid">
-          Save View
-        </button>
-      </div>
+      <i class="fas fa-chevron-down" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+      <i class="fas fa-chevron-up" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+    </div>
+    
+   </div>
+    
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+        <div >
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="schemaFreeFiltersLabel pr-4">Filter :</div>
+            </div>
+            <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters" >
+            <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
+      
+          </div>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="schemaFreeFiltersLabel pr-4">Project :</div>
+            </div>
+            <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters" >
+            <small class='text-danger' *ngIf="searchForm.get('project').hasError('validJSON')">Invalid Format</small>
+          </div>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="schemaFreeFiltersLabel pr-4">Sort :</div>
+            </div>
+            <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters" >
+            <small class='text-danger' *ngIf="searchForm.get('sort').hasError('validJSON')">Invalid Format</small>
+      
+          </div>
+          <div>
+            <div>
+              <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!searchForm.valid">
+                Save View
+              </button>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
   <div class="d-flex align-items-center justify-content-between pr-3 pl-2 list-options"
