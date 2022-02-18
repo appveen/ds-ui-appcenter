@@ -1563,7 +1563,8 @@ export class ListComponent implements OnInit, OnDestroy {
       } else {
         self.ts.success('New Filter created Successfully');
       }
-
+      res.value = JSON.parse(res.value);
+      self.applySavedView.emit({ value: res });
     }, err => self.commonService.errorToast(err));
 
   }

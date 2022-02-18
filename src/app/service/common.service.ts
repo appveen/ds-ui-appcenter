@@ -861,7 +861,7 @@ export class CommonService {
     if (options.sort && typeof options.sort !== 'object') {
       urlParams = urlParams.set('sort', options.sort);
     }
-    else if (options.sort && typeof options.sort === 'object') {
+    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0 ) {
       urlParams = urlParams.set('sort', JSON.stringify(options.sort));
     }
     if (options.page) {
@@ -873,10 +873,10 @@ export class CommonService {
     if (options.select) {
       urlParams = urlParams.set('select', options.select);
     }
-    if (options.filter) {
+    if (options.filter && Object.keys(options.filter).length !== 0 ) {
       urlParams = urlParams.set('filter', JSON.stringify(options.filter));
     }
-    if (options.project) {
+    if (options.project && Object.keys(options.project).length !== 0) {
       urlParams = urlParams.set('select', JSON.stringify(options.project));
     }
     if (options.expand) {
