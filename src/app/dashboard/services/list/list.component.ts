@@ -1489,18 +1489,44 @@ export class ListComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  selectFilter(filterValue) {
+  selectFilter(filterValue?) {
     const self = this;
-    self.filterId = filterValue._id;
-    self.filterCreatedBy = filterValue.createdBy;  
-    self.selectedSearch = filterValue.name;
+    if(!filterValue){
+      self.filterId = null;
+      self.filterCreatedBy = '';  
+      self.selectedSearch = null;
+      self.searchForm.patchValue({
+        name: '',
+        filter: '{}',
+        project: '{}',
+        sort: '{}'
+      });
+      this.resetFilter();
+
+    }else{
+      self.filterId = filterValue._id;
+      self.filterCreatedBy = filterValue.createdBy;  
+      self.selectedSearch = filterValue.name;
+      self.searchForm.patchValue({
+        name: filterValue.name,
+        filter: filterValue.value.filter,
+        project: filterValue.value.project,
+        sort: filterValue.value.sort
+      });
+      self.applySavedView.emit({ value: filterValue });
+    }
+
+  }
+
+  clearSearch(){
+    const self = this;
     self.searchForm.patchValue({
-      name: filterValue.name,
-      filter: filterValue.value.filter,
-      project: filterValue.value.project,
-      sort: filterValue.value.sort
+      name: '',
+      filter: '{}',
+      project: '{}',
+      sort: '{}'
     });
-    self.applySavedView.emit({ value: filterValue });
+    this.resetFilter();
   }
    
   saveSearchViewModal() {

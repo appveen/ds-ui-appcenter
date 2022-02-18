@@ -96,17 +96,20 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           if (!!queryParams.sort) {
             const sortModel = [];
-            const sortStr = JSON.parse(queryParams.sort);
-            sortStr.split(',').forEach(item => {
-              let colId = item;
-              let sort = 'asc';
-              if (item.includes('-')) {
-                colId = colId.substr(1, colId.length);
-                sort = 'desc';
-              }
-              sortModel.push({ colId, sort });
-            });
-            this.agGrid.api.setSortModel(sortModel);
+            if(!self.schema.schemaFree){
+              const sortStr = JSON.parse(queryParams.sort);
+              sortStr.split(',').forEach(item => {
+                let colId = item;
+                let sort = 'asc';
+                if (item.includes('-')) {
+                  colId = colId.substr(1, colId.length);
+                  sort = 'desc';
+                }
+                sortModel.push({ colId, sort });
+              });
+              this.agGrid.api.setSortModel(sortModel);
+            }
+           
           }
           if (!!queryParams.select) {
             const select = JSON.parse(queryParams.select);
@@ -645,9 +648,13 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.apiConfig.filter = null;
     self.apiConfig.sort = null;
     self.apiConfig.project = null;
+    self.apiConfig.select = null;
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
+    if(self.schema.schemaFree && columnIds[2]=='0'){
+      columnIds[2] = 'Data';
+    }
     self.agGrid.columnApi.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
       self.agGrid.columnApi.moveColumn(e.dataKey, i);
@@ -662,6 +669,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   }
   columnMoved() {
     const self = this;
+    if(self.schema.schemaFree){
+      return;
+    }
     let definitionList = self.agGrid.columnApi
       .getAllColumns()
       .filter(e => e.isVisible())
