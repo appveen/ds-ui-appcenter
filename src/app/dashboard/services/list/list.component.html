@@ -32,17 +32,24 @@
   <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree">
     <div class='d-flex align-items-center justify-content-between'>
       <div ngbDropdown class="d-inline-block mb-2">
-        <button class="btn btn-outline bg-white shadow-none p-0" id="dropdownBasic1" ngbDropdownToggle>{{selectedSearch
-          ? selectedSearch: "Select Filter"}}</button>
+        <button class="btn btn-outline bg-white shadow-none p-0" id="dropdownBasic1" ngbDropdownToggle>
+          {{selectedSearch? selectedSearch.name : "Select Filter"}}
+        </button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
           <button ngbDropdownItem (click)='selectFilter()'>New Search</button>
           <button ngbDropdownItem *ngFor="let filter of savedViews"
             (click)='selectFilter(filter)'>{{filter.name}}</button>
         </div>
       </div>
-      <div>
-        <i class="fas fa-chevron-down" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
-        <i class="fas fa-chevron-up" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+      <div class='d-flex align-items-baseline mr-4'>
+        <div ngbDropdown class="search-options-section mr-2" *ngIf="selectedSearch">
+          <i class="fas fa-solid fa-ellipsis-h fa-rotate-90 fa-sm hover" id="searchOption" ngbDropdownToggle></i>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="deleteFilter(selectedSearch)"> Delete</button>
+          </div>
+        </div>
+        <i class="fas fa-chevron-down fa-sm" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+        <i class="fas fa-chevron-up fa-sm" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
       </div>
     </div>
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
@@ -434,6 +441,9 @@
     <div class='font-bold'>
       Select Filter visilibilty
     </div>
+    <input type="radio" class="mr-2" name="Text" id="Text" value="">
+    <input type="radio" class="mr-2" name="Text" id="Text" value="">
+
   </div>
   <div class="modal-footer">
     <button id="clearModalCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width"

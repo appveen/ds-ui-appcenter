@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Validators, FormControl, FormBuilder, FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
@@ -22,6 +22,7 @@ import { Observable } from 'rxjs';
   selector: 'odp-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('slideIn', [
       state(
@@ -551,7 +552,7 @@ export class ListComponent implements OnInit, OnDestroy {
           self.appService.serviceAPI = self.api;
           self.schema = res;
           // self.isSchemaFree = true;
-          if(res.schemaFree){
+          if (res.schemaFree) {
             self.isSchemaFree = res.schemaFree;
           }
           self.resetFilter();
@@ -617,7 +618,7 @@ export class ListComponent implements OnInit, OnDestroy {
             if (typeof view.value === 'string') {
               view.value = JSON.parse(view.value);
             }
-            if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0 ) {
+            if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
               view.value.filter.forEach(item => {
                 item.dataKey = item.dataKey;
                 delete item.headerName;
@@ -1003,7 +1004,7 @@ export class ListComponent implements OnInit, OnDestroy {
   hasPermission(method?: string): boolean {
     const self = this;
     if (self.schema) {
-      return self.commonService.hasPermission(self.schema._id,self.schema.role.roles,method);
+      return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
     }
     return false;
   }
@@ -1209,6 +1210,8 @@ export class ListComponent implements OnInit, OnDestroy {
               self.ts.success('Filter Deleted.');
               self.savedViews = [];
               self.getSavedViews();
+              self.selectedSearch = null;
+              self.clearSearch();
             },
             err => {
               self.commonService.errorToast(err, 'Unable to delete, please try again later');
@@ -1491,9 +1494,9 @@ export class ListComponent implements OnInit, OnDestroy {
 
   selectFilter(filterValue?) {
     const self = this;
-    if(!filterValue){
+    if (!filterValue) {
       self.filterId = null;
-      self.filterCreatedBy = '';  
+      self.filterCreatedBy = '';
       self.selectedSearch = null;
       self.searchForm.patchValue({
         name: '',
@@ -1503,10 +1506,10 @@ export class ListComponent implements OnInit, OnDestroy {
       });
       this.resetFilter();
 
-    }else{
+    } else {
       self.filterId = filterValue._id;
-      self.filterCreatedBy = filterValue.createdBy;  
-      self.selectedSearch = filterValue.name;
+      self.filterCreatedBy = filterValue.createdBy;
+      self.selectedSearch = filterValue;
       self.searchForm.patchValue({
         name: filterValue.name,
         filter: filterValue.value.filter,
@@ -1518,7 +1521,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   }
 
-  clearSearch(){
+  clearSearch() {
     const self = this;
     self.searchForm.patchValue({
       name: '',
@@ -1528,7 +1531,7 @@ export class ListComponent implements OnInit, OnDestroy {
     });
     this.resetFilter();
   }
-   
+
   saveSearchViewModal() {
     const self = this;
     self.createNewFilterRef = self.modalService.open(self.createNewFilter, { centered: true });
@@ -1540,14 +1543,14 @@ export class ListComponent implements OnInit, OnDestroy {
       },
       dismiss => { }
     );
-   
+
   }
 
-  saveView(){
+  saveView() {
     const self = this;
     const currentUser = self.sessionService.getUser(true);
     let data = self.searchForm.getRawValue();
-    self.filterPayload.name =  data['name'];
+    self.filterPayload.name = data['name'];
     delete data['name']
     self.filterPayload.value = JSON.stringify(data);
     let request: Observable<any>;
@@ -1578,26 +1581,18 @@ export interface RefineQuery {
 
 export function validJSON(): ValidatorFn {
   return (control: FormControl) => {
-      if(!control.value){
+    if (!control.value) {
+      return null;
+    }
+
+    try {
+      if (JSON.parse(control.value)) {
         return null;
       }
-      
-      try {
-          if(JSON.parse(control.value)){
-            return null;
-          }
-      } catch (e) { 
-        return { validJSON : true };
-      }
-      }
-      return null;
-      // if (!newPassword.value || !control.value) {
-      //     return { match: 'Passwords do not match' };
-      // }
-      // if (newPassword.value === control.value) {
-      //     return null;
-      // } else {
-      //     return { match: 'Passwords do not match' };
-      // }
-  };
+    } catch (e) {
+      return { validJSON: true };
+    }
+  }
+  return null;
+};
 
