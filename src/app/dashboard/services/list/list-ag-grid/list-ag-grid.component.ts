@@ -96,7 +96,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           if (!!queryParams.sort) {
             const sortModel = [];
-            if(!self.schema.schemaFree){
+            if (!self.schema.schemaFree) {
               const sortStr = JSON.parse(queryParams.sort);
               sortStr.split(',').forEach(item => {
                 let colId = item;
@@ -109,7 +109,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
               });
               this.agGrid.api.setSortModel(sortModel);
             }
-           
+
           }
           if (!!queryParams.select) {
             const select = JSON.parse(queryParams.select);
@@ -285,13 +285,15 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   getFilterUrlParams(config) {
     let urlParams = '';
-    if (!!config.filter) {
+    if (!!config.filter && Object.keys(config.filter).length !== 0) {
       urlParams += 'filter=' + JSON.stringify(config.filter);
     }
     if (!!config.sort) {
-      urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
+      if (!this.schema.schemaFree || (this.schema.schemaFree && Object.keys(config.sort).length !== 0)) {
+        urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
+      }
     }
-    if (!!config.project) {
+    if (!!config.project && Object.keys(config.project).length !== 0) {
       urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(config.project);
     }
     if (!!config.select) {
@@ -434,7 +436,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           }
         });
       }
-      else if (viewModel.value.filter && self.schema.schemaFree){
+      else if (self.schema.schemaFree && viewModel.value.filter) {
         filters.push(JSON.parse(viewModel.value.filter));
       }
       if (!self.schema.schemaFree && viewModel.sort && viewModel.sort.length > 0) {
@@ -450,9 +452,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         });
       }
       if (filters.length > 0) {
-        if(self.schema.schemaFree){
-          self.apiConfig.filter =  filters[0];
-        }else{
+        if (self.schema.schemaFree) {
+          self.apiConfig.filter = filters[0];
+        } else {
           self.apiConfig.filter = { $and: filters };
         }
         reload = true;
@@ -477,8 +479,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         }
         reload = true;
         self.agGrid.api.setSortModel(sortModel);
-      } 
-      else if (self.schema.schemaFree && viewModel.value.sort){
+      }
+      else if (self.schema.schemaFree && viewModel.value.sort) {
         self.apiConfig.sort = JSON.parse(viewModel.value.sort);
         reload = true;
       }
@@ -486,11 +488,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.sort = null;
         self.agGrid.api.setSortModel(null);
       }
-      if (self.schema.schemaFree && viewModel.value.project){
+      if (self.schema.schemaFree && viewModel.value.project) {
         self.apiConfig.project = JSON.parse(viewModel.value.project);
         reload = true;
       }
-      
+
       if (reload) {
         self.initRows();
       }
@@ -652,7 +654,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
-    if(self.schema.schemaFree && columnIds[2]=='0'){
+    if (self.schema.schemaFree && columnIds[2] == '0') {
       columnIds[2] = 'Data';
     }
     self.agGrid.columnApi.setColumnsVisible(columnIds, true);
@@ -669,7 +671,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   }
   columnMoved() {
     const self = this;
-    if(self.schema.schemaFree){
+    if (self.schema.schemaFree) {
       return;
     }
     let definitionList = self.agGrid.columnApi

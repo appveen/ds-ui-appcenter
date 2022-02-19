@@ -1568,6 +1568,9 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       res.value = JSON.parse(res.value);
       self.applySavedView.emit({ value: res });
+      self.selectedSearch = res;
+      self.savedViews = [];
+      self.getSavedViews(true);
     }, err => self.commonService.errorToast(err));
 
   }
