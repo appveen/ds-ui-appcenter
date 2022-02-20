@@ -774,6 +774,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       if (self.stateModelAttr && self.initialState && self.form.get(self.stateModelAttr)) {
         self.form.get(self.stateModelAttr).patchValue(self.initialState);
       }
+      self.schemaFreeCode = null;
       self.showCard(0);
       self.workflowFilesList = [];
       self.workflowData = {};
