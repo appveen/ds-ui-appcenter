@@ -36,9 +36,9 @@
           {{selectedSearch? selectedSearch.name : "All Searches"}}
         </button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button ngbDropdownItem (click)='selectFilter()'>New Search</button>
+          <button ngbDropdownItem (click)='selectSearch()'>New Search</button>
           <button ngbDropdownItem *ngFor="let filter of savedViews"
-            (click)='selectFilter(filter)'>{{filter.name}}</button>
+            (click)='selectSearch(filter)'>{{filter.name}}</button>
         </div>
       </div>
       <div class='d-flex align-items-baseline mr-4'>

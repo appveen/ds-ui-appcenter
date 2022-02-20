@@ -988,7 +988,12 @@ export class ListComponent implements OnInit, OnDestroy {
             self.appService.existingFilter = view;
             self.selectedSavedView = view;
             self.selectedSearch = view;
-            self.applySavedView.emit(view);
+            if(self.isSchemaFree){
+              self.selectSearch(view);
+            }
+            else{
+              self.applySavedView.emit(view);
+            }
           }
         } catch (e) {
           console.error(e);
@@ -1550,7 +1555,7 @@ export class ListComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  selectFilter(filterValue?) {
+  selectSearch(filterValue?) {
     const self = this;
     if (!filterValue) {
       self.filterId = null;
@@ -1568,6 +1573,8 @@ export class ListComponent implements OnInit, OnDestroy {
       self.filterId = filterValue._id;
       self.filterCreatedBy = filterValue.createdBy;
       self.selectedSearch = filterValue;
+      self.setLastFilterApplied(filterValue);
+
       self.searchForm.patchValue({
         name: filterValue.name,
         filter: filterValue.value.filter,
