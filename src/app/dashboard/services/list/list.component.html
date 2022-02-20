@@ -17,7 +17,7 @@
         </button>-->
       <div class="btn-group">
         <button type="button" class="btn btn-success active"
-          *ngIf="(hasPermission('POST') || hasPermission('PUT')) && !isSchemaFree "
+          *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
           [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
           <span class="fas fa-cloud-upload-alt text-white"></span>
         </button>
