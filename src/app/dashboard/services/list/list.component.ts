@@ -516,6 +516,7 @@ export class ListComponent implements OnInit, OnDestroy {
     self.savedViews = [];
     self.advanceFilter = showAdvancedFilter;
     self.selectedSavedView = null;
+    self.selectedSearch =  null;
     self.appService.existingFilter = null;
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
@@ -828,6 +829,19 @@ export class ListComponent implements OnInit, OnDestroy {
       },
       checkbox: true
     });
+    if(self.isSchemaFree){
+      temp.push({
+        show: true,
+        key: 'Data',
+        dataKey: 'Data',
+        definition: [],
+        properties: {
+          name: 'Data',
+          type: 'schemafree'
+        }
+      });
+    }
+   
     temp.push({
       show: true,
       key: '_metadata.createdAt',
@@ -973,6 +987,7 @@ export class ListComponent implements OnInit, OnDestroy {
             const view = prefRes[0].value;
             self.appService.existingFilter = view;
             self.selectedSavedView = view;
+            self.selectedSearch = view;
             self.applySavedView.emit(view);
           }
         } catch (e) {

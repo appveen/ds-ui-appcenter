@@ -541,33 +541,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       (temp as AgGridColumn).refData = e;
       (temp as AgGridColumn).hide = !e.show;
       self.columnDefs.push(temp);
-
-      if (self.schema.schemaFree && e.type == "Identifier") {
-        let temp: any = {};
-        temp = {};
-        (temp as AgGridColumn).headerName = 'Data';
-        (temp as AgGridColumn).sortable = true;
-        (temp as AgGridColumn).filter = false;
-        (temp as AgGridColumn).suppressMenu = true;
-        (temp as AgGridColumn).headerClass = 'hide-filter-icon';
-        (temp as AgGridColumn).resizable = true;
-        (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
-        (temp as AgGridColumn).refData = {
-          dataKey: "data",
-          'definition': [],
-          'key': "data",
-          properties: { name: 'data', type: 'schemafree' },
-          show: true
-        };
-
-        // (temp as AgGridColumn).refData = e;
-        (temp as AgGridColumn).hide = false;
-        self.columnDefs.push(temp);
-      }
     });
-
-
   }
+
 
   rowDoubleClicked(event) {
     const self = this;
