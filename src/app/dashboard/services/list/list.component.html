@@ -33,7 +33,7 @@
     <div class='d-flex align-items-center justify-content-between'>
       <div ngbDropdown class="d-inline-block mb-2">
         <button class="btn btn-outline bg-white shadow-none p-0" id="dropdownBasic1" ngbDropdownToggle>
-          {{selectedSearch? selectedSearch.name : "Select Filter"}}
+          {{selectedSearch? selectedSearch.name : "All Searches"}}
         </button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
           <button ngbDropdownItem (click)='selectFilter()'>New Search</button>
@@ -441,8 +441,14 @@
     <div class='font-bold'>
       Select Filter visilibilty
     </div>
-    <input type="radio" class="mr-2" name="Text" id="Text" value="">
-    <input type="radio" class="mr-2" name="Text" id="Text" value="">
+    <label class="mr-4">
+      <input type="radio" [value]=false formControlName="private" class="mr-2">
+        <span>Public</span>
+    </label>
+    <label>
+      <input type="radio" [value]=true formControlName="private" class="mr-2">
+        <span>Private</span>
+    </label>
 
   </div>
   <div class="modal-footer">

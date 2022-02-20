@@ -16,7 +16,7 @@ import { SessionService } from 'src/app/service/session.service';
 import { ListAgGridComponent } from './list-ag-grid/list-ag-grid.component';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { ListFiltersComponent } from './list-filters/list-filters.component';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'odp-list',
@@ -174,6 +174,7 @@ export class ListComponent implements OnInit, OnDestroy {
       filter: ['', [validJSON()]],
       project: ['', [validJSON()]],
       sort: ['', [validJSON()]],
+      private: [false, [Validators.required]]
     });
     self.filterPayload = {
       serviceId: '',
@@ -600,19 +601,103 @@ export class ListComponent implements OnInit, OnDestroy {
       app: self.commonService.app._id,
       type: { $ne: 'workflow' }
     };
-    if (!getAll) {
-      if (self.showPrivateViews) {
-        self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
-        self.savedViewApiConfig.filter.private = true;
+
+    if(!self.schema.schemaFree){
+      if (!getAll) {
+        if (self.showPrivateViews) {
+          self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+          self.savedViewApiConfig.filter.private = true;
+        } else {
+          self.savedViewApiConfig.filter.private = false;
+        }
+        if (self.savedViewSearchTerm) {
+          self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+        }
+        self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+          self.savedViews = [];
+          data.forEach(view => {
+            self.fixSavedView(view);
+            if (view.value && view.type === 'dataService') {
+              if (typeof view.value === 'string') {
+                view.value = JSON.parse(view.value);
+              }
+              if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
+                view.value.filter.forEach(item => {
+                  item.dataKey = item.dataKey;
+                  delete item.headerName;
+                  delete item.fieldName;
+                  delete item.fieldType;
+                });
+              }
+            }
+            self.getUserName(view);
+            if (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id)) {
+              self.savedViews.push(view);
+            }
+          });
+          if (self.showPrivateViews) {
+            const publicViews = self.allFilters.filter(f => !f.private);
+            self.allFilters = [...self.savedViews, ...publicViews];
+          } else {
+            const privateViews = self.allFilters.filter(f => f.private);
+            self.allFilters = [...privateViews, ...self.savedViews];
+          }
+        });
       } else {
-        self.savedViewApiConfig.filter.private = false;
+        for (let i = 0; i < 2; i++) {
+          if (i === 0) {
+            self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+            self.savedViewApiConfig.filter.private = true;
+            self.savedViews = [];
+            self.allFilters = [];
+          } else {
+            self.savedViewApiConfig.filter.private = false;
+          }
+          self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+            data.forEach(view => {
+              self.fixSavedView(view);
+              if (view.value && view.type === 'dataService') {
+                if (typeof view.value === 'string') {
+                  view.value = JSON.parse(view.value);
+                }
+                if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
+                  view.value.filter.forEach(item => {
+                    item.dataKey = item.dataKey;
+                    delete item.headerName;
+                    delete item.fieldName;
+                    delete item.fieldType;
+                  });
+                }
+              }
+              self.getUserName(view);
+              self.allFilters.push(view);
+              if (i === 0 && self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+                self.savedViews.push(view);
+              }
+              if (i === 1 && !self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+                self.savedViews.push(view);
+              }
+            });
+          });
+        }
       }
-      if (self.savedViewSearchTerm) {
-        self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
-      }
-      self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+    }
+    else{
+      self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+      self.savedViewApiConfig.filter.private = true;
+      self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+
+      let publicSavedViewConfig = JSON.parse(JSON.stringify(self.savedViewApiConfig));
+      publicSavedViewConfig.filter.private = false;
+      delete publicSavedViewConfig.filter.createdBy;
+      let privateSavedViewApi =  self.commonService.get('user', '/filter/', self.savedViewApiConfig);
+      let publicSavedViewApipublic =  self.commonService.get('user', '/filter/', publicSavedViewConfig);
+
+      forkJoin([privateSavedViewApi,publicSavedViewApipublic]).subscribe((data)=> {
         self.savedViews = [];
-        data.forEach(view => {
+
+        let allViews = [...data[0], ...data[1]];
+        allViews.forEach(view => {
           self.fixSavedView(view);
           if (view.value && view.type === 'dataService') {
             if (typeof view.value === 'string') {
@@ -632,52 +717,10 @@ export class ListComponent implements OnInit, OnDestroy {
             self.savedViews.push(view);
           }
         });
-        if (self.showPrivateViews) {
-          const publicViews = self.allFilters.filter(f => !f.private);
-          self.allFilters = [...self.savedViews, ...publicViews];
-        } else {
-          const privateViews = self.allFilters.filter(f => f.private);
-          self.allFilters = [...privateViews, ...self.savedViews];
-        }
-      });
-    } else {
-      for (let i = 0; i < 2; i++) {
-        if (i === 0) {
-          self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
-          self.savedViewApiConfig.filter.private = true;
-          self.savedViews = [];
-          self.allFilters = [];
-        } else {
-          self.savedViewApiConfig.filter.private = false;
-        }
-        self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
-          data.forEach(view => {
-            self.fixSavedView(view);
-            if (view.value && view.type === 'dataService') {
-              if (typeof view.value === 'string') {
-                view.value = JSON.parse(view.value);
-              }
-              if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
-                view.value.filter.forEach(item => {
-                  item.dataKey = item.dataKey;
-                  delete item.headerName;
-                  delete item.fieldName;
-                  delete item.fieldType;
-                });
-              }
-            }
-            self.getUserName(view);
-            self.allFilters.push(view);
-            if (i === 0 && self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
-              self.savedViews.push(view);
-            }
-            if (i === 1 && !self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
-              self.savedViews.push(view);
-            }
-          });
-        });
-      }
+       
+      })
     }
+
   }
 
   fixSavedView(viewData) {
@@ -1527,7 +1570,8 @@ export class ListComponent implements OnInit, OnDestroy {
       name: '',
       filter: '{}',
       project: '{}',
-      sort: '{}'
+      sort: '{}',
+      private: false
     });
     this.resetFilter();
   }
@@ -1551,7 +1595,9 @@ export class ListComponent implements OnInit, OnDestroy {
     const currentUser = self.sessionService.getUser(true);
     let data = self.searchForm.getRawValue();
     self.filterPayload.name = data['name'];
-    delete data['name']
+    self.filterPayload.private = data['private']
+    delete data['name'];
+    delete data['private'];
     self.filterPayload.value = JSON.stringify(data);
     let request: Observable<any>;
     if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
@@ -1569,8 +1615,7 @@ export class ListComponent implements OnInit, OnDestroy {
       res.value = JSON.parse(res.value);
       self.applySavedView.emit({ value: res });
       self.selectedSearch = res;
-      self.savedViews = [];
-      self.getSavedViews(true);
+      self.savedViews.push(res);
     }, err => self.commonService.errorToast(err));
 
   }
