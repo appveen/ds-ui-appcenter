@@ -52,7 +52,7 @@
           <span class="text text-secondary">File Settings</span>
         </div>
       </div>
-      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 2}">
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 2}" *ngIf="!schema.schemaFree">
         <div class="d-flex align-items-center">
           <div class="round-check d-flex align-items-center justify-content-center border mr-2"
             [ngClass]="{'bg-success border-success':activeStep >2,'bg-dark':activeStep ===2,'bg-light':'activeStep <2'} ">
