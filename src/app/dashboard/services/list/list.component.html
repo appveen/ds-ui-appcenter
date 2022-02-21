@@ -16,8 +16,7 @@
           <span class="text">Upload</span>
         </button>-->
       <div class="btn-group">
-        <button type="button" class="btn btn-success active"
-          *ngIf="(hasPermission('POST') || hasPermission('PUT')) && !isSchemaFree "
+        <button type="button" class="btn btn-success active" *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
           [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
           <span class="fas fa-cloud-upload-alt text-white"></span>
         </button>
@@ -26,6 +25,100 @@
           <span class="fas fa-plus mr-2"></span>
           <span>Add Data</span>
         </button>
+      </div>
+    </div>
+  </div>
+  <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree">
+    <div class='d-flex align-items-center justify-content-between'>
+      <div ngbDropdown class="d-inline-block ">
+        <button class="btn btn-outline bg-white shadow-none p-0 search-button" ngbDropdownToggle>
+          <div class="d-inline-block text-truncate max-width-100 font-bold"
+            title="{{selectedSearch? selectedSearch.name : 'All Searches'}}">
+            {{selectedSearch? selectedSearch.name : "All Searches"}}
+          </div>
+        </button>
+        <i class="fas fa-chevron-down fa-sm ml-1 search-button hover" ngbDropdownToggle></i>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button ngbDropdownItem (click)='selectSearch()'>New Search</button>
+          <button ngbDropdownItem *ngFor="let filter of savedViews" class="shadow-none" (click)='selectSearch(filter)'>
+            <div title="{{filter.name}}" class="hover d-inline-block text-truncate max-width-100">{{filter.name}}</div>
+          </button>
+        </div>
+      </div>
+      <div class='d-flex align-items-baseline mr-4'>
+        <div ngbDropdown class="search-options-section mr-2" *ngIf="selectedSearch">
+          <i class="fas fa-solid fa-ellipsis-h fa-rotate-90 fa-sm hover" id="searchOption" ngbDropdownToggle></i>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="deleteFilter(selectedSearch)"> Delete</button>
+          </div>
+        </div>
+        <i class="fas fa-chevron-down fa-sm hover" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+        <i class="fas fa-chevron-up fa-sm hover" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+      </div>
+    </div>
+    <div class='row mr-4 ' *ngIf="selectedSearch && isCollapsed">
+      <div class='col-md-4 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Filter &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate view-search-parameters hover" title="{{selectedSearch.value.filter}}">
+          {{selectedSearch.value.filter}}
+        </span>
+      </div>
+      <div class='col-md-4 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Project &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate view-search-parameters hover"
+          title="{{selectedSearch.value.project}}">
+          {{selectedSearch.value.project}}
+        </span>
+      </div>
+      <div class='col-md-4 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Sort &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate view-search-parameters hover" title="{{selectedSearch.value.sort}}">
+          {{selectedSearch.value.sort}}
+        </span>
+      </div>
+    </div>
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+      <div>
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Filter :</div>
+          </div>
+          <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters">
+          <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
+
+        </div>
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="schemaFreeFiltersLabel pr-3 text-secondary font-bold">Project :</div>
+          </div>
+          <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters">
+          <small class='text-danger' *ngIf="searchForm.get('project').hasError('validJSON')">Invalid Format</small>
+        </div>
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Sort :</div>
+          </div>
+          <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters">
+          <small class='text-danger' *ngIf="searchForm.get('sort').hasError('validJSON')">Invalid Format</small>
+
+        </div>
+        <div class='d-flex justify-content-end mr-2'>
+          <div>
+            <button class='btn btn-outline btn-link' (click)='clearSearch()'>Clear All</button>
+          </div>
+          <div>
+            <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!(searchForm.get('project').valid &&
+            searchForm.get('filter').valid && searchForm.get('sort').valid)">
+              Save View
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -78,13 +171,14 @@
     </div>
     <div class="d-flex align-items-center">
       <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
-        *ngIf="selectedSavedView || hasFilterFromUrl" (click)="resetFilter();">
+        *ngIf="selectedSavedView || hasFilterFromUrl || selectedSearch" (click)="resetFilter();">
         <span class="fas fa-redo fa-flip-horizontal"></span>
         <span class="pl-2">Reset Filter</span>
       </div>
       <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
         <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
       </div>
+
       <div class="bg-white p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside"
         *ngIf="!isSchemaFree">
         <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
@@ -338,9 +432,75 @@
   </div>
 </ng-template>
 
+<ng-template #createNewFilter>
+  <div class="modal-header alert">
+    <h4 class="modal-title">Save Filter View</h4>
+    <button id="clearModalCloseBtn" type="button" class="btn no-focus  close" aria-label="Close"
+      (click)="createNewFilterRef.close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body" [formGroup]='searchForm'>
+    <div class='mb-3'>
+      <div>Search Name</div>
+      <input type="text" class='form-control' formControlName='name'
+        [ngClass]="{'is-invalid': (!searchForm.get('name').valid && searchForm.get('name').touched) }">
+      <small class='text-danger' *ngIf="(!searchForm.get('name').valid && searchForm.get('name').touched)">
+        Search Name is required
+      </small>
+    </div>
+    <div class='d-flex mb-3'>
+      <div class='text-secondary font-normal font-bold mr-3'>
+        Filter:
+      </div>
+      <div class="d-inline-block text-truncate mw-100">
+        {{searchForm.controls.filter.value}}
+      </div>
+    </div>
+    <div class='d-flex mb-3'>
+      <div class='text-secondary font-normal font-bold mr-3'>
+        Project:
+      </div>
+      <div class="d-inline-block text-truncate mw-100">
+        {{searchForm.controls.project.value}}
+      </div>
+    </div>
+    <div class='d-flex mb-3'>
+      <div class='text-secondary font-normal font-bold mr-3'>
+        Sort:
+      </div>
+      <div class="d-inline-block text-truncate mw-100">
+        {{searchForm.controls.sort.value}}
+      </div>
+    </div>
+    <div class='font-bold'>
+      Select Filter visilibilty
+    </div>
+    <label class="mr-4">
+      <input type="radio" [value]=false formControlName="private" class="mr-2">
+      <span>Public</span>
+    </label>
+    <label>
+      <input type="radio" [value]=true formControlName="private" class="mr-2">
+      <span>Private</span>
+    </label>
+
+  </div>
+  <div class="modal-footer">
+    <button id="clearModalCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width"
+      (click)="createNewFilterRef.close(false)">
+      Cancel
+    </button>
+    <button id="clearModalYesBtn" type="button" class="btn btn-primary px-4 btn-min-width"
+      (click)="createNewFilterRef.close(true)" [disabled]="!searchForm.valid">Save
+    </button>
+  </div>
+</ng-template>
+
 <ng-template #clearFilterModal>
   <div class="modal-header alert">
-    <h4 class="modal-title text-danger">Warning</h4>
+    <h4 class="modal-title text-danger">Save Filter View</h4>
     <button id="clearModalCloseBtn" type="button" class="btn no-focus  close" aria-label="Close"
       (click)="clearFilterModalRef.close(false)">
       <span aria-hidden="true">&times;</span>

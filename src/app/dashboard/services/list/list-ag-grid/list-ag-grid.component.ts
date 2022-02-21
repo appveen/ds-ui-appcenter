@@ -96,17 +96,20 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           if (!!queryParams.sort) {
             const sortModel = [];
-            const sortStr = JSON.parse(queryParams.sort);
-            sortStr.split(',').forEach(item => {
-              let colId = item;
-              let sort = 'asc';
-              if (item.includes('-')) {
-                colId = colId.substr(1, colId.length);
-                sort = 'desc';
-              }
-              sortModel.push({ colId, sort });
-            });
-            this.agGrid.api.setSortModel(sortModel);
+            if (!self.schema.schemaFree) {
+              const sortStr = JSON.parse(queryParams.sort);
+              sortStr.split(',').forEach(item => {
+                let colId = item;
+                let sort = 'asc';
+                if (item.includes('-')) {
+                  colId = colId.substr(1, colId.length);
+                  sort = 'desc';
+                }
+                sortModel.push({ colId, sort });
+              });
+              this.agGrid.api.setSortModel(sortModel);
+            }
+
           }
           if (!!queryParams.select) {
             const select = JSON.parse(queryParams.select);
@@ -282,11 +285,16 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   getFilterUrlParams(config) {
     let urlParams = '';
-    if (!!config.filter) {
+    if (!!config.filter && Object.keys(config.filter).length !== 0) {
       urlParams += 'filter=' + JSON.stringify(config.filter);
     }
     if (!!config.sort) {
-      urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
+      if (!this.schema.schemaFree || (this.schema.schemaFree && Object.keys(config.sort).length !== 0)) {
+        urlParams += (!!urlParams ? '&sort=' : 'sort=') + JSON.stringify(config.sort);
+      }
+    }
+    if (!!config.project && Object.keys(config.project).length !== 0) {
+      urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(config.project);
     }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
@@ -421,14 +429,17 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
       }
-      if (viewModel.filter && viewModel.filter.length > 0) {
+      if (!self.schema.schemaFree && viewModel.filter && viewModel.filter.length > 0) {
         viewModel.filter.forEach(item => {
           if (!!Object.keys(item.filterObject).length) {
             filters.push(item.filterObject);
           }
         });
       }
-      if (viewModel.sort && viewModel.sort.length > 0) {
+      else if (self.schema.schemaFree && viewModel.value.filter) {
+        filters.push(JSON.parse(viewModel.value.filter));
+      }
+      if (!self.schema.schemaFree && viewModel.sort && viewModel.sort.length > 0) {
         viewModel.sort.forEach(item => {
           if (typeof item.selectedOption === 'string') {
             item.selectedOption = parseInt(item.selectedOption, 10);
@@ -441,7 +452,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         });
       }
       if (filters.length > 0) {
-        self.apiConfig.filter = { $and: filters };
+        if (self.schema.schemaFree) {
+          self.apiConfig.filter = filters[0];
+        } else {
+          self.apiConfig.filter = { $and: filters };
+        }
         reload = true;
         if (!environment.production) {
           console.log('Setting Filter Model');
@@ -457,17 +472,27 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.filter = null;
         self.agGrid.api.setFilterModel(null);
       }
-      if (sort.length > 0) {
+      if (sort.length > 0 && !self.schema.schemaFree) {
         self.apiConfig.sort = sort.join(',');
         if (!environment.production) {
           console.log('Setting Sort Model');
         }
         reload = true;
         self.agGrid.api.setSortModel(sortModel);
-      } else {
+      }
+      else if (self.schema.schemaFree && viewModel.value.sort) {
+        self.apiConfig.sort = JSON.parse(viewModel.value.sort);
+        reload = true;
+      }
+      else {
         self.apiConfig.sort = null;
         self.agGrid.api.setSortModel(null);
       }
+      if (self.schema.schemaFree && viewModel.value.project) {
+        self.apiConfig.project = JSON.parse(viewModel.value.project);
+        reload = true;
+      }
+
       if (reload) {
         self.initRows();
       }
@@ -516,33 +541,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       (temp as AgGridColumn).refData = e;
       (temp as AgGridColumn).hide = !e.show;
       self.columnDefs.push(temp);
-
-      if (self.schema.schemaFree && e.type == "Identifier") {
-        let temp: any = {};
-        temp = {};
-        (temp as AgGridColumn).headerName = 'Data';
-        (temp as AgGridColumn).sortable = true;
-        (temp as AgGridColumn).filter = false;
-        (temp as AgGridColumn).suppressMenu = true;
-        (temp as AgGridColumn).headerClass = 'hide-filter-icon';
-        (temp as AgGridColumn).resizable = true;
-        (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
-        (temp as AgGridColumn).refData = {
-          dataKey: "data",
-          'definition': [],
-          'key': "data",
-          properties: { name: 'data', type: 'schemafree' },
-          show: true
-        };
-
-        // (temp as AgGridColumn).refData = e;
-        (temp as AgGridColumn).hide = false;
-        self.columnDefs.push(temp);
-      }
     });
-
-
   }
+
 
   rowDoubleClicked(event) {
     const self = this;
@@ -624,9 +625,14 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.gridService.selectedSavedView = null;
     self.apiConfig.filter = null;
     self.apiConfig.sort = null;
+    self.apiConfig.project = null;
+    self.apiConfig.select = null;
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
+    if (self.schema.schemaFree && columnIds[2] == '0') {
+      columnIds[2] = 'Data';
+    }
     self.agGrid.columnApi.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
       self.agGrid.columnApi.moveColumn(e.dataKey, i);
@@ -641,6 +647,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   }
   columnMoved() {
     const self = this;
+    if (self.schema.schemaFree) {
+      return;
+    }
     let definitionList = self.agGrid.columnApi
       .getAllColumns()
       .filter(e => e.isVisible())

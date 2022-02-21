@@ -858,8 +858,11 @@ export class CommonService {
     if (!options) {
       options = {};
     }
-    if (options.sort) {
+    if (options.sort && typeof options.sort !== 'object') {
       urlParams = urlParams.set('sort', options.sort);
+    }
+    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0 ) {
+      urlParams = urlParams.set('sort', JSON.stringify(options.sort));
     }
     if (options.page) {
       urlParams = urlParams.set('page', options.page.toString());
@@ -870,8 +873,11 @@ export class CommonService {
     if (options.select) {
       urlParams = urlParams.set('select', options.select);
     }
-    if (options.filter) {
+    if (options.filter && Object.keys(options.filter).length !== 0 ) {
       urlParams = urlParams.set('filter', JSON.stringify(options.filter));
+    }
+    if (options.project && Object.keys(options.project).length !== 0) {
+      urlParams = urlParams.set('select', JSON.stringify(options.project));
     }
     if (options.expand) {
       urlParams = urlParams.set('expand', options.expand.toString());
@@ -1635,6 +1641,7 @@ export interface GetOptions {
   select?: string;
   filter?: any;
   sort?: string;
+  project?: string;
   srvcID?: string;
   expand?: boolean;
   expandKeys?: string;
