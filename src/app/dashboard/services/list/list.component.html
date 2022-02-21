@@ -30,7 +30,7 @@
   </div>
   <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree">
     <div class='d-flex align-items-center justify-content-between'>
-      <div ngbDropdown class="d-inline-block mb-2">
+      <div ngbDropdown class="d-inline-block ">
         <button class="btn btn-outline bg-white shadow-none p-0 search-button" ngbDropdownToggle>
           <div class="d-inline-block text-truncate max-width-100 font-bold"
             title="{{selectedSearch? selectedSearch.name : 'All Searches'}}">
@@ -52,8 +52,35 @@
             <button ngbDropdownItem (click)="deleteFilter(selectedSearch)"> Delete</button>
           </div>
         </div>
-        <i class="fas fa-chevron-down fa-sm" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
-        <i class="fas fa-chevron-up fa-sm" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+        <i class="fas fa-chevron-down fa-sm hover" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+        <i class="fas fa-chevron-up fa-sm hover" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+      </div>
+    </div>
+    <div class='row mr-4 ' *ngIf="selectedSearch && isCollapsed">
+      <div class='col-md-4 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Filter &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate view-search-parameters hover" title="{{selectedSearch.value.filter}}">
+          {{selectedSearch.value.filter}}
+        </span>
+      </div>
+      <div class='col-md-4 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Project &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate view-search-parameters hover"
+          title="{{selectedSearch.value.project}}">
+          {{selectedSearch.value.project}}
+        </span>
+      </div>
+      <div class='col-md-4 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Sort &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate view-search-parameters hover" title="{{selectedSearch.value.sort}}">
+          {{selectedSearch.value.sort}}
+        </span>
       </div>
     </div>
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
