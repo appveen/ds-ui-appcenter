@@ -22,7 +22,7 @@
         [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
         [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)" (selectItem)="selectData($event)"
         [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter" (dragenter)="dragEnterEvent($event)"
-        (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
+        (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)" >
 
     <!-- secure text type handling -->
 

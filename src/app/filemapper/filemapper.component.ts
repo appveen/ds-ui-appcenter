@@ -348,13 +348,10 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     const self = this;
     if (self.activeStep === 1) {
       self.parseFile();
-      if(self.schema.schemaFree){
-        self.createRecords();
-      }
-    } else if (self.activeStep === 2 && !self.schema.schemaFree) {
+    } else if (self.activeStep === 2) {
       self.sendMapping();
     } 
-    else if (self.activeStep === 3 && !self.schema.schemaFree) {
+    else if (self.activeStep === 3) {
       self.createRecords();
     }
   }
