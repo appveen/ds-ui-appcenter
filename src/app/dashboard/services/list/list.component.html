@@ -16,8 +16,7 @@
           <span class="text">Upload</span>
         </button>-->
       <div class="btn-group">
-        <button type="button" class="btn btn-success active"
-          *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
+        <button type="button" class="btn btn-success active" *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
           [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
           <span class="fas fa-cloud-upload-alt text-white"></span>
         </button>
@@ -32,13 +31,18 @@
   <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree">
     <div class='d-flex align-items-center justify-content-between'>
       <div ngbDropdown class="d-inline-block mb-2">
-        <button class="btn btn-outline bg-white shadow-none p-0" id="dropdownBasic1" ngbDropdownToggle>
-          {{selectedSearch? selectedSearch.name : "All Searches"}}
+        <button class="btn btn-outline bg-white shadow-none p-0 search-button" ngbDropdownToggle>
+          <div class="d-inline-block text-truncate max-width-100 font-bold"
+            title="{{selectedSearch? selectedSearch.name : 'All Searches'}}">
+            {{selectedSearch? selectedSearch.name : "All Searches"}}
+          </div>
         </button>
+        <i class="fas fa-chevron-down fa-sm ml-1 search-button hover" ngbDropdownToggle></i>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
           <button ngbDropdownItem (click)='selectSearch()'>New Search</button>
-          <button ngbDropdownItem *ngFor="let filter of savedViews"
-            (click)='selectSearch(filter)'>{{filter.name}}</button>
+          <button ngbDropdownItem *ngFor="let filter of savedViews" class="shadow-none" (click)='selectSearch(filter)'>
+            <div title="{{filter.name}}" class="hover d-inline-block text-truncate max-width-100">{{filter.name}}</div>
+          </button>
         </div>
       </div>
       <div class='d-flex align-items-baseline mr-4'>
@@ -56,7 +60,7 @@
       <div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4">Filter :</div>
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Filter :</div>
           </div>
           <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters">
           <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
@@ -64,25 +68,26 @@
         </div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4">Project :</div>
+            <div class="schemaFreeFiltersLabel pr-3 text-secondary font-bold">Project :</div>
           </div>
           <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters">
           <small class='text-danger' *ngIf="searchForm.get('project').hasError('validJSON')">Invalid Format</small>
         </div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4">Sort :</div>
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Sort :</div>
           </div>
           <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters">
           <small class='text-danger' *ngIf="searchForm.get('sort').hasError('validJSON')">Invalid Format</small>
 
         </div>
-        <div class='d-flex justify-content-end'>
+        <div class='d-flex justify-content-end mr-2'>
           <div>
             <button class='btn btn-outline btn-link' (click)='clearSearch()'>Clear All</button>
           </div>
           <div>
-            <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!searchForm.valid">
+            <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!(searchForm.get('project').valid &&
+            searchForm.get('filter').valid && searchForm.get('sort').valid)">
               Save View
             </button>
           </div>
@@ -411,14 +416,18 @@
 
   <div class="modal-body" [formGroup]='searchForm'>
     <div class='mb-3'>
-      <div>Filter Name</div>
-      <input type="text" class='form-control' formControlName='name'>
+      <div>Search Name</div>
+      <input type="text" class='form-control' formControlName='name'
+        [ngClass]="{'is-invalid': (!searchForm.get('name').valid && searchForm.get('name').touched) }">
+      <small class='text-danger' *ngIf="(!searchForm.get('name').valid && searchForm.get('name').touched)">
+        Search Name is required
+      </small>
     </div>
     <div class='d-flex mb-3'>
       <div class='text-secondary font-normal font-bold mr-3'>
         Filter:
       </div>
-      <div>
+      <div class="d-inline-block text-truncate mw-100">
         {{searchForm.controls.filter.value}}
       </div>
     </div>
@@ -426,7 +435,7 @@
       <div class='text-secondary font-normal font-bold mr-3'>
         Project:
       </div>
-      <div>
+      <div class="d-inline-block text-truncate mw-100">
         {{searchForm.controls.project.value}}
       </div>
     </div>
@@ -434,7 +443,7 @@
       <div class='text-secondary font-normal font-bold mr-3'>
         Sort:
       </div>
-      <div>
+      <div class="d-inline-block text-truncate mw-100">
         {{searchForm.controls.sort.value}}
       </div>
     </div>
@@ -443,11 +452,11 @@
     </div>
     <label class="mr-4">
       <input type="radio" [value]=false formControlName="private" class="mr-2">
-        <span>Public</span>
+      <span>Public</span>
     </label>
     <label>
       <input type="radio" [value]=true formControlName="private" class="mr-2">
-        <span>Private</span>
+      <span>Private</span>
     </label>
 
   </div>
@@ -457,7 +466,7 @@
       Cancel
     </button>
     <button id="clearModalYesBtn" type="button" class="btn btn-primary px-4 btn-min-width"
-      (click)="createNewFilterRef.close(true)">Save
+      (click)="createNewFilterRef.close(true)" [disabled]="!searchForm.valid">Save
     </button>
   </div>
 </ng-template>

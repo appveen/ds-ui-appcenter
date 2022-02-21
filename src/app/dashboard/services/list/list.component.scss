@@ -217,3 +217,13 @@
     display: none;
   }
 }
+
+.search-button {
+  &.dropdown-toggle::after {
+    display: none !important;
+  }
+}
+
+.max-width-100 {
+  max-width: 100px;
+}

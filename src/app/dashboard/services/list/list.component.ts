@@ -170,10 +170,10 @@ export class ListComponent implements OnInit, OnDestroy {
       count: 10
     };
     self.searchForm = self.fb.group({
-      name: ['', [Validators.minLength(1)]],
-      filter: ['', [validJSON()]],
-      project: ['', [validJSON()]],
-      sort: ['', [validJSON()]],
+      name: ['', [Validators.required]],
+      filter: ['{}', [validJSON()]],
+      project: ['{}', [validJSON()]],
+      sort: ['{}', [validJSON()]],
       private: [false, [Validators.required]]
     });
     self.filterPayload = {
@@ -516,7 +516,7 @@ export class ListComponent implements OnInit, OnDestroy {
     self.savedViews = [];
     self.advanceFilter = showAdvancedFilter;
     self.selectedSavedView = null;
-    self.selectedSearch =  null;
+    self.selectedSearch = null;
     self.appService.existingFilter = null;
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
@@ -603,7 +603,7 @@ export class ListComponent implements OnInit, OnDestroy {
       type: { $ne: 'workflow' }
     };
 
-    if(!self.schema.schemaFree){
+    if (!self.schema.schemaFree) {
       if (!getAll) {
         if (self.showPrivateViews) {
           self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
@@ -683,7 +683,7 @@ export class ListComponent implements OnInit, OnDestroy {
         }
       }
     }
-    else{
+    else {
       self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
       self.savedViewApiConfig.filter.private = true;
       self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
@@ -691,10 +691,10 @@ export class ListComponent implements OnInit, OnDestroy {
       let publicSavedViewConfig = JSON.parse(JSON.stringify(self.savedViewApiConfig));
       publicSavedViewConfig.filter.private = false;
       delete publicSavedViewConfig.filter.createdBy;
-      let privateSavedViewApi =  self.commonService.get('user', '/filter/', self.savedViewApiConfig);
-      let publicSavedViewApipublic =  self.commonService.get('user', '/filter/', publicSavedViewConfig);
+      let privateSavedViewApi = self.commonService.get('user', '/filter/', self.savedViewApiConfig);
+      let publicSavedViewApipublic = self.commonService.get('user', '/filter/', publicSavedViewConfig);
 
-      forkJoin([privateSavedViewApi,publicSavedViewApipublic]).subscribe((data)=> {
+      forkJoin([privateSavedViewApi, publicSavedViewApipublic]).subscribe((data) => {
         self.savedViews = [];
 
         let allViews = [...data[0], ...data[1]];
@@ -718,7 +718,7 @@ export class ListComponent implements OnInit, OnDestroy {
             self.savedViews.push(view);
           }
         });
-       
+
       })
     }
 
@@ -829,7 +829,7 @@ export class ListComponent implements OnInit, OnDestroy {
       },
       checkbox: true
     });
-    if(self.isSchemaFree){
+    if (self.isSchemaFree) {
       temp.push({
         show: true,
         key: 'Data',
@@ -841,7 +841,7 @@ export class ListComponent implements OnInit, OnDestroy {
         }
       });
     }
-   
+
     temp.push({
       show: true,
       key: '_metadata.createdAt',
@@ -988,10 +988,10 @@ export class ListComponent implements OnInit, OnDestroy {
             self.appService.existingFilter = view;
             self.selectedSavedView = view;
             self.selectedSearch = view;
-            if(self.isSchemaFree){
+            if (self.isSchemaFree) {
               self.selectSearch(view);
             }
-            else{
+            else {
               self.applySavedView.emit(view);
             }
           }
