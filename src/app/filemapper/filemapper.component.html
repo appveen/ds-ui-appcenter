@@ -52,7 +52,7 @@
           <span class="text text-secondary">File Settings</span>
         </div>
       </div>
-      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 2}" *ngIf="!schema.schemaFree">
+      <div class="d-flex align-items-center justify-content-between mb-4" [ngClass]="{'active':activeStep == 2}">
         <div class="d-flex align-items-center">
           <div class="round-check d-flex align-items-center justify-content-center border mr-2"
             [ngClass]="{'bg-success border-success':activeStep >2,'bg-dark':activeStep ===2,'bg-light':'activeStep <2'} ">
@@ -180,7 +180,7 @@
           </div>
           <span class="text-accent hover">Re-Upload</span>
         </label>
-        <div class="d-flex flex-column ml-4 mt-4">
+        <div class="d-flex flex-column ml-4 mt-4" *ngIf="fileData?.type != 'json'">
           <span class="font-weight-bold ">File Settings</span>
           <div class="d-flex flex-column ml-3 mt-3">
             <div class="d-flex w-100 mb-4" *ngIf="fileData.sheets">
@@ -252,7 +252,7 @@
           <span class="text-accent hover">Re-Upload</span>
         </label>
       </div>
-      <div class="d-flex flex-row justify-content-between">
+      <div class="d-flex flex-row justify-content-between" *ngIf="!schema.schemaFree">
         <odp-column-mapping [definition]="schema" [tempAttrList]='tempAttrList' [mappingData]="mappingData"
           [form]="form" [schemaName]="schema.name" (emitDataToParent)="getForm($event)"></odp-column-mapping>
         <div class="header-list border px-3 bg-light">
