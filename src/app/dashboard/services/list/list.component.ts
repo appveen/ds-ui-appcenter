@@ -1636,8 +1636,15 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       res.value = JSON.parse(res.value);
       self.applySavedView.emit({ value: res });
-      self.selectedSearch = res;
-      self.savedViews.push(res);
+      if(!self.selectedSearch){
+        self.selectedSearch = res;
+        self.savedViews.push(res);
+      } else {
+        const viewIndex = self.savedViews.findIndex(view => view._id == res._id);
+        if(viewIndex >= 0){
+          self.savedViews[viewIndex] = res;
+        }
+      }
     }, err => self.commonService.errorToast(err));
 
   }
