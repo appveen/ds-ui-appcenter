@@ -188,3 +188,10 @@
 .no-focus {
   box-shadow: none !important;
 }
+
+.view-modes{
+  .active{
+    background: black !important;
+    color: white !important;
+  }
+}
