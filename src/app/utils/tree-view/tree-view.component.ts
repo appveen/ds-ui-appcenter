@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
 
 interface TreeNode {
   name: string;
   children?: TreeNode[];
+  isCollapsed?: boolean;
 }
 
 @Component({
@@ -14,21 +13,21 @@ interface TreeNode {
 })
 export class TreeViewComponent implements OnInit {
 
-  treeControl = new NestedTreeControl<TreeNode>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<TreeNode>();
   @Input() code: any;
+  treeData: TreeNode[];
 
   constructor() {
   }
 
   ngOnInit() {
-    this.dataSource.data = this.createTreeView(this.code);
+    this.treeData = this.createTreeView(this.code);
+    this.treeData[0].isCollapsed = false;
   }
 
   createTreeView(data, arrayName?, childIndex?) {
     const self = this;
     let output = [];
-    let node = { 'name': 'Object', 'children': [] }
+    let node = { 'name': 'Object', 'children': [] };
     if (arrayName || childIndex >= 0) {
       node['name'] = arrayName ? arrayName : childIndex;
     }
@@ -62,11 +61,13 @@ export class TreeViewComponent implements OnInit {
         }
       });
     }
+    if (node.children.length > 0) {
+      node['isCollapsed'] = true;
+    }
     output.push(node)
     return output;
   }
 
-  hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
 
 }
 

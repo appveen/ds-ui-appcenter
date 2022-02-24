@@ -1,18 +1,25 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree bg-white">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle class="py-1">
-        {{node.name}}
-    </mat-tree-node>
-    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-        <div class="mat-tree-node">
-            <button mat-icon-button matTreeNodeToggle class='bg-white border-0 outline-none' [attr.aria-label]="'Toggle ' + node.name">
-                <mat-icon class="mat-icon-rtl-mirror pt-2">
-                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                </mat-icon>
-            </button>
-            {{node.name}}
+<div *ngFor='let child of treeData' class='bg-white pl-2 pt-2'>
+    <ng-container *ngTemplateOutlet="treeStructure;context:{val:child,level:0}"></ng-container>
+</div>
+
+<ng-template #treeStructure let-val="val" let-level="level">
+    <div>
+        <div *ngIf="val.children && val.children.length" (click)="val.isCollapsed = !val.isCollapsed"
+            [attr.aria-expanded]="!val.isCollapsed" aria-controls="collapseExample">
+            <i class="fas fa-chevron-down fa-sm hover mr-3" *ngIf="val.isCollapsed"></i>
+            <i class="fas fa-chevron-right fa-sm hover mr-3 text-secondary" *ngIf="!val.isCollapsed"></i>
+            {{val.name}}
         </div>
-        <div [class.tree-invisible]="!treeControl.isExpanded(node)" role="group">
-            <ng-container matTreeNodeOutlet></ng-container>
+        <div *ngIf="!val.children || (val.children && val.children.length == 0)" class="text-secondary">
+            {{val.name}}
         </div>
-    </mat-nested-tree-node>
-</mat-tree>
+
+        <div *ngIf="val.children && val.children.length" #collapse="ngbCollapse" [ngbCollapse]="val.isCollapsed">
+            <div *ngFor='let child of val.children;index as index; last as last; first as first '
+                class='mx-4 py-2 border-node' [ngClass]='{"border-node": !last}'>
+                <ng-container *ngTemplateOutlet="treeStructure;context:{val:child,level:level + 1}"></ng-container>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
