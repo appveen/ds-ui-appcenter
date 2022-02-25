@@ -29,6 +29,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.33",
+    "monaco-editor": "^0.23.0",
     "ng2-pdf-viewer": "6.3.2",
     "ngx-cookie-service": "^2.3.0",
     "ngx-sortablejs": "^11.1.0",
@@ -44,8 +45,7 @@
     "tslib": "^1.10.0",
     "url-parse": "^1.4.7",
     "uuid": "^3.4.0",
-    "zone.js": "~0.10.2",
-    "monaco-editor": "^0.23.0"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1101.2",

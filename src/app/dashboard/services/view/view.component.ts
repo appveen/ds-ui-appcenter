@@ -72,6 +72,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     selectedEditorTheme: any;
     selectedFontSize: any;
     schemaFreeCode: any;
+    viewMode: string;
     get currentAppId() {
         return this.commonService?.getCurrentAppId();
     }
@@ -106,6 +107,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.isSchemaFree = null;
         this.selectedEditorTheme = 'vs-light';
         this.selectedFontSize = 14;
+        this.viewMode = 'tree';
     }
 
     ngOnInit() {

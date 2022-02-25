@@ -256,11 +256,26 @@
             </div>
         </div>
     </div>
-    <ng-container *ngIf="isSchemaFree && !showLazyLoader">
+    <ng-container *ngIf="isSchemaFree">
+        <div class="btn-group view-modes mt-2 ml-2" role="group" ngbRadioGroup name="radioViewMode" [(ngModel)]="viewMode">
+            <label ngbButtonLabel class="text-dark bg-white">
+              <input ngbButton type="radio" class="btn-check d-none" value="tree" > Tree
+            </label>
+            <label ngbButtonLabel class="text-dark bg-white">
+              <input ngbButton type="radio" class="btn-check d-none" value="code"> Code
+            </label>
+          
+          </div>
+    </ng-container>
+    <ng-container *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'code'">
         <odp-code-editor class="code-editor" [edit]="{status:false}" [theme]="selectedEditorTheme"
         [fontSize]="selectedFontSize" [(code)]="schemaFreeCode">
       </odp-code-editor>
     </ng-container>
+    <ng-container *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'tree'">
+        <odp-tree-view [code]="schemaFreeCode"></odp-tree-view>
+    </ng-container>
+
 </div>
 
 
