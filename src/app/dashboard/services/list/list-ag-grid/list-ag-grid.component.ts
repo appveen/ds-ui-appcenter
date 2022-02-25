@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, E
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
 import { IDatasource, IGetRowsParams, Column } from 'ag-grid-community';
-import { Subject } from 'rxjs';
-import { debounceTime, map, distinctUntilChanged, take } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { debounceTime, map, distinctUntilChanged, take, catchError } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -324,17 +324,29 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.currentRecordsCountPromise = self.commonService
       .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
       .pipe(
+        catchError(err => of(err)),
         map(count => {
-          if (first) {
-            self.totalRecordsCount = count;
+          if (typeof count == 'object') {
+            self.commonService.errorToast(count);
+            self.currentRecordsCount = 0;
+            self.recordsInfo.emit({
+              loaded: 0,
+              total: 0
+            });
+            return 0;
           }
-          self.currentRecordsCount = count;
-          self.recordsInfo.emit({
-            loaded: 0,
-            total: count
-          });
-          return count;
-        })
+          else {
+            if (first) {
+              self.totalRecordsCount = count;
+            }
+            self.currentRecordsCount = count;
+            self.recordsInfo.emit({
+              loaded: 0,
+              total: count
+            });
+            return count;
+          }
+        }),
       )
       .toPromise();
   }
