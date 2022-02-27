@@ -208,8 +208,18 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   }
                   self.rowSelected(null);
                 },
-                err => { }
-              );
+                err => {
+                  self.commonService.errorToast(err);
+                  self.showLoading = false;
+                  self.agGrid.api.hideOverlay();
+                  self.currentRecordsCount = 0;
+                  self.totalRecordsCount = 0;
+                  self.recordsInfo.emit({
+                    loaded: 0,
+                    total: 0
+                  });
+                  self.agGrid.api.showNoRowsOverlay();
+                })
             } else {
               self.agGrid.api.hideOverlay();
               if (self.currentRecordsCount == 0) {
