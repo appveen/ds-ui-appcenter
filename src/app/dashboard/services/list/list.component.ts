@@ -172,8 +172,8 @@ export class ListComponent implements OnInit, OnDestroy {
     self.searchForm = self.fb.group({
       name: ['', [Validators.required]],
       filter: ['{}', [validJSON()]],
-      project: ['{}', [validJSON()]],
-      sort: ['{}', [validJSON()]],
+      project: ['{}', [validJSON(), validSearch('project')]],
+      sort: ['{}', [validJSON(),  validSearch('sort')]],
       private: [false, [Validators.required]]
     });
     self.filterPayload = {
@@ -1673,3 +1673,26 @@ export function validJSON(): ValidatorFn {
   return null;
 };
 
+export function validSearch(type): ValidatorFn {
+  return (control: FormControl) => {
+    if (!control.value) {
+      return null;
+    }
+
+    try {
+      let search = JSON.parse(control.value);
+      if (search) {
+        if(type == 'project' && Object.values(search).filter((val) => (val!= 1 && val!=0)).length > 0){
+          return { validSearch: true };
+        }
+        else if(type == 'sort' && Object.values(search).filter((val) => (val!= 1 && val!=-1)).length > 0){
+          return { validSearch: true };
+        }
+        return null
+      }
+    } catch (e) {
+      return { validSearch: true };
+    }
+  }
+  return null;
+};

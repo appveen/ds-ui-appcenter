@@ -105,14 +105,18 @@
             <div class="schemaFreeFiltersLabel pr-3 text-secondary font-bold">Project :</div>
           </div>
           <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters">
-          <small class='text-danger' *ngIf="searchForm.get('project').hasError('validJSON')">Invalid Format</small>
+          <small class='text-danger'
+            *ngIf="searchForm.get('project').hasError('validJSON') || searchForm.get('project').hasError('validSearch')">Invalid
+            Format</small>
         </div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
             <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Sort :</div>
           </div>
           <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters">
-          <small class='text-danger' *ngIf="searchForm.get('sort').hasError('validJSON')">Invalid Format</small>
+          <small class='text-danger'
+            *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
+            Format</small>
 
         </div>
         <div class='d-flex justify-content-end mr-2'>
