@@ -228,6 +228,16 @@
   max-width: 100px;
 }
 
-.view-search-parameters{
+.view-search-parameters {
   max-width: 270px;
+}
+
+.search-views {
+  &.dropdown-item:active {
+    background: none;
+    color: #000;
+  }
+  &.dropdown-item:focus {
+    outline: none;
+  }
 }

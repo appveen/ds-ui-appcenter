@@ -39,9 +39,16 @@
         </button>
         <i class="fas fa-chevron-down fa-sm ml-1 search-button hover" ngbDropdownToggle></i>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button ngbDropdownItem (click)='selectSearch()'>New Search</button>
-          <button ngbDropdownItem *ngFor="let filter of savedViews" class="shadow-none" (click)='selectSearch(filter)'>
-            <div title="{{filter.name}}" class="hover d-inline-block text-truncate max-width-100">{{filter.name}}</div>
+          <button ngbDropdownItem class='search-views px-3' (click)='selectSearch()'>New Search</button>
+          <button ngbDropdownItem *ngFor="let filter of savedViews" class="search-views px-3"
+            (click)='selectSearch(filter)'>
+            <div class="d-flex">
+              <div title="{{filter.name}}" class="hover d-inline-block text-truncate max-width-100 mr-2">{{filter.name}}
+              </div>
+              <div *ngIf="!filter.private" class='ml-auto font-italic text-success'>Public</div>
+              <div *ngIf="filter.private" class='ml-auto font-italic text-secondary'>Private</div>
+            </div>
+
           </button>
         </div>
       </div>
