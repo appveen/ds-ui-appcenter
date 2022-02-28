@@ -173,7 +173,7 @@ export class ListComponent implements OnInit, OnDestroy {
       name: ['', [Validators.required]],
       filter: ['{}', [validJSON()]],
       project: ['{}', [validJSON(), validSearch('project')]],
-      sort: ['{}', [validJSON(),  validSearch('sort')]],
+      sort: ['{}', [validJSON(), validSearch('sort')]],
       private: [false, [Validators.required]]
     });
     self.filterPayload = {
@@ -1636,12 +1636,12 @@ export class ListComponent implements OnInit, OnDestroy {
       }
       res.value = JSON.parse(res.value);
       self.applySavedView.emit({ value: res });
-      if(!self.selectedSearch){
+      if (!self.selectedSearch) {
         self.selectedSearch = res;
         self.savedViews.push(res);
       } else {
         const viewIndex = self.savedViews.findIndex(view => view._id == res._id);
-        if(viewIndex >= 0){
+        if (viewIndex >= 0) {
           self.savedViews[viewIndex] = res;
         }
       }
@@ -1682,10 +1682,10 @@ export function validSearch(type): ValidatorFn {
     try {
       let search = JSON.parse(control.value);
       if (search) {
-        if(type == 'project' && Object.values(search).filter((val) => (val!= 1 && val!=0)).length > 0){
+        if (type == 'project' && Object.values(search).filter((val) => (val != 1 && val != 0)).length > 0) {
           return { validSearch: true };
         }
-        else if(type == 'sort' && Object.values(search).filter((val) => (val!= 1 && val!=-1)).length > 0){
+        else if (type == 'sort' && Object.values(search).filter((val) => (val != 1 && val != -1)).length > 0) {
           return { validSearch: true };
         }
         return null
