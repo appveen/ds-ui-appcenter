@@ -165,16 +165,18 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     toggleHistory() {
         const self = this;
-        self.showVersionHistory = !self.showVersionHistory
-        if (!self.showVersionHistory) {
-            self.selectedAudit = null
+        self.showVersionHistory = !self.showVersionHistory;
+        if (self.showVersionHistory) {
+            self.compareVersion();
         }
     }
 
     selectAudit($event) {
         const self = this;
         self.selectedAudit = $event;
-        self.compareVersion();
+        if (self.schema.schemaFree) {
+            self.compareVersion();
+        }
     }
 
     updateSchema(parsedDef) {
