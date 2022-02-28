@@ -1,5 +1,5 @@
 /// <reference path="../../../../node_modules/monaco-editor/monaco.d.ts" />
-import { Component, Input, Output, EventEmitter, AfterViewInit, OnChanges, ViewEncapsulation, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, OnChanges, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { timeout } from 'rxjs/operators';
 import { AppService } from '../../service/app.service';
 import * as _ from 'lodash';
@@ -96,7 +96,7 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  diffMode(){
+  diffMode() {
     var originalModel = monaco.editor.createModel(
       JSON.stringify(this.newVal, null, '\t'),
       'json'
