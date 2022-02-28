@@ -51,15 +51,15 @@ export class BookmarkListComponent implements OnInit {
     options.count = -1;
     options.select = 'name,app,_id';
     options.sort = 'name';
-    // if (!this.commonService.userDetails.isSuperAdmin) {
-    //   options.filter = {
-    //     _id: {
-    //       $in: this.commonService.bookmarksWithAccess
-    //     }
-    //   };
-    // } else {
+    if (!this.commonService.userDetails.isSuperAdmin) {
+      options.filter = {
+        _id: {
+          $in: this.commonService.bookmarksWithAccess
+        }
+      };
+    } else {
       options.filter = null;
-    //}
+    }
     if (this.subscriptions.getBookmarkList) {
       this.subscriptions.getBookmarkList.unsubscribe();
     }
