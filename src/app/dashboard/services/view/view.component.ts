@@ -107,7 +107,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         self.isSchemaFree = null;
         this.selectedEditorTheme = 'vs-light';
         this.selectedFontSize = 14;
-        this.viewMode = 'tree';
+        this.viewMode = 'code';
     }
 
     ngOnInit() {
@@ -163,6 +163,20 @@ export class ViewComponent implements OnInit, OnDestroy {
             });
     }
 
+    toggleHistory() {
+        const self = this;
+        self.showVersionHistory = !self.showVersionHistory
+        if (!self.showVersionHistory) {
+            self.selectedAudit = null
+        }
+    }
+
+    selectAudit($event) {
+        const self = this;
+        self.selectedAudit = $event;
+        self.compareVersion();
+    }
+
     updateSchema(parsedDef) {
         parsedDef.forEach(def => {
             if (def.properties && def.properties.relatedTo) {
@@ -189,8 +203,8 @@ export class ViewComponent implements OnInit, OnDestroy {
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);
                 //self.isSchemaFree = true;
-                if(res.schemaFree){
-                  self.isSchemaFree = res.schemaFree;
+                if (res.schemaFree) {
+                    self.isSchemaFree = res.schemaFree;
                 }
                 self.formService.patchType(parsedDef);
                 res.definition = JSON.parse(JSON.stringify(parsedDef));
@@ -325,11 +339,11 @@ export class ViewComponent implements OnInit, OnDestroy {
             data => {
                 self.showLazyLoader = false;
                 self.value = data;
-                if(self.isSchemaFree){
+                if (self.isSchemaFree) {
                     self.schemaFreeCode = JSON.parse(JSON.stringify(data));
                     delete self.schemaFreeCode["_metadata"]
                     delete self.schemaFreeCode["__v"]
-                    if(self.schemaFreeCode["_workflow"]){
+                    if (self.schemaFreeCode["_workflow"]) {
                         delete self.schemaFreeCode["_workflow"];
                     }
                 }
@@ -377,10 +391,30 @@ export class ViewComponent implements OnInit, OnDestroy {
         return def;
     }
 
+    schemaFreeFormat(code) {
+        let data = JSON.parse(JSON.stringify(code))
+        if (!data) {
+            return {}
+        }
+        delete data["_metadata"]
+        delete data["__v"]
+        if (data["_workflow"]) {
+            delete data["_workflow"];
+        }
+        return data;
+    }
+
     compareVersion() {
         const self = this;
-        self.activeAuditOldData = self.selectedAudit.data.old;
-        self.activeAuditNewData = self.selectedAudit.data.new;
+        if (!self.schema.schemaFree) {
+            self.activeAuditOldData = self.selectedAudit.data.old;
+            self.activeAuditNewData = self.selectedAudit.data.new;
+        }
+        else {
+            self.activeAuditOldData = self.schemaFreeFormat(self.selectedAudit.data.old);
+            self.activeAuditNewData = self.schemaFreeFormat(self.selectedAudit.data.new);
+        }
+
     }
 
     clearVersion() {

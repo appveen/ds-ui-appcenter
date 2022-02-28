@@ -1,7 +1,8 @@
 /// <reference path="../../../../node_modules/monaco-editor/monaco.d.ts" />
-import { Component, Input, Output, EventEmitter, AfterViewInit, OnChanges, ViewEncapsulation } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, OnChanges, ViewEncapsulation, SimpleChange, SimpleChanges } from '@angular/core';
 import { timeout } from 'rxjs/operators';
 import { AppService } from '../../service/app.service';
+import * as _ from 'lodash';
 
 let loadedMonaco = false;
 let loadPromise: Promise<void>;
@@ -18,10 +19,16 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
   @Input() fontSize: number;
   @Input() code: any;
   @Input() edit: { status: boolean, id?: string };
+  @Input() oldVal: any;
+  @Input() newVal: any;
+  @Input() diff: boolean;
+
   @Output() codeChange: EventEmitter<string>;
   @Output() codeError: EventEmitter<boolean>;
-
   codeEditorInstance: monaco.editor.IStandaloneCodeEditor;
+  diffEditorInstance: monaco.editor.IStandaloneDiffEditor;
+
+
   typesString: string;
   constructor(private appService: AppService) {
     this.theme = 'vs-light';
@@ -73,10 +80,63 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     if (this.codeEditorInstance) {
       this.codeEditorInstance.updateOptions({ fontSize: this.fontSize, theme: this.theme, readOnly: !this.edit.status });
     }
+    if (changes.oldVal || changes.diff || changes.newVal) {
+      if ((!_.isEqual(changes.oldVal.currentValue, changes.oldVal.previousValue)) ||
+        (!_.isEqual(changes.newVal.currentValue, changes.newVal.previousValue))) {
+
+        this.newVal = changes.newVal.currentValue;
+        this.oldVal = changes.oldVal.currentValue;
+        this.diffMode();
+
+      }
+    }
+  }
+
+  diffMode(){
+    var originalModel = monaco.editor.createModel(
+      JSON.stringify(this.newVal, null, '\t'),
+      'json'
+    );
+    var modifiedModel = monaco.editor.createModel(
+      JSON.stringify(this.oldVal, null, '\t'),
+      'json'
+    );
+    if (!this.diffEditorInstance) {
+      this.createDiffInstance()
+    }
+    this.diffEditorInstance.setModel({
+      original: originalModel,
+      modified: modifiedModel
+    });
+
+    this.diffEditorInstance.layout();
+  }
+
+  strCode(code) {
+    let stringifiedCode = "{}";
+    if (code != null) {
+      stringifiedCode = JSON.stringify(code, null, '\t');
+    }
+    else {
+      stringifiedCode = "{\n\t\n}"
+    }
+    return stringifiedCode;
+  }
+
+  createDiffInstance() {
+    this.diffEditorInstance = monaco.editor.createDiffEditor(document.getElementById('code-editor'), {
+      enableSplitViewResizing: false,
+      theme: this.theme,
+      automaticLayout: true,
+      scrollBeyondLastLine: false,
+      fontSize: this.fontSize,
+      readOnly: !this.edit.status,
+      contextmenu: this.edit.status
+    });
   }
 
   initMonaco(): void {
@@ -93,37 +153,51 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
     monaco.editor.getModels().forEach(model => model.dispose());
     const modelUri = monaco.Uri.parse("json://grid/settings.json");
-    let stringifiedCode = "{}";
-    if (this.code != null) {
-      stringifiedCode = JSON.stringify(this.code, null, '\t');
-    }
-    else {
-      stringifiedCode = "{\n\t\n}"
-    }
-    const jsonModel = monaco.editor.createModel(stringifiedCode, "json", modelUri);
-    this.codeEditorInstance = monaco.editor.create(document.getElementById('code-editor'), {
-      model: jsonModel,
-      language: 'javascript',
-      theme: this.theme,
-      automaticLayout: true,
-      scrollBeyondLastLine: false,
-      fontSize: this.fontSize,
-      readOnly: !this.edit.status,
-      contextmenu: this.edit.status
-    });
 
-    this.codeEditorInstance.getModel().onDidChangeContent(e => {
-      const val = this.codeEditorInstance.getValue();
-      if (this.isJSON(val)) {
-        this.codeError.emit(false);
-        this.codeChange.emit(JSON.parse(val));
-      }
-      else {
-        this.codeError.emit(true);
-      }
-    });
-    const errors = monaco.editor.getModelMarkers({});
-    this.codeEditorInstance.layout();
+    if (!this.diff) {
+      const jsonModel = monaco.editor.createModel(this.strCode(this.code), "json", modelUri);
+      this.codeEditorInstance = monaco.editor.create(document.getElementById('code-editor'), {
+        model: jsonModel,
+        language: 'javascript',
+        theme: this.theme,
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        fontSize: this.fontSize,
+        readOnly: !this.edit.status,
+        contextmenu: this.edit.status
+      });
+
+      this.codeEditorInstance.getModel().onDidChangeContent(e => {
+        const val = this.codeEditorInstance.getValue();
+        if (this.isJSON(val)) {
+          this.codeError.emit(false);
+          this.codeChange.emit(JSON.parse(val));
+        }
+        else {
+          this.codeError.emit(true);
+        }
+      });
+
+      this.codeEditorInstance.layout();
+
+    } else {
+      var originalModel = monaco.editor.createModel(
+        JSON.stringify(this.newVal, null, '\t'),
+        'json'
+      );
+      var modifiedModel = monaco.editor.createModel(
+        JSON.stringify(this.oldVal, null, '\t'),
+        'json'
+      );
+      this.createDiffInstance();
+      this.diffEditorInstance.setModel({
+        original: originalModel,
+        modified: modifiedModel
+      });
+
+      this.diffEditorInstance.layout();
+    }
+
   }
 
   isJSON(str) {
