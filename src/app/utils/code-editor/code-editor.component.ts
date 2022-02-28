@@ -98,11 +98,11 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
   diffMode() {
     var originalModel = monaco.editor.createModel(
-      JSON.stringify(this.newVal, null, '\t'),
+      JSON.stringify(this.oldVal, null, '\t'),
       'json'
     );
     var modifiedModel = monaco.editor.createModel(
-      JSON.stringify(this.oldVal, null, '\t'),
+      JSON.stringify(this.newVal, null, '\t'),
       'json'
     );
     if (!this.diffEditorInstance) {
@@ -182,11 +182,11 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
     } else {
       var originalModel = monaco.editor.createModel(
-        JSON.stringify(this.newVal, null, '\t'),
+        JSON.stringify(this.oldVal, null, '\t'),
         'json'
       );
       var modifiedModel = monaco.editor.createModel(
-        JSON.stringify(this.oldVal, null, '\t'),
+        JSON.stringify(this.newVal, null, '\t'),
         'json'
       );
       this.createDiffInstance();
