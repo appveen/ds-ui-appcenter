@@ -1635,6 +1635,8 @@ export class ListComponent implements OnInit, OnDestroy {
         self.ts.success('New Filter created Successfully');
       }
       res.value = JSON.parse(res.value);
+      self.filterId = res._id;
+      self.filterCreatedBy = res.createdBy;
       self.applySavedView.emit({ value: res });
       if (!self.selectedSearch) {
         self.selectedSearch = res;
