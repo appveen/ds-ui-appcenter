@@ -1565,7 +1565,8 @@ export class ListComponent implements OnInit, OnDestroy {
         name: '',
         filter: '{}',
         project: '{}',
-        sort: '{}'
+        sort: '{}',
+        private: false
       });
       this.resetFilter();
 
@@ -1579,7 +1580,8 @@ export class ListComponent implements OnInit, OnDestroy {
         name: filterValue.name,
         filter: filterValue.value.filter,
         project: filterValue.value.project,
-        sort: filterValue.value.sort
+        sort: filterValue.value.sort,
+        private: filterValue.private
       });
       self.applySavedView.emit({ value: filterValue });
     }
