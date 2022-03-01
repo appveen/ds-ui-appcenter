@@ -128,7 +128,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                 }
               });
             } else {
-              this.agGrid.columnApi.setColumnsVisible(allColumns, true);
+              if(!self.schema.schemaFree || (self.apiConfig && self.apiConfig.project['_id'] != 0)){
+                this.agGrid.columnApi.setColumnsVisible(allColumns, true);
+              }
             }
           }
         }, 1000);
@@ -344,6 +346,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if(self.apiConfig.skip){
       params['skip'] = self.apiConfig.skip
     }
+
     self.currentRecordsCountPromise = self.commonService
       .get('api', self.apiEndpoint + '/utils/count',params)
       .pipe(
@@ -367,6 +370,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
               loaded: 0,
               total: count
             });
+
             return count;
           }
         }),
@@ -463,6 +467,13 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         });
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+      }
+      let project= JSON.parse(viewModel.value.project)
+      if(project && Object.keys(project).length > 0){
+        if(project['_id'] == 0){
+          self.agGrid.columnApi.setColumnVisible('_id', false);
+
+        }
       }
       if (!self.schema.schemaFree && viewModel.filter && viewModel.filter.length > 0) {
         viewModel.filter.forEach(item => {
