@@ -1569,7 +1569,8 @@ export class ListComponent implements OnInit, OnDestroy {
         project: '{}',
         sort: '{}',
         limit: '',
-        skip: ''
+        skip: '',
+        private: false
       });
       this.resetFilter();
 
@@ -1585,7 +1586,8 @@ export class ListComponent implements OnInit, OnDestroy {
         project: filterValue.value.project,
         sort: filterValue.value.sort,
         limit: filterValue.value.limit,
-        skip: filterValue.value.skip
+        skip: filterValue.value.skip,
+        private: filterValue.private
       });
       self.applySavedView.emit({ value: filterValue });
     }
@@ -1643,6 +1645,8 @@ export class ListComponent implements OnInit, OnDestroy {
         self.ts.success('New Filter created Successfully');
       }
       res.value = JSON.parse(res.value);
+      self.filterId = res._id;
+      self.filterCreatedBy = res.createdBy;
       self.applySavedView.emit({ value: res });
       if (!self.selectedSearch) {
         self.selectedSearch = res;
