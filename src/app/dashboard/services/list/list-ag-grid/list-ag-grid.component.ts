@@ -337,8 +337,15 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   getRecordsCount(first?: boolean) {
     const self = this;
     const filter = self.apiConfig.filter;
+    let params =  { filter, expand: true };
+    if(self.apiConfig.limit){
+      params['limit'] = self.apiConfig.limit
+    }
+    if(self.apiConfig.skip){
+      params['skip'] = self.apiConfig.skip
+    }
     self.currentRecordsCountPromise = self.commonService
-      .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
+      .get('api', self.apiEndpoint + '/utils/count',params)
       .pipe(
         catchError(err => of(err)),
         map(count => {
