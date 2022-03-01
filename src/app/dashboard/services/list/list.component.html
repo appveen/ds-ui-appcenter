@@ -72,21 +72,37 @@
           {{selectedSearch.value.filter}}
         </span>
       </div>
-      <div class='col-md-4 d-flex align-items-center'>
+      <div class='col-md-3 d-flex align-items-center'>
         <span class='font-bold text-secondary'>
           Project &nbsp;:&nbsp;
         </span>
-        <span class="d-inline-block text-truncate view-search-parameters hover"
+        <span class="d-inline-block text-truncate view-project-sort-parameters hover"
           title="{{selectedSearch.value.project}}">
           {{selectedSearch.value.project}}
         </span>
       </div>
-      <div class='col-md-4 d-flex align-items-center'>
+      <div class='col-md-3 d-flex align-items-center'>
         <span class='font-bold text-secondary'>
           Sort &nbsp;:&nbsp;
         </span>
-        <span class="d-inline-block text-truncate view-search-parameters hover" title="{{selectedSearch.value.sort}}">
+        <span class="d-inline-block text-truncate view-project-sort-parameters hover" title="{{selectedSearch.value.sort}}">
           {{selectedSearch.value.sort}}
+        </span>
+      </div>
+      <div class='col-md-1 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Skip &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate  hover" title="{{selectedSearch.value.skip}}">
+          {{selectedSearch.value.skip}}
+        </span>
+      </div>
+      <div class='col-md-1 d-flex align-items-center'>
+        <span class='font-bold text-secondary'>
+          Limit &nbsp;:&nbsp;
+        </span>
+        <span class="d-inline-block text-truncate hover" title="{{selectedSearch.value.limit}}">
+          {{selectedSearch.value.limit}}
         </span>
       </div>
     </div>
@@ -98,7 +114,6 @@
           </div>
           <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters">
           <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
-
         </div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
@@ -113,11 +128,18 @@
           <div class="input-group-prepend">
             <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Sort :</div>
           </div>
-          <input type="text" class="form-control" formControlName='sort' class="schemaFreeFilters">
+          <input type="text" formControlName='sort' class="schemaFreeFilters sort-filter mr-3">
           <small class='text-danger'
             *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
             Format</small>
-
+          <div class="input-group-prepend">
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Limit :</div>
+          </div>
+          <input type="number" formControlName='limit' class="sortLimitFilters sl-min-width mr-4" min="0">
+          <div class="input-group-prepend">
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Skip :</div>
+          </div>
+          <input type="number" formControlName='skip' class="sortLimitFilters sl-min-width" min="0">
         </div>
         <div class='d-flex justify-content-end mr-2'>
           <div>
@@ -483,6 +505,24 @@
       </div>
       <div class="d-inline-block text-truncate mw-100">
         {{searchForm.controls.sort.value}}
+      </div>
+    </div>
+    <div class='d-flex mb-3 justify-content-between'>
+      <div class="d-flex w-50">
+        <div class='text-secondary font-normal font-bold mr-3'>
+          Limit:
+        </div>
+        <div class="d-inline-block text-truncate mw-100">
+          {{searchForm.controls.limit.value}}
+        </div>
+      </div>
+      <div class="d-flex w-50">
+        <div class='text-secondary font-normal font-bold mr-3'>
+          Skip:
+        </div>
+        <div class="d-inline-block text-truncate mw-100">
+          {{searchForm.controls.skip.value}}
+        </div>
       </div>
     </div>
     <div class='font-bold'>

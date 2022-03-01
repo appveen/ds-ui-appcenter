@@ -879,6 +879,12 @@ export class CommonService {
     if (options.project && Object.keys(options.project).length !== 0) {
       urlParams = urlParams.set('select', JSON.stringify(options.project));
     }
+    if (options.limit) {
+      urlParams = urlParams.set('limit', options.limit.toString());
+    }
+    if (options.skip) {
+      urlParams = urlParams.set('skip', options.skip.toString());
+    }
     if (options.expand) {
       urlParams = urlParams.set('expand', options.expand.toString());
     }
@@ -1642,6 +1648,8 @@ export interface GetOptions {
   filter?: any;
   sort?: string;
   project?: string;
+  limit?: number;
+  skip?: number;
   srvcID?: string;
   expand?: boolean;
   expandKeys?: string;
