@@ -174,7 +174,9 @@ export class ListComponent implements OnInit, OnDestroy {
       filter: ['{}', [validJSON()]],
       project: ['{}', [validJSON(), validSearch('project')]],
       sort: ['{}', [validJSON(), validSearch('sort')]],
-      private: [false, [Validators.required]]
+      private: [false, [Validators.required]],
+      limit : [''],
+      skip: ['']
     });
     self.filterPayload = {
       serviceId: '',
@@ -1565,7 +1567,9 @@ export class ListComponent implements OnInit, OnDestroy {
         name: '',
         filter: '{}',
         project: '{}',
-        sort: '{}'
+        sort: '{}',
+        limit: '',
+        skip: ''
       });
       this.resetFilter();
 
@@ -1579,7 +1583,9 @@ export class ListComponent implements OnInit, OnDestroy {
         name: filterValue.name,
         filter: filterValue.value.filter,
         project: filterValue.value.project,
-        sort: filterValue.value.sort
+        sort: filterValue.value.sort,
+        limit: filterValue.value.limit,
+        skip: filterValue.value.skip
       });
       self.applySavedView.emit({ value: filterValue });
     }
@@ -1593,7 +1599,9 @@ export class ListComponent implements OnInit, OnDestroy {
       filter: '{}',
       project: '{}',
       sort: '{}',
-      private: false
+      private: false,
+      limit: '',
+      skip: ''
     });
     this.resetFilter();
   }

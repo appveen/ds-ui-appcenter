@@ -306,6 +306,12 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (!!config.project && Object.keys(config.project).length !== 0) {
       urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(config.project);
     }
+    if (!!config.limit) {
+      urlParams += (!!urlParams ? '&limit=' : 'limit=') + config.limit ;
+    }
+    if (!!config.skip) {
+      urlParams += (!!urlParams ? '&skip=' : 'skip=') + config.skip ;
+    }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
       const compSelect = config.select;
@@ -514,6 +520,14 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.project = JSON.parse(viewModel.value.project);
         reload = true;
       }
+      if (self.schema.schemaFree && viewModel.value.limit) {
+        self.apiConfig.limit = viewModel.value.limit;
+        reload = true;
+      }
+      if (self.schema.schemaFree && viewModel.value.skip) {
+        self.apiConfig.skip = viewModel.value.skip;
+        reload = true;
+      }
 
       if (reload) {
         self.initRows();
@@ -649,6 +663,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.apiConfig.sort = null;
     self.apiConfig.project = null;
     self.apiConfig.select = null;
+    self.apiConfig.limit = null;
+    self.apiConfig.skip = null
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
