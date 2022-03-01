@@ -128,7 +128,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                 }
               });
             } else {
-              if(!self.schema.schemaFree || (self.apiConfig && self.apiConfig.project['_id'] != 0)){
+              if (!self.schema.schemaFree || (self.apiConfig && self.apiConfig.project['_id'] != 0)) {
                 this.agGrid.columnApi.setColumnsVisible(allColumns, true);
               }
             }
@@ -309,10 +309,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(config.project);
     }
     if (!!config.limit) {
-      urlParams += (!!urlParams ? '&limit=' : 'limit=') + config.limit ;
+      urlParams += (!!urlParams ? '&limit=' : 'limit=') + config.limit;
     }
     if (!!config.skip) {
-      urlParams += (!!urlParams ? '&skip=' : 'skip=') + config.skip ;
+      urlParams += (!!urlParams ? '&skip=' : 'skip=') + config.skip;
     }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
@@ -339,16 +339,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   getRecordsCount(first?: boolean) {
     const self = this;
     const filter = self.apiConfig.filter;
-    let params =  { filter, expand: true };
-    if(self.apiConfig.limit){
-      params['limit'] = self.apiConfig.limit
-    }
-    if(self.apiConfig.skip){
-      params['skip'] = self.apiConfig.skip
-    }
 
     self.currentRecordsCountPromise = self.commonService
-      .get('api', self.apiEndpoint + '/utils/count',params)
+      .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
       .pipe(
         catchError(err => of(err)),
         map(count => {
@@ -362,6 +355,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             return 0;
           }
           else {
+            if (self.schema.schemaFree && self.apiConfig.limit) {
+                count = count > self.apiConfig.limit ? self.apiConfig.limit : count; 
+            }
+
             if (first) {
               self.totalRecordsCount = count;
             }
@@ -468,9 +465,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
       }
-      let project= JSON.parse(viewModel.value.project)
-      if(project && Object.keys(project).length > 0){
-        if(project['_id'] == 0){
+      let project = JSON.parse(viewModel.value.project)
+      if (project && Object.keys(project).length > 0) {
+        if (project['_id'] == 0) {
           self.agGrid.columnApi.setColumnVisible('_id', false);
 
         }
@@ -541,9 +538,15 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       if (self.schema.schemaFree && viewModel.value.limit) {
         self.apiConfig.limit = viewModel.value.limit;
         reload = true;
+      } else if (self.schema.schemaFree && !viewModel.value.limit) {
+        self.apiConfig.limit = null;
+        reload = true;
       }
       if (self.schema.schemaFree && viewModel.value.skip) {
         self.apiConfig.skip = viewModel.value.skip;
+        reload = true;
+      }  else if (self.schema.schemaFree && !viewModel.value.skip) {
+        self.apiConfig.skip = null;
         reload = true;
       }
 
