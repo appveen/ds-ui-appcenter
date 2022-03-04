@@ -111,44 +111,62 @@
       <div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Filter :</div>
+            <div class="schema-free-filter-label pr-4 text-secondary font-bold">Filter :</div>
           </div>
-          <input type="text" class="form-control" formControlName='filter' class="schemaFreeFilters">
+          <input type="text" class="form-control" formControlName='filter' class="sf-min-width schema-free-filters">
           <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
         </div>
         <div class="input-group mb-2">
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-3 text-secondary font-bold">Project :</div>
+            <div class="schema-free-filter-label pr-3 text-secondary font-bold">Project :</div>
           </div>
-          <input type="text" class="form-control" formControlName='project' class="schemaFreeFilters">
+          <input type="text" class="form-control" formControlName='project' class="sf-min-width schema-free-filters">
           <small class='text-danger'
             *ngIf="searchForm.get('project').hasError('validJSON') || searchForm.get('project').hasError('validSearch')">Invalid
             Format</small>
         </div>
-        <div class="input-group mb-2">
-          <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Sort :</div>
+        <div class="row">
+          <div class="col-8">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="schema-free-filter-label pr-3 text-secondary font-bold">Sort :</div>
+              </div>
+              <input type="text" class="form-control" formControlName='sort' class="sort-input-mw schema-free-filters">
+              <small class='text-danger'
+                *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
+                Format</small>
+            </div>
           </div>
-          <input type="text" formControlName='sort' class="schemaFreeFilters sort-filter mr-3">
-          <small class='text-danger'
-            *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
-            Format</small>
-          <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Count :</div>
+          <div class="col-2">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="schema-free-filter-label pr-1 text-secondary font-bold">Count :</div>
+              </div>
+              <input type="number" formControlName='count' class="page-count-filters page-count-width" min="0">
+              <small class='text-danger' *ngIf="!searchForm.get('count').valid">Please enter a positive count</small>
+            </div>
           </div>
-          <input type="number" formControlName='count' class="sortLimitFilters sl-min-width mr-4" min="0">
-          <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Page :</div>
+          <div class="col-2">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="schema-free-filter-label pr-1 text-secondary font-bold">Page :</div>
+              </div>
+              <input type="number" formControlName='page' class="page-count-filters page-count-width" min="0">
+              <small class='text-danger' *ngIf="!searchForm.get('page').valid">Please enter a positive page</small>
+            </div>
           </div>
-          <input type="number" formControlName='page' class="sortLimitFilters sl-min-width" min="0">
+
         </div>
+
+
         <div class='d-flex justify-content-end mr-2'>
           <div>
             <button class='btn btn-outline btn-link' (click)='clearSearch()'>Clear All</button>
           </div>
           <div>
-            <button class="btn btn-primary" (click)='saveSearchViewModal()' [disabled]="!(searchForm.get('project').valid &&
-            searchForm.get('filter').valid && searchForm.get('sort').valid)">
+            <button class="btn btn-primary" (click)='saveSearchViewModal()'
+              [disabled]="!(searchForm.get('project').valid &&
+            searchForm.get('filter').valid && searchForm.get('sort').valid && searchForm.get('count').valid && searchForm.get('page').valid)">
               Save View
             </button>
           </div>

@@ -175,8 +175,8 @@ export class ListComponent implements OnInit, OnDestroy {
       project: ['{}', [validJSON(), validSearch('project')]],
       sort: ['{}', [validJSON(), validSearch('sort')]],
       private: [false, [Validators.required]],
-      count: [''],
-      page: ['']
+      count: ['', Validators.min(1)],
+      page: ['', Validators.min(1)]
     });
     self.filterPayload = {
       serviceId: '',
