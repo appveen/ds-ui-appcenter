@@ -47,6 +47,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   noRowsTemplate;
   showLoading: boolean;
   private subscription: any;
+  searchView: any;
 
   constructor(
     private elementRef: ElementRef,
@@ -77,6 +78,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     };
     self.subscription = {};
     self.noRowsTemplate = '<span>No records to display</span>';
+    self.searchView = null;
   }
 
   ngOnInit() {
@@ -177,7 +179,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           self.selectedRecords.emit([]);
           self.currentRecordsCountPromise.then(count => {
             if (params.endRow - 30 < self.currentRecordsCount) {
-              self.apiConfig.page = Math.ceil(params.endRow / 30);
+              if ((!self.searchView) || (self.searchView && !self.searchView.count)) {
+                self.apiConfig.page = Math.ceil(params.endRow / 30);
+              }
               if (self.subscription['getRecords_' + self.apiConfig.page]) {
                 self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
               }
@@ -248,6 +252,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             data.value = JSON.parse(data.value);
           }
           const viewModel = data.value;
+          if (self.schema.schemaFree) {
+            self.searchView = data.value.value;
+          }
           const temp = self.agGrid.api.getFilterModel();
           if (temp && Object.keys(temp).length > 0) {
             self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
@@ -308,11 +315,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (!!config.project && Object.keys(config.project).length !== 0) {
       urlParams += (!!urlParams ? '&select=' : 'select=') + JSON.stringify(config.project);
     }
-    if (!!config.limit) {
-      urlParams += (!!urlParams ? '&limit=' : 'limit=') + config.limit;
+    if (!!config.count) {
+      urlParams += (!!urlParams ? '&count=' : 'count=') + config.count;
     }
-    if (!!config.skip) {
-      urlParams += (!!urlParams ? '&skip=' : 'skip=') + config.skip;
+    if (!!config.page) {
+      urlParams += (!!urlParams ? '&page=' : 'page=') + config.page;
     }
     if (!!config.select) {
       const compColumnIds = this.gridService.getSelect(this.columns.filter(c => c.key !== '_checkbox'));
@@ -333,7 +340,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (!nocount) {
       self.getRecordsCount();
     }
-    self.apiConfig.page = 1;
+    if ((!self.searchView) || (self.searchView && !self.searchView.count)) {
+      self.apiConfig.page = 1;
+    }
   }
 
   getRecordsCount(first?: boolean) {
@@ -355,8 +364,18 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             return 0;
           }
           else {
-            if (self.schema.schemaFree && self.apiConfig.limit) {
-                count = count > self.apiConfig.limit ? self.apiConfig.limit : count; 
+            if (self.schema.schemaFree && self.searchView && self.searchView.count) {
+              let min_records = (self.apiConfig.count) * (self.apiConfig.page - 1);
+              let max_records = self.apiConfig.count + min_records;
+              if (count < min_records) {
+                count = 0;
+              }
+              else if (count >= max_records) {
+                count = self.apiConfig.count;
+              }
+              else if (count >= min_records && count < max_records) {
+                count = count - min_records;
+              }
             }
 
             if (first) {
@@ -465,11 +484,13 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
       }
-      let project = JSON.parse(viewModel.value.project)
-      if (project && Object.keys(project).length > 0) {
-        if (project['_id'] == 0) {
-          self.agGrid.columnApi.setColumnVisible('_id', false);
+      if (self.schema.schemaFree) {
+        let project = JSON.parse(viewModel.value.project)
+        if (project && Object.keys(project).length > 0) {
+          if (project['_id'] == 0) {
+            self.agGrid.columnApi.setColumnVisible('_id', false);
 
+          }
         }
       }
       if (!self.schema.schemaFree && viewModel.filter && viewModel.filter.length > 0) {
@@ -535,18 +556,18 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.project = JSON.parse(viewModel.value.project);
         reload = true;
       }
-      if (self.schema.schemaFree && viewModel.value.limit) {
-        self.apiConfig.limit = viewModel.value.limit;
+      if (self.schema.schemaFree && viewModel.value.count) {
+        self.apiConfig.count = viewModel.value.count;
         reload = true;
-      } else if (self.schema.schemaFree && !viewModel.value.limit) {
-        self.apiConfig.limit = null;
+      } else if (self.schema.schemaFree && !viewModel.value.count) {
+        self.apiConfig.count = null;
         reload = true;
       }
-      if (self.schema.schemaFree && viewModel.value.skip) {
-        self.apiConfig.skip = viewModel.value.skip;
+      if (self.schema.schemaFree && viewModel.value.page) {
+        self.apiConfig.page = viewModel.value.page;
         reload = true;
-      }  else if (self.schema.schemaFree && !viewModel.value.skip) {
-        self.apiConfig.skip = null;
+      } else if (self.schema.schemaFree && !viewModel.value.page) {
+        self.apiConfig.page = null;
         reload = true;
       }
 
@@ -684,8 +705,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.apiConfig.sort = null;
     self.apiConfig.project = null;
     self.apiConfig.select = null;
-    self.apiConfig.limit = null;
-    self.apiConfig.skip = null
+    self.apiConfig.count = null;
+    self.apiConfig.page = null;
+    self.searchView = null;
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());

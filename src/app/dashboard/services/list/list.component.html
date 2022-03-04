@@ -85,7 +85,8 @@
         <span class='font-bold text-secondary'>
           Sort &nbsp;:&nbsp;
         </span>
-        <span class="d-inline-block text-truncate view-project-sort-parameters hover" title="{{selectedSearch.value.sort}}">
+        <span class="d-inline-block text-truncate view-project-sort-parameters hover"
+          title="{{selectedSearch.value.sort}}">
           {{selectedSearch.value.sort}}
         </span>
       </div>
@@ -133,13 +134,13 @@
             *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
             Format</small>
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Limit :</div>
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Count :</div>
           </div>
-          <input type="number" formControlName='limit' class="sortLimitFilters sl-min-width mr-4" min="0">
+          <input type="number" formControlName='count' class="sortLimitFilters sl-min-width mr-4" min="0">
           <div class="input-group-prepend">
-            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Skip :</div>
+            <div class="schemaFreeFiltersLabel pr-4 text-secondary font-bold">Page :</div>
           </div>
-          <input type="number" formControlName='skip' class="sortLimitFilters sl-min-width" min="0">
+          <input type="number" formControlName='page' class="sortLimitFilters sl-min-width" min="0">
         </div>
         <div class='d-flex justify-content-end mr-2'>
           <div>
@@ -510,18 +511,18 @@
     <div class='d-flex mb-3 justify-content-between'>
       <div class="d-flex w-50">
         <div class='text-secondary font-normal font-bold mr-3'>
-          Limit:
+          Count:
         </div>
         <div class="d-inline-block text-truncate mw-100">
-          {{searchForm.controls.limit.value}}
+          {{searchForm.controls.count.value}}
         </div>
       </div>
       <div class="d-flex w-50">
         <div class='text-secondary font-normal font-bold mr-3'>
-          Skip:
+          Page:
         </div>
         <div class="d-inline-block text-truncate mw-100">
-          {{searchForm.controls.skip.value}}
+          {{searchForm.controls.page.value}}
         </div>
       </div>
     </div>
