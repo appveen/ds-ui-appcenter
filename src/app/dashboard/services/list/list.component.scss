@@ -196,24 +196,24 @@
   box-shadow: none !important;
 }
 
-.schemaFreeFilters,
-.schemaFreeFiltersLabel,
-.sortLimitFilters {
+.sort-input-mw {
+  width: 90%;
+}
+
+.schema-free-filters,
+.schema-free-filter-label,
+.page-count-filters {
   outline: none;
   border: 0;
   background: none;
   border-bottom: 1px solid #ececec;
-
-  &.sl-min-width{
-    width: 70px;
-  }
 }
 
-.schemaFreeFilters {
+.sf-min-width {
   width: 93%;
 }
 
-.schemaFreeFiltersLabel {
+.schema-free-filter-label {
   min-width: 70px;
 }
 
@@ -227,6 +227,10 @@
   &.dropdown-toggle::after {
     display: none !important;
   }
+}
+
+.page-count-width {
+  width: 50%;
 }
 
 .max-width-100 {
@@ -251,6 +255,6 @@
   }
 }
 
-.sort-filter{
+.sort-filter {
   width: 64%;
 }
