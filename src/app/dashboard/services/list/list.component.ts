@@ -1594,6 +1594,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
   }
 
+  run() {
+    const self = this;
+    let searchVal = {};
+    searchVal['value'] = self.searchForm.getRawValue();
+    self.applySavedView.emit({ value: searchVal });
+  }
+
   clearSearch() {
     const self = this;
     self.searchForm.patchValue({

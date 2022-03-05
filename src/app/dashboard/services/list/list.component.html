@@ -164,12 +164,18 @@
             <button class='btn btn-outline btn-link' (click)='clearSearch()'>Clear All</button>
           </div>
           <div>
-            <button class="btn btn-primary" (click)='saveSearchViewModal()'
+            <button class="btn btn-outline-primary mr-2 btn-min-width" (click)='saveSearchViewModal()'
               [disabled]="!(searchForm.get('project').valid &&
             searchForm.get('filter').valid && searchForm.get('sort').valid && searchForm.get('count').valid && searchForm.get('page').valid)">
               Save View
             </button>
+            <button class="btn btn-primary btn-min-width" (click)='run()'
+              [disabled]="!(searchForm.get('project').valid &&
+            searchForm.get('filter').valid && searchForm.get('sort').valid && searchForm.get('count').valid && searchForm.get('page').valid)">
+              Run
+            </button>
           </div>
+
         </div>
       </div>
     </div>
