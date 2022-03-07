@@ -484,12 +484,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       } else {
         self.agGrid.columnApi.setColumnsVisible(columnIds, true);
       }
-      if (self.schema.schemaFree) {
+      if (self.schema.schemaFree && viewModel.value.project) {
         let project = JSON.parse(viewModel.value.project)
         if (project && Object.keys(project).length > 0) {
           if (project['_id'] == 0) {
             self.agGrid.columnApi.setColumnVisible('_id', false);
-
           }
         }
       }
