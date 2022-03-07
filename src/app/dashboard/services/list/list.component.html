@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class='d-flex align-items-baseline mr-4'>
-        <div ngbDropdown class="search-options-section mr-2" *ngIf="selectedSearch">
+        <div ngbDropdown class="search-options-section mr-2" *ngIf="selectedSearch && !saveAsNewSearch">
           <i class="fas fa-solid fa-ellipsis-h fa-rotate-90 fa-sm hover" id="searchOption" ngbDropdownToggle></i>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
             <button ngbDropdownItem (click)="deleteFilter(selectedSearch)"> Delete</button>
@@ -165,10 +165,16 @@
           </div>
           <div>
             <button class="btn btn-outline-primary mr-2 btn-min-width" (click)='saveSearchViewModal()'
+              *ngIf="!saveAsNewSearch"
               [disabled]="!(searchForm.get('project').valid &&
             searchForm.get('filter').valid && searchForm.get('sort').valid && searchForm.get('count').valid && searchForm.get('page').valid)">
               Save View
             </button>
+            <button class="btn btn-outline-primary btn-min-width mr-2" (click)='saveSearchViewModal()'
+              *ngIf="saveAsNewSearch"
+              [disabled]="!(searchForm.get('project').valid &&
+            searchForm.get('filter').valid && searchForm.get('sort').valid && searchForm.get('count').valid && searchForm.get('page').valid)">Save
+              as New Search</button>
             <button class="btn btn-primary btn-min-width" (click)='run()'
               [disabled]="!(searchForm.get('project').valid &&
             searchForm.get('filter').valid && searchForm.get('sort').valid && searchForm.get('count').valid && searchForm.get('page').valid)">

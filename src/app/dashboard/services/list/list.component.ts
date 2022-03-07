@@ -1596,6 +1596,17 @@ export class ListComponent implements OnInit, OnDestroy {
 
   }
 
+  get saveAsNewSearch(){
+    const self = this;
+    const currentUser = self.sessionService.getUser(true);
+    if (self.filterId && (self.filterCreatedBy !== currentUser._id)) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   run() {
     const self = this;
     let searchVal = {};
@@ -1610,6 +1621,9 @@ export class ListComponent implements OnInit, OnDestroy {
 
   saveSearchViewModal() {
     const self = this;
+    if(self.saveAsNewSearch){
+      self.searchForm.get('name').patchValue('');
+    }
     self.createNewFilterRef = self.modalService.open(self.createNewFilter, { centered: true });
     self.createNewFilterRef.result.then(
       close => {
@@ -1639,26 +1653,22 @@ export class ListComponent implements OnInit, OnDestroy {
       request = self.commonService.post('user', '/filter/', self.filterPayload);
     }
     request.subscribe(res => {
+      res.value = JSON.parse(res.value);
       if (self.filterCreatedBy === currentUser._id) {
         self.ts.success('Filter Saved Successfully');
-      } else {
-        self.ts.success('New Filter created Successfully');
-      }
-      res.value = JSON.parse(res.value);
-      self.filterId = res._id;
-      self.filterCreatedBy = res.createdBy;
-      self.applySavedView.emit({ value: res });
-      if (!self.selectedSearch) {
-        self.savedViews.push(res);
-      } else {
         const viewIndex = self.savedViews.findIndex(view => view._id == res._id);
         if (viewIndex >= 0) {
           self.savedViews[viewIndex] = res;
         }
+      } else {
+        self.ts.success('New Filter created Successfully');
+        self.selectedSearch = res;
+        self.savedViews.push(res);
       }
-      self.selectedSearch = res;
+      self.filterId = res._id;
+      self.filterCreatedBy = res.createdBy;
+      self.applySavedView.emit({ value: res });
     }, err => self.commonService.errorToast(err));
-
   }
 }
 
