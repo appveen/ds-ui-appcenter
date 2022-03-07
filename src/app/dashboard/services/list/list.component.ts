@@ -523,6 +523,17 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
     }
+    if(self.schema.schemaFree){
+      self.searchForm.patchValue({
+        name: '',
+        filter: '{}',
+        project: '{}',
+        sort: '{}',
+        count: '',
+        page: '',
+        private: false
+      });
+    }
     self.filterSavedViews();
   }
 
@@ -1563,15 +1574,6 @@ export class ListComponent implements OnInit, OnDestroy {
       self.filterId = null;
       self.filterCreatedBy = '';
       self.selectedSearch = null;
-      self.searchForm.patchValue({
-        name: '',
-        filter: '{}',
-        project: '{}',
-        sort: '{}',
-        count: '',
-        page: '',
-        private: false
-      });
       this.resetFilter();
 
     } else {
@@ -1596,15 +1598,6 @@ export class ListComponent implements OnInit, OnDestroy {
 
   clearSearch() {
     const self = this;
-    self.searchForm.patchValue({
-      name: '',
-      filter: '{}',
-      project: '{}',
-      sort: '{}',
-      private: false,
-      count: '',
-      page: ''
-    });
     this.resetFilter();
   }
 
