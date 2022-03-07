@@ -39,7 +39,7 @@
         </button>
         <i class="fas fa-chevron-down fa-sm ml-1 search-button hover" ngbDropdownToggle></i>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button ngbDropdownItem class='search-views px-3' (click)='selectSearch()'>New Search</button>
+          <button ngbDropdownItem class='search-views px-3' (click)='selectSearch();isCollapsed?collapse.toggle():""'>New Search</button>
           <button ngbDropdownItem *ngFor="let filter of savedViews" class="search-views px-3"
             (click)='selectSearch(filter)'>
             <div class="d-flex">
