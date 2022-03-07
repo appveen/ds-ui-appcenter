@@ -1616,7 +1616,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
   clearSearch() {
     const self = this;
-    this.resetFilter();
+    self.searchForm.patchValue({
+        filter: '{}',
+        project: '{}',
+        sort: '{}',
+        count: '',
+        page: '',
+    });
   }
 
   saveSearchViewModal() {
@@ -1662,9 +1668,9 @@ export class ListComponent implements OnInit, OnDestroy {
         }
       } else {
         self.ts.success('New Filter created Successfully');
-        self.selectedSearch = res;
         self.savedViews.push(res);
       }
+      self.selectedSearch = res;
       self.filterId = res._id;
       self.filterCreatedBy = res.createdBy;
       self.applySavedView.emit({ value: res });
