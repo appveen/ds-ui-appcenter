@@ -1642,7 +1642,6 @@ export class ListComponent implements OnInit, OnDestroy {
       self.filterCreatedBy = res.createdBy;
       self.applySavedView.emit({ value: res });
       if (!self.selectedSearch) {
-        self.selectedSearch = res;
         self.savedViews.push(res);
       } else {
         const viewIndex = self.savedViews.findIndex(view => view._id == res._id);
@@ -1650,6 +1649,7 @@ export class ListComponent implements OnInit, OnDestroy {
           self.savedViews[viewIndex] = res;
         }
       }
+      self.selectedSearch = res;
     }, err => self.commonService.errorToast(err));
 
   }

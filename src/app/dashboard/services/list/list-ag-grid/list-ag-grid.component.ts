@@ -566,7 +566,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.page = viewModel.value.page;
         reload = true;
       } else if (self.schema.schemaFree && !viewModel.value.page) {
-        self.apiConfig.page = null;
+        self.apiConfig.page = 1;
         reload = true;
       }
 
@@ -704,8 +704,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.apiConfig.sort = null;
     self.apiConfig.project = null;
     self.apiConfig.select = null;
-    self.apiConfig.count = null;
-    self.apiConfig.page = null;
+    if (self.schema.schemaFree) {
+      self.apiConfig.count = 30;
+      self.apiConfig.page = 1;
+    }
     self.searchView = null;
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
