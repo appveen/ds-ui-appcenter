@@ -179,7 +179,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           self.selectedRecords.emit([]);
           self.currentRecordsCountPromise.then(count => {
             if (params.endRow - 30 < self.currentRecordsCount) {
-              if ((!self.searchView) || (self.searchView && !self.searchView.count)) {
+              if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
                 self.apiConfig.page = Math.ceil(params.endRow / 30);
               }
               if (self.subscription['getRecords_' + self.apiConfig.page]) {
@@ -340,7 +340,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (!nocount) {
       self.getRecordsCount();
     }
-    if ((!self.searchView) || (self.searchView && !self.searchView.count)) {
+    if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
       self.apiConfig.page = 1;
     }
   }
@@ -364,7 +364,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             return 0;
           }
           else {
-            if (self.schema.schemaFree && self.searchView && self.searchView.count) {
+            if (self.schema.schemaFree && self.searchView && (self.searchView.count || self.searchView.page)) {
               let min_records = (self.apiConfig.count) * (self.apiConfig.page - 1);
               let max_records = self.apiConfig.count + min_records;
               if (count < min_records) {
@@ -559,7 +559,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.apiConfig.count = viewModel.value.count;
         reload = true;
       } else if (self.schema.schemaFree && !viewModel.value.count) {
-        self.apiConfig.count = null;
+        self.apiConfig.count = 30;
         reload = true;
       }
       if (self.schema.schemaFree && viewModel.value.page) {
