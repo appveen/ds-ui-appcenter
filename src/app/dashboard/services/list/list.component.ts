@@ -523,7 +523,7 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
     }
-    if(self.schema.schemaFree){
+    if (self.schema.schemaFree) {
       self.searchForm.patchValue({
         name: '',
         filter: '{}',
@@ -1125,6 +1125,10 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.hasWorkflow) {
       self.deleteRequest(id);
     } else {
+      self.deleteModal = {
+        title: 'Delete Record(s)',
+        message: 'Are you sure, you want to delete these record(s)?'
+      };
       self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
       self.confirmDeleteModalRef.result.then(
         close => {
@@ -1596,13 +1600,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
   }
 
-  get saveAsNewSearch(){
+  get saveAsNewSearch() {
     const self = this;
     const currentUser = self.sessionService.getUser(true);
     if (self.filterId && (self.filterCreatedBy !== currentUser._id)) {
       return true;
     }
-    else{
+    else {
       return false;
     }
   }
@@ -1621,7 +1625,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   saveSearchViewModal() {
     const self = this;
-    if(self.saveAsNewSearch){
+    if (self.saveAsNewSearch) {
       self.searchForm.get('name').patchValue('');
     }
     self.createNewFilterRef = self.modalService.open(self.createNewFilter, { centered: true });
