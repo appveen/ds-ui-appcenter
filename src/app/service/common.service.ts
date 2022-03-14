@@ -409,7 +409,7 @@ export class CommonService {
     function fetch(app: string, serviceIds: Array<string>) {
       promises.push(
         new Promise<any>((resolve, reject) => {
-          self.subscriptions['getRolesDetails'] = self.get('sm', '/service?app=' + app, {
+          self.subscriptions['getRolesDetails'] = self.get('sm', `/${self.app._id}/service`, {
             count: -1,
             select: 'role',
             filter: {
@@ -1241,7 +1241,7 @@ export class CommonService {
       self.subscriptions['getServiceDetails_' + serviceId].unsubscribe();
     }
     return new Promise((resolve, reject) => {
-      self.subscriptions['getServiceDetails_' + serviceId] = self.get('sm', '/service/' + serviceId, { select: 'api app', filter: { app: this.app._id } }).subscribe(
+      self.subscriptions['getServiceDetails_' + serviceId] = self.get('sm', `/${this.app._id}/service/` + serviceId, { select: 'api app', filter: { app: this.app._id } }).subscribe(
         service => {
           if (self.subscriptions['getDocumentVersion_' + serviceId + '_' + documentId]) {
             self.subscriptions['getDocumentVersion_' + serviceId + '_' + documentId].unsubscribe();
@@ -1580,7 +1580,7 @@ export class CommonService {
     const self = this;
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
-        .get('sm', '/service/' + serviceId, {
+        .get('sm', `/${this.app._id}/service/`+ serviceId, {
           select: '_id,name,app,api,definition,attributeList,workflowConfig,role',
           filter: { app: this.app._id }
         })

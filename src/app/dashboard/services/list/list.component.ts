@@ -548,7 +548,7 @@ export class ListComponent implements OnInit, OnDestroy {
       self.subscriptions['getSchema_' + serviceId] = null;
     }
     self.apiCalls.fetchingSchema = true;
-    self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
+    self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, options).subscribe(
       res => {
         self.apiCalls.fetchingSchema = false;
         if (!res.definition) {
@@ -1621,11 +1621,11 @@ export class ListComponent implements OnInit, OnDestroy {
   clearSearch() {
     const self = this;
     self.searchForm.patchValue({
-        filter: '{}',
-        project: '{}',
-        sort: '{}',
-        count: '',
-        page: '',
+      filter: '{}',
+      project: '{}',
+      sort: '{}',
+      count: '',
+      page: '',
     });
   }
 

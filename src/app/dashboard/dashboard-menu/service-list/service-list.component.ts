@@ -72,7 +72,7 @@ export class ServiceListComponent implements OnInit {
     this.pinnedDs = [];
     this.records = [];
     this.subscriptions.getServices = this.commonService
-      .get('sm', '/service', options)
+      .get('sm', `/${this.commonService.app._id}/service`, options)
       .pipe(distinctUntilChanged())
       .subscribe(res => {
         this.showLazyLoader = false;
@@ -136,10 +136,10 @@ export class ServiceListComponent implements OnInit {
       });
   }
 
-  loadDataService(service: any,force?:boolean) {
+  loadDataService(service: any, force?: boolean) {
     this.appService.serviceId = service._id;
     this.dashboardService.selectedService.emit(service);
-    if (!this.activeId  || force) {
+    if (!this.activeId || force) {
       this.router.navigateByUrl(['', this.commonService.app._id, 'services'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'services', service._id, 'list']);
       });

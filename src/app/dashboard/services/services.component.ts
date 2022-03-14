@@ -77,7 +77,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
     if (self.subscriptions['getServices']) {
       self.subscriptions['getServices'].unsubscribe();
     }
-    self.subscriptions['getServices'] = self.commonService.get('sm', '/service', options).subscribe(res => {
+    self.subscriptions['getServices'] = self.commonService.get('sm', `/${this.commonService.app._id}/service`, options).subscribe(res => {
       self.fetchingServices = false;
       if (res.length === 0) {
         self.noServices = true;
