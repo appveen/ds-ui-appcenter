@@ -243,7 +243,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     self.fileSettings.fileName = self.fileData.fileName;
     self.fileSettings.fileId = self.fileData.fileId;
     self.fileSettings.dsKeys = self.dsKeys;
-    const path = '/usr/bulkCreate/' + self.fileData.fileId + '/sheetSelect';
     self.showLazyLoader = true;
 
     self.subscriptions['selectSheet'] = self.commonService

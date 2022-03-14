@@ -51,7 +51,7 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
     self.changePasswordForm.controls['confirmpassword'].disable();
-    self.commonService.put('user', `/usr/${self.commonService.userDetails._id}/password`, self.changePasswordForm.value).subscribe(res => {
+    self.commonService.put('user', `/auth/change-password`, self.changePasswordForm.value).subscribe(res => {
       self.changePasswordModalRef.close();
       if (res) {
         self.ts.success('Redirecting to login screen, Please login again');

@@ -86,16 +86,6 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     }).catch(err => {
       item.createdByName = 'ERROR';
     });
-    // return new Promise((resolve, reject) => {
-    //   self.subscriptions['getCreatedBy_' + item.createdBy] = self.commonService
-    //     .get('user', '/usr/' + item.createdBy, { select: 'basicDetails.name username' })
-    //     .subscribe(res => {
-    //       item.createdByName = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
-    //       resolve(res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username);
-    //     }, err => {
-    //       reject(err);
-    //     });
-    // });
   }
 
   getBookMarks() {

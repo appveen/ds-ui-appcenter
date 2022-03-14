@@ -50,7 +50,7 @@ export class UserTypeComponent implements OnInit {
           select: (<any>self.definition.properties).relatedSearchField,
         };
         self.commonService
-          .get('user', `/usr/app/${self.commonService.app._id}/${self.control.value._id}`, options)
+          .get('user', `/${self.commonService.app._id}/user/${self.control.value._id}`, options)
           .subscribe(_data => {
             if (self.typeAhead) {
               self.typeAhead.writeValue(_data);
@@ -69,7 +69,7 @@ export class UserTypeComponent implements OnInit {
   getNoOfRecords(): Promise<any> {
     const self = this;
     return new Promise<any>((resolve, reject) => {
-      self.commonService.get('user', `/usr/app/${self.commonService.app._id}/count`).toPromise().then(res => {
+      self.commonService.get('user', `/${self.commonService.app._id}/user/utils/count`).toPromise().then(res => {
         self.recordsCount = res;
         resolve(res);
         return res;
@@ -86,7 +86,7 @@ export class UserTypeComponent implements OnInit {
 
   getUserRecords() {
     const self = this;
-    self.commonService.get('user', `/usr/app/${self.commonService.app._id}`, { count: -1, }).subscribe(_records => {
+    self.commonService.get('user', `/${self.commonService.app._id}/user`, { count: -1, }).subscribe(_records => {
       self.records = _records;
     }, err => {
       self.commonService.errorToast(err, 'Unable to fetch reference data');
@@ -115,10 +115,7 @@ export class UserTypeComponent implements OnInit {
           filter: filter,
           select: self.attrs,
         };
-        let path = `/usr/app/${this.commonService.app._id}`;
-        // if (this.commonService.userDetails.isSuperAdmin) {
-        //   path = `/usr`
-        // }
+        let path = `/${self.commonService.app._id}/user`;
         return self.commonService.get('user', path, options).toPromise().then(res => {
           return res;
         }).catch(err => { self.commonService.errorToast(err, 'Unable to search'); });

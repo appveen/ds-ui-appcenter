@@ -262,7 +262,7 @@ export class CommonService {
   }
 
   private _fetchUserRolesApi_() {
-    const URL = environment.url.user + `/usr/${this.userDetails._id}/allRoles`;
+    const URL = environment.url.user + `/data/${this.userDetails._id}/allRoles`;
     const filterObj: any = {
       'roles.type': 'appcenter'
     };
@@ -1144,7 +1144,7 @@ export class CommonService {
       .set('Content-Type', 'application/json')
       .set('Authorization', 'JWT ' + token)
       .set('txnId', sh.unique(uuid() + '-' + self.randomStr(5)));
-    const URL = environment.url.user + '/usr/hb';
+    const URL = environment.url.user + '/auth/hb';
     const payload = {
       uuid: sessionStorage.getItem('bc-uuid')
     };
@@ -1543,9 +1543,9 @@ export class CommonService {
   getUser(userId: string): Promise<UserDetails> {
     const self = this;
     if (!self.userMap[userId]) {
-      let path = `/usr/app/${this.app._id}/${userId}`;
+      let path = `/${this.app._id}/user/${userId}`;
       if (this.userDetails.isSuperAdmin) {
-        path = `/usr/${userId}`
+        path = `/admin/user/${userId}`
       }
       self.userMap[userId] = self
         .get('user', path, {
@@ -1561,9 +1561,9 @@ export class CommonService {
     if (!self.userMapFilter[userId]) {
       const filter = {};
       filter['$or'] = [{ _id: userId }, { '_metadata.oldUserId': userId }];
-      let path = `/usr/app/${this.app._id}`;
+      let path = `/${this.app._id}/user`;
       if (this.userDetails.isSuperAdmin) {
-        path = `/usr`
+        path = `/admin/user`
       }
       self.userMapFilter[userId] = self
         .get('user', path, {
