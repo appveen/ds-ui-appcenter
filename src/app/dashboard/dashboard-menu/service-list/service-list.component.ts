@@ -119,7 +119,7 @@ export class ServiceListComponent implements OnInit {
     };
     this.pinnedDs = [];
     this.records = [];
-    this.commonService.get('user', '/preferences', options)
+    this.commonService.get('user', '/data/preferences', options)
       .subscribe(prefRes => {
         if (prefRes.length) {
           this.prefId = prefRes[0]._id;
@@ -157,9 +157,9 @@ export class ServiceListComponent implements OnInit {
     if (this.prefId) {
       this.preference.value.push({ _id: serviceId });
       this.preference.value = JSON.stringify(this.preference.value);
-      response = this.commonService.put('user', '/preferences/' + this.prefId, this.preference)
+      response = this.commonService.put('user', '/data/preferences/' + this.prefId, this.preference)
     } else {
-      response = this.commonService.post('user', '/preferences', data)
+      response = this.commonService.post('user', '/data/preferences', data)
 
     }
     response.subscribe(res => {
@@ -184,7 +184,7 @@ export class ServiceListComponent implements OnInit {
       let index = this.preference.value.findIndex(ele => ele._id === serviceId);
       this.preference.value.splice(index, 1);
       this.preference.value = JSON.stringify(this.preference.value);
-      const respose = this.commonService.put('user', '/preferences/' + this.prefId, this.preference);
+      const respose = this.commonService.put('user', '/data/preferences/' + this.prefId, this.preference);
       respose.subscribe(res => {
         this.preference = res;
         if (typeof this.preference.value === 'string') {

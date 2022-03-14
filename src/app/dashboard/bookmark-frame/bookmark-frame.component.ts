@@ -91,7 +91,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
   getBookMarks() {
     const self = this;
     self.showLazyLoader = true;
-    self.subscriptions.getBookMarks = self.commonService.get('user', `/app/${self.commonService.app._id}/bookmark`, self.apiConfig)
+    self.subscriptions.getBookMarks = self.commonService.get('user', `/${self.commonService.app._id}/bookmark`, self.apiConfig)
       .subscribe(res => {
         res.forEach(item => {
           self.getFaviconUrl(item);
@@ -111,7 +111,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     self.showLazyLoader = true;
 
     self.subscriptions.getBookMarksCount = self.commonService
-      .get('user', `/app/${self.commonService.app._id}/bookmark/count`, self.apiConfig)
+      .get('user', `/${self.commonService.app._id}/bookmark/utils/count`, self.apiConfig)
       .subscribe(res => {
         self.showLazyLoader = false;
 
@@ -127,7 +127,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     const self = this;
     self.showLazyLoader = true;
 
-    self.subscriptions.getBookMark = self.commonService.get('user', `/app/${self.commonService.app._id}/bookmark/${self.bookMarkId}`)
+    self.subscriptions.getBookMark = self.commonService.get('user', `/${self.commonService.app._id}/bookmark/${self.bookMarkId}`)
       .subscribe(res => {
         self.showLazyLoader = false;
         self.originalUrl = self.constructUrl(res);

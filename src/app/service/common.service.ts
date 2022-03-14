@@ -588,7 +588,7 @@ export class CommonService {
         }
       };
       self.lastAppPrefId = null;
-      self.subscriptions.fetchLastActiveApp = self.get('user', '/preferences', options).subscribe(
+      self.subscriptions.fetchLastActiveApp = self.get('user', '/data/preferences', options).subscribe(
         prefRes => {
           if (prefRes && prefRes.length > 0) {
             self.lastAppPrefId = prefRes[0]._id;
@@ -632,9 +632,9 @@ export class CommonService {
       };
       let response: Observable<any>;
       if (self.lastAppPrefId) {
-        response = self.put('user', '/preferences/' + self.lastAppPrefId, payload);
+        response = self.put('user', '/data/preferences/' + self.lastAppPrefId, payload);
       } else {
-        response = self.post('user', '/preferences', payload);
+        response = self.post('user', '/data/preferences', payload);
       }
       self.subscriptions.saveLastActiveApp = response.subscribe(
         res => {
@@ -655,7 +655,7 @@ export class CommonService {
     }
     return new Promise<any>((resolve, reject) => {
       if (self.lastAppPrefId) {
-        self.subscriptions.deleteLastActiveApp = self.delete('user', '/preferences/' + self.lastAppPrefId).subscribe(
+        self.subscriptions.deleteLastActiveApp = self.delete('user', '/data/preferences/' + self.lastAppPrefId).subscribe(
           res => {
             self.lastAppPrefId = null;
             resolve(null);
@@ -769,7 +769,7 @@ export class CommonService {
       self.subscriptions.clearActiveSessionsAndLogin.unsubscribe();
     }
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions.clearActiveSessionsAndLogin = self.delete('user', '/closeAllSessions', credentials).subscribe(
+      self.subscriptions.clearActiveSessionsAndLogin = self.delete('user', `/${this.app._id}/user/utils/closeAllSessions/${credentials.username}`, credentials).subscribe(
         res => {
           resolve(res);
         },
@@ -861,7 +861,7 @@ export class CommonService {
     if (options.sort && typeof options.sort !== 'object') {
       urlParams = urlParams.set('sort', options.sort);
     }
-    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0 ) {
+    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0) {
       urlParams = urlParams.set('sort', JSON.stringify(options.sort));
     }
     if (options.page) {
@@ -873,7 +873,7 @@ export class CommonService {
     if (options.select) {
       urlParams = urlParams.set('select', options.select);
     }
-    if (options.filter && Object.keys(options.filter).length !== 0 ) {
+    if (options.filter && Object.keys(options.filter).length !== 0) {
       urlParams = urlParams.set('filter', JSON.stringify(options.filter));
     }
     if (options.project && Object.keys(options.project).length !== 0) {
@@ -1076,7 +1076,7 @@ export class CommonService {
       self.subscriptions.logout.unsubscribe();
     }
     if (self.sessionService.getUser()) {
-      self.subscriptions.logout = self.delete('user', '/logout').subscribe(
+      self.subscriptions.logout = self.delete('user', '/auth/logout').subscribe(
         res => {
           self.clearData();
           self.appService.setFocus.emit('username');
@@ -1580,7 +1580,7 @@ export class CommonService {
     const self = this;
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
-        .get('sm', `/${this.app._id}/service/`+ serviceId, {
+        .get('sm', `/${this.app._id}/service/` + serviceId, {
           select: '_id,name,app,api,definition,attributeList,workflowConfig,role',
           filter: { app: this.app._id }
         })

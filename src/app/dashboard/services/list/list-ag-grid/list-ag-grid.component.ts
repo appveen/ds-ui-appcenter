@@ -408,7 +408,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         key: self.schema._id
       }
     };
-    self.commonService.get('user', '/preferences', options).subscribe(
+    self.commonService.get('user', '/data/preferences', options).subscribe(
       prefRes => {
         try {
           const colWidth = prefRes.filter(e => e.type === 'column-width');
@@ -449,9 +449,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       value: JSON.stringify(colWidth)
     };
     if (self.colWidthPrefId) {
-      response = self.commonService.put('user', '/preferences/' + self.colWidthPrefId, payload);
+      response = self.commonService.put('user', '/data/preferences/' + self.colWidthPrefId, payload);
     } else {
-      response = self.commonService.post('user', '/preferences/', payload);
+      response = self.commonService.post('user', '/data/preferences/', payload);
     }
     response.subscribe(
       widthPref => {
