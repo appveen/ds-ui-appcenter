@@ -128,7 +128,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
             }
             self.message = null;
             self.loader = true;
-            self.subscriptions.onSubmit = self.commonService.get('user', '/authType/' + username, { skipAuth: true }).subscribe(res => {
+            self.subscriptions.onSubmit = self.commonService.get('user', '/auth/authType/' + username, { skipAuth: true }).subscribe(res => {
                 self.authTypeChecked = true;
                 self.loader = false;
                 self.appService.fqdn = res.fqdn;
