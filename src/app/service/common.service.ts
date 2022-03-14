@@ -696,7 +696,7 @@ export class CommonService {
       self.subscriptions.login.unsubscribe();
     }
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions.login = self.http.post(environment.url.user + '/login', credentials).subscribe(
+      self.subscriptions.login = self.http.post(environment.url.user + '/auth/login', credentials).subscribe(
         (response: any) => {
           self.resetUserDetails(response);
           resolve(response);
@@ -714,7 +714,7 @@ export class CommonService {
       self.subscriptions.login.unsubscribe();
     }
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions.login = self.http.post(environment.url.user + '/ldap/login', credentials)
+      self.subscriptions.login = self.http.post(environment.url.user + '/auth/ldap/login', credentials)
         .subscribe((response: any) => {
           self.resetUserDetails(response);
           resolve(response);
@@ -1477,7 +1477,7 @@ export class CommonService {
       const windowWidth = 620;
       const windowLeft = (window.outerWidth - windowWidth) / 2 + window.screenLeft;
       const windowTop = (window.outerHeight - windowHeight) / 2 + window.screenTop;
-      const url = '/api/a/rbac/azure/login';
+      const url = '/api/a/rbac/auth/azure/login';
       const windowOptions = [];
       windowOptions.push(`height=${windowHeight}`);
       windowOptions.push(`width=${windowWidth}`);
