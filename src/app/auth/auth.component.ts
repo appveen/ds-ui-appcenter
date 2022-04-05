@@ -136,14 +136,13 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                 else {
                     self.authTypeChecked = true;
                     self.appService.fqdn = res.fqdn;
-                    self.authType = res.bot ? 'local' : res.authType;
+                    self.authType = res.authType;
                     if (res.rbacUserToSingleSession
                         && res.sessionActive) {
                         self.rbacUserReloginAction = res.rbacUserReloginAction;
                         self.activeSessionWarning();
                     }
                 }
-
             },
                 err => {
                     self.loader = false;
