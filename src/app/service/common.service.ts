@@ -420,8 +420,8 @@ export class CommonService {
               let resList = res.map(e => {
                 return e.role.roles.map(r => {
                   r.fields = e.role.fields;
-                  r.app = e.role.app;
-                  r.entity = e.role.entity;
+                  r.app = app;
+                  r.entity = e._id;
                   return r;
                 });
               });
