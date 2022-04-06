@@ -54,7 +54,7 @@ export class ServiceListComponent implements OnInit {
   getServices() {
     const filter: any = { status: 'Active', app: this.commonService.app._id };
     if (!this.commonService.userDetails.isSuperAdmin
-      && this.commonService.servicesWithAccess.length > 0) {
+      && this.commonService.servicesWithAccess.length > 0 && !this.commonService.isAppAdmin()) {
       filter._id = {
         $in: this.commonService.servicesWithAccess
       };
