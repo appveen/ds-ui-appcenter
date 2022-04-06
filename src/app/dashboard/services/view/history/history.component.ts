@@ -64,7 +64,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     self.auditConfig.filter['data._id'] = self.documentId;
     self.auditConfig.sort = '-timeStamp';
     self.subscriptions['getAudit'] =
-      self.commonService.get('mon', `/appCenter/${self.schema._id}/audit`, self.auditConfig).subscribe((data: Array<any>) => {
+      self.commonService.get('mon', `/${self.commonService.app._id}/appCenter/${self.schema._id}/audit`, self.auditConfig).subscribe((data: Array<any>) => {
         if (data.length > 0) {
           data.forEach(e => {
             self.getUserForAudit(e);
@@ -81,7 +81,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   getAuditCount(first?: boolean) {
     const self = this;
     self.subscriptions['getAuditCount'] =
-      self.commonService.get('mon', `/appCenter/${self.schema._id}/audit/count`, {
+      self.commonService.get('mon', `/${self.commonService.app._id}/appCenter/${self.schema._id}/audit/count`, {
         filter: { 'data._id': self.documentId }
       }).subscribe((res: number) => {
         self.auditCount = res;
