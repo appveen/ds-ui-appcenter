@@ -39,7 +39,7 @@
     "shorthash": "0.0.2",
     "socket.io-client": "^2.3.0",
     "sortablejs": "^1.13.0",
-    "tinymce": "5.1.6",
+    "tinymce": "5.10.3",
     "ts-md5": "^1.2.7",
     "tslib": "^1.10.0",
     "url-parse": "^1.4.7",
