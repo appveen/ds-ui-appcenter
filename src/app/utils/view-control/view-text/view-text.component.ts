@@ -69,7 +69,7 @@ export class ViewTextComponent implements OnInit {
       self.decryptedValue[type] = value.value;
     }
     else {
-      self.commonService.post('sec', '/enc/' + this.commonService.app._id + '/decrypt', { data: value.value }).subscribe(res => {
+      self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
         self.decryptedValue[type] = res.data;
       }, err => {
         self.decryptedValue[type] = value.value;

@@ -350,7 +350,8 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       self.parseFile();
     } else if (self.activeStep === 2) {
       self.sendMapping();
-    } else if (self.activeStep === 3) {
+    } 
+    else if (self.activeStep === 3) {
       self.createRecords();
     }
   }

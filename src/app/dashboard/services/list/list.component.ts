@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Validators, FormControl } from '@angular/forms';
+import { Validators, FormControl, FormBuilder, FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -16,11 +16,13 @@ import { SessionService } from 'src/app/service/session.service';
 import { ListAgGridComponent } from './list-ag-grid/list-ag-grid.component';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { ListFiltersComponent } from './list-filters/list-filters.component';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'odp-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('slideIn', [
       state(
@@ -80,6 +82,9 @@ export class ListComponent implements OnInit, OnDestroy {
   confirmDeleteModal: TemplateRef<HTMLElement>;
   @ViewChild('workflowModal', { static: false })
   workflowModal: TemplateRef<HTMLElement>;
+  @ViewChild('createNewFilter', { static: false })
+  createNewFilter: TemplateRef<ElementRef>;
+  createNewFilterRef: NgbModalRef;
   @ViewChild('clearFilterModal', { static: false })
   clearFilterModal: TemplateRef<ElementRef>;
   @ViewChild('dataContainer', { static: false }) dataContainer: ElementRef;
@@ -122,7 +127,13 @@ export class ListComponent implements OnInit, OnDestroy {
   selectedRow: any;
   showContextMenu: boolean;
   hasFilterFromUrl = false;
-
+  isSchemaFree = false;
+  searchForm: FormGroup;
+  filterPayload: any;
+  filterId: any;
+  filterCreatedBy: any;
+  isCollapsed: any;
+  selectedSearch: any;
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -133,7 +144,8 @@ export class ListComponent implements OnInit, OnDestroy {
     private ts: ToastrService,
     private shortcutService: ShortcutService,
     private ngbToolTipConfig: NgbTooltipConfig,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder,
   ) {
     const self = this;
     self.workflowModalOptions = {};
@@ -157,6 +169,27 @@ export class ListComponent implements OnInit, OnDestroy {
       page: 1,
       count: 10
     };
+    self.searchForm = self.fb.group({
+      name: ['', [Validators.required]],
+      filter: ['{}', [validJSON()]],
+      project: ['{}', [validJSON(), validSearch('project')]],
+      sort: ['{}', [validJSON(), validSearch('sort')]],
+      private: [false, [Validators.required]],
+      count: ['', Validators.min(1)],
+      page: ['', Validators.min(1)]
+    });
+    self.filterPayload = {
+      serviceId: '',
+      name: '',
+      private: false,
+      value: '',
+      app: self.commonService.app._id,
+      createdBy: self.sessionService.getUser(true)._id,
+      type: 'dataService'
+    };
+    self.filterId = null;
+    self.isCollapsed = true;
+    self.selectedSearch = "";
   }
 
   ngOnInit() {
@@ -485,15 +518,28 @@ export class ListComponent implements OnInit, OnDestroy {
     self.savedViews = [];
     self.advanceFilter = showAdvancedFilter;
     self.selectedSavedView = null;
+    self.selectedSearch = null;
     self.appService.existingFilter = null;
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
+    }
+    if (self.schema.schemaFree) {
+      self.searchForm.patchValue({
+        name: '',
+        filter: '{}',
+        project: '{}',
+        sort: '{}',
+        count: '',
+        page: '',
+        private: false
+      });
     }
     self.filterSavedViews();
   }
 
   fetchSchema(serviceId: string) {
     const self = this;
+    self.filterPayload.serviceId = serviceId;
     const options: GetOptions = {
       filter: { status: 'Active', app: self.commonService.app._id }
     };
@@ -520,6 +566,10 @@ export class ListComponent implements OnInit, OnDestroy {
           self.api = '/' + self.commonService.app._id + res.api;
           self.appService.serviceAPI = self.api;
           self.schema = res;
+          // self.isSchemaFree = true;
+          if (res.schemaFree) {
+            self.isSchemaFree = res.schemaFree;
+          }
           self.resetFilter();
           self.buildColumns();
           self.refineByPermissions();
@@ -565,25 +615,109 @@ export class ListComponent implements OnInit, OnDestroy {
       app: self.commonService.app._id,
       type: { $ne: 'workflow' }
     };
-    if (!getAll) {
-      if (self.showPrivateViews) {
-        self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
-        self.savedViewApiConfig.filter.private = true;
+
+    if (!self.schema.schemaFree) {
+      if (!getAll) {
+        if (self.showPrivateViews) {
+          self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+          self.savedViewApiConfig.filter.private = true;
+        } else {
+          self.savedViewApiConfig.filter.private = false;
+        }
+        if (self.savedViewSearchTerm) {
+          self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+        }
+        self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+          self.savedViews = [];
+          data.forEach(view => {
+            self.fixSavedView(view);
+            if (view.value && view.type === 'dataService') {
+              if (typeof view.value === 'string') {
+                view.value = JSON.parse(view.value);
+              }
+              if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
+                view.value.filter.forEach(item => {
+                  item.dataKey = item.dataKey;
+                  delete item.headerName;
+                  delete item.fieldName;
+                  delete item.fieldType;
+                });
+              }
+            }
+            self.getUserName(view);
+            if (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id)) {
+              self.savedViews.push(view);
+            }
+          });
+          if (self.showPrivateViews) {
+            const publicViews = self.allFilters.filter(f => !f.private);
+            self.allFilters = [...self.savedViews, ...publicViews];
+          } else {
+            const privateViews = self.allFilters.filter(f => f.private);
+            self.allFilters = [...privateViews, ...self.savedViews];
+          }
+        });
       } else {
-        self.savedViewApiConfig.filter.private = false;
+        for (let i = 0; i < 2; i++) {
+          if (i === 0) {
+            self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+            self.savedViewApiConfig.filter.private = true;
+            self.savedViews = [];
+            self.allFilters = [];
+          } else {
+            self.savedViewApiConfig.filter.private = false;
+          }
+          self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+            data.forEach(view => {
+              self.fixSavedView(view);
+              if (view.value && view.type === 'dataService') {
+                if (typeof view.value === 'string') {
+                  view.value = JSON.parse(view.value);
+                }
+                if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
+                  view.value.filter.forEach(item => {
+                    item.dataKey = item.dataKey;
+                    delete item.headerName;
+                    delete item.fieldName;
+                    delete item.fieldType;
+                  });
+                }
+              }
+              self.getUserName(view);
+              self.allFilters.push(view);
+              if (i === 0 && self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+                self.savedViews.push(view);
+              }
+              if (i === 1 && !self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+                self.savedViews.push(view);
+              }
+            });
+          });
+        }
       }
-      if (self.savedViewSearchTerm) {
-        self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
-      }
-      self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+    }
+    else {
+      self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+      self.savedViewApiConfig.filter.private = true;
+      self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+
+      let publicSavedViewConfig = JSON.parse(JSON.stringify(self.savedViewApiConfig));
+      publicSavedViewConfig.filter.private = false;
+      delete publicSavedViewConfig.filter.createdBy;
+      let privateSavedViewApi = self.commonService.get('user', '/filter/', self.savedViewApiConfig);
+      let publicSavedViewApipublic = self.commonService.get('user', '/filter/', publicSavedViewConfig);
+
+      forkJoin([privateSavedViewApi, publicSavedViewApipublic]).subscribe((data) => {
         self.savedViews = [];
-        data.forEach(view => {
+
+        let allViews = [...data[0], ...data[1]];
+        allViews.forEach(view => {
           self.fixSavedView(view);
           if (view.value && view.type === 'dataService') {
             if (typeof view.value === 'string') {
               view.value = JSON.parse(view.value);
             }
-            if (view.value.filter && view.value.filter.length > 0) {
+            if (!self.isSchemaFree && view.value.filter && view.value.filter.length > 0) {
               view.value.filter.forEach(item => {
                 item.dataKey = item.dataKey;
                 delete item.headerName;
@@ -597,52 +731,10 @@ export class ListComponent implements OnInit, OnDestroy {
             self.savedViews.push(view);
           }
         });
-        if (self.showPrivateViews) {
-          const publicViews = self.allFilters.filter(f => !f.private);
-          self.allFilters = [...self.savedViews, ...publicViews];
-        } else {
-          const privateViews = self.allFilters.filter(f => f.private);
-          self.allFilters = [...privateViews, ...self.savedViews];
-        }
-      });
-    } else {
-      for (let i = 0; i < 2; i++) {
-        if (i === 0) {
-          self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
-          self.savedViewApiConfig.filter.private = true;
-          self.savedViews = [];
-          self.allFilters = [];
-        } else {
-          self.savedViewApiConfig.filter.private = false;
-        }
-        self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
-          data.forEach(view => {
-            self.fixSavedView(view);
-            if (view.value && view.type === 'dataService') {
-              if (typeof view.value === 'string') {
-                view.value = JSON.parse(view.value);
-              }
-              if (view.value.filter && view.value.filter.length > 0) {
-                view.value.filter.forEach(item => {
-                  item.dataKey = item.dataKey;
-                  delete item.headerName;
-                  delete item.fieldName;
-                  delete item.fieldType;
-                });
-              }
-            }
-            self.getUserName(view);
-            self.allFilters.push(view);
-            if (i === 0 && self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
-              self.savedViews.push(view);
-            }
-            if (i === 1 && !self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
-              self.savedViews.push(view);
-            }
-          });
-        });
-      }
+
+      })
     }
+
   }
 
   fixSavedView(viewData) {
@@ -750,6 +842,19 @@ export class ListComponent implements OnInit, OnDestroy {
       },
       checkbox: true
     });
+    if (self.isSchemaFree) {
+      temp.push({
+        show: true,
+        key: 'Data',
+        dataKey: 'Data',
+        definition: [],
+        properties: {
+          name: 'Data',
+          type: 'schemafree'
+        }
+      });
+    }
+
     temp.push({
       show: true,
       key: '_metadata.createdAt',
@@ -895,7 +1000,13 @@ export class ListComponent implements OnInit, OnDestroy {
             const view = prefRes[0].value;
             self.appService.existingFilter = view;
             self.selectedSavedView = view;
-            self.applySavedView.emit(view);
+            self.selectedSearch = view;
+            if (self.isSchemaFree) {
+              self.selectSearch(view);
+            }
+            else {
+              self.applySavedView.emit(view);
+            }
           }
         } catch (e) {
           console.error(e);
@@ -969,7 +1080,7 @@ export class ListComponent implements OnInit, OnDestroy {
   hasPermission(method?: string): boolean {
     const self = this;
     if (self.schema) {
-      return self.commonService.hasPermission(self.schema._id,self.schema.role.roles,method);
+      return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
     }
     return false;
   }
@@ -1014,6 +1125,10 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.hasWorkflow) {
       self.deleteRequest(id);
     } else {
+      self.deleteModal = {
+        title: 'Delete Record(s)',
+        message: 'Are you sure, you want to delete these record(s)?'
+      };
       self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
       self.confirmDeleteModalRef.result.then(
         close => {
@@ -1175,6 +1290,8 @@ export class ListComponent implements OnInit, OnDestroy {
               self.ts.success('Filter Deleted.');
               self.savedViews = [];
               self.getSavedViews();
+              self.selectedSearch = null;
+              self.clearSearch();
             },
             err => {
               self.commonService.errorToast(err, 'Unable to delete, please try again later');
@@ -1454,6 +1571,115 @@ export class ListComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+
+  selectSearch(filterValue?) {
+    const self = this;
+    if (!filterValue) {
+      self.filterId = null;
+      self.filterCreatedBy = '';
+      self.selectedSearch = null;
+      this.resetFilter();
+
+    } else {
+      self.filterId = filterValue._id;
+      self.filterCreatedBy = filterValue.createdBy;
+      self.selectedSearch = filterValue;
+      self.setLastFilterApplied(filterValue);
+
+      self.searchForm.patchValue({
+        name: filterValue.name,
+        filter: filterValue.value.filter,
+        project: filterValue.value.project,
+        sort: filterValue.value.sort,
+        count: filterValue.value.count,
+        page: filterValue.value.page,
+        private: filterValue.private
+      });
+      self.applySavedView.emit({ value: filterValue });
+    }
+
+  }
+
+  get saveAsNewSearch() {
+    const self = this;
+    const currentUser = self.sessionService.getUser(true);
+    if (self.filterId && (self.filterCreatedBy !== currentUser._id)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  run() {
+    const self = this;
+    let searchVal = {};
+    searchVal['value'] = self.searchForm.getRawValue();
+    self.applySavedView.emit({ value: searchVal });
+  }
+
+  clearSearch() {
+    const self = this;
+    self.searchForm.patchValue({
+        filter: '{}',
+        project: '{}',
+        sort: '{}',
+        count: '',
+        page: '',
+    });
+  }
+
+  saveSearchViewModal() {
+    const self = this;
+    if (self.saveAsNewSearch) {
+      self.searchForm.get('name').patchValue('');
+    }
+    self.createNewFilterRef = self.modalService.open(self.createNewFilter, { centered: true });
+    self.createNewFilterRef.result.then(
+      close => {
+        if (close) {
+          self.saveView();
+        }
+      },
+      dismiss => { }
+    );
+
+  }
+
+  saveView() {
+    const self = this;
+    const currentUser = self.sessionService.getUser(true);
+    let data = self.searchForm.getRawValue();
+    self.filterPayload.name = data['name'];
+    self.filterPayload.private = data['private']
+    delete data['name'];
+    delete data['private'];
+    self.filterPayload.value = JSON.stringify(data);
+    let request: Observable<any>;
+    if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
+      request = self.commonService.put('user', `/filter/${self.filterId}`, self.filterPayload);
+    } else if ((self.filterId && (self.filterCreatedBy !== currentUser._id)) || (self.filterId === null || self.filterId === '' || self.filterId === undefined)) {
+      self.filterId = null;
+      request = self.commonService.post('user', '/filter/', self.filterPayload);
+    }
+    request.subscribe(res => {
+      res.value = JSON.parse(res.value);
+      if (self.filterCreatedBy === currentUser._id) {
+        self.ts.success('Filter Saved Successfully');
+        const viewIndex = self.savedViews.findIndex(view => view._id == res._id);
+        if (viewIndex >= 0) {
+          self.savedViews[viewIndex] = res;
+        }
+      } else {
+        self.ts.success('New Filter created Successfully');
+        self.savedViews.push(res);
+      }
+      self.selectedSearch = res;
+      self.filterId = res._id;
+      self.filterCreatedBy = res.createdBy;
+      self.applySavedView.emit({ value: res });
+    }, err => self.commonService.errorToast(err));
+  }
 }
 
 export interface RefineQuery {
@@ -1461,3 +1687,44 @@ export interface RefineQuery {
   select?: string;
   filter?: any;
 }
+
+export function validJSON(): ValidatorFn {
+  return (control: FormControl) => {
+    if (!control.value) {
+      return null;
+    }
+
+    try {
+      if (JSON.parse(control.value)) {
+        return null;
+      }
+    } catch (e) {
+      return { validJSON: true };
+    }
+  }
+  return null;
+};
+
+export function validSearch(type): ValidatorFn {
+  return (control: FormControl) => {
+    if (!control.value) {
+      return null;
+    }
+
+    try {
+      let search = JSON.parse(control.value);
+      if (search) {
+        if (type == 'project' && Object.values(search).filter((val) => (val != 1 && val != 0)).length > 0) {
+          return { validSearch: true };
+        }
+        else if (type == 'sort' && Object.values(search).filter((val) => (val != 1 && val != -1)).length > 0) {
+          return { validSearch: true };
+        }
+        return null
+      }
+    } catch (e) {
+      return { validSearch: true };
+    }
+  }
+  return null;
+};

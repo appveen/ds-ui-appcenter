@@ -189,7 +189,7 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
         this.decryptedValue[index + type] = value.value;
       }
       else {
-        this.commonService.post('sec', '/enc/' + this.commonService.app._id + '/decrypt', { data: value.value }).subscribe(res => {
+        this.commonService.post('api', this.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
           this.decryptedValue[index + type] = res.data;
         }, err => {
           this.decryptedValue[index + type] = value.value;

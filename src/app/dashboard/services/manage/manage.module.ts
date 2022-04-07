@@ -12,6 +12,7 @@ import { ManageGuard } from 'src/app/guard/manage.guard';
 import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outside.module';
 import { RouteGuard } from 'src/app/guard/route.guard';
 import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/loading-placeholder.module';
+import { CodeEditorModule } from 'src/app/utils/code-editor/code-editor.module'
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: ManageComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard] },
@@ -29,7 +30,8 @@ const routes: Routes = [
     MapModule,
     PipesModule,
     ClickOutsideModule,
-    LoadingPlaceholderModule
+    LoadingPlaceholderModule,
+    CodeEditorModule
   ],
   declarations: [
     ManageComponent,

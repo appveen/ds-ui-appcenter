@@ -144,7 +144,7 @@
           <span class="text-accent hover" *ngIf="!uploadObj.showUploadTag && !parseObj.showParseTag ">Re-Upload</span>
         </label> -->
         <div class="d-flex justify-content-between messsage mx-3">
-          <span class="text-muted font-sm">Supported file types(csv,xslx,xlx)</span>
+          <span class="text-muted font-sm">Supported file types (csv,xslx,xlx{{schema.schemaFree?',json':''}})</span>
           <label class="text-muted font-sm">Having issue ?
             <span class="text-primary hover">
               <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
@@ -180,7 +180,7 @@
           </div>
           <span class="text-accent hover">Re-Upload</span>
         </label>
-        <div class="d-flex flex-column ml-4 mt-4">
+        <div class="d-flex flex-column ml-4 mt-4" *ngIf="fileData?.type != 'json'">
           <span class="font-weight-bold ">File Settings</span>
           <div class="d-flex flex-column ml-3 mt-3">
             <div class="d-flex w-100 mb-4" *ngIf="fileData.sheets">
@@ -252,14 +252,14 @@
           <span class="text-accent hover">Re-Upload</span>
         </label>
       </div>
-      <div class="d-flex flex-row justify-content-between">
+      <div class="d-flex flex-row justify-content-between" *ngIf="!schema.schemaFree">
         <odp-column-mapping [definition]="schema" [tempAttrList]='tempAttrList' [mappingData]="mappingData"
           [form]="form" [schemaName]="schema.name" (emitDataToParent)="getForm($event)"></odp-column-mapping>
         <div class="header-list border px-3 bg-light">
           <div class="text-success d-flex align-items-center font-bold  py-2">
             <span class="fa fa-file mr-2"></span>
-            <div>{{fileData?.fileName}}</div>         
-           </div>
+            <div>{{fileData?.fileName}}</div>
+          </div>
           <div class="fileKeyContainer border d-flex align-items-center justify-content-between bg-white px-2 mb-2"
             *ngFor="let fileKey of mappingData?.headers?.fileKeys" [draggable]="true"
             (drag)="dragEvent($event,fileKey)">
@@ -301,8 +301,8 @@
         </label>
       </div>
       <odp-validation-result [schema]="schema" [transfersData]="resultObj" [(update)]="createObj.update"
-        (updateChange)="updateChange($event)" [(create)]="createObj.create"
-        (createChange)="createChange($event)" (importData)="createRecords()"></odp-validation-result>
+        (updateChange)="updateChange($event)" [(create)]="createObj.create" (createChange)="createChange($event)"
+        (importData)="createRecords()"></odp-validation-result>
       <!-- <odp-conflict-resolve [schema]="schema" [resultObj]="resultObj" [mappingData]="mappingData"
         (emitDataToParent)="getCreateData($event)" [api]="api" (importData)="createRecords()"></odp-conflict-resolve> -->
     </div>
@@ -325,7 +325,8 @@
             </div>
             <div class="d-flex flex-column my-3 text-secondary text-center">
               <p>The uploaded file is currently being validated. You will
-                be notified when validation is completed.<br> Click <a [routerLink]="['/', app, 'services', schema._id, 'list']">here</a> to redirect to listing page.</p>
+                be notified when validation is completed.<br> Click <a
+                  [routerLink]="['/', app, 'services', schema._id, 'list']">here</a> to redirect to listing page.</p>
             </div>
           </div>
         </div>
@@ -351,13 +352,14 @@
             </div>
             <div class="d-flex flex-column my-3 text-secondary text-center">
               <p>Valid Records are being imported. You will
-                be notified when the process is completed.<br> Click <a [routerLink]="['/', app, 'services', schema._id, 'list']">here</a> to redirect to listing page.</p>
+                be notified when the process is completed.<br> Click <a
+                  [routerLink]="['/', app, 'services', schema._id, 'list']">here</a> to redirect to listing page.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="d-flex flex-column w-100 h-100 px-3 pt-3 overflow" *ngIf="activeStep==6">
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex">

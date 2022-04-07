@@ -64,6 +64,7 @@ export class AppService {
     workflowTabChange: EventEmitter<number>;
     fileMapperComponnets: any;
     searchingRecord: boolean;
+    updateCodeEditorState: EventEmitter<any>;
     constructor() {
         const self = this;
         self.serviceChange = new EventEmitter();
@@ -98,6 +99,7 @@ export class AppService {
         self.fileMapperComponnets = {};
         self.workflowTabChange = new EventEmitter();
         this.fetchedServiceList = [];
+        this.updateCodeEditorState = new EventEmitter<any>();
     }
 
     aggregatePermission(_obj, min?) {

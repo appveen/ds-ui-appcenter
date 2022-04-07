@@ -20,9 +20,10 @@ export class ViewSecureTextComponent implements OnInit {
   decryptedValue;
   valueCreated: boolean;
   valueUpdated: boolean;
+  api
   constructor(private appService: AppService,
     private sanitize: DomSanitizer,
-    private commonService: CommonService, ) {
+    private commonService: CommonService,) {
     const self = this;
     self.decryptedValue = {};
     self.showPassword = {};
@@ -40,14 +41,14 @@ export class ViewSecureTextComponent implements OnInit {
         self.decryptedValue[type] = value.value;
       }
       else {
-        self.commonService.post('sec', '/enc/' + this.commonService.app._id + '/decrypt', { data: value.value }).subscribe(res => {
+        self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
           self.decryptedValue[type] = res.data;
         }, err => {
           self.decryptedValue[type] = value.value;
         })
       }
     }
-    
+
   }
 
 
@@ -63,8 +64,8 @@ export class ViewSecureTextComponent implements OnInit {
   get isUpdated() {
     const self = this;
     let retValue = false;
-    if(!self.newVal && self.oldVal){
-      retValue =true;
+    if (!self.newVal && self.oldVal) {
+      retValue = true;
     }
     if (self.newVal && self.oldVal && self.newVal.checksum && self.oldVal.checksum && self.newVal.checksum !== self.oldVal.checksum) {
       retValue = true;

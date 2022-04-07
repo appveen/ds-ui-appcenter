@@ -93,8 +93,7 @@
                     <span class="fa fa-trash mr-2 font-13"></span>
                     <span class="text font-13">Delete</span>
                 </button>
-                <button (click)="showVersionHistory=!showVersionHistory" *ngIf="auditAvailable"
-                    class="btn btn-link px-3" type="button">
+                <button (click)="toggleHistory()" *ngIf="auditAvailable" class="btn btn-link px-3" type="button">
                     <span class="fa fa-clock mr-2 font-13"></span>
                     <span class="text font-13">History</span>
                 </button>
@@ -132,14 +131,14 @@
         </div>
     </div>
     <odp-history *ngIf="schema?._id" [(toggle)]="showHistoryDropdown" [schema]="schema" [documentId]="id"
-        (auditAvailable)="auditAvailable=$event" (selectedAudit)="selectedAudit=$event" (compare)="compareVersion()">
+        (auditAvailable)="auditAvailable=$event" (selectedAudit)="selectAudit($event)" (compare)="compareVersion()">
     </odp-history>
 
     <div (outside)="showBlackOutModal = false" *ngIf="showBlackOutModal" odpClickOutside>
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex flex-column w-100 bg-light">
+    <div class="d-flex flex-column w-100 bg-light" *ngIf="!isSchemaFree">
         <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
             class="steps-wrapper wizard-steps position-relative d-flex justify-content-between bg-white rounded px-3">
             <div class="step-tabs d-flex align-items-center">
@@ -256,6 +255,34 @@
             </div>
         </div>
     </div>
+    <ng-container *ngIf="false">
+        <div class="btn-group view-modes mt-2 ml-2" role="group" ngbRadioGroup name="radioViewMode"
+            [(ngModel)]="viewMode">
+            <label ngbButtonLabel class="text-dark bg-white">
+                <input ngbButton type="radio" class="btn-check d-none" value="tree"> Tree
+            </label>
+            <label ngbButtonLabel class="text-dark bg-white">
+                <input ngbButton type="radio" class="btn-check d-none" value="code"> Code
+            </label>
+
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'code' && !showVersionHistory">
+        <odp-code-editor class="code-editor" [edit]="{status:false}" [theme]="selectedEditorTheme"
+            [fontSize]="selectedFontSize" [(code)]="schemaFreeCode">
+        </odp-code-editor>
+    </ng-container>
+    <ng-container *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'code' && showVersionHistory">
+
+        <odp-code-editor class="code-editor" [edit]="{status:false}" [theme]="selectedEditorTheme"
+            [diff]='showVersionHistory' [fontSize]="selectedFontSize" [(code)]="schemaFreeCode"
+            [oldVal]='activeAuditOldData' [newVal]='activeAuditNewData'>
+        </odp-code-editor>
+    </ng-container>
+    <ng-container *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'tree'">
+        <odp-tree-view [code]="schemaFreeCode"></odp-tree-view>
+    </ng-container>
+
 </div>
 
 

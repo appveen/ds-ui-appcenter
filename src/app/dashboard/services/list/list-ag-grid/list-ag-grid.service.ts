@@ -37,8 +37,7 @@ export class ListAgGridService {
       } else if (e2.type === 'Geojson') {
         key = e2.key + '.formattedAddress,' + e2.key + '.userInput';
       } else if (e2.type === 'File') {
-        key = e2.key + '.metadata.filename' 
-        // key = e2.key + '.metadata.filename,' + e2.key + '._id,' + e2.key + '.filename,' + e2.key + '.contentType';
+        key = e2.key + '.metadata.filename,' + e2.key + '._id,' + e2.key + '.filename,' + e2.key + '.contentType';
       } else if (e2.type === 'Object') {
         tempArr = tempArr.concat(self.getSelect(e2.definition));
       } else if (e2.type === 'Array' && e2.definition && e2.definition.length > 0) {
