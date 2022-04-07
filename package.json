@@ -33,7 +33,7 @@
     "ngx-cookie-service": "^2.3.0",
     "ngx-sortablejs": "^11.1.0",
     "ngx-toastr": "^12.1.0",
-    "pdfjs-dist": "2.5.207",
+    "pdfjs-dist": "2.13.216",
     "randexp": "^0.5.3",
     "rxjs": "~6.6.3",
     "shorthash": "0.0.2",
