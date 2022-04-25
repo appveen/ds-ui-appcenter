@@ -8,7 +8,7 @@ import { flatMap, switchMap } from 'rxjs/operators';
 
 import * as sh from 'shorthash';
 import * as uuid from 'uuid/v1';
-import * as io from 'socket.io-client';
+import { connect, Socket } from "socket.io-client";
 
 import { environment } from 'src/environments/environment';
 import { UserDetails } from 'src/app/interfaces/userDetails';
@@ -37,7 +37,7 @@ export class CommonService {
   filterQueryUpdated: Subject<any>;
   filterQueryCleared: Subject<boolean>;
   clickTrack: number;
-  socket: SocketIOClient.Socket;
+  socket: Socket;
   interaction: {
     new: EventEmitter<any>;
     update: EventEmitter<any>;
@@ -1239,7 +1239,7 @@ export class CommonService {
           portal: 'appcenter'
         }
       };
-      self.socket = io.connect(environment.production ? '/' : 'http://localhost', socketConfig);
+      self.socket = connect(environment.production ? '/' : 'http://localhost', socketConfig);
 
       self.socket.on('connected', data => {
         self.socket.emit('authenticate', { token: self.userDetails.token });
