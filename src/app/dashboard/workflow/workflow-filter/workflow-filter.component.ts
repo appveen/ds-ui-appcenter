@@ -1011,7 +1011,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         self.filterData.value = JSON.stringify(self.config);
         // self.filterData.value['sort'] = self.sortingColumns;
         if (self.filterId && self.filterCreatedBy === currentUser._id) {
-          self.commonService.put('user', `/filter/${self.filterId}`, self.filterData).subscribe(res => {
+          self.commonService.put('user', `/data/filter/${self.filterId}`, self.filterData).subscribe(res => {
             self.showSaveDiv = false;
             self.applyFilter();
             self.filterId = res._id;
@@ -1022,7 +1022,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
           });
         } else if (self.filterId && self.filterCreatedBy !== currentUser._id) {
           self.filterId = null;
-          self.commonService.post('user', '/filter/', self.filterData).subscribe(res => {
+          self.commonService.post('user', '/data/filter/', self.filterData).subscribe(res => {
             self.showSaveDiv = false;
             self.applyFilter();
             self.filterId = res._id;
@@ -1035,7 +1035,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
             self.ts.success('New Filter created Successfully');
           });
         } else if (self.filterId === null || self.filterId === '') {
-          self.commonService.post('user', '/filter/', self.filterData).subscribe(res => {
+          self.commonService.post('user', '/data/filter/', self.filterData).subscribe(res => {
             self.showSaveDiv = false;
             self.applyFilter();
             self.filterId = res._id;

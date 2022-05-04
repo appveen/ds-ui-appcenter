@@ -63,7 +63,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
             });
             self.commonService.apiCalls = {};
             if (this.commonService.userDetails && this.commonService.userDetails._id) {
-                const appId = this.commonService.getCurrentAppId(); 
+                const appId = this.commonService.getCurrentAppId();
                 this.router.navigate([`/${appId}`]);
             } else {
                 if (self.sessionService.getToken()) {
@@ -72,7 +72,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                             if (this.commonService.noAccess) {
                                 // reject(false);
                             } else {
-                                const appId = this.commonService.getCurrentAppId(); 
+                                const appId = this.commonService.getCurrentAppId();
                                 this.router.navigate([`/${appId}`]);
                                 // resolve(true);
                             }
@@ -128,15 +128,20 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
             }
             self.message = null;
             self.loader = true;
-            self.subscriptions.onSubmit = self.commonService.get('user', '/authType/' + username, { skipAuth: true }).subscribe(res => {
-                self.authTypeChecked = true;
+            self.subscriptions.onSubmit = self.commonService.get('user', '/auth/authType/' + username, { skipAuth: true }).subscribe(res => {
                 self.loader = false;
-                self.appService.fqdn = res.fqdn;
-                self.authType = res.bot ? 'local' : res.authType;
-                if (res.rbacUserToSingleSession
-                    && res.sessionActive) {
-                    self.rbacUserReloginAction = res.rbacUserReloginAction;
-                    self.activeSessionWarning();
+                if (res.bot) {
+                    self.message = "Couldn't find your account";
+                }
+                else {
+                    self.authTypeChecked = true;
+                    self.appService.fqdn = res.fqdn;
+                    self.authType = res.authType;
+                    if (res.rbacUserToSingleSession
+                        && res.sessionActive) {
+                        self.rbacUserReloginAction = res.rbacUserReloginAction;
+                        self.activeSessionWarning();
+                    }
                 }
             },
                 err => {
@@ -211,7 +216,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                     if (data.status === 200 && !self.commonService.noAccess) {
                         self.commonService.apiCalls.componentLoading = true;
                         const expireDate = new Date(self.sessionService.getUser(true).expiresIn);
-                        const appId = this.commonService.getCurrentAppId(); 
+                        const appId = this.commonService.getCurrentAppId();
                         this.router.navigate([appId]);
                     } else {
                         self.message = 'You don\'t have enough permissions';

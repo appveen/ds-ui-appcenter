@@ -46,7 +46,7 @@ export class BookmarkListComponent implements OnInit {
   }
 
   getBookMarks() {
-    const path = '/app/' + this.commonService.app._id + '/bookmark';
+    const path = '/' + this.commonService.app._id + '/bookmark';
     const options: GetOptions = {};
     options.count = -1;
     options.select = 'name,app,_id';
@@ -58,7 +58,7 @@ export class BookmarkListComponent implements OnInit {
     //     }
     //   };
     // } else {
-      options.filter = null;
+    options.filter = null;
     //}
     if (this.subscriptions.getBookmarkList) {
       this.subscriptions.getBookmarkList.unsubscribe();
@@ -75,7 +75,7 @@ export class BookmarkListComponent implements OnInit {
   }
 
   loadBookmark(bookmark: any, force?: boolean) {
-    if(force) {
+    if (force) {
       this.router.navigateByUrl(['', this.commonService.app._id, 'bookmark'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'bookmark', bookmark._id]);
       });

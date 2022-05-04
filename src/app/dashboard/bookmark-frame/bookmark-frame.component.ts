@@ -86,22 +86,12 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     }).catch(err => {
       item.createdByName = 'ERROR';
     });
-    // return new Promise((resolve, reject) => {
-    //   self.subscriptions['getCreatedBy_' + item.createdBy] = self.commonService
-    //     .get('user', '/usr/' + item.createdBy, { select: 'basicDetails.name username' })
-    //     .subscribe(res => {
-    //       item.createdByName = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
-    //       resolve(res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username);
-    //     }, err => {
-    //       reject(err);
-    //     });
-    // });
   }
 
   getBookMarks() {
     const self = this;
     self.showLazyLoader = true;
-    self.subscriptions.getBookMarks = self.commonService.get('user', `/app/${self.commonService.app._id}/bookmark`, self.apiConfig)
+    self.subscriptions.getBookMarks = self.commonService.get('user', `/${self.commonService.app._id}/bookmark`, self.apiConfig)
       .subscribe(res => {
         res.forEach(item => {
           self.getFaviconUrl(item);
@@ -121,7 +111,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     self.showLazyLoader = true;
 
     self.subscriptions.getBookMarksCount = self.commonService
-      .get('user', `/app/${self.commonService.app._id}/bookmark/count`, self.apiConfig)
+      .get('user', `/${self.commonService.app._id}/bookmark/utils/count`, self.apiConfig)
       .subscribe(res => {
         self.showLazyLoader = false;
 
@@ -137,7 +127,7 @@ export class BookmarkFrameComponent implements OnInit, OnDestroy {
     const self = this;
     self.showLazyLoader = true;
 
-    self.subscriptions.getBookMark = self.commonService.get('user', `/app/${self.commonService.app._id}/bookmark/${self.bookMarkId}`)
+    self.subscriptions.getBookMark = self.commonService.get('user', `/${self.commonService.app._id}/bookmark/${self.bookMarkId}`)
       .subscribe(res => {
         self.showLazyLoader = false;
         self.originalUrl = self.constructUrl(res);

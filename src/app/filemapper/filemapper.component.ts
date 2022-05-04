@@ -118,7 +118,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
       filter: { app: self.commonService.app._id }
     };
     self.showLazyLoader = true;
-    self.subscriptions['serviceDefinition'] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
+    self.subscriptions['serviceDefinition'] = self.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, options).subscribe(
       res => {
         self.showLazyLoader = false;
         const parsedDef = res.definition;
@@ -243,7 +243,6 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     self.fileSettings.fileName = self.fileData.fileName;
     self.fileSettings.fileId = self.fileData.fileId;
     self.fileSettings.dsKeys = self.dsKeys;
-    const path = '/usr/bulkCreate/' + self.fileData.fileId + '/sheetSelect';
     self.showLazyLoader = true;
 
     self.subscriptions['selectSheet'] = self.commonService

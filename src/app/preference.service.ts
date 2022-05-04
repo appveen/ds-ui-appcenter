@@ -18,7 +18,7 @@ export class PreferenceService {
         key
       }
     };
-    return self.commonService.get('user', '/preferences', options);
+    return self.commonService.get('user', '/data/preferences', options);
   }
 
   setPrefrences(key: string, type: string, preferenceId: string, data: any) {
@@ -31,9 +31,9 @@ export class PreferenceService {
       value: JSON.stringify(data)
     };
     if (preferenceId) {
-      response = self.commonService.put('user', '/preferences/' + preferenceId, payload);
+      response = self.commonService.put('user', '/data/preferences/' + preferenceId, payload);
     } else {
-      response = self.commonService.post('user', '/preferences/', payload);
+      response = self.commonService.post('user', '/data/preferences/', payload);
     }
     return response;
   }

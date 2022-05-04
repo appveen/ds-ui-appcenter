@@ -58,7 +58,7 @@ export class ListRelationViewComponent implements OnInit {
         self.subscriptions['fetchRelatedSchema_' + self.definition.properties.relatedTo].unsubscribe();
       }
       self.subscriptions['fetchRelatedSchema_' + self.definition.properties.relatedTo] = self.commonService
-        .get('sm', '/service/' + self.definition.properties.relatedTo, {
+        .get('sm', `/${this.commonService.app._id}/service/` + self.definition.properties.relatedTo, {
           select: 'definition',
           filter: { app: this.commonService.app._id }
         })

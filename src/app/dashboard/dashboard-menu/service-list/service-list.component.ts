@@ -54,7 +54,7 @@ export class ServiceListComponent implements OnInit {
   getServices() {
     const filter: any = { status: 'Active', app: this.commonService.app._id };
     if (!this.commonService.userDetails.isSuperAdmin
-      && this.commonService.servicesWithAccess.length > 0) {
+      && this.commonService.servicesWithAccess.length > 0 && !this.commonService.isAppAdmin()) {
       filter._id = {
         $in: this.commonService.servicesWithAccess
       };
@@ -72,7 +72,7 @@ export class ServiceListComponent implements OnInit {
     this.pinnedDs = [];
     this.records = [];
     this.subscriptions.getServices = this.commonService
-      .get('sm', '/service', options)
+      .get('sm', `/${this.commonService.app._id}/service`, options)
       .pipe(distinctUntilChanged())
       .subscribe(res => {
         this.showLazyLoader = false;
@@ -119,7 +119,7 @@ export class ServiceListComponent implements OnInit {
     };
     this.pinnedDs = [];
     this.records = [];
-    this.commonService.get('user', '/preferences', options)
+    this.commonService.get('user', '/data/preferences', options)
       .subscribe(prefRes => {
         if (prefRes.length) {
           this.prefId = prefRes[0]._id;
@@ -136,10 +136,10 @@ export class ServiceListComponent implements OnInit {
       });
   }
 
-  loadDataService(service: any,force?:boolean) {
+  loadDataService(service: any, force?: boolean) {
     this.appService.serviceId = service._id;
     this.dashboardService.selectedService.emit(service);
-    if (!this.activeId  || force) {
+    if (!this.activeId || force) {
       this.router.navigateByUrl(['', this.commonService.app._id, 'services'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'services', service._id, 'list']);
       });
@@ -157,9 +157,9 @@ export class ServiceListComponent implements OnInit {
     if (this.prefId) {
       this.preference.value.push({ _id: serviceId });
       this.preference.value = JSON.stringify(this.preference.value);
-      response = this.commonService.put('user', '/preferences/' + this.prefId, this.preference)
+      response = this.commonService.put('user', '/data/preferences/' + this.prefId, this.preference)
     } else {
-      response = this.commonService.post('user', '/preferences', data)
+      response = this.commonService.post('user', '/data/preferences', data)
 
     }
     response.subscribe(res => {
@@ -184,7 +184,7 @@ export class ServiceListComponent implements OnInit {
       let index = this.preference.value.findIndex(ele => ele._id === serviceId);
       this.preference.value.splice(index, 1);
       this.preference.value = JSON.stringify(this.preference.value);
-      const respose = this.commonService.put('user', '/preferences/' + this.prefId, this.preference);
+      const respose = this.commonService.put('user', '/data/preferences/' + this.prefId, this.preference);
       respose.subscribe(res => {
         this.preference = res;
         if (typeof this.preference.value === 'string') {

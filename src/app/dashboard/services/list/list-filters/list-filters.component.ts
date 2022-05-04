@@ -429,10 +429,10 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
         self.filterPayload.value = JSON.stringify(self.queryObject);
         let request: Observable<any>;
         if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
-          request = self.commonService.put('user', `/filter/${self.filterId}`, self.filterPayload);
+          request = self.commonService.put('user', `/data/filter/${self.filterId}`, self.filterPayload);
         } else if ((self.filterId && (self.filterCreatedBy !== currentUser._id)) || (self.filterId === null || self.filterId === '' || self.filterId === undefined)) {
           self.filterId = null;
-          request = self.commonService.post('user', '/filter/', self.filterPayload);
+          request = self.commonService.post('user', '/data/filter/', self.filterPayload);
         }
         request.subscribe(res => {
           self.showSaveDiv = false;

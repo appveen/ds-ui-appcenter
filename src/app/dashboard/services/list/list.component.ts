@@ -548,7 +548,7 @@ export class ListComponent implements OnInit, OnDestroy {
       self.subscriptions['getSchema_' + serviceId] = null;
     }
     self.apiCalls.fetchingSchema = true;
-    self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', '/service/' + serviceId, options).subscribe(
+    self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, options).subscribe(
       res => {
         self.apiCalls.fetchingSchema = false;
         if (!res.definition) {
@@ -627,7 +627,7 @@ export class ListComponent implements OnInit, OnDestroy {
         if (self.savedViewSearchTerm) {
           self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
         }
-        self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+        self.commonService.get('user', '/data/filter/', self.savedViewApiConfig).subscribe(data => {
           self.savedViews = [];
           data.forEach(view => {
             self.fixSavedView(view);
@@ -667,7 +667,7 @@ export class ListComponent implements OnInit, OnDestroy {
           } else {
             self.savedViewApiConfig.filter.private = false;
           }
-          self.commonService.get('user', '/filter/', self.savedViewApiConfig).subscribe(data => {
+          self.commonService.get('user', '/data/filter/', self.savedViewApiConfig).subscribe(data => {
             data.forEach(view => {
               self.fixSavedView(view);
               if (view.value && view.type === 'dataService') {
@@ -704,8 +704,8 @@ export class ListComponent implements OnInit, OnDestroy {
       let publicSavedViewConfig = JSON.parse(JSON.stringify(self.savedViewApiConfig));
       publicSavedViewConfig.filter.private = false;
       delete publicSavedViewConfig.filter.createdBy;
-      let privateSavedViewApi = self.commonService.get('user', '/filter/', self.savedViewApiConfig);
-      let publicSavedViewApipublic = self.commonService.get('user', '/filter/', publicSavedViewConfig);
+      let privateSavedViewApi = self.commonService.get('user', '/data/filter/', self.savedViewApiConfig);
+      let publicSavedViewApipublic = self.commonService.get('user', '/data/filter/', publicSavedViewConfig);
 
       forkJoin([privateSavedViewApi, publicSavedViewApipublic]).subscribe((data) => {
         self.savedViews = [];
@@ -740,7 +740,7 @@ export class ListComponent implements OnInit, OnDestroy {
   fixSavedView(viewData) {
     const self = this;
     if (!viewData.type) {
-      self.commonService.put('user', `/filter/${viewData._id}`, { type: 'dataService' }).subscribe(
+      self.commonService.put('user', `/data/filter/${viewData._id}`, { type: 'dataService' }).subscribe(
         res => { },
         err => {
           console.error('Unable to Update Filter:', viewData.name);
@@ -748,7 +748,7 @@ export class ListComponent implements OnInit, OnDestroy {
       );
     }
     if (!viewData.value) {
-      self.commonService.delete('user', `/filter/${viewData._id}`).subscribe(
+      self.commonService.delete('user', `/data/filter/${viewData._id}`).subscribe(
         res => { },
         err => {
           console.error('Unable to Delete Filter:', viewData.name);
@@ -761,7 +761,7 @@ export class ListComponent implements OnInit, OnDestroy {
     //   if (typeof viewData.value === 'string') {
     //     viewData.value = JSON.parse(viewData.value);
     //   }
-    //   self.commonService.delete('user', `/filter/${viewData._id}`).subscribe((res) => { }, err => {
+    //   self.commonService.delete('user', `/data/filter/${viewData._id}`).subscribe((res) => { }, err => {
     //     console.error('Unable to Delete Filter:', viewData.name);
     //   });
     // }
@@ -989,7 +989,7 @@ export class ListComponent implements OnInit, OnDestroy {
         key: self.schema._id
       }
     };
-    self.commonService.get('user', '/preferences', options).subscribe(
+    self.commonService.get('user', '/data/preferences', options).subscribe(
       prefRes => {
         try {
           if (prefRes && prefRes.length > 0) {
@@ -1028,9 +1028,9 @@ export class ListComponent implements OnInit, OnDestroy {
       value: JSON.stringify(data)
     };
     if (self.lastFilterAppliedPrefId) {
-      response = self.commonService.put('user', '/preferences/' + self.lastFilterAppliedPrefId, payload);
+      response = self.commonService.put('user', '/data/preferences/' + self.lastFilterAppliedPrefId, payload);
     } else {
-      response = self.commonService.post('user', '/preferences', payload);
+      response = self.commonService.post('user', '/data/preferences', payload);
     }
     response.subscribe(
       prefRes => {
@@ -1045,7 +1045,7 @@ export class ListComponent implements OnInit, OnDestroy {
   deleteLastFilterApplied() {
     const self = this;
     if (self.lastFilterAppliedPrefId) {
-      self.commonService.delete('user', '/preferences/' + self.lastFilterAppliedPrefId).subscribe(
+      self.commonService.delete('user', '/data/preferences/' + self.lastFilterAppliedPrefId).subscribe(
         prefRes => {
           self.lastFilterAppliedPrefId = null;
         },
@@ -1229,7 +1229,7 @@ export class ListComponent implements OnInit, OnDestroy {
         filter.private = type === 'private';
         let tempFilter = this.appService.cloneObject(filter);
         tempFilter.value = JSON.stringify(tempFilter.value);
-        self.subscriptions['filterType'] = self.commonService.put('user', `/filter/${filter._id}`, tempFilter).subscribe(() => {
+        self.subscriptions['filterType'] = self.commonService.put('user', `/data/filter/${filter._id}`, tempFilter).subscribe(() => {
           self.ts.success('Filter type Updated');
           self.getSavedViews();
         });
@@ -1237,7 +1237,7 @@ export class ListComponent implements OnInit, OnDestroy {
         filter.private = type === 'private';
         let tempFilter = this.appService.cloneObject(filter);
         tempFilter.value = JSON.stringify(tempFilter.value);
-        self.subscriptions['filterType'] = self.commonService.put('user', `/filter/${filter._id}`, tempFilter).subscribe(() => {
+        self.subscriptions['filterType'] = self.commonService.put('user', `/data/filter/${filter._id}`, tempFilter).subscribe(() => {
           self.ts.success('Filter type Updated');
           self.getSavedViews();
         });
@@ -1285,7 +1285,7 @@ export class ListComponent implements OnInit, OnDestroy {
     self.confirmDeleteModalRef.result.then(
       close => {
         if (close) {
-          self.subscriptions['deleteFilter'] = self.commonService.delete('user', `/filter/${filter._id}`).subscribe(
+          self.subscriptions['deleteFilter'] = self.commonService.delete('user', `/data/filter/${filter._id}`).subscribe(
             res => {
               self.ts.success('Filter Deleted.');
               self.savedViews = [];
@@ -1621,11 +1621,11 @@ export class ListComponent implements OnInit, OnDestroy {
   clearSearch() {
     const self = this;
     self.searchForm.patchValue({
-        filter: '{}',
-        project: '{}',
-        sort: '{}',
-        count: '',
-        page: '',
+      filter: '{}',
+      project: '{}',
+      sort: '{}',
+      count: '',
+      page: '',
     });
   }
 
@@ -1657,10 +1657,10 @@ export class ListComponent implements OnInit, OnDestroy {
     self.filterPayload.value = JSON.stringify(data);
     let request: Observable<any>;
     if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
-      request = self.commonService.put('user', `/filter/${self.filterId}`, self.filterPayload);
+      request = self.commonService.put('user', `/data/filter/${self.filterId}`, self.filterPayload);
     } else if ((self.filterId && (self.filterCreatedBy !== currentUser._id)) || (self.filterId === null || self.filterId === '' || self.filterId === undefined)) {
       self.filterId = null;
-      request = self.commonService.post('user', '/filter/', self.filterPayload);
+      request = self.commonService.post('user', '/data/filter/', self.filterPayload);
     }
     request.subscribe(res => {
       res.value = JSON.parse(res.value);

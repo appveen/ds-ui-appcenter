@@ -611,7 +611,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       this.subscriptions['getSchema_' + serviceId] = null;
     }
     this.loading.serviceDetails = true;
-    this.subscriptions['getSchema_' + serviceId] = this.commonService.get('sm', '/service/' + serviceId, { filter: { app: this.commonService.app._id } }).subscribe(
+    this.subscriptions['getSchema_' + serviceId] = this.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, { filter: { app: this.commonService.app._id } }).subscribe(
       res => {
         this.schema = res;
         this.appService.serviceAPI = '/' + this.commonService.app._id + res.api;
@@ -979,7 +979,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.getAllFilters();
   }
   getAllFilters() {
-    this.commonService.get('user', '/filter/', this.filterConfig).subscribe(_filter => {
+    this.commonService.get('user', '/data/filter/', this.filterConfig).subscribe(_filter => {
       this.allFilters = _filter;
       this.allFilters.forEach(e => {
         e['showOptions'] = false;
@@ -1014,9 +1014,9 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       value: JSON.stringify(data)
     };
     if (this.lastFilterAppliedPrefId) {
-      response = this.commonService.put('user', '/preferences/' + this.lastFilterAppliedPrefId, payload);
+      response = this.commonService.put('user', '/data/preferences/' + this.lastFilterAppliedPrefId, payload);
     } else {
-      response = this.commonService.post('user', '/preferences', payload);
+      response = this.commonService.post('user', '/data/preferences', payload);
     }
     response.subscribe(
       prefRes => {
@@ -1030,7 +1030,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
   deleteLastFilterApplied() {
     if (this.lastFilterAppliedPrefId) {
-      this.commonService.delete('user', '/preferences/' + this.lastFilterAppliedPrefId).subscribe(
+      this.commonService.delete('user', '/data/preferences/' + this.lastFilterAppliedPrefId).subscribe(
         prefRes => {
           this.lastFilterAppliedPrefId = null;
         },
@@ -1049,7 +1049,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         key: this.schema._id
       }
     };
-    this.commonService.get('user', '/preferences', options).subscribe(
+    this.commonService.get('user', '/data/preferences', options).subscribe(
       prefRes => {
         try {
           if (prefRes && prefRes.length > 0) {
@@ -1095,7 +1095,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.confirmDeleteModalRef.result.then(
       close => {
         if (close) {
-          this.subscriptions['deleteFilter'] = this.commonService.delete('user', `/filter/${filter._id}`).subscribe(
+          this.subscriptions['deleteFilter'] = this.commonService.delete('user', `/data/filter/${filter._id}`).subscribe(
             res => {
               this.ts.success('Filter Deleted.');
               // this.savedViews = [];
@@ -1124,13 +1124,13 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       const currentUser = this.sessionService.getUser(true);
       if (!filter.private && (currentUser.isSuperAdmin || currentUser._id === filter.createdBy)) {
         filter.private = type === 'private';
-        this.subscriptions['filterType'] = this.commonService.put('user', `/filter/${filter._id}`, filter).subscribe(() => {
+        this.subscriptions['filterType'] = this.commonService.put('user', `/data/filter/${filter._id}`, filter).subscribe(() => {
           this.ts.success('Filter type Updated');
           this.getAllFilters();
         });
       } else if (filter.private && currentUser._id === filter.createdBy) {
         filter.private = type === 'private';
-        this.subscriptions['filterType'] = this.commonService.put('user', `/filter/${filter._id}`, filter).subscribe(() => {
+        this.subscriptions['filterType'] = this.commonService.put('user', `/data/filter/${filter._id}`, filter).subscribe(() => {
           this.ts.success('Filter type Updated');
           this.getAllFilters();
         });

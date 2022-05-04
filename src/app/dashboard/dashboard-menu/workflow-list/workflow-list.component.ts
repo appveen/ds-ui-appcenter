@@ -76,7 +76,7 @@ export class WorkflowListComponent implements OnInit {
       this.subscriptions.getServices.unsubscribe();
     }
     this.subscriptions.getServices = this.commonService
-      .get('sm', '/service', options)
+      .get('sm', `/${this.commonService.app._id}/service`, options)
       .pipe(distinctUntilChanged())
       .subscribe(res => {
         this.showLazyLoader = false;

@@ -248,7 +248,7 @@ export class CommonService {
       sort: '_id'
     };
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions['getAllApps'] = self.get('user', '/app', options).subscribe(
+      self.subscriptions['getAllApps'] = self.get('user', '/admin/app', options).subscribe(
         res => {
           self.appList = res;
           self.app = self.appList[0];
@@ -262,7 +262,7 @@ export class CommonService {
   }
 
   private _fetchUserRolesApi_() {
-    const URL = environment.url.user + `/usr/${this.userDetails._id}/allRoles`;
+    const URL = environment.url.user + `/data/${this.userDetails._id}/allRoles`;
     const filterObj: any = {
       'roles.type': 'appcenter'
     };
@@ -360,7 +360,7 @@ export class CommonService {
       self.subscriptions['getAppDetails_' + app._id].unsubscribe();
     }
     return new Promise((resolve, reject) => {
-      self.subscriptions['getAppDetails_' + app._id] = self.get('user', '/app/' + app._id).subscribe(
+      self.subscriptions['getAppDetails_' + app._id] = self.get('user', `/data/app/${app._id}`).subscribe(
         (res: any) => {
           delete res._id;
           Object.assign(app, res);
@@ -409,7 +409,7 @@ export class CommonService {
     function fetch(app: string, serviceIds: Array<string>) {
       promises.push(
         new Promise<any>((resolve, reject) => {
-          self.subscriptions['getRolesDetails'] = self.get('sm', '/service?app=' + app, {
+          self.subscriptions['getRolesDetails'] = self.get('sm', `/${self.app._id}/service`, {
             count: -1,
             select: 'role',
             filter: {
@@ -420,8 +420,8 @@ export class CommonService {
               let resList = res.map(e => {
                 return e.role.roles.map(r => {
                   r.fields = e.role.fields;
-                  r.app = e.role.app;
-                  r.entity = e.role.entity;
+                  r.app = app;
+                  r.entity = e._id;
                   return r;
                 });
               });
@@ -541,7 +541,7 @@ export class CommonService {
       promises.push(
         new Promise((resolve, reject) => {
           self.subscriptions['getAppsDetails'] = self
-            .get('user', '/app/', {
+            .get('user', '/data/app/', {
               noApp: true,
               count: -1,
               select: 'description,logo.thumbnail',
@@ -588,7 +588,7 @@ export class CommonService {
         }
       };
       self.lastAppPrefId = null;
-      self.subscriptions.fetchLastActiveApp = self.get('user', '/preferences', options).subscribe(
+      self.subscriptions.fetchLastActiveApp = self.get('user', '/data/preferences', options).subscribe(
         prefRes => {
           if (prefRes && prefRes.length > 0) {
             self.lastAppPrefId = prefRes[0]._id;
@@ -632,9 +632,9 @@ export class CommonService {
       };
       let response: Observable<any>;
       if (self.lastAppPrefId) {
-        response = self.put('user', '/preferences/' + self.lastAppPrefId, payload);
+        response = self.put('user', '/data/preferences/' + self.lastAppPrefId, payload);
       } else {
-        response = self.post('user', '/preferences', payload);
+        response = self.post('user', '/data/preferences', payload);
       }
       self.subscriptions.saveLastActiveApp = response.subscribe(
         res => {
@@ -655,7 +655,7 @@ export class CommonService {
     }
     return new Promise<any>((resolve, reject) => {
       if (self.lastAppPrefId) {
-        self.subscriptions.deleteLastActiveApp = self.delete('user', '/preferences/' + self.lastAppPrefId).subscribe(
+        self.subscriptions.deleteLastActiveApp = self.delete('user', '/data/preferences/' + self.lastAppPrefId).subscribe(
           res => {
             self.lastAppPrefId = null;
             resolve(null);
@@ -696,7 +696,7 @@ export class CommonService {
       self.subscriptions.login.unsubscribe();
     }
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions.login = self.http.post(environment.url.user + '/login', credentials).subscribe(
+      self.subscriptions.login = self.http.post(environment.url.user + '/auth/login', credentials).subscribe(
         (response: any) => {
           self.resetUserDetails(response);
           resolve(response);
@@ -714,7 +714,7 @@ export class CommonService {
       self.subscriptions.login.unsubscribe();
     }
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions.login = self.http.post(environment.url.user + '/ldap/login', credentials)
+      self.subscriptions.login = self.http.post(environment.url.user + '/auth/ldap/login', credentials)
         .subscribe((response: any) => {
           self.resetUserDetails(response);
           resolve(response);
@@ -734,7 +734,7 @@ export class CommonService {
     const httpHeaders = new HttpHeaders()
       .set('Content-Type', 'application/json')
       .set('Authorization', 'JWT ' + token);
-    return this.http.get(environment.url.user + '/extend', { headers: httpHeaders });
+    return this.http.get(environment.url.user + '/auth/extend', { headers: httpHeaders });
   }
 
   extend(): Promise<any> {
@@ -769,7 +769,7 @@ export class CommonService {
       self.subscriptions.clearActiveSessionsAndLogin.unsubscribe();
     }
     return new Promise<any>((resolve, reject) => {
-      self.subscriptions.clearActiveSessionsAndLogin = self.delete('user', '/closeAllSessions', credentials).subscribe(
+      self.subscriptions.clearActiveSessionsAndLogin = self.delete('user', `/${this.app._id}/user/utils/closeAllSessions/${credentials.username}`, credentials).subscribe(
         res => {
           resolve(res);
         },
@@ -861,7 +861,7 @@ export class CommonService {
     if (options.sort && typeof options.sort !== 'object') {
       urlParams = urlParams.set('sort', options.sort);
     }
-    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0 ) {
+    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0) {
       urlParams = urlParams.set('sort', JSON.stringify(options.sort));
     }
     if (options.page) {
@@ -873,7 +873,7 @@ export class CommonService {
     if (options.select) {
       urlParams = urlParams.set('select', options.select);
     }
-    if (options.filter && Object.keys(options.filter).length !== 0 ) {
+    if (options.filter && Object.keys(options.filter).length !== 0) {
       urlParams = urlParams.set('filter', JSON.stringify(options.filter));
     }
     if (options.project && Object.keys(options.project).length !== 0) {
@@ -914,7 +914,7 @@ export class CommonService {
   }
 
   private _isAuthenticatedApi_() {
-    const URL = environment.url.user + '/check';
+    const URL = environment.url.user + '/auth/check';
     return this.http.get(URL, { headers: this._getHeaders(false) });
   }
 
@@ -945,7 +945,7 @@ export class CommonService {
 
   checkAuthType() {
     const self = this;
-    const URL = environment.url.user + '/authType/' + self.userDetails._id;
+    const URL = environment.url.user + '/auth/authType/' + self.userDetails._id;
     if (self.subscriptions.checkAuthType) {
       self.subscriptions.checkAuthType.unsubscribe();
     }
@@ -1076,7 +1076,7 @@ export class CommonService {
       self.subscriptions.logout.unsubscribe();
     }
     if (self.sessionService.getUser()) {
-      self.subscriptions.logout = self.delete('user', '/logout').subscribe(
+      self.subscriptions.logout = self.delete('user', '/auth/logout').subscribe(
         res => {
           self.clearData();
           self.appService.setFocus.emit('username');
@@ -1128,7 +1128,7 @@ export class CommonService {
       .set('Authorization', 'JWT ' + token)
       .set('rToken', 'JWT ' + self.sessionService.getRefreshToken())
       .set('txnId', sh.unique(uuid() + '-' + self.randomStr(5)));
-    const URL = environment.url.user + '/refresh';
+    const URL = environment.url.user + '/auth/refresh';
     return self.http.get(URL, { headers: httpHeaders });
   }
 
@@ -1144,7 +1144,7 @@ export class CommonService {
       .set('Content-Type', 'application/json')
       .set('Authorization', 'JWT ' + token)
       .set('txnId', sh.unique(uuid() + '-' + self.randomStr(5)));
-    const URL = environment.url.user + '/usr/hb';
+    const URL = environment.url.user + '/auth/hb';
     const payload = {
       uuid: sessionStorage.getItem('bc-uuid')
     };
@@ -1241,7 +1241,7 @@ export class CommonService {
       self.subscriptions['getServiceDetails_' + serviceId].unsubscribe();
     }
     return new Promise((resolve, reject) => {
-      self.subscriptions['getServiceDetails_' + serviceId] = self.get('sm', '/service/' + serviceId, { select: 'api app', filter: { app: this.app._id } }).subscribe(
+      self.subscriptions['getServiceDetails_' + serviceId] = self.get('sm', `/${this.app._id}/service/` + serviceId, { select: 'api app', filter: { app: this.app._id } }).subscribe(
         service => {
           if (self.subscriptions['getDocumentVersion_' + serviceId + '_' + documentId]) {
             self.subscriptions['getDocumentVersion_' + serviceId + '_' + documentId].unsubscribe();
@@ -1477,7 +1477,7 @@ export class CommonService {
       const windowWidth = 620;
       const windowLeft = (window.outerWidth - windowWidth) / 2 + window.screenLeft;
       const windowTop = (window.outerHeight - windowHeight) / 2 + window.screenTop;
-      const url = '/api/a/rbac/azure/login';
+      const url = '/api/a/rbac/auth/azure/login';
       const windowOptions = [];
       windowOptions.push(`height=${windowHeight}`);
       windowOptions.push(`width=${windowWidth}`);
@@ -1543,9 +1543,9 @@ export class CommonService {
   getUser(userId: string): Promise<UserDetails> {
     const self = this;
     if (!self.userMap[userId]) {
-      let path = `/usr/app/${this.app._id}/${userId}`;
+      let path = `/${this.app._id}/user/${userId}`;
       if (this.userDetails.isSuperAdmin) {
-        path = `/usr/${userId}`
+        path = `/admin/user/${userId}`
       }
       self.userMap[userId] = self
         .get('user', path, {
@@ -1561,9 +1561,9 @@ export class CommonService {
     if (!self.userMapFilter[userId]) {
       const filter = {};
       filter['$or'] = [{ _id: userId }, { '_metadata.oldUserId': userId }];
-      let path = `/usr/app/${this.app._id}`;
+      let path = `/${this.app._id}/user`;
       if (this.userDetails.isSuperAdmin) {
-        path = `/usr`
+        path = `/admin/user`
       }
       self.userMapFilter[userId] = self
         .get('user', path, {
@@ -1580,7 +1580,7 @@ export class CommonService {
     const self = this;
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
-        .get('sm', '/service/' + serviceId, {
+        .get('sm', `/${this.app._id}/service/` + serviceId, {
           select: '_id,name,app,api,definition,attributeList,workflowConfig,role',
           filter: { app: this.app._id }
         })
