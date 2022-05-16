@@ -38,6 +38,6 @@ cd $WORKSPACE
 
 # ng build --prod
 
-docker build -t data.stack:ui-appcenter.$TAG .
+docker build -t data.stack.ui-appcenter:$TAG .
 
 echo $TAG > $WORKSPACE/../LATEST_APPCENTER
