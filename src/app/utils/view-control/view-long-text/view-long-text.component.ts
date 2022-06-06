@@ -14,12 +14,16 @@ export class ViewLongTextComponent implements OnInit {
   @Input() oldValue: any;
   @Input() newValue: any;
   @Input() workflowDoc: any;
-
+  isSecureText: boolean;
+  showPassword: boolean;
 
   constructor(private appService: AppService,
     private sanitize: DomSanitizer) { }
 
   ngOnInit() {
+    const self = this;
+    self.isSecureText = self.definition.properties.password ? self.definition.properties.password : false;
+    self.showPassword = self.isSecureText ? false: true;
   }
 
   isenrichTextWithLinkRequired(value) {
@@ -51,6 +55,9 @@ export class ViewLongTextComponent implements OnInit {
 
   getContent(val: string) {
     const self = this;
+    if(!self.showPassword) {
+      val = self.hideText(val);
+    }
     val = escape(val);
     if (self.definition.properties.hasTokens) {
       for (const tok of self.definition.properties.hasTokens) {
@@ -89,4 +96,9 @@ export class ViewLongTextComponent implements OnInit {
     const self = this;
     return self.appService.getValue(self.definition.path, self.newValue);
   }
+
+  hideText(val){
+    return '*'.repeat(val.length);
+  }
+
 }

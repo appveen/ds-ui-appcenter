@@ -1,12 +1,17 @@
 <div class="field-wrapper d-flex align-items-start px-3" [class.mt-3]="!first">
-  <div class="label-wrapper d-flex align-items-start" [ngStyle]="getLabelWidth()">
-    <label [attr.for]="definition.path"
-      class="label-width d-flex align-items-start mb-0 text-secondary font-weight-bold">
-      <span
-        class="text">{{definition.properties.label ? definition.properties.label : definition.properties.name}}</span>
-      <small class="fa fa-info-circle ml-2 text-info mt-1 hover" *ngIf="definition.properties._description"
-        placement="top" [ngbTooltip]="definition.properties._description"></small>
-    </label>
+  <div class="label-wrapper " [ngStyle]="getLabelWidth()">
+    <div class="d-flex align-items-start">
+      <label [attr.for]="definition.path"
+        class="label-width d-flex align-items-start mb-0 text-secondary font-weight-bold">
+        <span class="text">{{definition.properties.label ? definition.properties.label :
+          definition.properties.name}}</span>
+        <small class="fa fa-info-circle ml-2 text-info mt-1 hover" *ngIf="definition.properties._description"
+          placement="top" [ngbTooltip]="definition.properties._description"></small>
+      </label>
+    </div>
+    <div *ngIf="definition.properties.password">
+      <small class="text-secondary">[Secure]</small>
+    </div>
   </div>
   <ng-container *ngIf="definition.type!='Object' && definition.type!='Array' ">
     <odp-view-separator [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue"
