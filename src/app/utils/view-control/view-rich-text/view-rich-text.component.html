@@ -1,4 +1,4 @@
-<div class="rich-text-wrapper p-2 border">
+<div class="rich-text-wrapper p-2 border" [ngClass]="{'position-relative pr-4':isSecureText}">
 
   <div *ngIf="definition.value && hasContent(definition.value)" [innerHTML]="getContent(definition.value)"></div>
   <ng-container *ngIf="!definition.value || !hasContent(definition.value)">
@@ -19,4 +19,7 @@
       <span class="text-muted font-weight-bold">N.A.</span>
     </ng-container>
   </div>
+  <span class="fas eye-icon eyeIcon position-absolute text-right hover ml-2 text-primary" *ngIf="isSecureText && definition.value && hasContent(definition.value)"
+    [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash mt-1': showPassword }"
+    (click)="showPassword = !showPassword"></span>
 </div>

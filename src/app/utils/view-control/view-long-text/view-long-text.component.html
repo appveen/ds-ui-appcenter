@@ -31,7 +31,7 @@
       {{showPassword?newVal:hideText(newVal)}}
     </div>
   </div>
-  <span class="fas eye-icon eyeIcon position-absolute text-right hover ml-2 text-primary" *ngIf="isSecureText"
+  <span class="fas eye-icon eyeIcon position-absolute text-right hover ml-2 text-primary" *ngIf="isSecureText && definition.value"
     [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash mt-1': showPassword }"
     (click)="showPassword = !showPassword"></span>
 </div>
