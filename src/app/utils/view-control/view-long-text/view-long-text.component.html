@@ -1,37 +1,41 @@
-<div class="font-weight-bold long-text-wrapper show-paragraph p-2 border"
-  [ngClass]="{'position-relative pr-4':isSecureText}">
-  <ng-container *ngIf="definition.value">
-    <div *ngIf="isenrichTextWithLinkRequired(definition.value)"
-      [innerHTML]="getContent(enrichTextWithLink(definition.value))"></div>
-    <div *ngIf="!isenrichTextWithLinkRequired(definition.value)">
-      {{showPassword?definition.value:hideText(definition.value)}}
+<div class="d-flex">
+  <div class="font-weight-bold long-text-wrapper show-paragraph p-2 border"
+    [ngClass]="{'position-relative pr-4':isSecureText}">
+    <ng-container *ngIf="definition.value">
+      <div *ngIf="isenrichTextWithLinkRequired(definition.value)"
+        [innerHTML]="getContent(enrichTextWithLink(definition.value))"></div>
+      <div *ngIf="!isenrichTextWithLinkRequired(definition.value)">
+        {{showPassword?definition.value:hideText(definition.value)}}
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!definition.value">
+      <span class="text-muted">N.A.</span>
+    </ng-container>
+    <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">From</span>
+      <div *ngIf="isenrichTextWithLinkRequired(oldVal)" [innerHTML]="getContent(enrichTextWithLink(oldVal))"></div>
+      <div *ngIf="!isenrichTextWithLinkRequired(oldVal)">
+        {{showPassword?oldVal:hideText(oldVal)}}
+      </div>
     </div>
-  </ng-container>
-  <ng-container *ngIf="!definition.value">
-    <span class="text-muted">N.A.</span>
-  </ng-container>
-  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">From</span>
-    <div *ngIf="isenrichTextWithLinkRequired(oldVal)" [innerHTML]="getContent(enrichTextWithLink(oldVal))"></div>
-    <div *ngIf="!isenrichTextWithLinkRequired(oldVal)">
-      {{showPassword?oldVal:hideText(oldVal)}}
+    <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">To</span>
+      <div *ngIf="isenrichTextWithLinkRequired(newVal)" [innerHTML]="getContent(enrichTextWithLink(newVal))"></div>
+      <div *ngIf="!isenrichTextWithLinkRequired(newVal)">
+        {{showPassword?newVal:hideText(newVal)}}
+      </div>
+    </div>
+    <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">Created</span>
+      <div *ngIf="isenrichTextWithLinkRequired(newVal)" [innerHTML]="getContent(enrichTextWithLink(newVal))"></div>
+      <div *ngIf="!isenrichTextWithLinkRequired(newVal)">
+        {{showPassword?newVal:hideText(newVal)}}
+      </div>
     </div>
   </div>
-  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">To</span>
-    <div *ngIf="isenrichTextWithLinkRequired(newVal)" [innerHTML]="getContent(enrichTextWithLink(newVal))"></div>
-    <div *ngIf="!isenrichTextWithLinkRequired(newVal)">
-      {{showPassword?newVal:hideText(newVal)}}
-    </div>
+  <div>
+    <span class="fas eye-icon text-right hover ml-2 text-primary" *ngIf="isSecureText && definition.value"
+      [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash mt-1': showPassword }"
+      (click)="showPassword = !showPassword"></span>
   </div>
-  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">Created</span>
-    <div *ngIf="isenrichTextWithLinkRequired(newVal)" [innerHTML]="getContent(enrichTextWithLink(newVal))"></div>
-    <div *ngIf="!isenrichTextWithLinkRequired(newVal)">
-      {{showPassword?newVal:hideText(newVal)}}
-    </div>
-  </div>
-  <span class="fas eye-icon eyeIcon position-absolute text-right hover ml-2 text-primary" *ngIf="isSecureText && definition.value"
-    [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash mt-1': showPassword }"
-    (click)="showPassword = !showPassword"></span>
 </div>
