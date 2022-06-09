@@ -1,25 +1,31 @@
-<div class="rich-text-wrapper p-2 border" [ngClass]="{'position-relative pr-4':isSecureText}">
-
-  <div *ngIf="definition.value && hasContent(definition.value)" [innerHTML]="getContent(definition.value)"></div>
-  <ng-container *ngIf="!definition.value || !hasContent(definition.value)">
-    <span class="text-muted font-weight-bold">N.A.</span>
-  </ng-container>
-  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">From</span>
-    <span [innerHTML]="getContent(oldVal)"></span>
-  </div>
-  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">Created</span>
-    <span [innerHTML]="getContent(newVal)"></span>
-  </div>
-  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">To</span>
-    <span [innerHTML]="getContent(newVal)" *ngIf="newVal"></span>
-    <ng-container *ngIf="!newVal">
+<div class="d-flex">
+  <div class="rich-text-wrapper p-2 border"
+    [ngClass]="{'position-relative pr-4':isSecureText , 'show-paragraph': isSecureText && !showPassword && hasContent(definition.value) }">
+    <div *ngIf="definition.value && hasContent(definition.value)" [innerHTML]="getContent(definition.value)"></div>
+    <ng-container *ngIf="!definition.value || !hasContent(definition.value)">
       <span class="text-muted font-weight-bold">N.A.</span>
     </ng-container>
+    <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">From</span>
+      <span [innerHTML]="getContent(oldVal)"></span>
+    </div>
+    <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">Created</span>
+      <span [innerHTML]="getContent(newVal)"></span>
+    </div>
+    <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
+      <span class="text-secondary mr-2">To</span>
+      <span [innerHTML]="getContent(newVal)" *ngIf="newVal"></span>
+      <ng-container *ngIf="!newVal">
+        <span class="text-muted font-weight-bold">N.A.</span>
+      </ng-container>
+    </div>
+
   </div>
-  <span class="fas eye-icon eyeIcon position-absolute text-right hover ml-2 text-primary" *ngIf="isSecureText && definition.value && hasContent(definition.value)"
-    [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash mt-1': showPassword }"
-    (click)="showPassword = !showPassword"></span>
+  <div>
+    <span class="fas eye-icon text-right hover ml-2 text-primary"
+      *ngIf="isSecureText && definition.value && hasContent(definition.value)"
+      [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash mt-1': showPassword }"
+      (click)="showPassword = !showPassword"></span>
+  </div>
 </div>
