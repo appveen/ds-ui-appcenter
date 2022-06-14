@@ -14,17 +14,25 @@ export class ViewRichTextComponent implements OnInit {
   @Input() oldValue: any;
   @Input() newValue: any;
   @Input() workflowDoc: any;
+  isSecureText: boolean;
+  showPassword: boolean;
 
 
   constructor(private appService: AppService,
     private domSanitizer: DomSanitizer) { }
 
   ngOnInit() {
+    const self = this;
+    self.isSecureText = self.definition.properties.password ? self.definition.properties.password : false;
+    self.showPassword = self.isSecureText ? false: true;
   }
 
   getContent(val: string) {
     const self = this;
     let temp = val + '';
+    if(!self.showPassword) {
+      val = self.hideText(val);
+    }
     if (self.definition.properties.hasTokens) {
       for (const tok of self.definition.properties.hasTokens) {
         const regex = new RegExp('(.*)(' + tok.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + ')(.*)', 'g');
@@ -33,6 +41,13 @@ export class ViewRichTextComponent implements OnInit {
     }
     return self.domSanitizer.sanitize(SecurityContext.HTML, val);
     // return self.domSanitizer.bypassSecurityTrustHtml(val);
+  }
+
+  hideText(val){
+    const doc = new DOMParser().parseFromString(val, 'text/html');
+    if (doc.body.textContent && doc.body.textContent.trim()) {
+      return '*'.repeat(doc.body.textContent.length);
+    }
   }
 
   hasContent(val: string) {
