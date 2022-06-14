@@ -60,6 +60,7 @@ export class LongTextComponent implements OnInit, AfterViewInit {
     textArr.splice(self.position, 0, _token);
     self.position += _token.length;
     self.textarea.nativeElement.value = textArr.join('');
+    self.control.patchValue(textArr.join(''));
   }
 
   onKeyup(event: KeyboardEvent) {
