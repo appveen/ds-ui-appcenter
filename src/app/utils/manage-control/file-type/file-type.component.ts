@@ -17,86 +17,106 @@ export class FileTypeComponent implements OnInit, OnDestroy {
   @Input() first: boolean;
   @Input() arrayDefinition: any;
   showLazyLoader: boolean;
+  selectedFile: any;
   selectedFileName: string;
+  selectedFileSize: number;
   progress: number;
   subscriptions: any;
+  showUploadWindow: boolean;
+  encryptionKey: string;
   constructor(private commonService: CommonService,
     private appService: AppService,
   ) {
-    const self = this;
-    self.subscriptions = {};
-    self.showLazyLoader = false;
+    this.subscriptions = {};
+    this.showLazyLoader = false;
   }
 
   ngOnInit() {
-    const self = this;
-    if (self.control.value) {
-      self.selectedFileName = self.control.value.metadata.filename;
+    if (this.control.value) {
+      this.selectedFileName = this.control.value.metadata.filename;
     }
   }
 
   ngOnDestroy() {
-    const self = this;
-    Object.keys(self.subscriptions).forEach(key => {
-      if (self.subscriptions[key]) {
-        self.subscriptions[key].unsubscribe();
+    Object.keys(this.subscriptions).forEach(key => {
+      if (this.subscriptions[key]) {
+        this.subscriptions[key].unsubscribe();
       }
     });
   }
 
   uploadFile(event) {
     event.preventDefault();
-    const self = this;
-    self.selectedFileName = event.target.files[0].name;
-    self.progress = 0;
     const data: FormData = new FormData();
-    data.append('file', event.target.files[0]);
-    self.subscriptions['uploadFile'] = self.commonService.upload('api', self.appService.serviceAPI, data, false).subscribe(httpEvent => {
-      self.showLazyLoader = true;
+    data.append('file', this.selectedFile);
+    this.subscriptions['uploadFile'] = this.commonService.upload('api', this.appService.serviceAPI, data, false, this.encryptionKey).subscribe(httpEvent => {
+      this.showLazyLoader = true;
       if (httpEvent.type === HttpEventType.UploadProgress) {
-        self.progress = Math.floor(httpEvent.loaded / httpEvent.total * 100);
+        this.progress = Math.floor(httpEvent.loaded / httpEvent.total * 100);
       }
       if (httpEvent.type === HttpEventType.Response) {
-        self.showLazyLoader = false;
-        self.control.patchValue(httpEvent.body);
-        self.control.markAsTouched();
-        self.control.markAsDirty();
+        this.showLazyLoader = false;
+        this.control.patchValue(httpEvent.body);
+        this.control.markAsTouched();
+        this.control.markAsDirty();
+        this.closeWindow();
       }
     }, err => {
-      self.selectedFileName = null;
-      self.control.patchValue(null);
-      self.commonService.errorToast(err, 'Unable to upload file');
-      self.showLazyLoader = false;
+      this.selectedFileName = null;
+      this.control.patchValue(null);
+      this.commonService.errorToast(err, 'Unable to upload file');
+      this.showLazyLoader = false;
     });
   }
 
+  selectFile(event) {
+    event.preventDefault();
+    const file = (event.target.files[0] as File)
+    this.progress = 0;
+    this.selectedFileName = file.name;
+    this.selectedFile = file;
+    this.selectedFileSize = file.size;
+  }
+
   removeFile() {
-    const self = this;
-    self.selectedFileName = null;
-    self.control.markAsDirty();
-    self.control.patchValue(null);
+    this.selectedFileName = null;
+    this.control.markAsDirty();
+    this.control.patchValue(null);
   }
 
   get requiredError() {
-    const self = this;
-    return self.control.hasError('required') && self.control.touched;
+    return this.control.hasError('required') && this.control.touched;
   }
 
   get fileId(): string {
-    const self = this;
-    if (self.control.value && self.control.value.filename) {
-      return self.control.value.filename;
+    if (this.control.value && this.control.value.filename) {
+      return this.control.value.filename;
     } else {
       return null;
     }
   }
+
+  get isInvalid() {
+    if (!this.selectedFile || (this.definition.properties.password && !this.encryptionKey)) {
+      return true;
+    }
+    return false;
+  }
+
   downloadFile(ev: Event) {
-    const self = this;
     if (ev) {
       ev.preventDefault();
     }
-    if (self.control.value) {
-      window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId);
+    if (this.control.value) {
+      window.open(environment.url.api + this.appService.serviceAPI + '/utils/file/download/' + this.fileId);
     }
+  }
+
+  closeWindow() {
+    this.showUploadWindow = false;
+    this.selectedFile = null;
+    this.selectedFileName = null;
+    this.selectedFileSize = null;
+    this.encryptionKey = null;
   }
 }

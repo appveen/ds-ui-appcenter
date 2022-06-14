@@ -26,7 +26,7 @@ export class CommonService {
   private extendApi: () => Observable<any>;
   private fetchUserRolesApi: () => Observable<any>;
   private isAuthenticatedApi: () => Observable<any>;
-  upload: (type, url, data, fileMapper?) => Observable<any>;
+  upload: (type, url, data, fileMapper?, encryptionKey?) => Observable<any>;
   request: (type, url, options?) => Observable<any>;
   refreshToken: () => Observable<any>;
   sendHeartBeat: () => Observable<any>;
@@ -964,7 +964,7 @@ export class CommonService {
     });
   }
 
-  private _upload_(type, url, data, fileMapper?) {
+  private _upload_(type, url, data, fileMapper?, encryptionKey?) {
     const self = this;
     const token = self.sessionService.getToken();
     if (!token) {
@@ -978,6 +978,9 @@ export class CommonService {
       .set('Access-Control-Allow-Origin', '*')
       .set('txnId', sh.unique(uuid() + '-' + self.randomStr(5)));
     url = environment.url[type] + url + '/utils' + (fileMapper ? '/fileMapper/upload' : '/file/upload');
+    if (encryptionKey) {
+      url += '?encryptionKey=' + encryptionKey;
+    }
     return self.http.request(
       new HttpRequest('POST', url, data, {
         reportProgress: true,
@@ -1647,6 +1650,7 @@ export interface GetOptions {
   expandKeys?: string;
   serviceId?: string;
   skipAuth?: boolean;
+  decrypt?: boolean;
 }
 
 export interface Credentials {

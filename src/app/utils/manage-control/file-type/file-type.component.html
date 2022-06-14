@@ -22,20 +22,18 @@
     [ngClass]="{'border-danger w-100':requiredError}">
     <button type="button" class="btn btn-link d-flex align-items-center p-0"
       [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled"
-      [ngClass]="{'text-danger':requiredError}" (click)="file.click()">
-      <ng-container *ngIf="!selectedFileName">
+      [ngClass]="{'text-danger':requiredError}" (click)="showUploadWindow=!showUploadWindow">
+      <ng-container *ngIf="!control.value">
         <span class="fa fa-upload mr-2"></span>
         <span class="text">Upload file</span>
       </ng-container>
-      <ng-container *ngIf="selectedFileName">
+      <ng-container *ngIf="control.value">
         <span class="fa fa-file mr-2"></span>
-        <span class="text file-control-wrapper px-4 text-truncate high-zIndex" [ngbTooltip]="selectedFileName"
-          placement="top">{{selectedFileName}}</span>
+        <span class="text file-control-wrapper px-2 text-truncate high-zIndex" [ngbTooltip]="control.value.metadata.filename"
+          placement="top">{{control.value.metadata.filename}}</span>
+        <span class="text file-control-wrapper text-muted">({{control.value.length | filesize}})</span>
       </ng-container>
     </button>
-    <input [attr.id]="definition.path" class="invisible position-absolute" #file type="file"
-      (change)="uploadFile($event)"
-      [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled">
   </label>
   <div
     *ngIf="control.value && !arrayDefinition?.properties?.readonly && !definition?.properties?.readonly && !control.disabled"
@@ -59,5 +57,49 @@
     <ng-container *ngIf="definition.properties.errorMessage">
       <div *ngIf="requiredError">{{definition.properties.errorMessage}}</div>
     </ng-container>
+  </div>
+</div>
+
+<div *ngIf="showUploadWindow" class="overlay" (click)="closeWindow()"></div>
+<div [ngClass]="{'show':showUploadWindow}" class="upload-window position-fixed border-left bg-white p-3">
+  <div class="d-flex align-items-center justify-content-between">
+    <h3>Upload File</h3>
+    <button type="button" class="btn btn-link p-0" (click)="closeWindow()">
+      <span class="fa fa-times fa-lg"></span>
+    </button>
+  </div>
+  <hr>
+  <div class="mt-3">
+    <p>Please select a File</p>
+    <label [attr.for]="definition.path" class="btn btn-sm btn-default d-flex align-items-center m-0 p-0"
+      [ngClass]="{'border-danger w-100':requiredError}">
+      <button type="button" class="btn btn-link d-flex align-items-center p-0"
+        [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled"
+        [ngClass]="{'text-danger':requiredError}" (click)="file.click()">
+        <ng-container *ngIf="!selectedFileName">
+          <span class="fa fa-upload mr-2"></span>
+          <span class="text">Select File</span>
+        </ng-container>
+        <ng-container *ngIf="selectedFileName">
+          <span class="fa fa-file mr-2"></span>
+          <span class="text file-control-wrapper px-2 text-truncate high-zIndex" [ngbTooltip]="selectedFileName"
+            placement="top">{{selectedFileName}}</span>
+          <span class="text file-control-wrapper text-muted">({{selectedFileSize | filesize}})</span>
+        </ng-container>
+      </button>
+      <input [attr.id]="definition.path" class="invisible position-absolute" #file type="file"
+        (change)="selectFile($event)"
+        [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled">
+    </label>
+    <ng-container *ngIf="definition?.properties?.password">
+      <p class="mt-4">File Password</p>
+      <input [attr.id]="definition.path+'.password'" class="form-control" type="password" required
+        [(ngModel)]="encryptionKey">
+    </ng-container>
+  </div>
+  <div class="mt-4 d-flex align-items-center justify-content-between">
+    <button type="button" class="btn-min-width btn btn-dark mr-3" (click)="closeWindow()">Cancel</button>
+    <button type="button" class="btn-min-width btn btn-success" (click)="uploadFile($event)"
+      [disabled]="isInvalid">Upload</button>
   </div>
 </div>

@@ -33,6 +33,7 @@ import { ColumnFilterComponent } from '../collection-of-objects/grid-column-filt
 import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view-collection-of-objects-grid/view-collection-of-objects-grid.module';
 import { ColOfObjsHeaderCellModule } from '../collection-of-objects/col-of-objs-header-cell/col-of-objs-header-cell.module';
 import { RouterModule } from '@angular/router';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -51,7 +52,8 @@ import { RouterModule } from '@angular/router';
     LoadingPlaceholderModule,
     ViewCollectionOfObjectsGridModule,
     AgGridModule,
-    RouterModule
+    RouterModule,
+    PipesModule
   ],
   declarations: [
     ManageControlComponent,

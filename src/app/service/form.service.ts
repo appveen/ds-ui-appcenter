@@ -428,6 +428,9 @@ export class FormService {
             if (def.properties.relatedTo) {
               def.type = 'Relation';
               delete def.definition;
+            } else if (def.properties.fileType) {
+              def.type = 'File';
+              delete def.definition;
             } else if (def.properties.password) {
               def.type = 'String';
               delete def.definition;

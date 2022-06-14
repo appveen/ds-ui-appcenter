@@ -26,6 +26,7 @@
   max-width: 400px;
   word-break: break-all;
 }
+
 .fa-rotate-45 {
   transform: rotate(45deg);
 }
@@ -36,6 +37,7 @@
 
 .modal-content {
   overflow: hidden;
+
   .circle {
     width: 75px;
     height: 75px;
@@ -46,6 +48,7 @@
     margin: 20px auto;
   }
 }
+
 .conflict-modal {
   .conflict-mod {
     height: 500px;
@@ -62,6 +65,7 @@
   .modal-dialog {
     min-width: calc(100vw - 56px);
     min-height: calc(100vh - 56px);
+
     .modal-content {
       min-height: calc(100vh - 56px);
     }
@@ -85,10 +89,12 @@
   z-index: 1;
   opacity: 0;
   transition: opacity 0.3s;
+
   &.show {
     visibility: visible;
     opacity: 1;
   }
+
   bottom: 100px;
 }
 
@@ -111,21 +117,27 @@
 .font-13 {
   font-size: 13px;
 }
+
 .font-xl {
   font-size: 18px;
 }
+
 .font-lg {
   font-size: 16px;
 }
+
 .font-normal {
   font-size: 14px;
 }
+
 .font-sm-12 {
   font-size: 12px;
 }
+
 .font-xs {
   font-size: 10px;
 }
+
 .font-bold {
   font-weight: bold;
 }
@@ -164,12 +176,12 @@
 }
 
 /* On mouse-over, add a grey background color */
-.chk-container:hover input ~ .checkmark {
+.chk-container:hover input~.checkmark {
   background-color: $gray-500;
 }
 
 /* When the checkbox is checked, add a blue background */
-.chk-container input:checked ~ .checkmark {
+.chk-container input:checked~.checkmark {
   background-color: $capiot-blue-dark;
 }
 
@@ -181,7 +193,7 @@
 }
 
 /* Show the checkmark when checked */
-.chk-container input:checked ~ .checkmark:after {
+.chk-container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -201,6 +213,7 @@
 .btn:not(.btn-link) {
   min-height: 32px;
   max-height: 32px;
+
   &.btn-sm {
     min-height: 26px;
     max-height: 26px;
@@ -208,12 +221,18 @@
 }
 
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }
 
@@ -221,23 +240,29 @@
 .ag-theme-balham {
   font-family: "Lato";
   font-size: 13px;
+
   .ag-root {
     border: 0;
   }
+
   .ag-header {
     background: #fff;
+
     .ag-header-row:last-child {
       .ag-header-cell {
         border-top: 0;
       }
     }
   }
+
   .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right) {
     border-style: dashed !important;
   }
+
   .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left) {
     border-style: dashed !important;
   }
+
   .ag-floating-filter-button {
     display: none;
   }
@@ -252,6 +277,7 @@
   flex-direction: column;
   margin: 0;
   font-family: "Lato";
+
   .data-grid-cell {
     min-width: 200px;
     max-width: 200px;
@@ -263,10 +289,12 @@
     white-space: nowrap;
     font-size: 13px;
     position: relative;
+
     &.hide {
       display: none !important;
     }
   }
+
   .data-grid-header {
     display: flex;
     flex-direction: column;
@@ -274,59 +302,72 @@
     overflow: hidden;
     box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.04);
     border-bottom: 1px solid #ddd;
+
     .grid-filters {
       .data-grid-cell {
         background: #efefef;
         padding-top: 0px;
       }
     }
+
     .head-cell {
       background: #fff;
     }
   }
+
   .data-grid-header,
   .data-grid-body {
     .data-grid-row {
       display: flex;
       align-items: center;
+
       .data-grid-cell.head-cell {
         color: #bdbdbd;
         border-bottom: 0px;
+
         .utility-icons {
           transition: 0.25s;
           min-width: 58px;
           min-height: 32px;
           position: absolute;
           right: -36px;
+
           .move-col,
           .resize-col {
             opacity: 0;
           }
         }
+
         &:hover {
           .utility-icons {
             right: 0;
+
             .move-col,
             .resize-col {
               opacity: 1;
             }
+
             .resize-col {
               cursor: col-resize;
             }
+
             .move-col {
               cursor: move;
             }
           }
         }
       }
+
       .data-grid-cell:not(.head-cell):not(.no-padding) {
         padding-top: 4px;
       }
+
       .data-grid-cell:not(.head-cell) {
         &.checkbox-cell {
           border-right: 1px dashed $border;
         }
       }
+
       &.full-row {
         .data-grid-cell {
           min-width: unset;
@@ -335,16 +376,20 @@
       }
     }
   }
+
   .data-grid-body {
     overflow: auto;
+
     .data-grid-row {
       &:first-child {
         .data-grid-cell {
           border-top: 0px;
         }
       }
+
       &:not(.selected):hover {
         background: #f2f2f2;
+
         .data-grid-cell {
           background: #f2f2f2;
         }
@@ -352,6 +397,7 @@
     }
   }
 }
+
 /*---- ODP DATA GRID END ----*/
 
 .pac-container {
@@ -372,4 +418,14 @@
 .carousel-control-next-icon,
 .carousel-control-prev-icon {
   filter: invert(0.5);
+}
+
+.overlay {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.6);
 }
