@@ -888,6 +888,9 @@ export class CommonService {
     if (options.serviceId) {
       urlParams = urlParams.set('serviceId', options.serviceId);
     }
+    if (options.decrypt) {
+      urlParams = urlParams.set('decrypt', options.decrypt.toString());
+    }
     return self.http.get(URL, { params: urlParams, headers: self._getHeaders(options.skipAuth, options.srvcID) });
   }
 

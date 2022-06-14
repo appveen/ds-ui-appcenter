@@ -74,7 +74,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.apiConfig = {
       count: 30,
       page: 1,
-      expand: true
+      expand: true,
+      decrypt: true
     };
     self.subscription = {};
     self.noRowsTemplate = '<span>No records to display</span>';
@@ -180,7 +181,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           self.currentRecordsCountPromise.then(count => {
             if (params.endRow - 30 < self.currentRecordsCount) {
               // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
-                self.apiConfig.page = Math.ceil(params.endRow / 30);
+              self.apiConfig.page = Math.ceil(params.endRow / 30);
               //}
               if (self.subscription['getRecords_' + self.apiConfig.page]) {
                 self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
@@ -341,7 +342,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       self.getRecordsCount();
     }
     // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
-      self.apiConfig.page = 1;
+    self.apiConfig.page = 1;
     //}
   }
 
