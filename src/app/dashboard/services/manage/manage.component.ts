@@ -268,7 +268,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           self.currentStep = 0;
         }
         if (self.isEdit || self.isClone) {
-          self.subscriptions['getDetails'] = self.commonService.get('api', self.api + '/' + self.ID, { expand: true }).subscribe(
+          self.subscriptions['getDetails'] = self.commonService.get('api', self.api + '/' + self.ID, { expand: true, decrypt: true }).subscribe(
             data => {
               self.showLazyLoader = false;
               if (self.appService.reSubmitData) {

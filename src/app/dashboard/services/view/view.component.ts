@@ -337,7 +337,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         // });
         self.schema.definition = newDefinition;
         self.isDocumentLocked();
-        self.subscriptions['getRecord'] = self.commonService.get('api', self.api + '/' + self.id + '?expand=true').subscribe(
+        self.subscriptions['getRecord'] = self.commonService.get('api', self.api + '/' + self.id, { expand: true, decrypt: true }).subscribe(
             data => {
                 self.showLazyLoader = false;
                 self.value = data;
