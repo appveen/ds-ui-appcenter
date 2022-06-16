@@ -23,7 +23,7 @@
           [ngbTooltip]="definition?.definition[0].properties._description"></small>
       </label>
     </div>
-    <div *ngIf="definition.properties.password">
+    <div *ngIf="definition.properties.password || (definition.type=='Array' && definition.definition[0].properties?.password) ">
       <small class="text-secondary">[Secure]</small>
     </div>
   </div>
