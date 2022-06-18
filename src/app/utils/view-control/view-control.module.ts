@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-
+import { FormsModule } from '@angular/forms';
 import { ViewControlComponent } from 'src/app/utils/view-control/view-control.component';
 import { ViewArrayComponent } from 'src/app/utils/view-control/view-array/view-array.component';
 import { VersionModule } from 'src/app/utils/version/version.module';
@@ -41,7 +41,8 @@ import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view
     PdfViewerModule,
     ColOfObjsGridCellModule,
     GridColumnFilterModule,
-    ViewCollectionOfObjectsGridModule
+    ViewCollectionOfObjectsGridModule,
+    FormsModule
   ],
   declarations: [
     ViewControlComponent,
