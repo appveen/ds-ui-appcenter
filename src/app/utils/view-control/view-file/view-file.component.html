@@ -22,7 +22,8 @@
   <a href="#" (click)="previewFile($event)" *ngIf="value">
     <span class="text">{{value?.metadata?.filename}}</span>
   </a>
-  <span class="fa fa-download ml-2 hover" *ngIf="value" (click)="downloadFile($event)"></span>
+  <span class="fa fa-download ml-2 hover" *ngIf="value && !definition?.properties?.password" (click)="downloadFile($event)"></span>
+  <span class="fa fa-download ml-2 hover" *ngIf="value && definition?.properties?.password" (click)="showDownloadWindow=true"></span>
 
   <ng-container *ngIf="!value">
     <span class="text-muted">N.A.</span>
@@ -40,7 +41,10 @@
         <!-- <button type="button" class="btn btn-dark">
           <span class="fa fa-print"></span>
         </button> -->
-        <button type="button" class="btn btn-dark" (click)="downloadFile($event)">
+        <button type="button" class="btn btn-dark" (click)="downloadFile($event)" *ngIf="!definition?.properties?.password">
+          <span class="fa fa-download"></span>
+        </button>
+        <button type="button" class="btn btn-dark" (click)="showDownloadWindow=true" *ngIf="definition?.properties?.password">
           <span class="fa fa-download"></span>
         </button>
         <button type="button" class="btn btn-dark" (click)="previewModalRef.close(false)">
@@ -59,7 +63,11 @@
     <div *ngIf="!(isIMG || isPDF)">
       <div class="no-preview d-flex flex-column align-items-center">
         <h5 class="text-secondary my-5">Preview Not Available</h5>
-        <div class="d-flex flex-column align-items-center text-dark hover" (click)="downloadFile($event)">
+        <div class="d-flex flex-column align-items-center text-dark hover" *ngIf="!definition?.properties?.password" (click)="downloadFile($event)">
+          <span class="fa fa-download"></span>
+          <p class="">Download</p>
+        </div>
+        <div class="d-flex flex-column align-items-center text-dark hover" *ngIf="definition?.properties?.password" (click)="showDownloadWindow=true;previewModalRef.close(false);">
           <span class="fa fa-download"></span>
           <p class="">Download</p>
         </div>
@@ -67,3 +75,27 @@
     </div>
   </div>
 </ng-template>
+
+<div *ngIf="showDownloadWindow" class="overlay" (click)="closeWindow()"></div>
+<div [ngClass]="{'show':showDownloadWindow}" class="download-window position-fixed border-left bg-white p-3">
+  <div class="d-flex align-items-center justify-content-between">
+    <h3>Download File</h3>
+    <button type="button" class="btn btn-link p-0" (click)="closeWindow()">
+      <span class="fa fa-times fa-lg"></span>
+    </button>
+  </div>
+  <hr>
+  <div class="mt-3">
+   
+    <ng-container >
+      <p class="mt-4">File Password</p>
+      <input [attr.id]="definition.path+'.password'" class="form-control" type="password" required
+        [(ngModel)]="encryptionKey">
+    </ng-container>
+  </div>
+  <div class="mt-4 d-flex align-items-center justify-content-between">
+    <button type="button" class="btn-min-width btn btn-dark mr-3" (click)="closeWindow()">Cancel</button>
+    <button type="button" class="btn-min-width btn btn-success" (click)="downloadFile($event)"
+      >Download</button>
+  </div>
+</div>
