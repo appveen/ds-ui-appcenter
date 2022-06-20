@@ -604,7 +604,8 @@
           **********
         </ng-container>
         <ng-container *ngIf="showPassword[i+type]">
-          {{decryptedVal[i+type]}}
+          <span *ngIf="definition.properties?.richText" [innerHTML]="decryptedVal[i+type]"></span>
+          <span *ngIf="!definition.properties?.richText"> {{decryptedVal[i+type]}} </span>
         </ng-container>
         <button type="button" class="btn btn-sm btn-link p-0 ml-2" (click)="showDecryptedValue(value,i,type)">
           <span class='fas' [ngClass]="{'fa-eye': !showPassword[i+type], 'fa-eye-slash': showPassword[i+type]}"></span>
