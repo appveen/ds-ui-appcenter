@@ -26,7 +26,7 @@ export class ViewSeparatorComponent implements OnInit {
       return 'richText';
     } else if (self.definition.properties.longText) {
       return 'longText';
-    } else if (self.definition.properties.password) {
+    } else if (self.definition.properties.password && self.definition.type !== 'File') {
       return 'secureText';
     } else if (self.definition.type === 'Date') {
       return 'date';

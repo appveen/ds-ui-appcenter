@@ -274,6 +274,15 @@ export class CommonService {
     });
   }
 
+  downloadFile(url, encryptionKey) {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('encryptionKey', encryptionKey);
+    return this.http.get(url, {
+      headers: this._getHeaders(false),
+      params: httpParams
+    });
+  }
+
   fetchUserRoles() {
     const self = this;
     self.noAccess = false;
@@ -966,6 +975,8 @@ export class CommonService {
       );
     });
   }
+
+
 
   private _upload_(type, url, data, fileMapper?, encryptionKey?) {
     const self = this;

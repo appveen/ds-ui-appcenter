@@ -598,7 +598,8 @@
 
     <ng-container *ngFor="let value of values;let i = index">
       <br>
-      <ng-container *ngIf="value && value.value">
+
+      <ng-container *ngIf="(value && value.value) || collectionSecureRichLongText">
         <ng-container *ngIf="!showPassword[i+type]">
           **********
         </ng-container>
@@ -606,10 +607,11 @@
           {{decryptedVal[i+type]}}
         </ng-container>
         <button type="button" class="btn btn-sm btn-link p-0 ml-2" (click)="showDecryptedValue(value,i,type)">
-          {{showPassword[i+type]?'Hide':'Show'}}
+          <span class='fas' [ngClass]="{'fa-eye': !showPassword[i+type], 'fa-eye-slash': showPassword[i+type]}"></span>
+          <!-- {{showPassword[i+type]?'Hide':'Show'}} -->
         </button>
       </ng-container>
-      <span *ngIf="!value || !value?.value" class="text-muted">N.A.</span>
+      <span *ngIf="!value || (!value?.value && !collectionSecureRichLongText)" class="text-muted">N.A.</span>
 
     </ng-container>
   </ng-template>

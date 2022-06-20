@@ -22,6 +22,9 @@ export class ViewFileComponent implements OnInit, OnDestroy {
   imgPreviewUrl: any;
   pdfPreviewUrl: any;
   data: any;
+  showDownloadWindow: boolean;
+  encryptionKey: string;
+
   constructor(private appService: AppService,
     private commonService: CommonService,
     private sanitizer: DomSanitizer,
@@ -44,7 +47,16 @@ export class ViewFileComponent implements OnInit, OnDestroy {
       ev.preventDefault();
     }
     if (self.value) {
-      window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId);
+      let downloadUrl = environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId;
+     
+      self.commonService.downloadFile(downloadUrl, this.encryptionKey).subscribe((data: any)=> {
+        const blob = new Blob([data]);
+        const url= window.URL.createObjectURL(blob);
+        window.open(url);
+      }, err => {
+        this.commonService.errorToast(err , 'Unable to download the file')
+      })
+      
     }
   }
 
@@ -148,5 +160,10 @@ export class ViewFileComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+
+  closeWindow() {
+    this.showDownloadWindow = false;
+    this.encryptionKey = null;
   }
 }
