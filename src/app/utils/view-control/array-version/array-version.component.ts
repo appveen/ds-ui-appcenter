@@ -181,9 +181,20 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
     }
   }
 
+  get collectionSecureRichLongText(){
+    if(this.definition.properties.name == '_self' && (this.definition.properties?.longText || this.definition.properties?.richText)){
+      return true;
+    }
+    return false;
+
+  }
+
   showDecryptedValue(value, index, type) {
     this.showPassword[index + type] = !this.showPassword[index + type];
-    if (this.showPassword[index + type]) {
+    if(this.collectionSecureRichLongText){
+      this.decryptedValue[index + type] = value;
+    }
+    else if (this.showPassword[index + type]) {
       let cksm = Md5.hashStr(value.value);
       if (value.checksum && value.checksum === cksm) {
         this.decryptedValue[index + type] = value.value;
