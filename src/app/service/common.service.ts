@@ -276,7 +276,9 @@ export class CommonService {
 
   downloadFile(url, encryptionKey) {
     let httpParams = new HttpParams();
-    httpParams = httpParams.set('encryptionKey', encryptionKey);
+    if (encryptionKey) {
+      httpParams = httpParams.set('encryptionKey', encryptionKey);
+    }
     return this.http.get(url, {
       headers: this._getHeaders(false),
       params: httpParams
