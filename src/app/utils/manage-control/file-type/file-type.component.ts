@@ -23,6 +23,7 @@ export class FileTypeComponent implements OnInit, OnDestroy {
   progress: number;
   subscriptions: any;
   showUploadWindow: boolean;
+  showDownloadWindow: boolean;
   encryptionKey: string;
   constructor(private commonService: CommonService,
     private appService: AppService,
@@ -108,9 +109,19 @@ export class FileTypeComponent implements OnInit, OnDestroy {
       ev.preventDefault();
     }
     if (this.control.value) {
-      window.open(environment.url.api + this.appService.serviceAPI + '/utils/file/download/' + this.fileId);
+      let downloadUrl = environment.url.api + this.appService.serviceAPI + '/utils/file/download/' + this.fileId;
+      if (this.encryptionKey) {
+        downloadUrl += '?encryptionKey=' + this.encryptionKey;
+      }
+      window.open(downloadUrl);
+      // if (this.definition.properties.password) {
+      //   this.showDownloadWindow = true;
+      // } else {
+      //   window.open(environment.url.api + this.appService.serviceAPI + '/utils/file/download/' + this.fileId);
+      // }
     }
   }
+
 
   closeWindow() {
     this.showUploadWindow = false;
@@ -118,5 +129,6 @@ export class FileTypeComponent implements OnInit, OnDestroy {
     this.selectedFileName = null;
     this.selectedFileSize = null;
     this.encryptionKey = null;
+    this.showDownloadWindow = false;
   }
 }
