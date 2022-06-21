@@ -773,7 +773,7 @@ export class ListComponent implements OnInit, OnDestroy {
         def.type = 'Relation';
         def.properties._typeChanged = 'Relation';
         delete def.definition;
-      } else if (def.properties && def.properties.password) {
+      } else if (def.properties && def.properties.password && def.type != 'File') {
         def.type = 'String';
         def.properties._typeChanged = 'String';
         delete def.definition;
