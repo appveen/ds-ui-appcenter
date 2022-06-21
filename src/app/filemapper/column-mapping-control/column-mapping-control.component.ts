@@ -219,7 +219,7 @@ export class ColumnMappingControlComponent implements OnInit {
         self.model = this.mappingData.headers.fileKeys.find(e => e.name === self.appservice.draggedItem.name);
         if (self.definition.properties.relatedTo || self.definition.type === 'User') {
           self.form.patchValue({ _id: self.appservice.draggedItem.name });
-        } else if (self.definition.properties.password) {
+        } else if (self.definition.properties.password && !(self.definition.properties?.richText || self.definition.properties?.longText)) {
           self.form.patchValue({ value: self.appservice.draggedItem.name });
         } else if (self.definition.type === 'Geojson') {
           self.form.patchValue({ userInput: self.appservice.draggedItem.name });
