@@ -42,7 +42,7 @@ export class FieldTypeComponent implements OnInit {
     if (self.definition.properties && self.definition.properties.createOnly) {
       self.createOnly = true;
     }
-    if (self.definition.properties.password) {
+    if (self.definition.properties.password && self.definition.type != 'File') {
       type = 'String';
     }
     if (self.definition.properties.relatedTo) {
