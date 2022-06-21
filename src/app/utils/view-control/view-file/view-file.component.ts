@@ -148,6 +148,11 @@ export class ViewFileComponent implements OnInit, OnDestroy {
     }
   }
 
+  get isSecureFile(): boolean {
+    const self = this;
+    return self.definition.properties?.password ? true : false;
+  }
+
   get isIMG(): boolean {
     const self = this;
     if (self.contentType && self.contentType.startsWith('image')) {
