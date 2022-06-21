@@ -48,15 +48,17 @@ export class ViewFileComponent implements OnInit, OnDestroy {
     }
     if (self.value) {
       let downloadUrl = environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId;
-     
-      self.commonService.downloadFile(downloadUrl, this.encryptionKey).subscribe((data: any)=> {
-        const blob = new Blob([data]);
-        const url= window.URL.createObjectURL(blob);
-        window.open(url);
-      }, err => {
-        this.commonService.errorToast(err , 'Unable to download the file')
-      })
-      
+      if (this.encryptionKey) {
+        downloadUrl += '?encryptionKey=' + this.encryptionKey;
+      }
+      window.open(downloadUrl);
+      // self.commonService.downloadFile(downloadUrl, this.encryptionKey).subscribe((data: any) => {
+      //   const blob = new Blob([data]);
+      //   const url = window.URL.createObjectURL(blob);
+      //   window.open(url);
+      // }, err => {
+      //   this.commonService.errorToast(err, 'Unable to download the file')
+      // });
     }
   }
 
@@ -99,7 +101,7 @@ export class ViewFileComponent implements OnInit, OnDestroy {
     let retValue = false;
     if (self.newVal && self.oldVal && self.newVal !== self.oldVal) {
       retValue = true;
-    }else if (!self.newVal && self.oldVal) {
+    } else if (!self.newVal && self.oldVal) {
       retValue = true;
     }
     return retValue;
