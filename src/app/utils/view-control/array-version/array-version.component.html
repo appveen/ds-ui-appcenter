@@ -599,7 +599,7 @@
     <ng-container *ngFor="let value of values;let i = index">
       <br>
 
-      <ng-container *ngIf="(value && value.value) || collectionSecureRichLongText">
+      <ng-container *ngIf="(value && value.value) || isCollectionSecureRichLongText">
         <ng-container *ngIf="!showPassword[i+type]">
           **********
         </ng-container>
@@ -612,7 +612,7 @@
           <!-- {{showPassword[i+type]?'Hide':'Show'}} -->
         </button>
       </ng-container>
-      <span *ngIf="!value || (!value?.value && !collectionSecureRichLongText)" class="text-muted">N.A.</span>
+      <span *ngIf="!value || (!value?.value && !isCollectionSecureRichLongText)" class="text-muted">N.A.</span>
 
     </ng-container>
   </ng-template>

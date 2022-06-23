@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, SecurityContext } from '@angular/core';
+import { Component, OnInit, Input, SecurityContext, SimpleChanges } from '@angular/core';
 import { AppService } from 'src/app/service/app.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CommonService } from 'src/app/service/common.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'odp-view-rich-text',
@@ -15,23 +17,37 @@ export class ViewRichTextComponent implements OnInit {
   @Input() newValue: any;
   @Input() workflowDoc: any;
   isSecureText: boolean;
-  showPassword: boolean;
-
+  showPassword: any;
+  decryptedValue: any;
 
   constructor(private appService: AppService,
+    private commonService: CommonService,
     private domSanitizer: DomSanitizer) { }
 
   ngOnInit() {
     const self = this;
     self.isSecureText = self.definition.properties.password ? self.definition.properties.password : false;
-    self.showPassword = self.isSecureText ? false: true;
+    // self.showPassword = self.isSecureText ? {'default': false } : {'default': true };
+    self.decryptedValue = {};
+    self.showPassword = {};
   }
 
-  getContent(val: string) {
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    const self = this;
+    self.showPassword = {};
+    self.decryptedValue = {};
+  }
+
+
+  getContent(val: string, type?) {
     const self = this;
     let temp = val + '';
-    if(!self.showPassword) {
+    if (!self.showPassword[type]) {
       val = self.hideText(val);
+    }
+    if(type && self.decryptedValue[type] && self.showPassword[type]){
+      val = self.decryptedValue[type];
     }
     if (self.definition.properties.hasTokens) {
       for (const tok of self.definition.properties.hasTokens) {
@@ -43,14 +59,33 @@ export class ViewRichTextComponent implements OnInit {
     // return self.domSanitizer.bypassSecurityTrustHtml(val);
   }
 
-  hideText(val){
+  hideText(val) {
     const doc = new DOMParser().parseFromString(val, 'text/html');
     if (doc.body.textContent && doc.body.textContent.trim()) {
-      return '*'.repeat(doc.body.textContent.length);
+      return '***********'
     }
   }
 
-  hasContent(val: string) {
+  showDecryptedValue(value, type) {
+    const self = this;
+    if(!self.showPassword[type]){
+      self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value }).subscribe(res => {
+        self.decryptedValue[type] = res.data;
+        self.showPassword[type] = true;
+      }, err => {
+        self.decryptedValue[type] = value;
+        self.showPassword[type] = true;
+      })
+    } else {
+      self.showPassword[type] = false;
+    }
+  }
+
+  hasContent(val: string, type) {
+    const self = this;
+    if(type && self.decryptedValue[type] && self.showPassword[type]){
+      val = self.decryptedValue[type];
+    }
     const doc = new DOMParser().parseFromString(val, 'text/html');
     if (doc.body.textContent && doc.body.textContent.trim()) {
       return true;
@@ -58,20 +93,20 @@ export class ViewRichTextComponent implements OnInit {
     return false;
   }
 
-  get isCreated(){
-    const self =this;
-    let retValue =false;
-    if(self.newVal && !self.oldVal){
-      retValue =true;
+  get isCreated() {
+    const self = this;
+    let retValue = false;
+    if (self.newVal && !self.oldVal) {
+      retValue = true;
     }
     return retValue;
   }
 
-  get isUpdated(){
-    const self =this;
-    let retValue =false;
-    if(self.newVal && self.oldVal && self.newVal !== self.oldVal){
-      retValue =true;
+  get isUpdated() {
+    const self = this;
+    let retValue = false;
+    if (self.newVal && self.oldVal && self.newVal !== self.oldVal) {
+      retValue = true;
     }
     return retValue;
   }
@@ -85,4 +120,5 @@ export class ViewRichTextComponent implements OnInit {
     const temp = self.appService.getValue(self.definition.path, self.newValue);
     return temp;
   }
+
 }
