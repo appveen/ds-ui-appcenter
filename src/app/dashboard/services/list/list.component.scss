@@ -258,3 +258,15 @@
 .sort-filter {
   width: 64%;
 }
+
+.download-window {
+  height: 100%;
+  width: 360px;
+  right: -360px;
+  // top: 128px;
+  top: 0px;
+  z-index: 1060;
+  &.show {
+    right: 0;
+  }
+}

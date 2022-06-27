@@ -598,3 +598,26 @@
     </button>
   </div>
 </ng-template>
+
+<div class="overlay" *ngIf="secureFileId"></div>
+
+<div [ngClass]="{'show':secureFileId}" class="download-window position-fixed border-left bg-white p-3"
+  *ngIf="secureFileId">
+  <div class="d-flex align-items-center justify-content-between">
+    <h3>Download File</h3>
+    <button type="button" class="btn btn-link p-0" (click)="closeSecureFileDownload()">
+      <span class="fa fa-times fa-lg"></span>
+    </button>
+  </div>
+  <hr>
+  <div class="mt-3">
+    <ng-container>
+      <p class="mt-4">File Password</p>
+      <input class="form-control" type="password" [(ngModel)]="fileEncryptionKey" required>
+    </ng-container>
+  </div>
+  <div class="mt-4 d-flex align-items-center justify-content-between">
+    <button type="button" class="btn-min-width btn btn-dark mr-3" (click)="closeSecureFileDownload()">Cancel</button>
+    <button type="button" class="btn-min-width btn btn-success" (click)="downloadSecureFile($event)">Download</button>
+  </div>
+</div>

@@ -134,8 +134,13 @@ export class ColumnMappingControlComponent implements OnInit {
   selSecureTextValue(data) {
     const self = this;
     if (data && data.name) {
-      self.form.patchValue({ value: data.name });
+      if(self.definition.properties?.richText || self.definition.properties?.longText){
+        self.form.patchValue(data.name);
+      } else {
+        self.form.patchValue({ value: data.name });
+      } 
     }
+
   }
   selectDataRel(event) {
     const self = this;

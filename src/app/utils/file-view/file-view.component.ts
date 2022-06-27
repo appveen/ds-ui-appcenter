@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { CommonService } from 'src/app/service/common.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppService } from 'src/app/service/app.service';
+import { SecureFileService } from '../../dashboard/services/list/secure-file.service'
 
 @Component({
   selector: 'odp-file-view',
@@ -25,9 +26,11 @@ export class FileViewComponent implements OnInit, OnDestroy {
   fileId: string;
   isIMG: boolean;
   isPDF: boolean;
+  isSecure: boolean;
   constructor(private commonService: CommonService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
+    private secureFileService: SecureFileService,
     private appService: AppService) { }
 
   ngOnInit() {
@@ -59,6 +62,10 @@ export class FileViewComponent implements OnInit, OnDestroy {
     if (self.contentType && self.contentType === 'application/pdf') {
       self.isPDF = true;
     }
+
+    if (self.definition && self.definition.properties.password) {
+      self.isSecure = true;
+    }
   }
 
   ngOnDestroy() {
@@ -76,6 +83,12 @@ export class FileViewComponent implements OnInit, OnDestroy {
     if (self.value) {
       window.open(environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.fileId);
     }
+  }
+
+  downloadSecureFile(ev: Event) {
+    const self = this;
+    self.previewModalRef.close(false);
+    self.secureFileService.changeFileId(self.fileId);
   }
 
   previewFile(ev: Event) {
