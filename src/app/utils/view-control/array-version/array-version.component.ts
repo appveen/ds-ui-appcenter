@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
 
 import { CommonService } from 'src/app/service/common.service';
@@ -26,6 +26,14 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
 
   get currentAppId() {
     return this.commonService?.getCurrentAppId();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const self = this;
+    if(self.type == 'password' && (changes.oldValue || changes.newValue)){
+      this.showPassword = {};
+      this.decryptedValue = {};
+    }
   }
 
   constructor(
@@ -181,7 +189,7 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
     }
   }
 
-  get collectionSecureRichLongText(){
+  get isCollectionSecureRichLongText(){
     if(this.definition.properties.name == '_self' && (this.definition.properties?.longText || this.definition.properties?.richText)){
       return true;
     }
@@ -190,20 +198,22 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
   }
 
   showDecryptedValue(value, index, type) {
-    this.showPassword[index + type] = !this.showPassword[index + type];
-    if(this.collectionSecureRichLongText){
-      this.decryptedValue[index + type] = value;
-    }
-    else if (this.showPassword[index + type]) {
+    if (!this.showPassword[index + type]) {
+      if(this.isCollectionSecureRichLongText){
+        value = { 'value': value};
+      }
       let cksm = Md5.hashStr(value.value);
       if (value.checksum && value.checksum === cksm) {
         this.decryptedValue[index + type] = value.value;
+        this.showPassword[index + type] = !this.showPassword[index + type];
       }
       else {
         this.commonService.post('api', this.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
           this.decryptedValue[index + type] = res.data;
+          this.showPassword[index + type] = !this.showPassword[index + type];
         }, err => {
           this.decryptedValue[index + type] = value.value;
+          this.showPassword[index + type] = !this.showPassword[index + type];
         })
       }
     }

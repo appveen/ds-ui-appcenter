@@ -14,7 +14,7 @@
         </div>
       </ng-container>
       <ng-container *ngIf="isCreated">
-        <div class="text-success  p-2 mb-3">
+        <div class="text-success  p-3 mb-3">
           <span class="text-secondary">Created&nbsp;</span><br>
           <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal,type:'to'}">
           </ng-container>
@@ -596,10 +596,8 @@
 
   <ng-template #values let-definition="definition" let-values="value" let-type="type">
 
-    <ng-container *ngFor="let value of values;let i = index">
-      <br>
-
-      <ng-container *ngIf="(value && value.value) || collectionSecureRichLongText">
+    <div *ngFor="let value of values;let i = index" class="position-relative">
+      <ng-container *ngIf="(value && value.value) || isCollectionSecureRichLongText">
         <ng-container *ngIf="!showPassword[i+type]">
           **********
         </ng-container>
@@ -607,14 +605,14 @@
           <span *ngIf="definition.properties?.richText" [innerHTML]="decryptedVal[i+type]"></span>
           <span *ngIf="!definition.properties?.richText"> {{decryptedVal[i+type]}} </span>
         </ng-container>
-        <button type="button" class="btn btn-sm btn-link p-0 ml-2" (click)="showDecryptedValue(value,i,type)">
+        <button type="button" class="btn btn-sm btn-link p-0 ml-2 eyeIcon position-absolute pr-4" (click)="showDecryptedValue(value,i,type)">
           <span class='fas' [ngClass]="{'fa-eye': !showPassword[i+type], 'fa-eye-slash': showPassword[i+type]}"></span>
           <!-- {{showPassword[i+type]?'Hide':'Show'}} -->
         </button>
       </ng-container>
-      <span *ngIf="!value || (!value?.value && !collectionSecureRichLongText)" class="text-muted">N.A.</span>
-
-    </ng-container>
+      <span *ngIf="!value || (!value?.value && !isCollectionSecureRichLongText)" class="text-muted">N.A.</span>
+    </div>
+    <span *ngIf="!values" class="text-muted">N.A.</span>
   </ng-template>
 </ng-container>
 

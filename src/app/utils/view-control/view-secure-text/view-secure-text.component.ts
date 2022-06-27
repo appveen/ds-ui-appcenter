@@ -35,7 +35,7 @@ export class ViewSecureTextComponent implements OnInit {
   showDecryptedValue(value, type) {
     const self = this;
     self.showPassword[type] = !self.showPassword[type];
-    if (self.showPassword[type]) {
+    if (!self.showPassword[type]) {
       let cksm = Md5.hashStr(value.value);
       if (value.checksum && value.checksum === cksm) {
         self.decryptedValue[type] = value.value;
