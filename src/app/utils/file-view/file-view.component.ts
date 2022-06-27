@@ -14,12 +14,10 @@ import { SecureFileService } from '../../dashboard/services/list/secure-file.ser
 export class FileViewComponent implements OnInit, OnDestroy {
 
   @ViewChild('previewModal', { static: true }) previewModal: TemplateRef<HTMLElement>;
-
   @Input() file: any;
   @Input() definition: any;
   @Input() value: any;
   previewModalRef: NgbModalRef;
-
   imgPreviewUrl: any;
   pdfPreviewUrl: any;
   data: any;
@@ -65,8 +63,8 @@ export class FileViewComponent implements OnInit, OnDestroy {
       self.isPDF = true;
     }
 
-    if(self.definition && self.definition.properties.password){
-      self.isSecure = true; 
+    if (self.definition && self.definition.properties.password) {
+      self.isSecure = true;
     }
   }
 
