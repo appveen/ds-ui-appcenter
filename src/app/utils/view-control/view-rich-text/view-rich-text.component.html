@@ -3,8 +3,8 @@
     <div >
       <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:definition.value, type:'default'}"></ng-container>
     </div>
-    <!-- <div *ngIf="definition.value && hasContent(definition.value)" [innerHTML]="getContent(definition.value)"></div> -->
-    <!-- <ng-container *ngIf="!definition.value || !hasContent(definition.value)">
+    <!-- <div *ngIf="definition.value && hasContent(definition.value)" [innerHTML]="getContent(definition.value)"></div>
+    <ng-container *ngIf="!definition.value || !hasContent(definition.value)">
       <span class="text-muted font-weight-bold">N.A.</span>
     </ng-container> -->
     <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value" >
@@ -31,16 +31,29 @@
 </div>
 
 <ng-template #values let-definition="definition" let-value="value" let-type="type">
-  <div [ngClass]="{'position-relative pr-4':isSecureText , 'show-paragraph': isSecureText && !showPassword[type] && hasContent(value,type) }">
-    <span [innerHTML]="getContent(value, type)" *ngIf="value && hasContent(value,type)"></span>
-    <ng-container *ngIf="!value || !hasContent(value,type)">
-      <span class="text-muted font-weight-bold">N.A.</span>
-    </ng-container> 
-    <div>
-      <span class="fas eyeIcon text-right hover ml-2 text-primary position-absolute"
-        *ngIf="isSecureText && definition.value"
-        [ngClass]="{'fa-eye': !showPassword[type],'fa-eye-slash mt-1': showPassword[type] }"
-        (click)="showDecryptedValue(value,type)"></span>
-    </div>
+  <div [ngClass]="{'position-relative pr-4':isSecureText }">
+    
+    <ng-container *ngIf="isSecureText">
+      <span [innerHTML]="getContentSecure(value, type)" *ngIf="value && hasContentSecure(value,type) && showPassword[type] && decryptedValue[type]"></span>
+      <span *ngIf="value && hasContentSecure(value,type) && !showPassword[type]"> ********* </span>
+
+      <ng-container *ngIf="!value || !hasContentSecure(value,type)">
+        <span class="text-muted font-weight-bold">N.A.</span>
+      </ng-container> 
+      <div>
+        <span class="fas eyeIcon text-right hover ml-2 text-primary position-absolute"
+          *ngIf="isSecureText && definition.value"
+          [ngClass]="{'fa-eye': !showPassword[type],'fa-eye-slash mt-1': showPassword[type] }"
+          (click)="togglePassword(value,type)"></span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isSecureText">
+      <span [innerHTML]="getContent(value, type)" *ngIf="value && hasContent(value,type)"></span>
+      <ng-container *ngIf="!value || !hasContent(value,type)">
+        <span class="text-muted font-weight-bold">N.A.</span>
+      </ng-container> 
+    </ng-container>
+    
   </div>
 </ng-template>
