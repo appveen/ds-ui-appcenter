@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 import { SessionService } from 'src/app/service/session.service';
 import { ListAgGridComponent } from './list-ag-grid/list-ag-grid.component';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
+import { SecureFileService } from './secure-file.service'
 import { ListFiltersComponent } from './list-filters/list-filters.component';
 import { forkJoin, Observable } from 'rxjs';
 
@@ -134,11 +135,15 @@ export class ListComponent implements OnInit, OnDestroy {
   filterCreatedBy: any;
   isCollapsed: any;
   selectedSearch: any;
+  secureFileId: any;
+  fileEncryptionKey: string;
+
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
     private commonService: CommonService,
     private sessionService: SessionService,
+    private secureFileService: SecureFileService,
     private modalService: NgbModal,
     private router: Router,
     private ts: ToastrService,
@@ -217,6 +222,10 @@ export class ListComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.getRecordsCount();
       })
+
+    this.secureFileService.fileId.subscribe((data) => {
+      this.secureFileId = data;
+    })
   }
 
   ngOnDestroy() {
@@ -1680,7 +1689,26 @@ export class ListComponent implements OnInit, OnDestroy {
       self.applySavedView.emit({ value: res });
     }, err => self.commonService.errorToast(err));
   }
+
+  closeSecureFileDownload() {
+    const self = this;
+    self.secureFileService.changeFileId(null);
+  }
+
+  downloadSecureFile(ev: Event) {
+    const self = this;
+    if (ev) {
+      ev.preventDefault();
+    }
+    let downloadUrl = environment.url.api + self.appService.serviceAPI + '/utils/file/download/' + self.secureFileId;
+    if (self.fileEncryptionKey) {
+      downloadUrl += '?encryptionKey=' + this.fileEncryptionKey;
+    }
+    self.secureFileService.changeFileId(null);
+    window.open(downloadUrl);
+  }
 }
+
 
 export interface RefineQuery {
   sort?: string;
