@@ -231,7 +231,7 @@ export class ColumnMappingControlComponent implements OnInit {
         self.tempArray[index] = this.mappingData.headers.fileKeys.find(e => e.name === self.appservice.draggedItem.name);
         if (self.definition.definition['0'].properties.relatedTo || self.definition.definition['0'].type === 'User') {
           (self.form as FormArray).controls[index].patchValue({ _id: self.appservice.draggedItem.name });
-        } else if (self.definition.definition['0'].properties.password) {
+        } else if (self.definition.definition['0'].properties.password && !(self.definition.definition['0'].properties?.richText || self.definition.definition['0'].properties?.longText)) {
           (self.form as FormArray).controls[index].patchValue({ value: self.appservice.draggedItem.name });
         } else {
           (self.form as FormArray).controls[index].patchValue(self.appservice.draggedItem.name);
