@@ -34,7 +34,7 @@
         </div>
         <div *ngIf="!(isIMG || isPDF) || isSecure">
             <div class="no-preview d-flex flex-column align-items-center">
-                <h5 class="text-secondary my-5">Preview Not Available new</h5>
+                <h5 class="text-secondary my-5">Preview Not Available</h5>
                 <div class="d-flex flex-column align-items-center text-dark hover" (click)="isSecure ? downloadSecureFile($event): downloadFile($event)">
                     <span class="fa fa-download"></span>
                     <p class="">Download</p>
