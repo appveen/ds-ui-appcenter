@@ -1693,6 +1693,7 @@ export class ListComponent implements OnInit, OnDestroy {
   closeSecureFileDownload() {
     const self = this;
     self.secureFileService.changeFileId(null);
+    self.fileEncryptionKey = null;
   }
 
   downloadSecureFile(ev: Event) {
@@ -1705,6 +1706,7 @@ export class ListComponent implements OnInit, OnDestroy {
       downloadUrl += '?encryptionKey=' + this.fileEncryptionKey;
     }
     self.secureFileService.changeFileId(null);
+    self.fileEncryptionKey = null;
     window.open(downloadUrl);
   }
 }
