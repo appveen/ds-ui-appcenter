@@ -33,8 +33,8 @@
 <!-- <hr class="m-0">
 <div class="text-muted ml-2 my-1">Others</div> -->
 <ng-container *ngIf="dsType=='ds'">
-    <div class="menu-list-item d-flex align-items-center ">
-        <span class="fa fa-star mr-3 pinning-star"></span>
+    <div class="menu-list-item d-flex align-items-center text-secondary">
+        <span class="fa fa-star mr-3 pinning-star "></span>
         All Records - DS
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"
@@ -48,8 +48,7 @@
             <span class="fa fa-star mr-3 pinning-star" *ngIf="pinnedDs.length<5"
                 (click)="addToStaredList(item._id);$event.stopPropagation();"></span>
             <span class="fa fa-star text-white mr-3 pinning-star" ngbTooltip="You can only pin upto 5 data services"
-                *ngIf="pinnedDs.length>=5" 
-                (click)="$event.stopPropagation();"></span>
+                *ngIf="pinnedDs.length>=5" (click)="$event.stopPropagation();"></span>
             <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
                 {{item.name}}
             </div>

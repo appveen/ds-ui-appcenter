@@ -2,9 +2,10 @@
 @import "src/assets/scss/bootstrap/_variables.scss";
 
 .menu-list-item {
-  min-height: 32px;
-  max-height: 32px;
-  padding-left: 8px;
+  min-height: 48px;
+  max-height: 48px;
+  padding-left: 51px;
+  background: #fafafb;
   &:not(.text-white):hover {
     cursor: pointer;
     background: #ececec !important;
