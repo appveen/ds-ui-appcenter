@@ -8,12 +8,12 @@
   margin-left: 8px;
 }
 .sidenav-odp {
-  min-width: 232px;
-  max-width: 232px;
+  min-width: 264px;
+  max-width: 264px;
   margin-right: 0;
   transition: 0.25s;
   &.hide {
-    margin-left: -232px;
+    margin-left: -264px;
   }
   .search {
     .fa-search {
@@ -25,24 +25,25 @@
     }
   }
   .logo-holder {
-    min-width: 232px;
-    max-width: 232px;
-    min-height: 88px;
-    max-height: 88px;
+    min-width: 264px;
+    max-width: 264px;
+    min-height: 64px;
+    max-height: 64px;
     overflow: hidden;
     background-size: contain;
     background-repeat: no-repeat;
+    margin-bottom: 40px;
     .logo {
-      width: 220px;
-      height: 80px;
+      width: 200px;
+      height: 64px;
       background-repeat: no-repeat;
-      background-size: 272px;
+      background-size: 200px;
       background-position: -18px;
     }
   }
   .icons-holder {
-    min-width: 232px;
-    max-width: 232px;
+    min-width: 264px;
+    max-width: 264px;
     min-height: 32px;
     max-height: 32px;
     padding: 0px 20px;

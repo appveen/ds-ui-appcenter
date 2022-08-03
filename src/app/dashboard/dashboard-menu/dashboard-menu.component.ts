@@ -11,6 +11,11 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
 
   @Input() activeId: string;
   activeMenuKey: string;
+  openPanel: any = {
+    'starred': false,
+    'ds': false,
+    'workflow': false,
+  };
   constructor(private router: Router) {
 
   }
@@ -40,5 +45,9 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
     } else {
       this.activeMenuKey = 'INVALID';
     }
+  }
+
+  togglePanel(panel) {
+    this.openPanel[panel] = !this.openPanel[panel];
   }
 }

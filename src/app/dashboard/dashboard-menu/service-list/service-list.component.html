@@ -1,4 +1,4 @@
-<div class="search-control position-relative border-right">
+<!-- <div class="search-control position-relative border-right">
     <span class="fa fa-search position-absolute"></span>
     <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
 </div>
@@ -12,7 +12,6 @@
         </span>
     </div>
 </div>
-<!-- Pinned Ds -->
 <div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadDataService(item,true)"
     (mouseover)="item.hover=true" (mouseout)="item.hover=false" *ngFor="let item of pinnedDs"
     [ngClass]="{'bg-primary text-white hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
@@ -27,30 +26,33 @@
     <span class="fa fa-star mr-1 pinning-star" [ngClass]="{'text-white': item._id === activeId}"
         (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
 </div>
-<!-- Pinned Ds -->
 <hr class="m-0">
-<div class="text-muted ml-2 my-1">Others</div>
-<div class="menu-list-item d-flex  align-items-center justify-content-between" (click)="loadDataService(item,true)" [attr.data-id]="item._id"
-    *ngFor="let item of records | serviceSearch:searchText"
-    [ngClass]="{'bg-primary text-white hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
-    <div class="d-flex align-items-center">
-        <div class="list-item-icon d-flex align-items-center">
+<div class="text-muted ml-2 my-1">Others</div> -->
+<ng-container *ngIf="dsType=='ds'">
+    <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"
+        (click)="loadDataService(item,true)" [attr.data-id]="item._id"
+        *ngFor="let item of records | serviceSearch:searchText"
+        [ngClass]="{' text-dark hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
+        <div class="d-flex align-items-center">
+            <!-- <div class="list-item-icon d-flex align-items-center">
             <span class="odp-record"></span>
+        </div> -->
+            <span class="fa fa-star mr-3 pinning-star" *ngIf="pinnedDs.length<5"
+                [ngClass]="{'text-white': item._id === activeId}"
+                (click)="addToStaredList(item._id);$event.stopPropagation();"></span>
+            <span class="fa fa-star text-white mr-3 pinning-star" ngbTooltip="You can only pin upto 5 data services"
+                *ngIf="pinnedDs.length>=5" [ngClass]="{'text-white': item._id === activeId}"
+                (click)="$event.stopPropagation();"></span>
+            <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
+                {{item.name}}
+            </div>
         </div>
-        <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
-            {{item.name}}
+
+    </div>
+    <div *ngIf="!records || records.length==0"
+        class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+        <div class="d-flex align-items-center">
+            <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
         </div>
     </div>
-    <span class="fa fa-star mr-1 pinning-star" *ngIf="pinnedDs.length<5"
-        [ngClass]="{'text-white': item._id === activeId}"
-        (click)="addToStaredList(item._id);$event.stopPropagation();"></span>
-    <span class="fa fa-star texr-white mr-1 pinning-star" ngbTooltip="You can only pin upto 5 data services"
-        *ngIf="pinnedDs.length>=5" [ngClass]="{'text-white': item._id === activeId}"
-        (click)="$event.stopPropagation();"></span>
-</div>
-<div *ngIf="!records || records.length==0"
-    class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
-    <div class="d-flex align-items-center">
-        <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
-    </div>
-</div>
+</ng-container>

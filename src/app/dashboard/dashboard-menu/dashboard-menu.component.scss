@@ -2,4 +2,9 @@
   min-height: calc(100vh - 168px);
   max-height: calc(100vh - 168px);
   overflow-y: auto;
+
+  .menu-item {
+    min-height: 48px;
+    max-height: 48px;
+  }
 }

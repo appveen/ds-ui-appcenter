@@ -1,7 +1,7 @@
 <div class="d-flex flex-column w-100 h-100">
     <div class="d-flex">
         <div class="sidenav-odp bg-white" [ngClass]="{'hide':!showSideNav}">
-            <div class="logo-holder border-bottom border-right bg-white d-flex align-items-center">
+            <div class="logo-holder border-right bg-white d-flex align-items-center">
                 <div *ngIf="!(selectedApp.logo && selectedApp.logo.full)" class="logo"></div>
                 <img class="customer-logo" *ngIf="selectedApp.logo && selectedApp.logo.full"
                     [src]="selectedApp.logo.full" alt="Logo">
@@ -10,7 +10,7 @@
                 <span class="fa fa-search position-absolute"></span>
                 <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
             </div> -->
-            <div class="icons-holder d-flex justify-content-between border-right my-2">
+            <!-- <div class="icons-holder d-flex justify-content-between border-right my-2">
                 <div class="icon-block d-flex justify-content-center align-items-center position-relative"
                     [routerLink]="['services']"
                     [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'services'}">
@@ -26,15 +26,15 @@
                     [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'interactions'}">
                     <span class="odp-flows"></span>
                 </div>
-                <!-- <div class="icon-block d-flex justify-content-center align-items-center position-relative"
+                <div class="icon-block d-flex justify-content-center align-items-center position-relative"
                     [routerLink]="['bookmark']" [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'bookmark'}">
                     <span class="odp-bookmark"></span>
-                </div> -->
-            </div>
-            <div
+                </div>
+            </div> -->
+            <!-- <div
                 class="menu-label pl-3 text-primary font-weight-bold d-flex align-items-center justify-content-start border-bottom border-right border-top">
                 {{selectedMenuItem.label}}
-            </div>
+            </div> -->
             <odp-dashboard-menu></odp-dashboard-menu>
         </div>
         <div class="full-height d-flex flex-column w-100 bg-white" [@routerTransition]="getState(o)">

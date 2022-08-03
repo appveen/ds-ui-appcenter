@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -21,6 +21,7 @@ export class ServiceListComponent implements OnInit {
   prefId: string;
   preference: any;
   searchText: string;
+  @Input() dsType: string;
 
   constructor(private appService: AppService,
     private commonService: CommonService,
@@ -202,3 +203,7 @@ export class ServiceListComponent implements OnInit {
     }
   }
 }
+function input() {
+  throw new Error('Function not implemented.');
+}
+
