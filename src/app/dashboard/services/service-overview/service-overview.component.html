@@ -1,0 +1,40 @@
+<div class="default-loader d-flex justify-content-center h-100 w-100" *ngIf="showLazyLoader">
+    <div class="align-self-center text-center">
+        <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+        <div class="text-secondary mt-2">Processing...</div>
+    </div>
+</div>
+<div class="service-overview-page w-100 " *ngIf="!showLazyLoader">
+    <div class="row no-gutters">
+        <div class="col-3" *ngFor="let srvc of services">
+            <div class="bg-white ds-item mr-3 rounded mt-3">
+                <div class="px-3 pt-3">
+                    <div class="ds-name font-11 fw-500">{{srvc.name}}</div>
+                    <div class="last-updated font-11 font-italic">Last Updated {{lastUpdated(srvc)}}</div>
+                    <div class="ds-info mb-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="font-11 font-secondary">Attributes</div>
+                                <div class="font-14 fw-700">{{totalAttributes(srvc)}}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="font-11 font-secondary">Records</div>
+                                <div class="font-14 fw-700">{{ totalRecords(srvc)}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-top px-3 pt-1">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="font-12 text-secondary">Workflow</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="font-12 text-secondary"> State model</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -899,6 +899,9 @@ export class CommonService {
     if (options.serviceId) {
       urlParams = urlParams.set('serviceId', options.serviceId);
     }
+    if (options.serviceIds) {
+      urlParams = urlParams.set('serviceIds', options.serviceIds);
+    }
     if (options.decrypt) {
       urlParams = urlParams.set('decrypt', options.decrypt.toString());
     }
@@ -1662,6 +1665,7 @@ export interface GetOptions {
   sort?: string;
   project?: string;
   srvcID?: string;
+  serviceIds?: string;
   expand?: boolean;
   expandKeys?: string;
   serviceId?: string;
