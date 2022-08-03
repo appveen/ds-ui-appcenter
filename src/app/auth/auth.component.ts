@@ -161,44 +161,47 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
     }
 
     doLogin() {
-
-        const self = this;
-        self.message = null;
-        const username = self.form.get('username').value;
-        const password = self.form.get('password').value;
-        if (!username || !username.trim() || !password || !password.trim()) {
-            return;
-        }
-        self.loader = true;
-        self.commonService[self.authType === 'local' ? 'login' : 'ldapLogin'](self.form.value)
-            .then(res => {
-                self.commonService.afterAuthentication().then(data => {
-                    self.sessionService.isUnauthorizedSession = false;
-                    self.loader = false;
-                    if (data.status === 200 && !self.commonService.noAccess) {
-                        self.commonService.apiCalls.componentLoading = true;
-                        const appId = this.commonService.getCurrentAppId();
-                        this.router.navigate([appId]);
-                    } else {
-                        self.message = 'You don\'t have enough permissions';
-                        self.commonService.logout(true);
-                    }
+        try {
+            const self = this;
+            self.message = null;
+            const username = self.form.get('username').value;
+            const password = self.form.get('password').value;
+            if (!username || !username.trim() || !password || !password.trim()) {
+                return;
+            }
+            self.loader = true;
+            self.commonService[self.authType === 'local' ? 'login' : 'ldapLogin'](self.form.value)
+                .then(res => {
+                    self.commonService.afterAuthentication().then(data => {
+                        self.sessionService.isUnauthorizedSession = false;
+                        self.loader = false;
+                        if (data.status === 200 && !self.commonService.noAccess) {
+                            self.commonService.apiCalls.componentLoading = true;
+                            const appId = this.commonService.getCurrentAppId();
+                            this.router.navigate([appId]);
+                        } else {
+                            self.message = 'You don\'t have enough permissions';
+                            self.commonService.logout(true);
+                        }
+                    }, err => {
+                        self.loader = false;
+                        if (err.status === 0 || err.status === 500) {
+                            self.message = 'Unable to login, please try again later.';
+                        } else {
+                            self.message = err.error.message;
+                        }
+                    });
                 }, err => {
                     self.loader = false;
-                    if (err.status === 0 || err.status === 500) {
+                    if (err.status === 0 || err.status === 500 || !err.error || !err.error.message) {
                         self.message = 'Unable to login, please try again later.';
                     } else {
                         self.message = err.error.message;
                     }
                 });
-            }, err => {
-                self.loader = false;
-                if (err.status === 0 || err.status === 500 || !err.error || !err.error.message) {
-                    self.message = 'Unable to login, please try again later.';
-                } else {
-                    self.message = err.error.message;
-                }
-            });
+        } catch (e) {
+            throw e;
+        }
     }
 
     doAzureLogin() {
