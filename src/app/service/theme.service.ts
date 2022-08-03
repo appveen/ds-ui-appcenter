@@ -509,7 +509,7 @@ export class Theme {
     const temp: Theme[] = [];
     temp.push({ color: '#3498db', name: 'primary', textColor: '#ffffff' });
     temp.push({ color: '#1383c6', name: 'primary-dark', textColor: '#ffffff' });
-    temp.push({ color: '#6A7179', name: 'secondary', textColor: '#ffffff' });
+    temp.push({ color: '#6C7584', name: 'secondary', textColor: '#ffffff' });
     temp.push({ color: '#F4F5F5', name: 'light', textColor: '#202a36' });
     temp.push({ color: '#202a36', name: 'dark', textColor: '#ffffff' });
     temp.push({ color: '#1CAD49', name: 'success', textColor: '#ffffff' });

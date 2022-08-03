@@ -1,21 +1,24 @@
-<div class="search-control position-relative border-right">
+<!-- <div class="search-control position-relative border-right">
     <span class="fa fa-search position-absolute"></span>
     <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
+</div> -->
+<div class="menu-list-item d-flex align-items-center text-secondary">
+    All Records - Workflow
 </div>
 <ng-container *ngFor="let item of records | serviceSearch:searchText">
     <div *ngIf="item?.name" class="menu-list-item d-flex align-items-center justify-content-between"
         (click)="loadWorkflow(item, true)"
-        [ngClass]="{'bg-primary text-white':item?._id === activeId,'bg-white text-secondary':item?._id !== activeId}">
+        [ngClass]="{'text-dark':item?._id === activeId,'text-secondary':item?._id !== activeId}">
         <div class="d-flex align-items-center">
-            <div class="list-item-icon d-flex align-items-center">
+            <!-- <div class="list-item-icon d-flex align-items-center">
                 <span class="odp-workflow"></span>
-            </div>
+            </div> -->
             <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item?.name">
                 {{item?.name}}
             </div>
         </div>
-        <div class=" text-white d-flex align-items-center justify-content-center mr-2"
-            [ngClass]="{'text-white':activeId == item?._id}">
+        <div class=" d-flex align-items-center justify-content-center mr-4"
+            [ngClass]="{'text-dark':item?._id === activeId,'text-secondary':item?._id !== activeId}">
             <small>{{serviceDocsCount[item?._id] || 0}}</small>
         </div>
     </div>
