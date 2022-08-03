@@ -2,31 +2,35 @@
     <span class="fa fa-search position-absolute"></span>
     <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
 </div>
-<div class="text-muted ml-2 my-1">Starred</div>
-<div *ngIf="pinnedDs.length<1" class="mb-1  staredContainer">
-    <div class="d-flex flex-column p-3  justify-content-center align-items-center">
-        <span class="fa fa-star text-primary p-2"></span>
-        <span class="font-bold p-1 font-sm-12">Starred items</span>
-        <span class="text-muted font-sm-12">
-            for quick access
-        </span>
-    </div>
-</div>
-<div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadDataService(item,true)"
-    (mouseover)="item.hover=true" (mouseout)="item.hover=false" *ngFor="let item of pinnedDs"
-    [ngClass]="{'bg-primary text-white hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
-    <div class="d-flex align-items-center">
-        <div class="list-item-icon d-flex align-items-center">
-            <span class="odp-record"></span>
-        </div>
-        <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
-            {{item.name}}
+<div class="text-muted ml-2 my-1">Starred</div> -->
+<ng-container *ngIf="dsType=='pinnedDs'">
+    <div *ngIf="pinnedDs.length<1" class="mb-1  staredContainer">
+        <div class="d-flex flex-column p-3  justify-content-center align-items-center">
+            <span class="fa fa-star text-primary p-2"></span>
+            <span class="font-bold p-1 font-sm-12">Starred items</span>
+            <span class="text-muted font-sm-12">
+                for quick access
+            </span>
         </div>
     </div>
-    <span class="fa fa-star mr-1 pinning-star" [ngClass]="{'text-white': item._id === activeId}"
-        (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
-</div>
-<hr class="m-0">
+    <div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadDataService(item,true)"
+        (mouseover)="item.hover=true" (mouseout)="item.hover=false" *ngFor="let item of pinnedDs"
+        [ngClass]="{'bg-primary text-white hover':item._id === activeId,'bg-white text-secondary':item._id !== activeId}">
+        <div class="d-flex align-items-center">
+            <!-- <div class="list-item-icon d-flex align-items-center">
+                <span class="odp-record"></span>
+            </div> -->
+            <span class="fa fa-star mr-3 pinning-star" [ngClass]="{'text-white': item._id === activeId}"
+                (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
+            <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
+                {{item.name}}
+            </div>
+        </div>
+
+    </div>
+</ng-container>
+
+<!-- <hr class="m-0">
 <div class="text-muted ml-2 my-1">Others</div> -->
 <ng-container *ngIf="dsType=='ds'">
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"

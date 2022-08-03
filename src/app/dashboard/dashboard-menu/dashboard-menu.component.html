@@ -1,11 +1,17 @@
 <div class="menu-list border-right">
     <div class="px-4 menu-item d-flex align-items-center justify-content-between hover"
-        (click)="togglePanel('starred')">
+        (click)="togglePanel('pinnedDs')">
         <div>
-            <span class="fa fa-star text-secondary font-14 mr-3"></span>
-            <span class="text-secondary font-14 fw-500">Starred</span>
+            <span class="fa fa-star font-14 mr-3"></span>
+            <span class="text-secondary font-14 fw-500" [ngClass]="{'text-dark fw-500': openPanel['pinnedDs'],'text-secondary': 
+            !openPanel['pinnedDs']}">Starred Records</span>
         </div>
-        <span class="fa fa-chevron-down text-secondary mt-1"></span>
+        <span class="fa text-secondary mt-1"
+            [ngClass]="{'fa-chevron-up': openPanel['pinnedDs'],'fa-chevron-down': !openPanel['pinnedDs']}">
+        </span>
+    </div>
+    <div *ngIf="openPanel['pinnedDs']">
+        <odp-service-list [dsType]="'pinnedDs'"></odp-service-list>
     </div>
     <div class="px-4 menu-item d-flex align-items-center justify-content-between hover" (click)="togglePanel('ds')">
         <div>
@@ -14,7 +20,7 @@
             <span class="text-secondary font-14 fw-500" [ngClass]="{'text-dark fw-500': openPanel['ds'],'text-secondary': 
             !openPanel['ds']}">Data Services</span>
         </div>
-        <span class="fa mt-1 text-secondary hover"
+        <span class="fa mt-1 text-secondary"
             [ngClass]="{'fa-chevron-up': openPanel['ds'],'fa-chevron-down': !openPanel['ds']}"></span>
     </div>
     <div *ngIf="openPanel['ds']">

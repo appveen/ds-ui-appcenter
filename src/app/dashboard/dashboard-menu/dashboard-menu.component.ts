@@ -12,7 +12,7 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
   @Input() activeId: string;
   activeMenuKey: string;
   openPanel: any = {
-    'starred': false,
+    'pinnedDs': false,
     'ds': false,
     'workflow': false,
   };
