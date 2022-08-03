@@ -37,7 +37,7 @@ export class ServiceOverviewComponent implements OnInit {
     const options: GetOptions = {
       count: -1,
       filter,
-      select: 'name,_metadata.lastUpdated,definition,stateModel',
+      select: 'name,_metadata.lastUpdated,definition,stateModel,workflowConfig',
       sort: 'name'
     };
 
