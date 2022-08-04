@@ -28,10 +28,12 @@ import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 import { WorkflowAgGridModule } from './workflow-list/workflow-ag-grid/workflow-ag-grid.module';
 import { WorkflowManageComponent } from './workflow-manage/workflow-manage.component';
 import { WorkflowRemarksViewModule } from 'src/app/utils/workflow-remarks-view/workflow-remarks-view.module';
+import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview.component';
 
 const routes: Routes = [
   {
     path: '', component: WorkflowComponent, children: [
+     { path: 'overview', component: WorkflowOverviewComponent },
      { path: ':serviceId', component: WorkflowListComponent },
      { path: ':serviceId/:recordId', component: WorkflowManageComponent }
     ]
@@ -71,6 +73,7 @@ const routes: Routes = [
     SearchForComponent,
     WorkflowListComponent,
     WorkflowManageComponent,
+    WorkflowOverviewComponent,
     
   ],
   exports: [

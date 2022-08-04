@@ -2,7 +2,7 @@
     <span class="fa fa-search position-absolute"></span>
     <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
 </div> -->
-<div class="menu-list-item d-flex align-items-center text-secondary">
+<div class="menu-list-item d-flex align-items-center text-secondary" (click)="loadWorkflowOverview()">
     All Records - Workflow
 </div>
 <ng-container *ngFor="let item of records | serviceSearch:searchText">
