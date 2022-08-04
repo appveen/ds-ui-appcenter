@@ -1,38 +1,46 @@
-<div class="input-group">
-    <button [attr.id]="definition.path" class="btn btn-link mr-2 p-0" (click)="onClick($event)"
-        [disabled]="definition.properties.readonly || control.disabled">
-        <span class="fas fa-calendar-alt mr-2" id="selectDate"></span>
-        <span class="text">{{selectedDate}}</span>
-    </button>
-    <button id="clearBtn{{definition.path}}" class="btn btn-link text-muted p-0" *ngIf="control.value"
-        (click)="clearValue()" [disabled]="definition.properties.readonly || control.disabled">
-        <span class="fas fa-times-circle"></span>
-    </button>
-    <span class="text-muted p-2">
-        in the timezone
-    </span>
-    <select *ngIf="supportedTimezones.length>1 && !control.disabled" class="timezone-selector border-0 text-primary"
-        [(ngModel)]="selectedTimezone" (ngModelChange)="onTimezoneChange($event)">
-        <option *ngFor="let tz of supportedTimezones" [value]="tz">{{tz}}</option>
-    </select>
-    <span *ngIf="supportedTimezones.length<2 || control.disabled" class="p-2 text-primary">{{selectedTimezone}}</span>
-</div>
-<div *ngIf="defaultValue" class="default-value d-flex align-items-center">
-    <button type="button" class="btn btn-sm btn-link form-text px-0" (click)="setDefault($event)">
-        <span class="text">Set Default</span>
-    </button>
-    <span class="text-dark ml-2"><small>({{defaultValue}})</small></span>
-</div>
-<odp-date-picker *ngIf="showDatePicker" [(togglePicker)]="showDatePicker"
-    [options]="{floating:true,type:fieldType, buttons: true}" [(from)]="setValue"></odp-date-picker>
+<div class="">
+    <div class="input-group border form-control d-flex">
+        <span class="fas fa-calendar-alt mr-2 my-auto" id="selectDate" (click)="onClick($event)"></span>
+        <input [attr.id]="definition.path" class="border-0"
+            [disabled]=" definition.properties.readonly || control.disabled" [value]="selectedDate">
+        <!-- <span class=" text">{{selectedDate}}</span> -->
+        <select *ngIf="supportedTimezones.length>1 && !control.disabled" class="timezone-selector border-0 text-primary"
+            [(ngModel)]="selectedTimezone" (ngModelChange)="onTimezoneChange($event)">
+            <option *ngFor="let tz of supportedTimezones" [value]="tz">{{tz}}</option>
+        </select>
+        <div class="d-flex ml-auto">
+            <span *ngIf="supportedTimezones.length<2 || control.disabled"
+                class="mr-2 text-primary align-self-center">{{selectedTimezone}}</span>
+            <span *ngIf="control.value" class="fa fa-times-circle" (click)="clearValue()"></span>
+        </div>
 
-<div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
-    [ngClass]="{'bg-error':requiredError}">
-    <ng-container *ngIf="!definition.properties.errorMessage">
-        <div *ngIf="requiredError">
-            {{definition.properties.label ? definition.properties.label : definition.properties.name}} is required</div>
-    </ng-container>
-    <ng-container *ngIf="definition.properties.errorMessage">
-        <div *ngIf="requiredError">{{definition.properties.errorMessage}}</div>
-    </ng-container>
+
+        <!-- <select id=" clearBtn{{definition.path}}" class="btext-muted p-0" *ngIf="control.value"
+                (click)="clearValue()" [disabled]="definition.properties.readonly || control.disabled">
+                <span class="fas fa-times-circle"></span>
+                <span class="text-muted p-2">
+                    in the timezone
+                </span>
+        </select> -->
+    </div>
+    <div *ngIf="defaultValue" class="default-value d-flex align-items-center">
+        <button type="button" class="btn btn-sm btn-link form-text px-0" (click)="setDefault($event)">
+            <span class="text">Set Default</span>
+        </button>
+        <span class="text-dark ml-2"><small>({{defaultValue}})</small></span>
+    </div>
+    <odp-date-picker *ngIf="showDatePicker" [(togglePicker)]="showDatePicker"
+        [options]="{floating:true,type:fieldType, buttons: true}" [(from)]="setValue"></odp-date-picker>
+
+    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
+        [ngClass]="{'bg-error':requiredError}">
+        <ng-container *ngIf="!definition.properties.errorMessage">
+            <div *ngIf="requiredError">
+                {{definition.properties.label ? definition.properties.label : definition.properties.name}} is required
+            </div>
+        </ng-container>
+        <ng-container *ngIf="definition.properties.errorMessage">
+            <div *ngIf="requiredError">{{definition.properties.errorMessage}}</div>
+        </ng-container>
+    </div>
 </div>

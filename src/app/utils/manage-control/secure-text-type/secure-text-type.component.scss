@@ -1,20 +1,28 @@
 .error-exclamation {
-    top: 9px;
-    right: 6px;
-  }
-  .text-control-wrapper{
-    min-width: 340px;
-    max-width: 340px;
-  }
-  .info-exclamation {
-    top: 9px;
-    right: 20px;
-  }
-  .bg-error{
-    background-color: #F8DCDC !important;
-  }
+  top: 9px;
+  right: 6px;
+}
 
-  .eyeIcon{
-    right: 2% !important;
-    top: 5px !important;
-  }
+.text-control-wrapper {
+  min-width: 400px;
+  max-width: 400px;
+}
+
+.form-control {
+  height: 40px;
+  border-radius: 6px
+}
+
+.info-exclamation {
+  top: 9px;
+  right: 20px;
+}
+
+.bg-error {
+  background-color: #F8DCDC !important;
+}
+
+.eyeIcon {
+  right: 2% !important;
+  top: 5px !important;
+}

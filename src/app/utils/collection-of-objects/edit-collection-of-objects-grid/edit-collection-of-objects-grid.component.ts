@@ -370,8 +370,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         gridParent: this
       },
       columnDefs,
-      pagination: true,
-      paginationPageSize: AG_GRID_PAGINATION_COUNT,
+      pagination: false,
+      // paginationPageSize: AG_GRID_PAGINATION_COUNT,
       animateRows: true,
       floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
@@ -386,7 +386,12 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         suppressMovable: true,
         suppressMenu: true
       },
-      suppressColumnVirtualisation: true
+      suppressColumnVirtualisation: true,
+      rowHeight: 46,
+      headerHeight: 46,
+      suppressPaginationPanel: true,
+      suppressHorizontalScroll: true,
+      floatingFiltersHeight: 40
     };
 
   }

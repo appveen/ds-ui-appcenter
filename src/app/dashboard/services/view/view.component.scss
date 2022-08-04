@@ -4,6 +4,7 @@
 .actions {
   min-height: 48px;
   max-height: 48px;
+
   .state-model {
     font-size: 16px;
 
@@ -15,9 +16,11 @@
     }
   }
 }
+
 .header {
   max-height: 40px;
   min-height: 40px;
+
   .title {
     font-size: 16px;
   }
@@ -32,39 +35,49 @@
 }
 
 .view-body {
+  margin-right: 32px !important;
+  margin-left: 32px !important;
   min-height: calc(100vh - 242px);
   max-height: calc(100vh - 242px);
   overflow: auto;
+
   &.no-steps {
     min-height: calc(100vh - 136px);
     max-height: calc(100vh - 136px);
     margin-top: 8px;
   }
+
   &.history-no-steps {
     min-height: calc(100vh - 136px);
     max-height: calc(100vh - 136px);
     margin-top: 8px;
   }
+
   &.history-steps-action {
     min-height: calc(100vh - 242px);
     max-height: calc(100vh - 242px);
   }
+
   &.history-steps-no-action {
     min-height: calc(100vh - 186px);
     max-height: calc(100vh - 186px);
   }
+
   &.steps-action {
     min-height: calc(100vh - 242px);
     max-height: calc(100vh - 242px);
   }
+
   &.steps-no-action {
     min-height: calc(100vh - 186px);
     max-height: calc(100vh - 186px);
   }
 }
+
 .wizard-steps {
   margin: 8px;
 }
+
 .show-history {
   width: 316px;
 }
@@ -80,6 +93,7 @@
   .step-tabs {
     overflow: hidden;
     z-index: 0;
+
     .step-tab {
       min-width: 150px;
       max-width: 150px;
@@ -87,23 +101,28 @@
       max-height: 42px;
       border-bottom: 4px solid transparent;
       transition: 0.25s;
+
       &.active {
         font-weight: bold;
       }
+
       .step-no {
         min-width: 36px;
         max-width: 36px;
         min-height: 42px;
         max-height: 42px;
       }
+
       .step-name {
         max-width: 114px;
       }
     }
+
     .not-overlap {
       z-index: 0;
     }
   }
+
   .step-controls {
     min-width: 134px;
     max-width: 134px;
@@ -120,6 +139,7 @@
   outline: 0;
   max-height: 234px;
   overflow: auto;
+
   .list-group-item {
     &:not(.active):hover {
       cursor: pointer;
@@ -131,14 +151,17 @@
 .experience-hooks {
   min-height: 40px;
   max-height: 40px;
+
   .experience-hooks-title {
     min-width: 120px;
     max-width: 120px;
   }
+
   .experience-hooks-buttons {
     min-width: calc(100vw - 447px);
     max-width: calc(100vw - 447px);
     overflow: hidden;
+
     .experience-hooks-btn {
       min-width: 160px;
       max-width: 160px;
@@ -147,6 +170,7 @@
       padding: 0;
     }
   }
+
   .btn-link {
     padding: 0;
   }
@@ -185,12 +209,13 @@
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
+
 .no-focus {
   box-shadow: none !important;
 }
 
-.view-modes{
-  .active{
+.view-modes {
+  .active {
     background: black !important;
     color: white !important;
   }

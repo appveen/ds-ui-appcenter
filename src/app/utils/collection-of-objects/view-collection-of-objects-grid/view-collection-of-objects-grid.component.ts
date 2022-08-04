@@ -99,6 +99,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
           });
         }
       });
+      console.log(definition)
     }
   }
 
@@ -124,15 +125,14 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
             headerName: '#',
             field: '__index',
             pinned: 'left',
-            sortable: true,
+            sortable: false,
           }]
           : []
       ),
       ...this.definitionList.map((definition) => ({
         headerName: !!definition.properties.label ? definition.properties.label : definition.properties.name,
         field: definition.controlPath,
-        sortable: true,
-        headerClass: 'hide-filter-icon',
+        sortable: false,
         resizable: true,
         cellRenderer: 'customCellRenderer',
         refData: definition,
@@ -152,19 +152,23 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
         gridParent: this
       },
       columnDefs,
-      pagination: true,
-      paginationPageSize: AG_GRID_PAGINATION_COUNT,
+      pagination: false,
       animateRows: true,
       floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
       onRowDoubleClicked: this.onRowDoubleClick.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
+      rowHeight: 46,
+      headerHeight: 46,
       defaultColDef: {
         suppressMovable: true,
         suppressMenu: true
       },
-      suppressColumnVirtualisation:true
+      suppressColumnVirtualisation: true,
+      suppressPaginationPanel: true,
+      suppressHorizontalScroll: true,
+      floatingFiltersHeight: 40
     };
   }
 
@@ -182,7 +186,9 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
   private onGridReady(event) {
     this.gridApi = event.api;
     this.columnApi = event.columnApi;
-    this.forceResizeColumns()
+    if (this.gridApi) {
+      this.forceResizeColumns()
+    }
     // this.gridApi.sizeColumnsToFit()
     // this.columnApi.autoSizeAllColumns();
     this.gridApi.setFilterModel('');

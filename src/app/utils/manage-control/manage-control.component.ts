@@ -25,7 +25,7 @@ export class ManageControlComponent implements OnInit, OnDestroy {
         self.canEnable = true;
     }
 
-      ngOnInit() {
+    ngOnInit() {
         const self = this;
         if (self.definition.key === '_id' || self.definition.properties.unique || self.definition.properties.readonly) {
             self.canEnable = false;
@@ -86,4 +86,5 @@ export class ManageControlComponent implements OnInit, OnDestroy {
             self.form.get(self.definition.key).disable();
         }
     }
+
 }

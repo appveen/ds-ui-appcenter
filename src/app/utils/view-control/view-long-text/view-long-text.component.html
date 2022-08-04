@@ -42,7 +42,7 @@
 </div>
 <ng-template #values let-definition="definition" let-value="value" let-type="type">
   <div [ngClass]="{'position-relative':isSecureText}">
-    <div class="long-text-wrapper show-paragraph p-2 border font-weight-bold " [ngClass]="{'mr-4': isSecureText}">
+    <div class="long-text-wrapper show-paragraph fw-500 ">
       <ng-container *ngIf="!isSecureText">
         <ng-container *ngIf="value">
           <div *ngIf="isenrichTextWithLinkRequired(value)" [innerHTML]="getContent(enrichTextWithLink(value))"></div>

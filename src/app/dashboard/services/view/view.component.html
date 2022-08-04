@@ -19,8 +19,15 @@
                 <span class="text-secondary mr-2">This record is under review.</span>
             </div>
         </div>
-        <div
-            class="bg-light actions d-flex align-items-center justify-content-between position-relative border-bottom pr-3">
+        <div class="bg-light actions d-flex pr-3">
+            <div class="d-flex pl-5 my-auto">
+                <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover"
+                    [routerLink]="['/', currentAppId, 'services', schema._id, 'list']"></i>
+                <div class="fw-600 font-24">
+                    {{value._id}}
+                </div>
+            </div>
+
             <div class="d-flex align-items-center bg-light pl-3 position-relative">
                 <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between mr-2">
                     <div class="d-flex align-items-center">
@@ -87,7 +94,7 @@
                     <span class="text">Back</span>
                 </button>
             </div>
-            <div *ngIf="!showVersionHistory && !inReview && !showLazyLoader" class="d-flex align-items-center">
+            <div *ngIf="!showVersionHistory && !inReview && !showLazyLoader" class="d-flex align-items-center ml-auto">
                 <button (click)="workflowAlert()" *ngIf="hasPermission('DELETE') && !documentLocked"
                     class="btn btn-link px-3" type="button">
                     <span class="fa fa-trash mr-2 font-13"></span>

@@ -26,20 +26,23 @@
   </ng-container>
 
   <ng-container *ngIf="!definition.properties.errorMessage && specificType!=='password'">
-    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded"
+    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary"
       *ngIf="(requiredError || emailError || patternError || minLengthError || maxLengthError )"
       [ngClass]="{'bg-error':requiredError || emailError || patternError || minLengthError || maxLengthError}">
       <!-- <span *ngIf="definition?.properties?.pattern">Expression : {{definition?.properties?.pattern}}</span> -->
       <div *ngIf="requiredError">
-        {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+        {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
+        definition.properties.name : 'field' }}
         is required</div>
       <div *ngIf="emailError">Enter a valid email address</div>
       <div *ngIf="minLengthError">
-        {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+        {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
+        definition.properties.name : 'field' }}
         should have min. length
         {{definition.properties.minlength}}</div>
       <div *ngIf="maxLengthError">
-        {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+        {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
+        definition.properties.name : 'field' }}
         should have max. length
         {{definition.properties.maxlength}}</div>
       <div *ngIf="patternError">

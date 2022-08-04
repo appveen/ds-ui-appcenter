@@ -1,19 +1,20 @@
 <div class="value-width position-relative w-100">
-    <input class="form-control form-control-sm rounded"
-        [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}" [type]="showPassword ? 'text' : 'password'"
-        (keyup)="onEnter($event)" (change)="onChange($event.target.value)" #inputControl [attr.id]="definition.path"
-        [ngModel]="password" [disabled]="control.disabled" autocomplete="off">
+    <input class="form-control form-control-sm border"
+        [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
+        [type]="showPassword ? 'text' : 'password'" (keyup)="onEnter($event)" (change)="onChange($event.target.value)"
+        #inputControl [attr.id]="definition.path" [ngModel]="password" [disabled]="control.disabled" autocomplete="off">
     <span class="fas eye-icon eyeIcon position-absolute hover"
         [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash': showPassword }"
         (click)="showPassword= !showPassword"></span>
 </div>
 <ng-container *ngIf="!definition.properties.errorMessage ">
-    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded"
+    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary border"
         *ngIf="(requiredError  || patternError || minLengthError || maxLengthError )"
         [ngClass]="{'bg-error':requiredError  || patternError || minLengthError || maxLengthError}">
         <!-- <span *ngIf="definition?.properties?.pattern">Expression : {{definition?.properties?.pattern}}</span> -->
         <div *ngIf="requiredError">
-            {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+            {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
+            definition.properties.name : 'field' }}
             is required</div>
         <div *ngIf="patternError">
             Invalid regex pattern</div>
@@ -22,7 +23,7 @@
 </ng-container>
 
 <ng-container *ngIf="definition.properties.errorMessage  ">
-    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded"
+    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary border"
         *ngIf="requiredError  || patternError || minLengthError || maxLengthError"
         [ngClass]="{'bg-error':requiredError  || patternError || minLengthError || maxLengthError}">
         {{ definition.properties.errorMessage}}

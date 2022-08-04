@@ -114,6 +114,10 @@
   font-weight: 500;
 }
 
+.fw-600 {
+  font-weight: 600;
+}
+
 .font-7 {
   font-size: 7px;
 }
@@ -149,6 +153,15 @@
 .font-bold {
   font-weight: bold;
 }
+
+.font-20 {
+  font-size: 20px;
+}
+
+.font-24 {
+  font-size: 24px;
+}
+
 
 .chk-container {
   display: block;
@@ -246,15 +259,21 @@
 
 /*---- ODP AG-GRID START ----*/
 .ag-theme-balham {
-  font-family: "Lato";
-  font-size: 13px;
+  font-family: "Inter";
+  font-size: 14px !important;
 
   .ag-root {
     border: 0;
   }
 
   .ag-header {
-    background: #fff;
+    background: #F7F7FB;
+
+
+    .ag-header-cell-text {
+      text-transform: uppercase;
+      color: $secondary;
+    }
 
     .ag-header-row:last-child {
       .ag-header-cell {
