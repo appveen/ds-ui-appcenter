@@ -142,6 +142,9 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
                         self.rbacUserReloginAction = res.rbacUserReloginAction;
                         self.activeSessionWarning();
                     }
+                    else {
+                        this.authType == 'azure' ? this.doAzureLogin() : this.doLogin();
+                    }
                 }
             },
                 err => {
@@ -157,9 +160,8 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
         }
     }
 
-    doLogin(event: Event) {
+    doLogin() {
         try {
-            event.preventDefault();
             const self = this;
             self.message = null;
             const username = self.form.get('username').value;

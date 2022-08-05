@@ -4,17 +4,29 @@
 @font-face {
   font-family: "Lato";
   src: url("../fonts/default/Lato-Regular.woff") format("woff"),
-    /* Pretty Modern Browsers */ url("../fonts/default/Lato-Light.woff") format("woff"),
-    /* Pretty Modern Browsers */ url("../fonts/default/Lato-Italic.woff") format("woff"),
-    /* Pretty Modern Browsers */ url("../fonts/default/Lato-Bold.woff") format("woff"),
-    /* Pretty Modern Browsers */ url("../fonts/default/Lato-Regular.ttf") format("truetype"),
-    /* Safari, Android, iOS */ url("../fonts/default/Lato-Light.ttf") format("truetype"),
-    /* Safari, Android, iOS */ url("../fonts/default/Lato-Italic.ttf") format("truetype"),
-    /* Safari, Android, iOS */ url("../fonts/default/Lato-Bold.ttf") format("truetype"),
-    /* Safari, Android, iOS */ url("../fonts/default/Lato-Regular.svg#svgFontName") format("svg"),
-    /* Legacy iOS */ url("../fonts/default/Lato-Light.svg#svgFontName") format("svg"),
-    /* Legacy iOS */ url("../fonts/default/Lato-Italic.svg#svgFontName") format("svg"),
-    /* Legacy iOS */ url("../fonts/default/Lato-Bold.svg#svgFontName") format("svg"); /* Legacy iOS */
+    /* Pretty Modern Browsers */
+    url("../fonts/default/Lato-Light.woff") format("woff"),
+    /* Pretty Modern Browsers */
+    url("../fonts/default/Lato-Italic.woff") format("woff"),
+    /* Pretty Modern Browsers */
+    url("../fonts/default/Lato-Bold.woff") format("woff"),
+    /* Pretty Modern Browsers */
+    url("../fonts/default/Lato-Regular.ttf") format("truetype"),
+    /* Safari, Android, iOS */
+    url("../fonts/default/Lato-Light.ttf") format("truetype"),
+    /* Safari, Android, iOS */
+    url("../fonts/default/Lato-Italic.ttf") format("truetype"),
+    /* Safari, Android, iOS */
+    url("../fonts/default/Lato-Bold.ttf") format("truetype"),
+    /* Safari, Android, iOS */
+    url("../fonts/default/Lato-Regular.svg#svgFontName") format("svg"),
+    /* Legacy iOS */
+    url("../fonts/default/Lato-Light.svg#svgFontName") format("svg"),
+    /* Legacy iOS */
+    url("../fonts/default/Lato-Italic.svg#svgFontName") format("svg"),
+    /* Legacy iOS */
+    url("../fonts/default/Lato-Bold.svg#svgFontName") format("svg");
+  /* Legacy iOS */
 }
 
 .logo {
@@ -23,20 +35,24 @@
   background-size: contain;
   background-position: center;
 }
-.logo-white{
+
+.logo-white {
   background-image: url("../img/logo_white.svg");
   background-size: contain;
   background-position: center;
 }
+
 .powered-by {
   // background-image: url("../img/data.stack_appcenter_powered_by.svg");
   background-image: url("../img/powered-by.svg");
   background-size: contain;
   background-position: center;
 }
+
 .login-img {
-  background: url("../img/world.gif");
+  background: url("../img/developer.svg");
 }
+
 .no-service-img {
   background: url("../img/no_services.svg");
 }
@@ -91,23 +107,27 @@
 .btn-min-width {
   min-width: 120px !important;
 }
+
 .hover {
   cursor: pointer;
 }
+
 .hide {
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s linear 0.33s, opacity 0.33s linear;
 }
+
 .default-loader {
   position: fixed;
   z-index: 1040;
   top: 0;
   left: 0;
   right: 0;
-  bottom:0;
+  bottom: 0;
   background: rgba(255, 255, 255, 0.4);
 }
+
 th,
 td {
   .col-4 {
@@ -169,15 +189,15 @@ td {
   transition: 0.4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: $primary;
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px $primary;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   -webkit-transform: translateX(16px);
   -ms-transform: translateX(16px);
   transform: translateX(16px);
@@ -195,6 +215,7 @@ input:checked + .slider:before {
 .upload-icon {
   background: url("../img/upload-icon.svg");
 }
+
 .ic-upload-m {
   background: url("../img/ic-upload-m.svg");
 }
@@ -206,9 +227,11 @@ input:checked + .slider:before {
 .objIcon {
   background: url("../img/objIcon.svg");
 }
+
 .objIcon1 {
   background: url("../img/objIcon1.svg");
 }
+
 /* width */
 // ::-webkit-scrollbar {
 //   width: 5px;

@@ -1,67 +1,137 @@
 @import "src/assets/scss/bootstrap/_functions.scss";
 @import "src/assets/scss/bootstrap/_variables.scss";
 
-.login-img-wrapper {
+.login-img {
+  background-position: left;
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 506px !important;
+  height: 336px !important;
   position: absolute;
-  z-index: 0;
-  left: 0;
-  top: 0;
-  background: #0a0c1c;
-  .login-img {
-    background-position: left;
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-left: -16%;
-  }
+  left: 15px;
+  // right: 75%;
+  top: 128px;
+  // bottom: 45%;
 }
+
+.page {
+  height: 100vh;
+}
+
+.login-box {
+  margin-left: 80px;
+  margin-top: 10px
+}
+
 .login-bg {
   .welcome {
-    margin-top: 30vh;
-    margin-left: 10vw;
-    > .title {
-      font-size: 26px;
+    // margin-top: 30vh;
+    margin-left: 8vw;
+
+    >.title {
+      font-size: 36px;
+      font-weight: 600;
+      font-size: 36px;
+      line-height: 44px;
+      display: flex;
+      letter-spacing: 0.01em;
+    }
+
+    .text {
+      width: 610px;
     }
   }
+
+  .login-text {
+    font-weight: 600;
+    font-size: 24px !important;
+    line-height: 40px;
+  }
+
+  .sign-in {
+
+    line-height: 22px;
+    color: $secondary;
+    margin-bottom: 20px;
+  }
+
+  .input-text {
+    width: 360px;
+    min-height: 40px !important;
+    border-radius: 8px;
+  }
+
+  .form-button {
+    width: 360px;
+    min-height: 48px !important;
+    border-radius: 6px;
+  }
+
   .product {
     width: 340px;
-    margin: 0 auto;
-    margin-top: 16vh;
-    .logo,
-    .logo-white {
+    margin-top: 10vh;
+
+    .logo {
       width: 284px;
       height: 84px;
-      background-size: 360px;
+      background-size: 250px;
       background-position: center;
     }
+
     .title {
       font-size: 22px;
-      color: rgba(255, 255, 255, 0.6);
+      color: #181818;
       margin-top: 4px;
     }
+
     .sub-title {
       font-size: 14px;
       margin-top: -4px;
     }
   }
+
   .form {
     width: 340px;
     margin: 0 auto;
     margin-top: 0px;
-    .title {
-    }
+
     form {
-      label {
-        font-size: 14px;
-      }
+
       input,
       button {
-        height: 40px !important;
-        line-height: 16px;
+        height: 36px !important;
+        line-height: 14px;
       }
     }
   }
 }
+
 .footer {
   position: absolute;
   bottom: 0;
+  justify-content: center;
+}
+
+.col-4half,
+.col-7half {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+@media (min-width: 768px) {
+
+  .col-4half,
+  .col-7half {
+    float: left;
+  }
+
+  .col-4half {
+    width: 35%;
+  }
+
+  .col-7half {
+    width: 65%;
+  }
 }
