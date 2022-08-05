@@ -7,8 +7,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ServicesComponent } from './services.component';
 import { BeforeGuard } from 'src/app/guard/before.guard';
 import { RouteGuard } from 'src/app/guard/route.guard';
+import { ServiceOverviewComponent } from './service-overview/service-overview.component';
 
 const routes: Routes = [
+  {
+    path: 'overview',
+    component: ServiceOverviewComponent,
+    canActivateChild: [BeforeGuard],
+    canActivate: [BeforeGuard]
+  },
   {
     path: ':serviceId',
     component: ServicesComponent,
@@ -41,6 +48,7 @@ const routes: Routes = [
   ],
   declarations: [
     ServicesComponent,
+    ServiceOverviewComponent,
   ],
   exports: [RouterModule]
 })

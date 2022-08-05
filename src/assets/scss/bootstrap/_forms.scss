@@ -19,7 +19,9 @@
   @if $enable-rounded {
     // Manually use the if/else instead of the mixin to account for iOS override
     border-radius: $input-border-radius;
-  } @else {
+  }
+
+  @else {
     // Otherwise undo the iOS default
     border-radius: 0;
   }
@@ -38,9 +40,9 @@
 
   // Placeholder
   &::placeholder {
-    color: $input-placeholder-color;
+    color: $text-muted;
     // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
-    opacity: 1;
+
   }
 
   // Disabled and read-only inputs
@@ -194,8 +196,8 @@ select.form-control-lg {
   margin-right: -5px;
   margin-left: -5px;
 
-  > .col,
-  > [class*="col-"] {
+  >.col,
+  >[class*="col-"] {
     padding-right: 5px;
     padding-left: 5px;
   }
@@ -217,7 +219,7 @@ select.form-control-lg {
   margin-top: $form-check-input-margin-y;
   margin-left: -$form-check-input-gutter;
 
-  &:disabled ~ .form-check-label {
+  &:disabled~.form-check-label {
     color: $text-muted;
   }
 }
@@ -317,6 +319,7 @@ select.form-control-lg {
       width: auto;
       padding-left: 0;
     }
+
     .form-check-input {
       position: relative;
       margin-top: 0;
@@ -328,6 +331,7 @@ select.form-control-lg {
       align-items: center;
       justify-content: center;
     }
+
     .custom-control-label {
       margin-bottom: 0;
     }

@@ -33,8 +33,7 @@
 <!-- <hr class="m-0">
 <div class="text-muted ml-2 my-1">Others</div> -->
 <ng-container *ngIf="dsType=='ds'">
-    <div class="menu-list-item d-flex align-items-center text-secondary">
-        <span class="fa fa-star mr-3 pinning-star "></span>
+    <div class="menu-list-item d-flex align-items-center text-secondary" (click)="loadServiceOverview()">
         All Records - DS
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"

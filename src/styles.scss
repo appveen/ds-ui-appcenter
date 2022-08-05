@@ -110,16 +110,26 @@
   border-color: #555 transparent transparent transparent;
 }
 
+
 .fw-500 {
   font-weight: 500;
+}
+
+
+.font-7 {
+  font-size: 7px;
+}
+
+.fw-700 {
+  font-weight: 700;
 }
 
 .fw-600 {
   font-weight: 600;
 }
 
-.font-7 {
-  font-size: 7px;
+.font-22 {
+  font-size: 22px;
 }
 
 .font-14 {
@@ -281,6 +291,7 @@
       }
     }
   }
+
 
   .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right) {
     border-style: dashed !important;
