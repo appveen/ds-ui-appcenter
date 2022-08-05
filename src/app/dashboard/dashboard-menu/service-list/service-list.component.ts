@@ -147,6 +147,10 @@ export class ServiceListComponent implements OnInit {
     }
   }
 
+  loadServiceOverview() {
+    this.router.navigate(['/', this.commonService.app._id, 'services', 'overview']);
+  }
+
   addToStaredList(serviceId) {
     const data = {
       userId: this.commonService.userDetails._id,
