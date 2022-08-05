@@ -115,6 +115,10 @@ export class WorkflowListComponent implements OnInit {
       });
   }
 
+  loadWorkflowOverview() {
+    this.router.navigate(['/', this.commonService.app._id, 'workflow', 'overview']);
+  }
+
   loadWorkflow(workflow: any, force?: boolean) {
     if (force) {
       this.updateWorflowCount();
