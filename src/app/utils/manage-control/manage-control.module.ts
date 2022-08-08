@@ -34,6 +34,7 @@ import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view
 import { ColOfObjsHeaderCellModule } from '../collection-of-objects/col-of-objs-header-cell/col-of-objs-header-cell.module';
 import { RouterModule } from '@angular/router';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { TextEditor } from '../cell-editor/text-editor.component';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     UserTypeComponent,
     SecureTextTypeComponent,
     EditCollectionOfObjectsGridComponent,
+    TextEditor,
     EditColOfObjsComponent,
     GridCheckboxComponent
   ],

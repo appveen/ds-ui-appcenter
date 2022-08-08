@@ -20,6 +20,8 @@ import { FloatingFilterComponent } from '../grid-column-filter/floating-filter/f
 import { ColumnFilterComponent } from '../grid-column-filter/column-filter/column-filter.component';
 import { AppService } from 'src/app/service/app.service';
 import { ColOfObjsHeaderCellComponent } from '../col-of-objs-header-cell/col-of-objs-header-cell/col-of-objs-header-cell.component';
+import { TextEditor } from '../../cell-editor/text-editor.component';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'odp-edit-collection-of-objects-grid',
@@ -32,14 +34,17 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   @Input() definition: any;
   @Input() collectionFieldName: string;
   @Input() showIndexColumn: boolean = false;
-  @Input() isEditable: boolean;
+  @Input() isEditable: boolean = false;
   @ViewChild('editModal', { static: false }) editModal: TemplateRef<HTMLElement>;
   @ViewChild('bulkEditModal', { static: false }) bulkEditModal: TemplateRef<HTMLElement>;
+  @ViewChild('newModal', { static: false }) newModal: TemplateRef<HTMLElement>;
   editModalRef: NgbModalRef;
   bulkEditModalRef: NgbModalRef;
+  newModalRef: NgbModalRef;
   editBackup: Array<any>;
   checkAll = false;
   gridOptions: GridOptions;
+  modalOptions: GridOptions;
   definitionList: Array<any> = [];
   gridApi: GridApi;
   columnApi: ColumnApi;
@@ -247,13 +252,15 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     this.editBackup = this.formArray.getRawValue();
     this.showModalBackdrop = true;
     this.editModalRef = this.ngbModal.open(this.editModal, { centered: true, backdrop: false, keyboard: false, windowClass: 'large-modal' })
-    this.editModalRef.result.then(() => {
-      this.refreshRowData();
+    this.editModalRef.result.then((resp) => {
+      this.isEditable = false
+      this.refreshRowData(this.rowData);
       this.forceResizeColumns();
       this.addAllowed = true;
       this.editBackup = null;
       this.addedIndex = null;
-      this.showModalBackdrop = false;
+      // this.showModalBackdrop = false;
+
     })
   }
 
@@ -265,6 +272,15 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       this.formArray.updateValueAndValidity();
     }
     this.editModalRef.close();
+  }
+  cancelNew() {
+    this.formArray.setValue(this.editBackup);
+    this.formArray.updateValueAndValidity();
+    if (this.addedIndex !== null) {
+      this.formArray.removeAt(this.addedIndex);
+      this.formArray.updateValueAndValidity();
+    }
+    this.newModalRef.close();
   }
 
   goToPreviousItem() {
@@ -313,6 +329,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       actionColCellRenderer: EditColOfObjsComponent,
       customColumnFilterComponent: ColumnFilterComponent,
       customFloatingFilterComponent: FloatingFilterComponent,
+      textEditor: TextEditor
     };
     const columnDefs: Array<ColDef> = [
       // {
@@ -326,12 +343,15 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       ...(
         this.isEditable
           ? [{
-            headerName: '#',
+            headerName: '',
             pinned: 'left',
             sortable: false,
-            cellRenderer: 'customCheckboxCellRenderer',
+            // cellRenderer: 'customCheckboxCellRenderer',
             minWidth: 60,
             maxWidth: 60,
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            filter: false,
           },]
           : []
       ),
@@ -355,33 +375,36 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         cellRenderer: 'customCellRenderer',
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
+        editable: this.isEditable,
+        ...(this.isEditable ? { cellEditor: 'textEditor', editable: true } : {}),
         ...this.getFilterConfiguration(definition),
       })),
-      {
-        headerName: 'Action',
-        cellRenderer: 'actionColCellRenderer',
-        pinned: 'right',
-        minWidth: 140,
-        maxWidth: 140,
-      }
+      // {
+      //   headerName: 'Action',
+      //   cellRenderer: 'actionColCellRenderer',
+      //   pinned: 'right',
+      //   minWidth: 140,
+      //   maxWidth: 140,
+      // }
     ]
     this.gridOptions = {
       context: {
         gridParent: this
       },
       columnDefs,
-      pagination: false,
+      pagination: true,
+      paginationPageSize: 4,
       // paginationPageSize: AG_GRID_PAGINATION_COUNT,
       animateRows: true,
       floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
-      onRowDoubleClicked: this.onRowDoubleClick.bind(this),
+      // onRowDoubleClicked: this.onRowDoubleClick.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
       onSelectionChanged: this.onSelectionChanged.bind(this),
+      suppressRowClickSelection: true,
       rowSelection: 'multiple',
       rowDeselection: true,
-      rowMultiSelectWithClick: true,
       defaultColDef: {
         suppressMovable: true,
         suppressMenu: true
@@ -391,7 +414,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       headerHeight: 46,
       suppressPaginationPanel: true,
       suppressHorizontalScroll: true,
-      floatingFiltersHeight: 40
+      floatingFiltersHeight: 40,
     };
 
   }
@@ -464,13 +487,47 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     }
   }
 
-  private refreshRowData() {
-    this.gridOptions.api.setRowData(this.formArray.getRawValue().map((v, i) => ({ ...v, __index: i + 1 })));
+  private refreshRowData(data?) {
+    this.prepareTable();
+    if (data) {
+      // this.gridApi.setRowData(this.rowData)
+      if (this.gridApi) {
+        this.gridApi.refreshCells()
+      }
+    }
+    else {
+      this.gridOptions.api.setRowData(this.formArray.getRawValue().map((v, i) => ({ ...v, __index: i + 1 })));
+    }
     this.onSelectionChanged();
   }
 
-  private onRowDoubleClick(params: any) {
-    this.selectedRowIndex = params.rowIndex;
-    this.editItem();
+  // private onRowDoubleClick(params: any) {
+  //   this.selectedRowIndex = params.rowIndex;
+  //   this.editItem();
+  // }
+  openModal(rowdata) {
+    this.isEditable = true;
+    this.modalOptions = { ...this.gridOptions, pagination: false }
+    this.prepareTable()
+    this.addnew();
+
+  }
+  addnew() {
+    // this.editBackup = this.formArray.getRawValue();
+    this.showModalBackdrop = true;
+    this.newModalRef = this.ngbModal.open(this.newModal, { centered: true, backdrop: false, keyboard: false, windowClass: 'large-modal' })
+    this.newModalRef.result.then((resp) => {
+      // this.rowData = this.rowData.filter(ele =>
+      //   !_.isEmpty(ele)
+      // )
+      // this.refreshRowData(this.rowData);
+      // this.forceResizeColumns();
+      // this.addAllowed = true;
+      // this.editBackup = null;
+      // this.addedIndex = null;
+      this.showModalBackdrop = false;
+      // this.formArray.setValue(this.rowData)
+
+    })
   }
 }

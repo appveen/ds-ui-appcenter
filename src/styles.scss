@@ -242,8 +242,8 @@
 }
 
 .btn:not(.btn-link) {
-  min-height: 32px;
-  max-height: 32px;
+  min-height: 40px;
+  max-height: 40px;
 
   &.btn-sm {
     min-height: 26px;
@@ -292,6 +292,18 @@
     }
   }
 
+  .ag-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  .ag-cell.ag-cell-inline-editing {
+    height: 48px !important;
+  }
+
+  .ag-center-cols-viewport {
+    overflow-x: hidden;
+  }
 
   .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right) {
     border-style: dashed !important;
@@ -466,4 +478,9 @@
   right: 0;
   z-index: 1;
   background: rgba(0, 0, 0, 0.6);
+}
+
+.actions {
+  width: 140px;
+  height: 40px
 }

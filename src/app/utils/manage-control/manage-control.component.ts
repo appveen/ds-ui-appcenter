@@ -70,7 +70,7 @@ export class ManageControlComponent implements OnInit, OnDestroy {
 
     get toggleEnable() {
         const self = this;
-        return self.form.get(self.definition.key).enabled;
+        return self.form?.get(self.definition.key)?.enabled;
     }
 
     set toggleEnable(val) {

@@ -57,7 +57,7 @@
 
 <div class="field-wrapper d-flex flex-column align-items-start pb-3" [class.px-3]="definition.level === 0"
   [formGroup]="form" *ngIf="definition.type=='Array'">
-  <div class="d-flex flex-column w-100 obj-bg px-3 pt-3">
+  <div class="d-flex flex-column w-100">
     <odp-array-control #arrayControl [markEnable]="markEnable" [form]="arrayForm"
       [definition]="definition.definition[0]" [arrayDefinition]="definition"></odp-array-control>
   </div>

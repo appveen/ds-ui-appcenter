@@ -87,3 +87,11 @@
   color: #6A7179 !important;
   pointer-events: none;
 }
+
+::ng-deep .modal-content {
+  padding: 32px
+}
+
+::ng-deep .modal-footer {
+  border-top: none !important;
+}
