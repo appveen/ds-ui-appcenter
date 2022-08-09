@@ -99,7 +99,6 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
           });
         }
       });
-      console.log(definition)
     }
   }
 
@@ -137,14 +136,25 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
         cellRenderer: 'customCellRenderer',
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
+        onCellDoubleClicked: (params) => {
+          if ((definition.type === 'Array' || definition.type === 'Object' || definition.type === 'Geojson')) {
+            return this.onRowDoubleClick(params)
+
+          }
+
+          else {
+
+            return
+
+          }
+        },
         ...this.getFilterConfiguration(definition),
       })),
       {
         headerName: 'Action',
         cellRenderer: 'actionColCellRenderer',
-        pinned: 'right',
-        minWidth: 80,
-        maxWidth: 80
+        maxWidth: 10,
+        suppressToolPanel: true
       }
     ]
     this.gridOptions = {
@@ -157,7 +167,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
-      onRowDoubleClicked: this.onRowDoubleClick.bind(this),
+      // onRowDoubleClicked: this.onRowDoubleClick.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
       rowHeight: 46,
       headerHeight: 46,

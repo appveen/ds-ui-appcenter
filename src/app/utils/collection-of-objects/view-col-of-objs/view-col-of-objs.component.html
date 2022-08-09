@@ -2,14 +2,14 @@
 
 <ng-template #viewModal>
     <ng-container *ngIf="!!parentContext">
-        <div class="modal-header bg-light">
-            <strong>
+        <!-- <div class="modal-header"> -->
+        <!-- <strong>
                 View {{ parentContext.collectionFieldName }}
                 &nbsp;
                 <span *ngIf="parentContext.historyMode === 'old'">[OLD]</span>
                 <span *ngIf="parentContext.historyMode === 'new'">[NEW]</span>
-            </strong>
-            <div class="paginationControls">
+            </strong> -->
+        <!-- <div class="paginationControls">
                 <button class="btn btn-link btn-sm" [disabled]="selectedRowIndex === 0" (click)="goToPreviousItem()">
                     <span class="fa fa-angle-left"></span>
                 </button>
@@ -20,15 +20,17 @@
                     (click)="goToNextItem()">
                     <span class="fa fa-angle-right"></span>
                 </button>
-            </div>
-        </div>
+            </div> -->
+        <!-- </div> -->
+        <span class="font-24 fw-600 text-secondary" style="padding: 20px; margin-bottom: -40px">{{
+            parentContext.collectionFieldName }}</span>
         <div class="modal-body scrollBox">
             <odp-view-control *ngFor="let def of expandedDefinitions[selectedRowIndex].definition" [definition]="def"
                 [value]="expandedDefinitions[selectedRowIndex].value">
             </odp-view-control>
         </div>
-        <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-secondary" (click)="viewModalRef.close()">
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary actions" (click)="viewModalRef.close()">
                 Close
             </button>
         </div>

@@ -189,8 +189,8 @@
         </ng-container>
         <ng-container *ngIf="isSchemaFree">
           <odp-code-editor class="code-editor" [edit]="{status:true}" [theme]="selectedEditorTheme"
-          [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
-        </odp-code-editor>
+            [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
+          </odp-code-editor>
         </ng-container>
       </div>
       <div class="loading" *ngIf="showLazyLoader">

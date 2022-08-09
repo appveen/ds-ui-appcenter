@@ -94,7 +94,8 @@
         <button type="button" class="btn btn-primary-outline actions" (click)="cancelEdit()">
             Cancel
         </button>
-        <button type="button" class="btn btn-primary actions" *ngIf="isEditable" (click)="editModalRef.close()">
+        <button type="button" class="btn btn-primary actions" *ngIf="isEditable"
+            (click)="editModalRef.close('proceed')">
             Proceed
         </button>
     </div>

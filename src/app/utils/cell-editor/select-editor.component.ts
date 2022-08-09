@@ -18,7 +18,7 @@ import { ICellEditorParams } from 'ag-grid-community';
     class="border text-secondary ml-2"
   />`,
 })
-export class TextEditor implements ICellEditorAngularComp, AfterViewInit {
+export class SelectEditor implements ICellEditorAngularComp, AfterViewInit {
   private params: any;
   public value;
   public type
@@ -44,8 +44,10 @@ export class TextEditor implements ICellEditorAngularComp, AfterViewInit {
 
 
   getValue() {
+
     return this.value;
   }
+
 
   isCancelAfterEnd() {
     return false;

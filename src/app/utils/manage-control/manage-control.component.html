@@ -37,7 +37,7 @@
     </div>
   </div>
   <ng-container *ngIf="definition.type!='Object' && definition.type!='Array'">
-    <odp-form-control [markEnable]="markEnable" [control]="form.get(definition.key)" [definition]="definition"
+    <odp-form-control [markEnable]="markEnable" [control]="form?.get(definition.key)" [definition]="definition"
       [first]="first"></odp-form-control>
   </ng-container>
 </div>

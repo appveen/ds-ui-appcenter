@@ -56,6 +56,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   showModalBackdrop = false;
   rowData;
   private addAllowed = true;
+  editor: boolean;
 
   get rowCount() {
     return this.gridApi?.getDisplayedRowCount() || 0;
@@ -98,8 +99,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.formArray) {
-      this.rowData = this.formArray.getRawValue().map((v, i) => ({ ...v, __index: i + 1 }))
+    if (changes?.formArray) {
+      this.rowData = this.formArray?.getRawValue().map((v, i) => ({ ...v, __index: i + 1 }))
       setTimeout(e => {
         this.onGridSizeChanged()
       }, 100)
@@ -204,12 +205,14 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     if (!!this.gridApi) {
       const selectedNodes = this.gridApi.getSelectedNodes();
       const indexArray = selectedNodes.map(node => node.rowIndex);
+      this.gridApi.updateRowData({ remove: selectedNodes.map(node => node.data) });
       this.formArray = new FormArray(this.formArray.controls.filter((ctrl, index) => !indexArray.includes(index)));
       this.formArray.markAsDirty();
       this.gridApi.updateRowData({ remove: selectedNodes.map(node => node.data) });
       setTimeout(() => {
         this.refreshRowData();
       }, 500);
+      this.rowData = this.formArray.value
     }
   }
 
@@ -249,38 +252,47 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   editItem() {
-    this.editBackup = this.formArray.getRawValue();
+    this.editBackup = this.formArray.value;
+    this.isEditable = true
     this.showModalBackdrop = true;
+
     this.editModalRef = this.ngbModal.open(this.editModal, { centered: true, backdrop: false, keyboard: false, windowClass: 'large-modal' })
     this.editModalRef.result.then((resp) => {
-      this.isEditable = false
-      this.refreshRowData(this.rowData);
-      this.forceResizeColumns();
-      this.addAllowed = true;
-      this.editBackup = null;
-      this.addedIndex = null;
+      if (resp === 'proceed') {
+        this.refreshRowData();
+        this.forceResizeColumns();
+        this.addAllowed = true;
+        this.editBackup = null;
+        this.addedIndex = null;
+      }
+
       // this.showModalBackdrop = false;
 
     })
   }
 
   cancelEdit() {
-    this.formArray.setValue(this.editBackup);
-    this.formArray.updateValueAndValidity();
-    if (this.addedIndex !== null) {
-      this.formArray.removeAt(this.addedIndex);
-      this.formArray.updateValueAndValidity();
-    }
+    // this.formArray.setValue(this.editBackup);
+    // this.formArray.updateValueAndValidity();
+    // if (this.addedIndex !== null) {
+    //   this.formArray.removeAt(this.addedIndex);
+    //   this.formArray.updateValueAndValidity();
+    // }
+    // this.isEditable = false
+    this.addAllowed = true;
     this.editModalRef.close();
+    // this.showModalBackdrop = false;
   }
   cancelNew() {
-    this.formArray.setValue(this.editBackup);
-    this.formArray.updateValueAndValidity();
-    if (this.addedIndex !== null) {
-      this.formArray.removeAt(this.addedIndex);
-      this.formArray.updateValueAndValidity();
-    }
+    // this.formArray.setValue(this.editBackup);
+    // this.formArray.updateValueAndValidity();
+    // if (this.addedIndex !== null) {
+    //   this.formArray.removeAt(this.addedIndex);
+    //   this.formArray.updateValueAndValidity();
+    // }
+    this.isEditable = false
     this.newModalRef.close();
+    this.showModalBackdrop = false;
   }
 
   goToPreviousItem() {
@@ -375,8 +387,45 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         cellRenderer: 'customCellRenderer',
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
-        editable: this.isEditable,
-        ...(this.isEditable ? { cellEditor: 'textEditor', editable: true } : {}),
+        editable: () => {
+          if (definition.properties.readonly) {
+            return false
+          }
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
+            return true
+          }
+          else {
+            return false
+          }
+        },
+        cellEditorSelector: () => {
+          if (definition.properties.readonly) {
+            return {}
+          }
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
+            return { component: 'textEditor', }
+          }
+          else {
+            return {}
+          }
+        },
+
+        cellEditorParams: {
+          type: definition.type,
+        },
+        onCellDoubleClicked: (params) => {
+          this.selectedRowIndex = params.rowIndex;
+          if ((definition.type === 'String' || definition.type === 'Number')) {
+            return ''
+          }
+
+          else {
+            if (this.isEditable) {
+              return this.editItem()
+            }
+            return ''
+          }
+        },
         ...this.getFilterConfiguration(definition),
       })),
       // {
@@ -399,7 +448,6 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
-      // onRowDoubleClicked: this.onRowDoubleClick.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
       onSelectionChanged: this.onSelectionChanged.bind(this),
       suppressRowClickSelection: true,
@@ -411,10 +459,14 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       },
       suppressColumnVirtualisation: true,
       rowHeight: 46,
+      onCellValueChanged: (params) => {
+        this.formArray.at(params.rowIndex).setValue(params.data)
+      },
       headerHeight: 46,
       suppressPaginationPanel: true,
       suppressHorizontalScroll: true,
       floatingFiltersHeight: 40,
+      ...(this.definition.type === 'String' || this.definition.type === 'Number' ? { onRowDoubleClicked: this.onRowDoubleClick.bind(this) } : {})
     };
 
   }
@@ -487,24 +539,39 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     }
   }
 
-  private refreshRowData(data?) {
+  private refreshRowData() {
     this.prepareTable();
-    if (data) {
-      // this.gridApi.setRowData(this.rowData)
-      if (this.gridApi) {
-        this.gridApi.refreshCells()
-      }
+    // if (data) {
+    // if (this.selectedRowIndex == null) {
+    //   this.rowData.push(this.formArray.value[0])
+    // }
+    // else {
+    //   this.rowData[this.selectedRowIndex] = this.formArray.value[0]
+    // }
+    this.rowData = this.formArray.value
+    if (this.gridApi) {
+      this.gridApi.refreshCells()
     }
-    else {
-      this.gridOptions.api.setRowData(this.formArray.getRawValue().map((v, i) => ({ ...v, __index: i + 1 })));
+    // }
+    // else {
+    //   this.gridOptions?.api?.setRowData(this.formArray?.getRawValue().map((v, i) => ({ ...v, __index: i + 1 })));
+    // }
+    this.onSelectionChanged();
+  }
+
+  private onRowDoubleClick(params: any) {
+    this.selectedRowIndex = params.rowIndex;
+    this.editItem();
+  }
+
+  refreshRow() {
+    if (this.gridApi) {
+      this.gridApi.setRowData(this.rowData)
+      this.gridApi.refreshCells()
     }
     this.onSelectionChanged();
   }
 
-  // private onRowDoubleClick(params: any) {
-  //   this.selectedRowIndex = params.rowIndex;
-  //   this.editItem();
-  // }
   openModal(rowdata) {
     this.isEditable = true;
     this.modalOptions = { ...this.gridOptions, pagination: false }
@@ -517,17 +584,16 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     this.showModalBackdrop = true;
     this.newModalRef = this.ngbModal.open(this.newModal, { centered: true, backdrop: false, keyboard: false, windowClass: 'large-modal' })
     this.newModalRef.result.then((resp) => {
-      // this.rowData = this.rowData.filter(ele =>
-      //   !_.isEmpty(ele)
-      // )
-      // this.refreshRowData(this.rowData);
-      // this.forceResizeColumns();
+
+      this.isEditable = false
+      this.prepareTable();
+      this.refreshRow();
+      this.forceResizeColumns();
       // this.addAllowed = true;
       // this.editBackup = null;
       // this.addedIndex = null;
       this.showModalBackdrop = false;
       // this.formArray.setValue(this.rowData)
-
     })
   }
 }

@@ -360,7 +360,7 @@ export class FormService {
       } else {
         if (_def.type === 'Array') {
           _control = new FormArray([]);
-          if (_def.value) {
+          if (_def.value && _def.value.length) {
             _def.value.forEach(element => {
               if (_def.definition[0].type === 'array') {
                 // has to be implemented

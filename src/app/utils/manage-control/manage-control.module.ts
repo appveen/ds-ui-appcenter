@@ -35,6 +35,7 @@ import { ColOfObjsHeaderCellModule } from '../collection-of-objects/col-of-objs-
 import { RouterModule } from '@angular/router';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { TextEditor } from '../cell-editor/text-editor.component';
+import { SelectEditor } from '../cell-editor/select-editor.component';
 
 @NgModule({
   imports: [
@@ -72,6 +73,7 @@ import { TextEditor } from '../cell-editor/text-editor.component';
     SecureTextTypeComponent,
     EditCollectionOfObjectsGridComponent,
     TextEditor,
+    SelectEditor,
     EditColOfObjsComponent,
     GridCheckboxComponent
   ],

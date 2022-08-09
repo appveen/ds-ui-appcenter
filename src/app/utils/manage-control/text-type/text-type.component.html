@@ -8,54 +8,54 @@
   <ng-container *ngIf="specificType=='email'">
     <input class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError || emailError}"
       type="email" [formControl]="control" (keyup)="onEnter($event)" (blur)="tabOut()" (focus)="onFocus()" #inputControl
-      [attr.id]="definition.path" [disabled]="definition.properties.readonly || control.disabled">
+      [attr.id]="definition.path" [disabled]="definition?.properties?.readonly || control?.disabled">
   </ng-container>
   <ng-container *ngIf="specificType=='text'">
     <input class="form-control form-control-sm rounded"
       [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}" type="text"
       [formControl]="control" (keyup)="onEnter($event)" (blur)="tabOut()" (focus)="onFocus()" #inputControl
-      [attr.id]="definition.path" [disabled]="definition.properties.readonly || control.disabled">
+      [attr.id]="definition.path" [disabled]="definition?.properties?.readonly || control?.disabled">
   </ng-container>
   <ng-container *ngIf="specificType == 'select'">
     <select class="form-control form-control-sm rounded" id="_selectInput" [ngClass]="{'is-invalid':requiredError}"
       [formControl]="control" (keyup)="onEnter($event)" (focus)="onFocus()" #inputControl [attr.id]="definition.path"
-      [disabled]="definition.properties.readonly || control.disabled">
-      <option *ngIf="!definition.properties.required" value="">---select---</option>
-      <option *ngFor="let opt of definition.properties.enum" [value]="opt">{{opt}}</option>
+      [disabled]="definition?.properties?.readonly || control?.disabled">
+      <option *ngIf="!definition?.properties?.required" value="">---select---</option>
+      <option *ngFor="let opt of definition?.properties?.enum" [value]="opt">{{opt}}</option>
     </select>
   </ng-container>
 
-  <ng-container *ngIf="!definition.properties.errorMessage && specificType!=='password'">
+  <ng-container *ngIf="!definition?.properties?.errorMessage && specificType!=='password'">
     <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary"
       *ngIf="(requiredError || emailError || patternError || minLengthError || maxLengthError )"
       [ngClass]="{'bg-error':requiredError || emailError || patternError || minLengthError || maxLengthError}">
       <!-- <span *ngIf="definition?.properties?.pattern">Expression : {{definition?.properties?.pattern}}</span> -->
       <div *ngIf="requiredError">
-        {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
-        definition.properties.name : 'field' }}
+        {{ definition?.properties?.name!== '_self' ? definition?.properties?.label ? definition?.properties?.label :
+        definition?.properties?.name : 'field' }}
         is required</div>
       <div *ngIf="emailError">Enter a valid email address</div>
       <div *ngIf="minLengthError">
-        {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
-        definition.properties.name : 'field' }}
+        {{ definition?.properties?.name!== '_self' ? definition?.properties?.label ? definition?.properties?.label :
+        definition?.properties?.name : 'field' }}
         should have min. length
-        {{definition.properties.minlength}}</div>
+        {{definition?.properties?.minlength}}</div>
       <div *ngIf="maxLengthError">
-        {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label :
-        definition.properties.name : 'field' }}
+        {{ definition?.properties?.name!== '_self' ? definition?.properties?.label ? definition?.properties?.label :
+        definition?.properties?.name : 'field' }}
         should have max. length
-        {{definition.properties.maxlength}}</div>
+        {{definition?.properties?.maxlength}}</div>
       <div *ngIf="patternError">
         Invalid regex pattern</div>
       <!-- <div *ngIf="definition?.properties?.sampleValue">Example : {{definition?.properties?.sampleValue}}</div> -->
     </div>
   </ng-container>
 
-  <ng-container *ngIf="definition.properties.errorMessage && specificType!=='password'">
+  <ng-container *ngIf="definition?.properties?.errorMessage && specificType!=='password'">
     <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded"
       *ngIf="requiredError || emailError || patternError || minLengthError || maxLengthError"
       [ngClass]="{'bg-error':requiredError || emailError || patternError || minLengthError || maxLengthError}">
-      {{ definition.properties.errorMessage}}
+      {{ definition?.properties?.errorMessage}}
     </div>
   </ng-container>
 
@@ -66,12 +66,12 @@
       <span *ngIf="definition?.properties?.pattern">Expression {{definition?.properties?.showPatten}} :
         {{definition?.properties?.pattern}}
         <button class="btn btn-link" *ngIf="!definition?.properties?.showPatten"
-          (click)="definition.properties.showPatten = true">
+          (click)="definition?.properties?.showPatten = true">
           <span>See Sample</span>
         </button>
       </span>
     </div>
-    <span *ngIf="definition.properties.showPatten">Example : <span
+    <span *ngIf="definition?.properties?.showPatten">Example : <span
         class="text-primary">{{definition?.properties?.sampleValue}}</span></span>
   </div> -->
 
