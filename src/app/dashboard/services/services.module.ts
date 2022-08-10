@@ -8,6 +8,7 @@ import { ServicesComponent } from './services.component';
 import { BeforeGuard } from 'src/app/guard/before.guard';
 import { RouteGuard } from 'src/app/guard/route.guard';
 import { ServiceOverviewComponent } from './service-overview/service-overview.component';
+import { SearchBoxModule } from 'src/app/utils/search-box/search-box.module';
 
 const routes: Routes = [
   {
@@ -45,6 +46,7 @@ const routes: Routes = [
     NgbModule,
     ReactiveFormsModule,
     FormsModule,
+    SearchBoxModule
   ],
   declarations: [
     ServicesComponent,

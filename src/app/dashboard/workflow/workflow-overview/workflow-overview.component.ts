@@ -10,6 +10,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 export class WorkflowOverviewComponent implements OnInit {
 
   showLazyLoader: boolean;
+  searchTerm: string;
   services: any;
   constructor(
     private commonService: CommonService
@@ -32,6 +33,9 @@ export class WorkflowOverviewComponent implements OnInit {
         $in: self.commonService.servicesWithAccess
       };
     }
+    if(self.searchTerm){
+      filter.name =  '/' + self.searchTerm + '/';
+    }
     const options: GetOptions = {
       count: -1,
       filter,
@@ -48,5 +52,24 @@ export class WorkflowOverviewComponent implements OnInit {
           self.showLazyLoader = false;
         }
       });
+  }
+
+  search(value) {
+    const self = this;
+    if (!value || !value.trim()) {
+      return;
+    }
+    this.searchTerm = value.trim();
+    self.services = [];
+    self.showLazyLoader = true;
+    self.getServices();
+  }
+
+  resetSearch() {
+    const self = this;
+    this.searchTerm = null;
+    self.services = [];
+    self.showLazyLoader = true;
+    self.getServices();
   }
 }

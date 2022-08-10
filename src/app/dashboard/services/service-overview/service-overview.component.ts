@@ -12,6 +12,9 @@ export class ServiceOverviewComponent implements OnInit {
   serviceRecordCounts: any;
   services: any;
   showLazyLoader: boolean;
+  searchTerm: string;
+  filter: any;
+
   constructor(
     private commonService: CommonService
   ) {
@@ -25,9 +28,34 @@ export class ServiceOverviewComponent implements OnInit {
     self.getServices();
   }
 
+  search(value) {
+    const self = this;
+    if (!value || !value.trim()) {
+      return;
+    }
+    this.searchTerm = value.trim();
+    self.services = [];
+    self.serviceRecordCounts = null;
+    self.showLazyLoader = true;
+    self.getServices();
+  }
+
+  resetSearch() {
+    const self = this;
+    this.searchTerm = null;
+    self.services = [];
+    self.serviceRecordCounts = null;
+    self.showLazyLoader = true;
+    self.getServices();
+  }
+
+
   getServices() {
     const self = this;
     const filter: any = { status: 'Active', app: self.commonService.app._id };
+    if(self.searchTerm){
+      filter.name =  '/' + self.searchTerm + '/';
+    }
     if (!self.commonService.userDetails.isSuperAdmin
       && self.commonService.servicesWithAccess.length > 0 && !self.commonService.isAppAdmin()) {
       filter._id = {
