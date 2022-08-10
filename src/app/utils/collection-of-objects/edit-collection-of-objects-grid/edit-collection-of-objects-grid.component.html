@@ -1,6 +1,12 @@
 <div class="d-flex justify-content-between align-items-center mb-2 buttonsRow">
-    <span class="fa fa-edit ml-auto hover" (click)="openModal(rowData)" *ngIf="!isEditable">Edit</span>
-    <div class="d-flex align-items-center">
+
+    <div class="d-flex ml-auto">
+        <button type="button" class="btn btn-link"
+            *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
+            (click)="removeSelectedNodes()">
+            <span class="odp-trash mr-2"></span>
+            <span class="text">Remove selected ({{selectedRecordsCount}})</span>
+        </button>
         <button *ngIf="hasFilters" type="button" class="btn btn-link" (click)="clearFilters()">
             <span class="fa fa-times mr-2"></span>
             <span class="text">Clear Filters</span>
@@ -11,8 +17,10 @@
             <span class="odp-edit mr-2"></span>
             <span class="text">Bulk Edit ({{ selectedRecordsCount }})</span>
         </button>
-
+        <span class="fa fa-edit hover my-auto" (click)="openModal(rowData)" *ngIf="!isEditable">Edit</span>
     </div>
+
+
 </div>
 <div class="grid-container" [ngStyle]="gridStyle">
     <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable"

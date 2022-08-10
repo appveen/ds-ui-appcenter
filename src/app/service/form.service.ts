@@ -34,6 +34,9 @@ export class FormService {
           temp.push(self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] : null, options));
         });
       } else {
+        const tempDef = objDef.map(def => {
+          return self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] ?? value[0]?.[def.key] : null, options);
+        })
         temp.push({
           path: path,
           key: key,
@@ -44,14 +47,13 @@ export class FormService {
           value: value,
           definition: Array.prototype.concat.apply(
             [],
-            objDef.map(def => {
-              return self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] : null, options);
-            })
+            tempDef
           )
         });
       }
     } else if (definition.type === 'Array') {
       const arrDef = definition.definition;
+
       const selfObj = arrDef[0];
       const def: any = {
         path: path,

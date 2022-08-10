@@ -100,7 +100,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes?.formArray) {
-      this.rowData = this.formArray?.getRawValue().map((v, i) => ({ ...v, __index: i + 1 }))
+      this.rowData = this.formArray?.value.map((v, i) => ({ ...v, __index: i + 1 }))
       setTimeout(e => {
         this.onGridSizeChanged()
       }, 100)
@@ -353,19 +353,18 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       //   maxWidth: 60,
       // },
       ...(
-        this.isEditable
-          ? [{
-            headerName: '',
-            pinned: 'left',
-            sortable: false,
-            // cellRenderer: 'customCheckboxCellRenderer',
-            minWidth: 60,
-            maxWidth: 60,
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            filter: false,
-          },]
-          : []
+        [{
+          headerName: '',
+          pinned: 'left',
+          sortable: false,
+          // cellRenderer: 'customCheckboxCellRenderer',
+          minWidth: 60,
+          maxWidth: 60,
+          headerCheckboxSelection: true,
+          checkboxSelection: true,
+          filter: false,
+        },]
+
       ),
       ...(
         this.showIndexColumn
@@ -460,7 +459,11 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       suppressColumnVirtualisation: true,
       rowHeight: 46,
       onCellValueChanged: (params) => {
-        this.formArray.at(params.rowIndex).setValue(params.data)
+        const value = _.cloneDeep(params.data)
+        if (value['__index']) {
+          delete value['__index'];
+        }
+        this.formArray.at(params.rowIndex).setValue(value)
       },
       headerHeight: 46,
       suppressPaginationPanel: true,
@@ -541,13 +544,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   private refreshRowData() {
     this.prepareTable();
-    // if (data) {
-    // if (this.selectedRowIndex == null) {
-    //   this.rowData.push(this.formArray.value[0])
-    // }
-    // else {
-    //   this.rowData[this.selectedRowIndex] = this.formArray.value[0]
-    // }
+    this.gridOptions?.api?.setRowData(this.formArray?.value.map((v, i) => ({ ...v, __index: i + 1 })));
     this.rowData = this.formArray.value
     if (this.gridApi) {
       this.gridApi.refreshCells()
