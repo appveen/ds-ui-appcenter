@@ -115,8 +115,17 @@
   font-weight: 500;
 }
 
+
+.font-7 {
+  font-size: 7px;
+}
+
 .fw-700 {
   font-weight: 700;
+}
+
+.fw-600 {
+  font-weight: 600;
 }
 
 .font-22 {
@@ -129,18 +138,6 @@
 
 .font-13 {
   font-size: 13px;
-}
-
-.font-11 {
-  font-size: 11px;
-}
-
-.font-8 {
-  font-size: 8px;
-}
-
-.font-7 {
-  font-size: 7px;
 }
 
 .font-xl {
@@ -166,6 +163,15 @@
 .font-bold {
   font-weight: bold;
 }
+
+.font-20 {
+  font-size: 20px;
+}
+
+.font-24 {
+  font-size: 24px;
+}
+
 
 .chk-container {
   display: block;
@@ -236,8 +242,8 @@
 }
 
 .btn:not(.btn-link) {
-  min-height: 32px;
-  max-height: 32px;
+  min-height: 40px;
+  max-height: 40px;
 
   &.btn-sm {
     min-height: 26px;
@@ -263,21 +269,40 @@
 
 /*---- ODP AG-GRID START ----*/
 .ag-theme-balham {
-  font-family: "Lato";
-  font-size: 13px;
+  font-family: "Inter";
+  font-size: 14px !important;
 
   .ag-root {
     border: 0;
   }
 
   .ag-header {
-    background: #fff;
+    background: #F7F7FB;
+
+
+    .ag-header-cell-text {
+      text-transform: uppercase;
+      color: $secondary;
+    }
 
     .ag-header-row:last-child {
       .ag-header-cell {
         border-top: 0;
       }
     }
+  }
+
+  .ag-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  .ag-cell.ag-cell-inline-editing {
+    height: 48px !important;
+  }
+
+  .ag-center-cols-viewport {
+    overflow-x: hidden;
   }
 
   .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right) {
@@ -454,3 +479,12 @@
   z-index: 1;
   background: rgba(0, 0, 0, 0.6);
 }
+
+.actions {
+  width: 140px;
+  height: 40px
+}
+
+// .btn-primary {
+//   background-color: $primary  !important;
+// }

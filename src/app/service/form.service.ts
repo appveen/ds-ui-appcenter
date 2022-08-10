@@ -34,6 +34,9 @@ export class FormService {
           temp.push(self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] : null, options));
         });
       } else {
+        const tempDef = objDef.map(def => {
+          return self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] ?? value[0]?.[def.key] : null, options);
+        })
         temp.push({
           path: path,
           key: key,
@@ -44,14 +47,13 @@ export class FormService {
           value: value,
           definition: Array.prototype.concat.apply(
             [],
-            objDef.map(def => {
-              return self.convert(def.key, def, level + 1, path, value && typeof value === 'object' ? value[def.key] : null, options);
-            })
+            tempDef
           )
         });
       }
     } else if (definition.type === 'Array') {
       const arrDef = definition.definition;
+
       const selfObj = arrDef[0];
       const def: any = {
         path: path,
@@ -281,7 +283,7 @@ export class FormService {
       } else {
         if (_def.type === 'Array') {
           _control = new FormArray([]);
-          if (_def.value) {
+          if (_def.value && _def.value.length) {
             _def.value.forEach(element => {
               if (_def.definition[0].type === 'array') {
                 // has to be implemented
@@ -314,8 +316,8 @@ export class FormService {
                 _def.value !== null && _def.value !== undefined
                   ? _def.value
                   : _def.properties.default !== undefined
-                  ? _def.properties.default
-                  : null,
+                    ? _def.properties.default
+                    : null,
               disabled: true
             });
           } else {
@@ -360,7 +362,7 @@ export class FormService {
       } else {
         if (_def.type === 'Array') {
           _control = new FormArray([]);
-          if (_def.value) {
+          if (_def.value && _def.value.length) {
             _def.value.forEach(element => {
               if (_def.definition[0].type === 'array') {
                 // has to be implemented

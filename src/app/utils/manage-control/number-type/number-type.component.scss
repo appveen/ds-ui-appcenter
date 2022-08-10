@@ -1,25 +1,32 @@
-.number-control-wrapper{
-min-width: 340px;
-  max-width: 340px;
+.number-control-wrapper {
+  min-width: 400px;
+  max-width: 400px;
 }
+
 .error-exclamation {
   top: 9px;
   right: 6px;
 }
-.input-symbol{
-    left: 6px;
-    top: 4px;
+
+.input-symbol {
+  left: 6px;
+  top: 4px;
 }
-.form-control{
-    &.symbol{
-        text-indent: 10px;
-    }
+
+.form-control {
+  height: 40px !important;
+
+  &.symbol {
+    text-indent: 10px;
+  }
 }
+
 .custom-input-number::-webkit-inner-spin-button,
 .custom-input-number::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.bg-error{
+
+.bg-error {
   background-color: #F8DCDC !important;
 }

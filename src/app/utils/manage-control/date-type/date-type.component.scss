@@ -1,11 +1,27 @@
 .date-control-wrapper {
-  min-width: 340px;
-  max-width: 340px;
+  min-width: 400px;
+  max-width: 400px;
 }
+
+input {
+  all: unset
+}
+
+.fa-times-circle {
+  margin: auto 0 auto auto;
+}
+
+.form-control {
+  min-width: 400px;
+  max-width: 400px;
+  height: 40px;
+}
+
 .error-exclamation {
   top: 9px;
   right: 6px;
 }
+
 .bg-error {
   background-color: #f8dcdc !important;
 }
@@ -14,6 +30,7 @@
   // min-width: 120px;
   // max-width: 120px;
   outline: 0;
+
   &:hover {
     text-decoration: underline;
   }

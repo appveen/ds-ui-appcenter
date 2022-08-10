@@ -676,7 +676,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     self.showLazyLoader = true;
     let payload;
     if (!self.isSchemaFree) {
-      payload = self.appService.cloneObject(self.form.getRawValue());
+      payload = self.appService.cloneObject(self.form.value);
       Object.keys(payload).forEach(item => {
         if (Array.isArray(payload[item]) && payload[item].length === 0) {
           payload[item] = null;
@@ -743,7 +743,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   simulatePayload() {
     const self = this;
-    const payload = self.appService.cloneObject(self.form.getRawValue());
+    const payload = self.appService.cloneObject(self.form.value);
     if (self.isEdit) {
       payload._id = self.ID;
     }

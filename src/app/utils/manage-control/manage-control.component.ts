@@ -25,7 +25,7 @@ export class ManageControlComponent implements OnInit, OnDestroy {
         self.canEnable = true;
     }
 
-      ngOnInit() {
+    ngOnInit() {
         const self = this;
         if (self.definition.key === '_id' || self.definition.properties.unique || self.definition.properties.readonly) {
             self.canEnable = false;
@@ -60,30 +60,31 @@ export class ManageControlComponent implements OnInit, OnDestroy {
 
     get objectForm() {
         const self = this;
-        return self.form.get(self.definition.key) as FormGroup;
+        return self.form?.get(self.definition.key) as FormGroup;
     }
 
     get arrayForm() {
         const self = this;
-        return self.form.get(self.definition.key) as FormArray;
+        return self.form?.get(self.definition.key) as FormArray;
     }
 
     get toggleEnable() {
         const self = this;
-        return self.form.get(self.definition.key).enabled;
+        return self.form?.get(self.definition.key)?.enabled;
     }
 
     set toggleEnable(val) {
         const self = this;
         if (val) {
             if (this.definition.type === 'Object') {
-                self.enableFieldsIndividually(this.definition, self.form.get(self.definition.key));
+                self.enableFieldsIndividually(this.definition, self.form?.get(self.definition.key));
             } else {
-                self.form.get(self.definition.key).enable();
+                self.form?.get(self.definition.key).enable();
             }
         } else {
-            self.form.get(self.definition.key).reset();
-            self.form.get(self.definition.key).disable();
+            self.form?.get(self.definition.key).reset();
+            self.form?.get(self.definition.key).disable();
         }
     }
+
 }

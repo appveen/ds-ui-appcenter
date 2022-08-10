@@ -40,7 +40,7 @@ export class TextTypeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if(this.control.value == null && this.specificType == 'select'){
+    if (this.control.value == null && this.specificType == 'select') {
       this.control.setValue("");
     }
   }
@@ -61,7 +61,7 @@ export class TextTypeComponent implements OnInit, AfterViewInit {
     self.patternErrorShow = false;
     self.minErrorShow = false;
     self.maxErrorShow = false;
-    if (self.control.value && self.control.value.length === 0) {
+    if (self.control?.value && self.control?.value.length === 0) {
       self.emailShow = false;
     }
   }
@@ -103,13 +103,13 @@ export class TextTypeComponent implements OnInit, AfterViewInit {
 
   get requiredError() {
     const self = this;
-    return self.control.hasError('required') && self.control.touched;
+    return self.control?.hasError('required') && self.control?.touched;
   }
 
   get emailError() {
     const self = this;
     if (self.emailShow) {
-      return self.control.hasError('email');
+      return self.control?.hasError('email');
     } else {
       return false;
     }
@@ -117,31 +117,31 @@ export class TextTypeComponent implements OnInit, AfterViewInit {
   }
   tabOut() {
     const self = this;
-    if (self.control.hasError('email')) {
+    if (self.control?.hasError('email')) {
       self.emailShow = true;
     } else {
       self.emailShow = false;
     }
-    if (self.control.hasError('pattern')) {
+    if (self.control?.hasError('pattern')) {
       self.patternErrorShow = true;
-    } if (self.control.hasError('minlength')) {
+    } if (self.control?.hasError('minlength')) {
       self.minErrorShow = true;
-    } if (self.control.hasError('maxlength')) {
+    } if (self.control?.hasError('maxlength')) {
       self.maxErrorShow = true;
     }
   }
   get patternError() {
     const self = this;
-    return self.control.hasError('pattern') && self.control.touched;
+    return self.control?.hasError('pattern') && self.control?.touched;
   }
 
   get minLengthError() {
     const self = this;
-    return self.control.hasError('minlength');
+    return self.control?.hasError('minlength');
   }
 
   get maxLengthError() {
     const self = this;
-    return self.control.hasError('maxlength');
+    return self.control?.hasError('maxlength');
   }
 }

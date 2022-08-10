@@ -1,10 +1,16 @@
-.table-header{
+.table-header {
     min-height: 40px;
     max-height: 40px;
 }
 
 .control-view {
-    display:grid;
+    display: grid;
     align-items: start;
     row-gap: 16px;
 }
+
+
+// .obj-bg {
+//     background: #F5F5F8;
+//     border-radius: 6px;
+// }

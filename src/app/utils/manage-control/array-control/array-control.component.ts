@@ -40,7 +40,7 @@ export class ArrayControlComponent implements OnInit {
 
 	get arrayControls() {
 		const self = this;
-		return self.form.controls;
+		return self.form?.controls;
 	}
 
 	constructor(private fb: FormBuilder,
@@ -61,23 +61,23 @@ export class ArrayControlComponent implements OnInit {
 		self.formService.shouldFocus = true;
 		let tempControl: AbstractControl;
 		if (index === undefined) {
-			index = self.form.length;
+			index = self.form?.length;
 		}
 
 		tempControl = new FormControl(
 			self.definition.properties.default !== null ? self.definition.properties.default : null,
 			self.formService.createValidatorList(self.definition)
 		);
-		self.form.insert(index, tempControl);
+		self.form?.insert(index, tempControl);
 		self.first = true;
-		self.form.markAsDirty();
+		self.form?.markAsDirty();
 
 	}
 
 	removeItem(index: number) {
 		const self = this;
-		self.form.removeAt(index);
-		self.form.markAsDirty();
+		self.form?.removeAt(index);
+		self.form?.markAsDirty();
 	}
 
 	keyupEvent(event: KeyboardEvent, index: number) {

@@ -15,6 +15,8 @@ export class ViewLongTextComponent implements OnInit {
   @Input() oldValue: any;
   @Input() newValue: any;
   @Input() workflowDoc: any;
+  @Input() isSubObject: boolean;
+
   isSecureText: boolean;
   showPassword: any;
   decryptedValue: any;
@@ -26,7 +28,7 @@ export class ViewLongTextComponent implements OnInit {
   ngOnInit() {
     const self = this;
     self.isSecureText = self.definition.properties.password ? self.definition.properties.password : false;
-    if(self.isSecureText){
+    if (self.isSecureText) {
       this.showPassword = {
         'default': false,
         'from': false,
@@ -39,7 +41,7 @@ export class ViewLongTextComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     const self = this;
-    if(this.isSecureText && (changes.oldValue || changes.newValue)){
+    if (this.isSecureText && (changes.oldValue || changes.newValue)) {
       this.showPassword = {
         'default': false,
         'from': false,
@@ -132,13 +134,13 @@ export class ViewLongTextComponent implements OnInit {
   togglePassword(value, type) {
     const self = this;
 
-    if(type == "default" && !self.decryptedValue[type]){
+    if (type == "default" && !self.decryptedValue[type]) {
       self.decryptedValue[type] = value;
       self.showPassword[type] = !self.showPassword[type];
     }
-    else if(!self.showPassword[type]) {
+    else if (!self.showPassword[type]) {
 
-      if(!self.decryptedValue[type]) {
+      if (!self.decryptedValue[type]) {
         self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value }).subscribe(res => {
           self.decryptedValue[type] = res.data;
           self.showPassword[type] = !self.showPassword[type];

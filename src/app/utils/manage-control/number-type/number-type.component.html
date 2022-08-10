@@ -1,5 +1,5 @@
 <div class="number-control-wrapper position-relative">
-    <div class="input-symbol text-secondary position-absolute" *ngIf="specificType === 'currency'">
+    <div class="input-symbol position-absolute font-20" *ngIf="specificType === 'currency'">
         <span *ngIf="definition.properties.currency == 'INR'">&#8377;</span>
         <span *ngIf="definition.properties.currency == 'EUR'">&#8364;</span>
         <span *ngIf="definition.properties.currency == 'USD'">&#36;</span>
@@ -11,7 +11,8 @@
         #numberTypeInput [attr.id]="definition.path" [disabled]="definition.properties.readonly || control.disabled">
     <select *ngIf="specificType === 'select'" class="form-control form-control-sm"
         [ngClass]="{'is-invalid pr-4':requiredError}" (change)="setValue()" (keyup)="onKeyup($event)"
-        (focus)="onFocus()" [formControl]="control" #numberTypeInput [attr.id]="definition.path" [disabled]="definition.properties.readonly || control.disabled">
+        (focus)="onFocus()" [formControl]="control" #numberTypeInput [attr.id]="definition.path"
+        [disabled]="definition.properties.readonly || control.disabled">
         <option *ngIf="!definition.properties.required" [value]="null">---select---</option>
         <option *ngFor="let opt of definition.properties.enum" [value]="opt">{{opt}}</option>
     </select>
@@ -22,14 +23,17 @@
             [ngClass]="{'bg-error':requiredError || minError || maxError}">
             <div class="d-flex flex-column align-items-start">
                 <div *ngIf="requiredError">
-                    {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+                    {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label
+                    : definition.properties.name : 'field' }}
                     is required</div>
                 <div *ngIf="minError">
-                    {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+                    {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label
+                    : definition.properties.name : 'field' }}
                     should have
                     min {{definition.properties.min}}</div>
                 <div *ngIf="maxError">
-                    {{ definition.properties.name!== '_self'  ? definition.properties.label ? definition.properties.label : definition.properties.name : 'field' }}
+                    {{ definition.properties.name!== '_self' ? definition.properties.label ? definition.properties.label
+                    : definition.properties.name : 'field' }}
                     should have
                     max {{definition.properties.max}}</div>
             </div>

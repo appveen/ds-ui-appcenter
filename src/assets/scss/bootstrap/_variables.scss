@@ -12,7 +12,8 @@
 $white: #fff !default;
 $gray-100: #f8f9fa !default;
 // $gray-200: #e9ecef !default;
-$gray-200: #F4F5F5 !default;
+$gray-200: #E5E5E5 !default;
+
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
@@ -70,13 +71,15 @@ $colors: map-merge(("blue": $blue,
 
 $primary: $capiot-blue  !default;
 $primary-dark: $capiot-blue-dark  !default;
-$secondary: #6C7584 !default;
+$secondary: $gray-600  !default;
+
 $success: $green  !default;
 $info: $cyan  !default;
 $warning: $yellow  !default;
 $danger: $red  !default;
 $light: $gray-200  !default;
-$dark: $gray-900  !default;
+$dark: #181818 !default;
+
 $border: #bdbdbd !default;
 $gray-medium: #747E8D;
 $gray-light-1: #efefef;
@@ -219,9 +222,10 @@ $line-height-lg: 1.5 !default;
 $line-height-sm: 1.5 !default;
 
 $border-width: 1px !default;
-$border-color: $gray-300  !default;
+$border-color: #DFE1E2 !default;
 
-$border-radius: .375rem !default;
+$border-radius: 6px !default;
+
 $border-radius-lg: .5rem !default;
 $border-radius-sm: .125rem !default;
 
@@ -290,6 +294,7 @@ $lead-font-size: (
 $lead-font-weight: 300 !default;
 
 $small-font-size: 80% !default;
+
 
 $text-muted: #B5B8BC !default;
 

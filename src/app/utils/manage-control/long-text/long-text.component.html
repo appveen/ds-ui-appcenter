@@ -1,7 +1,7 @@
 <div class="long-text-wrapper">
   <textarea #textarea class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError}"
-    (change)="getContent(textarea.value)" (keyup)="onKeyup($event);getContent(textarea.value)" rows="7"
-    [attr.id]="definition.path" (click)="onClick($event)" [disabled]="control.disabled" ></textarea>
+    (change)="getContent(textarea.value)" (keyup)="onKeyup($event);getContent(textarea.value)" rows="5"
+    [attr.id]="definition.path" (click)="onClick($event)" [disabled]="control.disabled"></textarea>
 
   <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
     [ngClass]="{'bg-error':requiredError}">
@@ -19,7 +19,7 @@
 <div class="tokens" *ngIf="definition.properties.hasTokens && definition.properties.hasTokens.length>0">
   <button type="button" [attr.id]="definition.name+token" class="btn btn-sm btn-min-width mr-2 mb-2 token"
     [ngClass]="{'btn-primary':usedTokens[token],'btn-outline-primary':!usedTokens[token]}"
-    *ngFor="let token of definition.properties.hasTokens" (click)="putToken(token)" [disabled]="control.disabled"  >
+    *ngFor="let token of definition.properties.hasTokens" (click)="putToken(token)" [disabled]="control.disabled">
     <span class="fa fa-check" *ngIf="usedTokens[token]"></span>
     {{token}}
   </button>

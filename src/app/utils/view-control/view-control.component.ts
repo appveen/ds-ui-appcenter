@@ -36,4 +36,5 @@ export class ViewControlComponent implements OnInit {
       minWidth: '200px'
     };
   }
+
 }

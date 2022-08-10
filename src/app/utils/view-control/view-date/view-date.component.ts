@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import * as moment from 'moment';
 import { AppService } from 'src/app/service/app.service';
 
 @Component({
@@ -52,6 +53,10 @@ export class ViewDateComponent implements OnInit {
   }
   get newVal() {
     return this.appService.getValue(this.definition.path, this.newValue);
+  }
+
+  formatDate(value) {
+    return moment(value).format('DD/MM/YYYY')
   }
 
 }

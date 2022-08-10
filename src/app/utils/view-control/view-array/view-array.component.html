@@ -15,10 +15,11 @@
 <ng-container *ngIf="controlType == 'map'">
     <div class="d-flex flex-column pt-3">
         <div class="d-flex">
-           
-                <label class="font-weight-bold text-secondary" [ngStyle]="getLabelWidth(def)" [attr.for]="def.path"
-                    *ngFor="let def of getMapDefinition(0);">{{def.properties.label ? def.properties.label : def.properties.name}}</label>
-            
+
+            <label class="font-weight-bold text-secondary" [ngStyle]="getLabelWidth(def)" [attr.for]="def.path"
+                *ngFor="let def of getMapDefinition(0);">{{def.properties.label ? def.properties.label :
+                def.properties.name}}</label>
+
         </div>
         <div class="d-flex" *ngFor="let val of arrayValues;let index = index">
             <ng-container *ngFor="let def of getMapDefinition(index);">

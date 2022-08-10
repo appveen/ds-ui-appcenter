@@ -4,7 +4,9 @@
 .grid-container {
   display: grid;
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #ECECEC;
+  max-height: 260px;
+  min-height: 250px !important;
 }
 
 .buttonsRow {
@@ -22,10 +24,12 @@
 
 .field-wrapper {
   min-height: 36px;
+
   .label-wrapper {
     .label-width {
       min-width: 200px;
       max-width: 200px;
+
       .text {
         max-width: 170px;
         display: inline-block;
@@ -36,6 +40,7 @@
       }
     }
   }
+
   .input-wrapper {
     min-width: 360px;
     max-width: 360px;
@@ -56,18 +61,20 @@
   border-top: 1px solid #ccc;
 }
 
-.modal-header, .modal-body, .modal-footer {
+.modal-header,
+.modal-body,
+.modal-footer {
   z-index: 2;
 }
 
 .custom-backdrop {
   position: fixed;
-  top:0;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   display: none;
-  z-index:1;
+  z-index: 1;
   background: black;
   opacity: 0.5;
 
@@ -79,4 +86,12 @@
 .disabled-text {
   color: #6A7179 !important;
   pointer-events: none;
+}
+
+::ng-deep .modal-content {
+  padding: 32px
+}
+
+::ng-deep .modal-footer {
+  border-top: none !important;
 }

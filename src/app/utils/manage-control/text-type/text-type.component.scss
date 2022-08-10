@@ -2,14 +2,22 @@
   top: 9px;
   right: 6px;
 }
-.text-control-wrapper{
-  min-width: 340px;
-  max-width: 340px;
+
+.text-control-wrapper {
+  min-width: 400px;
+  max-width: 400px;
 }
+
 .info-exclamation {
   top: 9px;
   right: 20px;
 }
-.bg-error{
+
+.bg-error {
   background-color: #F8DCDC !important;
+}
+
+.form-control {
+  height: 40px !important;
+  border-radius: 6px
 }

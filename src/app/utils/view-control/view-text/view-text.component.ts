@@ -16,13 +16,14 @@ export class ViewTextComponent implements OnInit {
   @Input() oldValue: any;
   @Input() newValue: any;
   @Input() workflowDoc: any;
+  @Input() isSubObject: boolean = false;
   showPassword;
   decryptedValue;
   valueCreated: boolean;
   valueUpdated: boolean;
   constructor(private appService: AppService,
     private sanitize: DomSanitizer,
-    private commonService: CommonService, ) {
+    private commonService: CommonService,) {
     const self = this;
     self.decryptedValue = {};
     self.showPassword = {};

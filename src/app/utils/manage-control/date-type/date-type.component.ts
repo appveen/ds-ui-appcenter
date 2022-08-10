@@ -132,7 +132,7 @@ export class DateTypeComponent implements OnInit, OnDestroy {
         return this.datePipe.transform(this.setValue, 'dd-MMM-yyyy hh:mm:ss a');
       }
     } else {
-      return 'Select Date';
+      return '';
     }
   }
 

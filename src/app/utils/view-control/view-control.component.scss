@@ -1,10 +1,12 @@
-.field-wrapper{
+.field-wrapper {
     min-height: 22px;
-    .label-wrapper{
-        .label-width{
+
+    .label-wrapper {
+        .label-width {
             min-width: 150px;
             max-width: 150px;
-            .text{
+
+            .text {
                 max-width: 145px;
                 display: inline-block;
                 overflow: hidden;
@@ -14,12 +16,18 @@
             }
         }
     }
-    .input-wrapper{
-            min-width: 300px;
-            max-width: 300px;
+
+    .input-wrapper {
+        min-width: 300px;
+        max-width: 300px;
     }
 }
 
 .last-control {
     margin-bottom: 55px;
+}
+
+.obj-bg {
+    background: #F5F5F8;
+    border-radius: 6px;
 }
