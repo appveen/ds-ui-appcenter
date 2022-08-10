@@ -17,7 +17,10 @@
             <span class="odp-edit mr-2"></span>
             <span class="text">Bulk Edit ({{ selectedRecordsCount }})</span>
         </button>
-        <span class="fa fa-edit hover my-auto" (click)="openModal(rowData)" *ngIf="!isEditable">Edit</span>
+        <div class="d-flex  hover my-auto" (click)="openModal(rowData)" *ngIf="!isEditable">
+            <span class="dsi dsi-edit mr-1 align-self-center"></span>
+            <span>Edit</span>
+        </div>
     </div>
 
 

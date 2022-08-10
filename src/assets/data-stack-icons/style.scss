@@ -1,0 +1,631 @@
+@import "variables";
+
+@font-face {
+  font-family: '#{$icomoon-font-family}';
+  src: url('./#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?iu0nlv') format('truetype'),
+  url('./#{$icomoon-font-path}/#{$icomoon-font-family}.woff?iu0nlv') format('woff'),
+  url('./#{$icomoon-font-path}/#{$icomoon-font-family}.svg?iu0nlv##{$icomoon-font-family}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.dsi {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: '#{$icomoon-font-family}' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-size: 18px;
+  display: inline-block;
+
+  &.dsi-sm{
+    font-size: 0.875rem !important;
+  }
+}
+
+.dsi-app-panel {
+  &:before {
+    content: $dsi-app-panel;
+  }
+}
+
+.dsi-user {
+  &:before {
+    content: $dsi-user;
+  }
+}
+
+.dsi-nano-service {
+  &:before {
+    content: $dsi-nano-service;
+  }
+}
+
+.dsi-group {
+  &:before {
+    content: $dsi-group;
+  }
+  &.dsi-bg{
+    background: #CBE7CE;
+  }
+}
+
+.dsi-data-service {
+  &:before {
+    content: $dsi-data-service;
+  }
+}
+
+.dsi-api-doc {
+  &:before {
+    content: $dsi-api-doc;
+  }
+}
+
+.dsi-library {
+  &:before {
+    content: $dsi-library;
+  }
+  &.dsi-bg{
+    background: #F7DEC2;
+  }
+}
+
+.dsi-bot {
+  &:before {
+    content: $dsi-bot;
+  }
+}
+
+.dsi-agent {
+  &:before {
+    content: $dsi-agent;
+  }
+}
+
+.dsi-function {
+  &:before {
+    content: $dsi-function;
+  }
+}
+
+.dsi-bookmark {
+  &:before {
+    content: $dsi-bookmark;
+  }
+}
+
+.dsi-flow {
+  &:before {
+    content: $dsi-flow;
+  }
+}
+
+.dsi-insight {
+  &:before {
+    content: $dsi-insight;
+  }
+}
+
+.dsi-notification-active .path1 {
+  &:before {
+    content: $dsi-notification-active-path1;
+    color: rgb(0, 0, 0);
+  }
+}
+
+.dsi-notification-active .path2 {
+  &:before {
+    content: $dsi-notification-active-path2;
+    margin-left: -1em;
+    color: rgb(0, 0, 0);
+  }
+}
+
+.dsi-notification-active .path3 {
+  &:before {
+    content: $dsi-notification-active-path3;
+    margin-left: -1em;
+    color: rgb(47, 196, 143);
+  }
+}
+
+.dsi-notification-active .path4 {
+  &:before {
+    content: $dsi-notification-active-path4;
+    margin-left: -1em;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.dsi-notification {
+  &:before {
+    content: $dsi-notification;
+  }
+}
+
+.dsi-stop {
+  &:before {
+    content: $dsi-stop;
+  }
+}
+
+.dsi-sort {
+  &:before {
+    content: $dsi-sort;
+  }
+}
+
+.dsi-pointer {
+  &:before {
+    content: $dsi-pointer;
+  }
+}
+
+.dsi-file {
+  &:before {
+    content: $dsi-file;
+  }
+}
+
+.dsi-collapse {
+  &:before {
+    content: $dsi-collapse;
+  }
+}
+
+.dsi-expand {
+  &:before {
+    content: $dsi-expand;
+  }
+}
+
+.dsi-admin {
+  &:before {
+    content: $dsi-admin;
+  }
+}
+
+.dsi-join {
+  &:before {
+    content: $dsi-join;
+  }
+}
+
+.dsi-redo {
+  &:before {
+    content: $dsi-redo;
+  }
+}
+
+.dsi-undo {
+  &:before {
+    content: $dsi-undo;
+  }
+}
+
+.dsi-align-left {
+  &:before {
+    content: $dsi-align-left;
+  }
+}
+
+.dsi-align-right {
+  &:before {
+    content: $dsi-align-right;
+  }
+}
+
+.dsi-save {
+  &:before {
+    content: $dsi-save;
+  }
+}
+
+.dsi-ban {
+  &:before {
+    content: $dsi-ban;
+  }
+}
+
+.dsi-play {
+  &:before {
+    content: $dsi-play;
+  }
+}
+
+.dsi-more-vertical {
+  &:before {
+    content: $dsi-more-vertical;
+  }
+}
+
+.dsi-attach {
+  &:before {
+    content: $dsi-attach;
+  }
+  &.dsi-bg{
+    background: #D7F5D1;
+  }
+}
+
+.dsi-refresh {
+  &:before {
+    content: $dsi-refresh;
+  }
+}
+
+.dsi-map-pin {
+  &:before {
+    content: $dsi-map-pin;
+  }
+}
+
+.dsi-dollar-sign {
+  &:before {
+    content: $dsi-dollar-sign;
+  }
+}
+
+.dsi-filter-alt {
+  &:before {
+    content: $dsi-filter-alt;
+  }
+}
+
+.dsi-cloud {
+  &:before {
+    content: $dsi-cloud;
+  }
+}
+
+.dsi-skip-forward {
+  &:before {
+    content: $dsi-skip-forward;
+  }
+}
+
+.dsi-more-vertical-6 {
+  &:before {
+    content: $dsi-more-vertical-6;
+  }
+}
+
+.dsi-remove {
+  &:before {
+    content: $dsi-remove;
+  }
+}
+
+.dsi-branch {
+  &:before {
+    content: $dsi-branch;
+  }
+}
+
+.dsi-calendar {
+  &:before {
+    content: $dsi-calendar;
+  }
+  &.dsi-bg{
+    background: #FFE6D8;
+  }
+}
+
+.dsi-json {
+  &:before {
+    content: $dsi-json;
+  }
+}
+
+.dsi-hide {
+  &:before {
+    content: $dsi-hide;
+  }
+}
+
+.dsi-done {
+  &:before {
+    content: $dsi-done;
+  }
+}
+
+.dsi-full-screen {
+  &:before {
+    content: $dsi-full-screen;
+  }
+}
+
+.dsi-upload {
+  &:before {
+    content: $dsi-upload;
+  }
+}
+
+.dsi-download {
+  &:before {
+    content: $dsi-download;
+  }
+}
+
+.dsi-check {
+  &:before {
+    content: $dsi-check;
+  }
+}
+
+.dsi-clock {
+  &:before {
+    content: $dsi-clock;
+  }
+}
+
+.dsi-mail {
+  &:before {
+    content: $dsi-mail;
+  }
+}
+
+.dsi-danger-circle {
+  &:before {
+    content: $dsi-danger-circle;
+  }
+}
+
+.dsi-info-circle {
+  &:before {
+    content: $dsi-info-circle;
+  }
+}
+
+.dsi-logout {
+  &:before {
+    content: $dsi-logout;
+  }
+}
+
+.dsi-edit {
+  &:before {
+    content: $dsi-edit;
+  }
+}
+
+.dsi-copy {
+  &:before {
+    content: $dsi-copy;
+  }
+}
+
+.dsi-arrow-left {
+  &:before {
+    content: $dsi-arrow-left;
+  }
+}
+
+.dsi-arrow-right {
+  &:before {
+    content: $dsi-arrow-right;
+  }
+}
+
+.dsi-view {
+  &:before {
+    content: $dsi-view;
+  }
+}
+
+.dsi-search {
+  &:before {
+    content: $dsi-search;
+  }
+}
+
+.dsi-minus {
+  &:before {
+    content: $dsi-minus;
+  }
+}
+
+.dsi-drop-down-alt {
+  &:before {
+    content: $dsi-drop-down-alt;
+  }
+}
+
+.dsi-trash {
+  &:before {
+    content: $dsi-trash;
+  }
+}
+
+.dsi-settings {
+  &:before {
+    content: $dsi-settings;
+  }
+}
+
+.dsi-close {
+  &:before {
+    content: $dsi-close;
+  }
+}
+
+.dsi-plus {
+  &:before {
+    content: $dsi-plus;
+  }
+}
+
+.dsi-console {
+  &:before {
+    content: $dsi-console;
+  }
+}
+
+.dsi-drop-down {
+  &:before {
+    content: $dsi-drop-down;
+  }
+}
+
+.dsi-drop-up {
+  &:before {
+    content: $dsi-drop-up;
+  }
+}
+
+.dsi-required .path1 {
+  &:before {
+    content: $dsi-required-path1;
+    color: rgb(224, 122, 95);
+  }
+}
+
+.dsi-required .path2 {
+  &:before {
+    content: $dsi-required-path2;
+    margin-left: -1em;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.dsi-text {
+  &:before {
+    content: $dsi-text;
+  }
+  &.dsi-bg{
+    background: #E7CBD4;
+  }
+}
+
+.dsi-boolean {
+  &:before {
+    content: $dsi-boolean;
+  }
+  &.dsi-bg{
+    background: #CBE7CE;
+  }
+}
+
+.dsi-unique .path1 {
+  &:before {
+    content: $dsi-unique-path1;
+    color: rgb(129, 178, 154);
+  }
+}
+
+.dsi-unique .path2 {
+  &:before {
+    content: $dsi-unique-path2;
+    margin-left: -1em;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.dsi-minus-circle {
+  &:before {
+    content: $dsi-minus-circle;
+  }
+}
+
+.dsi-create-only .path1 {
+  &:before {
+    content: $dsi-create-only-path1;
+    color: rgb(59, 151, 210);
+  }
+}
+
+.dsi-create-only .path2 {
+  &:before {
+    content: $dsi-create-only-path2;
+    margin-left: -1em;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.dsi-plus-circle {
+  &:before {
+    content: $dsi-plus-circle;
+  }
+}
+
+.dsi-Profile {
+  &:before {
+    content: $dsi-Profile;
+  }
+}
+
+.dsi-location {
+  &:before {
+    content: $dsi-location;
+  }
+  &.dsi-bg{
+    background: #CAF0F3;
+  }
+}
+
+.dsi-number {
+  &:before {
+    content: $dsi-number;
+  }
+  &.dsi-bg{
+    background: #E7CBE6;
+  }
+}
+
+.dsi-relation {
+  &:before {
+    content: $dsi-relation;
+  }
+}
+
+.dsi-array {
+  &:before {
+    content: $dsi-array;
+  }
+  &.dsi-bg{
+    background: #D3E4FF;
+  }
+}
+
+.dsi-object {
+  &:before {
+    content: $dsi-object;
+  }
+}
+
+.dsi-file-text {
+  &:before {
+    content: $dsi-file-text;
+  }
+}
+
+.dsi-library-alt {
+  &:before {
+    content: $dsi-library-alt;
+  }
+}
+
+.dsi-date {
+  &:before {
+    content: $dsi-date;
+  }
+}
+
+.dsi-id {
+  &:before {
+    content: $dsi-id;
+  }
+  &.dsi-bg{
+    background: #C9D5E8;
+  }
+}
