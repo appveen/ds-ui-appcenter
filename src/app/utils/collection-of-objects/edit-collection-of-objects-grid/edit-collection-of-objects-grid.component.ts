@@ -1,7 +1,7 @@
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GridOptions, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
-import { Component, OnInit, Input, TemplateRef, ViewChild, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, ViewChild, OnChanges, SimpleChanges, OnDestroy, Output, EventEmitter } from '@angular/core';
 
 import {
   AG_GRID_FOOTER_HEIGHT,
@@ -35,6 +35,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   @Input() collectionFieldName: string;
   @Input() showIndexColumn: boolean = false;
   @Input() isEditable: boolean = false;
+  @Output() modifyForm = new EventEmitter();
   @ViewChild('editModal', { static: false }) editModal: TemplateRef<HTMLElement>;
   @ViewChild('bulkEditModal', { static: false }) bulkEditModal: TemplateRef<HTMLElement>;
   @ViewChild('newModal', { static: false }) newModal: TemplateRef<HTMLElement>;
@@ -161,6 +162,10 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   onRowAdded() {
     if (this.addAllowed) {
       const formGroupControl = this.getFormObject();
+      formGroupControl.setValue({
+        label: '',
+        value: ''
+      })
       if (!!this.gridApi) {
         let index = this.formArray.length;
         const selectedNodes = this.gridApi.getSelectedNodes();
@@ -205,14 +210,16 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     if (!!this.gridApi) {
       const selectedNodes = this.gridApi.getSelectedNodes();
       const indexArray = selectedNodes.map(node => node.rowIndex);
-      this.gridApi.updateRowData({ remove: selectedNodes.map(node => node.data) });
+      // this.gridApi.updateRowData({ remove: selectedNodes.map(node => node.data) });
+
       this.formArray = new FormArray(this.formArray.controls.filter((ctrl, index) => !indexArray.includes(index)));
       this.formArray.markAsDirty();
-      this.gridApi.updateRowData({ remove: selectedNodes.map(node => node.data) });
+      this.rowData = this.formArray.value;
+      this.modifyForm.emit(this.formArray.value);
       setTimeout(() => {
         this.refreshRowData();
       }, 500);
-      this.rowData = this.formArray.value
+      // this.modifyForm.emit(this.formArray.value)
     }
   }
 
@@ -370,7 +377,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         this.showIndexColumn
           ? [{
             headerName: '#',
-            field: '__index',
+            valueGetter: "node.rowIndex + 1",
+            // field: '__index',
             pinned: 'left',
             sortable: true,
           }]
@@ -440,7 +448,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         gridParent: this
       },
       columnDefs,
-      pagination: true,
+      pagination: !this.isEditable,
       paginationPageSize: 4,
       // paginationPageSize: AG_GRID_PAGINATION_COUNT,
       animateRows: true,
@@ -544,8 +552,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   private refreshRowData() {
     this.prepareTable();
-    this.gridOptions?.api?.setRowData(this.formArray?.value.map((v, i) => ({ ...v, __index: i + 1 })));
     this.rowData = this.formArray.value
+    // this.gridOptions?.api?.setRowData(this.formArray?.value.map((v, i) => ({ ...v, __index: i + 1 })));
     if (this.gridApi) {
       this.gridApi.refreshCells()
     }

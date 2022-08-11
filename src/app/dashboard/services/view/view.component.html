@@ -19,8 +19,8 @@
                 <span class="text-secondary mr-2">This record is under review.</span>
             </div>
         </div>
-        <div class="bg-light actions d-flex pr-3 w-100">
-            <div class="d-flex pl-5 my-auto">
+        <div class="bg-light actions d-flex pr-3 w-100 ml-5">
+            <div class="d-flex my-auto">
                 <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover"
                     [routerLink]="['/', currentAppId, 'services', schema._id, 'list']"></i>
                 <div class="fw-600 font-24">
@@ -93,27 +93,27 @@
                     <span class="text">Back</span>
                 </button>
             </div>
-            <div *ngIf="!showVersionHistory && !inReview && !showLazyLoader" class="d-flex align-items-center ml-auto">
-                <button (click)="workflowAlert()" *ngIf="hasPermission('DELETE') && !documentLocked"
+            <div *ngIf="!showVersionHistory && !inReview && !showLazyLoader"
+                class="d-flex align-items-center ml-auto mr-5">
+                <!-- <button (click)="workflowAlert()" *ngIf="hasPermission('DELETE') && !documentLocked"
                     class="btn btn-link px-3" type="button">
                     <span class="fa fa-trash mr-2 font-13"></span>
                     <span class="text font-13">Delete</span>
-                </button>
+                </button> -->
                 <button (click)="toggleHistory()" *ngIf="auditAvailable" class="btn btn-link px-3" type="button">
                     <span class="fa fa-clock mr-2 font-13"></span>
                     <span class="text font-13">History</span>
                 </button>
                 <button (click)="review()" *ngIf="canReview" class="btn btn-outline-primary">Review</button>
                 <button (click)="manage(value._id)" *ngIf="hasPermission('PUT') && !documentLocked"
-                    class="btn btn-link px-3" id="_editButton" type="button">
-                    <span class="odp-edit mr-2 font-13"></span>
-                    <span class="text font-13">Edit</span>
+                    class="btn btn-primary px-3 actions" id="_editButton" type="button">
+                    <span class="text">Edit</span>
                 </button>
-                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3"
+                <!-- <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3"
                     type="button">
                     <span class="fa fa-angle-left mr-2 font-13"></span>
                     <span class="text font-13">Back</span>
-                </button>
+                </button> -->
             </div>
             <div *ngIf="showVersionHistory && auditAvailable" class="d-flex align-items-center">
                 <div *ngIf="selectedAudit?.wfData && selectedAudit?.wfData?.length>0" class="d-flex">
@@ -144,23 +144,54 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex flex-column w-100 bg-light" *ngIf="!isSchemaFree">
-        <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
-            class="steps-wrapper wizard-steps position-relative d-flex justify-content-between bg-white rounded px-3">
-            <div class="step-tabs d-flex align-items-center">
-                <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
-                    <div (click)="showStep(i)" [attr.id]="'step-'+i"
-                        [ngClass]="{'active border-primary text-primary':active[i]}"
-                        class="step-tab d-flex align-items-center hover border-primary-hover">
-                        <div [ngbTooltip]="" class="step-no d-flex align-items-center justify-content-center">{{i + 1}}
-                            .
-                        </div>
-                        <div [ngbTooltip]="step.name" class="step-name high-zIndex text-truncate" placement="top">
-                            {{step.name}}</div>
+    <div class="d-flex align-items-center px-3 bg-white mr-5 ml-5 mb-2 mt-2" style="border-radius: 6px; height: 72px">
+        <ng-container *ngFor="let step of wizard;let stepIndex = index">
+            <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
+                class="d-flex experience-hooks px-3 align-items-center ml-auto">
+                <!-- <div class="text-secondary font-weight-bold w-100 text-nowrap">Available Actions</div> -->
+                <!-- <div class="d-flex experience-hooks-buttons ml-auto"> -->
+                <button (click)="triggerHook(ac)" *ngFor="let ac of step.actions"
+                    class="btn actions btn-outline-dark experience-hooks-btn mr-3 fw-600"
+                    type="button">{{ac.name}}</button>
+                <!-- </div> -->
+                <!-- <div class="d-flex position-relative">
+                    <button (click)="$event.stopPropagation();toggleAllActionsDropDown = !toggleAllActionsDropDown"
+                        class="btn btn-link all-actions-dropdown-btn" type="button">
+                        <span class="fa fa-ellipsis-h"></span>
+                    </button>
+                    <div #allActionsDropdown (outside)="toggleAllActionsDropDown = false"
+                        *ngIf="toggleAllActionsDropDown" class="list-group all-actions-dropdown position-absolute"
+                        odpClickOutside>
+                        <div (click)="triggerHook(ac);toggleAllActionsDropDown=false;"
+                            *ngFor="let ac of step.actions; let i=index;"
+                            class="list-group-item list-group-item-action hover">{{ac.name}}</div>
                     </div>
-                </ng-container>
+                </div> -->
             </div>
-            <div class="step-controls d-flex align-items-center position-relative">
+        </ng-container>
+    </div>
+    <div class="d-flex flex-column w-100 bg-light " *ngIf="!isSchemaFree" style="border-radius: 6px;">
+        <div class="row flex-column bg-white ml-5 mr-5" style="height: 100vh">
+            <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
+                class="col-3 border-right pr-0 pl-0" style="min-height: 100vh">
+                <div class="step-tabs d-flex flex-column ">
+                    <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
+
+                        <div (click)="showStep(i)" class="step-tab d-flex" style="min-height: 75px"
+                            [attr.id]="'step-'+i" [ngClass]="{'selected': active[i] }">
+                            <span *ngIf="active[i]" class="active-tab"></span>
+                            <div class="d-flex flex-column p-3">
+                                <div [ngbTooltip]="" class="d-flex font-12 text-secondary">
+                                    Step {{i +1}}
+                                </div>
+                                <div [ngbTooltip]="step.name" class="text-truncate fw-500">
+                                    {{step.name}}</div>
+                            </div>
+                        </div>
+
+                    </ng-container>
+                </div>
+                <!-- <div class="step-controls d-flex align-items-center position-relative">
                 <button (click)="showStep(currentStep-1);tooltip1.close()" [disabled]="stepFirst"
                     class="btn btn-link btn-sm high-zIndex" ngbTooltip="Previous step" placement="top"
                     #tooltip1="ngbTooltip">
@@ -185,79 +216,56 @@
                         *ngFor="let step of wizard; let i=index;let last=last;" [ngClass]="{'active':active[i]}"
                         class="list-group-item">{{step.name}}</div>
                 </div>
+            </div> -->
             </div>
-        </div>
-        <div class="d-flex align-items-center px-3">
-            <ng-container *ngFor="let step of wizard;let stepIndex = index">
-                <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
-                    class="d-flex experience-hooks px-3 align-items-center mb-3">
-                    <div class="text-secondary font-weight-bold w-100 text-nowrap">Available Actions</div>
-                    <div class="d-flex experience-hooks-buttons ml-3">
-                        <button (click)="triggerHook(ac)" *ngFor="let ac of step.actions"
-                            class="btn btn-outline-{{ac.type}} experience-hooks-btn mr-3"
-                            type="button">{{ac.name}}</button>
-                    </div>
-                    <div class="d-flex position-relative">
-                        <button (click)="$event.stopPropagation();toggleAllActionsDropDown = !toggleAllActionsDropDown"
-                            class="btn btn-link all-actions-dropdown-btn" type="button">
-                            <span class="fa fa-ellipsis-h"></span>
-                        </button>
-                        <div #allActionsDropdown (outside)="toggleAllActionsDropDown = false"
-                            *ngIf="toggleAllActionsDropDown" class="list-group all-actions-dropdown position-absolute"
-                            odpClickOutside>
-                            <div (click)="triggerHook(ac);toggleAllActionsDropDown=false;"
-                                *ngFor="let ac of step.actions; let i=index;"
-                                class="list-group-item list-group-item-action hover">{{ac.name}}</div>
+
+            <div [ngClass]="viewBodyClass" class="col-9 view-body pb-3 " style="min-height: 100vh">
+                <ng-container *ngIf="wizard.length > 0">
+                    <ng-container
+                        *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
+                        <div [ngClass]="{'d-block':active[stepIndex]}" class="d-flex flex-column w-100  d-none">
+                            <div *ngIf="active[stepIndex]" class="container-fluid p-0">
+                                <ng-container *ngFor="let field of step.fields;let i=index">
+                                    <odp-view-control *ngIf="getDefinition(field)" [definition]="getDefinition(field)"
+                                        [newValue]="activeAuditNewData" [oldValue]="activeAuditOldData" [value]="value"
+                                        [workflowDoc]='workflowData'>
+                                    </odp-view-control>
+                                </ng-container>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </ng-container>
-        </div>
-        <div [ngClass]="viewBodyClass" class="view-body pb-3 bg-white rounded mx-2">
-            <ng-container *ngIf="wizard.length > 0">
-                <ng-container
-                    *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
-                    <div [ngClass]="{'d-block':active[stepIndex]}" class="d-flex flex-column w-100  d-none">
-                        <div *ngIf="active[stepIndex]" class="container-fluid p-0">
-                            <ng-container *ngFor="let field of step.fields;let i=index">
-                                <odp-view-control *ngIf="getDefinition(field)" [definition]="getDefinition(field)"
-                                    [newValue]="activeAuditNewData" [oldValue]="activeAuditOldData" [value]="value"
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="wizard.length == 0">
+                    <div class="d-flex flex-column w-100 px-3">
+                        <ng-container *ngFor="let def of definition;let l=last">
+                            <ng-container *ngIf="!checkStateModel(def)">
+                                <odp-view-control [definition]="def" [newValue]="activeAuditNewData"
+                                    [oldValue]="activeAuditOldData" [value]="value" [last]="l"
                                     [workflowDoc]='workflowData'>
                                 </odp-view-control>
                             </ng-container>
-                        </div>
+                        </ng-container>
                     </div>
                 </ng-container>
-            </ng-container>
-            <ng-container *ngIf="wizard.length == 0">
-                <div class="d-flex flex-column w-100 px-3">
-                    <ng-container *ngFor="let def of definition;let l=last">
-                        <ng-container *ngIf="!checkStateModel(def)">
-                            <odp-view-control [definition]="def" [newValue]="activeAuditNewData"
-                                [oldValue]="activeAuditOldData" [value]="value" [last]="l" [workflowDoc]='workflowData'>
-                            </odp-view-control>
-                        </ng-container>
-                    </ng-container>
-                </div>
-            </ng-container>
-            <div *ngIf="showLazyLoader" class="loading-placeholder">
-                <div *ngFor="let row of dummyRows" class="rows d-flex align-items-center mt-4 ml-3">
-                    <div class="mr-5">
-                        <odp-loading-placeholder [height]="16" [width]="120"></odp-loading-placeholder>
-                    </div>
-                    <div>
-                        <odp-loading-placeholder [height]="16" [width]="300"></odp-loading-placeholder>
+                <div *ngIf="showLazyLoader" class="loading-placeholder">
+                    <div *ngFor="let row of dummyRows" class="rows d-flex align-items-center mt-4 ml-3">
+                        <div class="mr-5">
+                            <odp-loading-placeholder [height]="16" [width]="120"></odp-loading-placeholder>
+                        </div>
+                        <div>
+                            <odp-loading-placeholder [height]="16" [width]="300"></odp-loading-placeholder>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema"
+                <!-- <odp-workflow-respond-view *ngIf="showRespondView" [schema]="schema"
                 [selectedData]='workflowData' (actionResponse)='actionResponse($event);' [serviceStatus]="schema.status"
                 [ids]='[workflowData._id]'> </odp-workflow-respond-view> -->
-            <div class="respond-header d-flex p-2 position-fixed ignore-outside" id='ignore' *ngIf='showHeaderOnly '
-                (click)="showRespondView=true;showHeaderOnly=false">
-                <span class="text-white" id='respond' *ngIf="inReview">Respond</span>
-                <span class="text-white" id='remark' *ngIf="!inReview">Remarks</span>
-                <span class="fa fa-angle-up text-white ml-auto font-lg" id='angle-down'></span>
+                <div class="respond-header d-flex p-2 position-fixed ignore-outside" id='ignore' *ngIf='showHeaderOnly '
+                    (click)="showRespondView=true;showHeaderOnly=false">
+                    <span class="text-white" id='respond' *ngIf="inReview">Respond</span>
+                    <span class="text-white" id='remark' *ngIf="!inReview">Remarks</span>
+                    <span class="fa fa-angle-up text-white ml-auto font-lg" id='angle-down'></span>
+                </div>
             </div>
         </div>
     </div>
