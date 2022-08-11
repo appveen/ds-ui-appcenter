@@ -1,7 +1,7 @@
 <div class="d-flex flex-column w-100 h-100 bg-light position-relative">
     <div class="d-flex flex-column w-100">
-        <div class="header d-flex align-items-center justify-content-between bg-light border-bottom">
-            <div class="title d-flex align-items-center ml-2">
+        <!-- <div class="header d-flex align-items-center justify-content-between bg-light"> -->
+        <!-- <div class="title d-flex align-items-center ml-2">
                 <span class="odp-record text-primary mr-2"></span>
                 <span class="font-weight-bold m-0">Data Service</span>
                 <div class="mx-2">
@@ -13,11 +13,12 @@
                 </div>
                 <div class="text-secondary">{{value?._id}}</div>
 
-            </div>
-            <div *ngIf="documentLocked && !inReview" class="document-locked d-flex align-items-center">
-                <span class="fa fa-lock text-warning mr-2"></span>
-                <span class="text-secondary mr-2">This record is under review.</span>
-            </div>
+            </div> -->
+
+        <!-- </div> -->
+        <div *ngIf="documentLocked && !inReview" class="document-locked d-flex align-items-center">
+            <span class="fa fa-lock text-warning mr-2"></span>
+            <span class="text-secondary mr-2">This record is under review.</span>
         </div>
         <div class="bg-light actions d-flex pr-3 w-100 ml-4">
             <div class="d-flex my-auto">
@@ -106,7 +107,7 @@
                 </button>
                 <button (click)="review()" *ngIf="canReview" class="btn btn-outline-primary">Review</button>
                 <button (click)="manage(value._id)" *ngIf="hasPermission('PUT') && !documentLocked"
-                    class="btn btn-primary px-3 actions" id="_editButton" type="button">
+                    class="btn btn-primary px-3 action-btn" id="_editButton" type="button">
                     <span class="text">Edit</span>
                 </button>
                 <!-- <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3"
@@ -144,15 +145,14 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex align-items-center px-3 bg-white mr-4 ml-4 mb-2 mt-2 w-100"
-        style="border-radius: 6px; height: 72px">
+    <div class="d-flex align-items-center px-3 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px">
         <ng-container *ngFor="let step of wizard;let stepIndex = index">
             <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
                 class="d-flex experience-hooks px-3 align-items-center ml-auto">
                 <!-- <div class="text-secondary font-weight-bold w-100 text-nowrap">Available Actions</div> -->
                 <!-- <div class="d-flex experience-hooks-buttons ml-auto"> -->
                 <button (click)="triggerHook(ac)" *ngFor="let ac of step.actions"
-                    class="btn actions btn-outline-dark experience-hooks-btn mr-3 fw-600"
+                    class="btn action-btn btn-outline-dark experience-hooks-btn mr-3 fw-600"
                     type="button">{{ac.name}}</button>
                 <!-- </div> -->
                 <!-- <div class="d-flex position-relative">

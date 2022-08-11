@@ -5,7 +5,7 @@
       <div class="text-secondary mt-2">Processing...</div>
     </div>
   </div> -->
-  <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
+  <!-- <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
     <div class="title d-flex align-items-center ml-2">
       <span class="odp-record text-primary mr-2"></span>
       <span class="m-0 font-weight-bold">Data Service</span>
@@ -25,8 +25,8 @@
         'Approval(s) will be required to publish this record.' }}
       </div>
     </div>
-  </div>
-  <div class="sub-header bg-light px-3 d-flex align-items-center"
+  </div> -->
+  <div class="sub-header bg-light px-3 d-flex align-items-center mr-4 ml-4"
     [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
     <div class='d-flex state-model' *ngIf="stateModelAttr">
       <span class='mr-2 text-secondary'>{{stateModelName}}</span>
@@ -99,7 +99,7 @@
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center px-2 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px"
+  <div class="d-flex align-items-center px-1 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px"
     *ngIf="wizard.length > 0">
     <ng-container *ngFor="let step of wizard;let stepIndex = index">
       <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
@@ -107,7 +107,7 @@
         <!-- <div class="text-secondary font-weight-bold experience-hooks-title">Available Actions</div> -->
         <!-- <div class="d-flex experience-hooks-buttons"> -->
         <button type="button" *ngFor="let ac of step.actions"
-          class="btn btn-outline-dark actions experience-hooks-btn mr-3 fw-600"
+          class="btn btn-outline-dark action-btn experience-hooks-btn mr-3 fw-600"
           (click)="triggerHook(ac)">{{ac.name}}</button>
         <!-- </div> -->
         <!-- <div class="d-flex position-relative">

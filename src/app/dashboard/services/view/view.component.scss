@@ -2,8 +2,8 @@
 @import "src/assets/scss/bootstrap/_variables.scss";
 
 .actions {
-  min-height: 40px;
-  max-height: 40px;
+  min-height: 96px;
+  max-height: 96px;
 
   .state-model {
     font-size: 16px;
@@ -223,4 +223,10 @@
     background: black !important;
     color: white !important;
   }
+}
+
+.action-btn {
+  width: 142px;
+  min-height: 40px;
+  max-height: 40px;
 }
