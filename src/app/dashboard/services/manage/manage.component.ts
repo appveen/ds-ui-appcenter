@@ -387,7 +387,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     });
     self.active[val] = true;
     self.currentStep = val;
-    document.getElementById('step-' + val).scrollIntoView();
+    // document.getElementById('step-' + val).scrollIntoView();
   }
 
   saveAsDraft(reset?) {

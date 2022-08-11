@@ -19,7 +19,7 @@
                 <span class="text-secondary mr-2">This record is under review.</span>
             </div>
         </div>
-        <div class="bg-light actions d-flex pr-3 w-100 ml-5">
+        <div class="bg-light actions d-flex pr-3 w-100 ml-4">
             <div class="d-flex my-auto">
                 <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover"
                     [routerLink]="['/', currentAppId, 'services', schema._id, 'list']"></i>
@@ -94,7 +94,7 @@
                 </button>
             </div>
             <div *ngIf="!showVersionHistory && !inReview && !showLazyLoader"
-                class="d-flex align-items-center ml-auto mr-5">
+                class="d-flex align-items-center ml-auto mr-4">
                 <!-- <button (click)="workflowAlert()" *ngIf="hasPermission('DELETE') && !documentLocked"
                     class="btn btn-link px-3" type="button">
                     <span class="fa fa-trash mr-2 font-13"></span>
@@ -144,7 +144,8 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex align-items-center px-3 bg-white mr-5 ml-5 mb-2 mt-2" style="border-radius: 6px; height: 72px">
+    <div class="d-flex align-items-center px-3 bg-white mr-4 ml-4 mb-2 mt-2 w-100"
+        style="border-radius: 6px; height: 72px">
         <ng-container *ngFor="let step of wizard;let stepIndex = index">
             <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
                 class="d-flex experience-hooks px-3 align-items-center ml-auto">
@@ -171,13 +172,13 @@
         </ng-container>
     </div>
     <div class="d-flex flex-column w-100 bg-light " *ngIf="!isSchemaFree" style="border-radius: 6px;">
-        <div class="row flex-column bg-white ml-5 mr-5" style="height: 100vh">
+        <div class="row flex-column bg-white ml-4 mr-4" style="height: 100vh">
             <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
                 class="col-3 border-right pr-0 pl-0" style="min-height: 100vh">
                 <div class="step-tabs d-flex flex-column ">
                     <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
 
-                        <div (click)="showStep(i)" class="step-tab d-flex" style="min-height: 75px"
+                        <div (click)="showStep(i)" class="step-tab d-flex hover" style="min-height: 75px"
                             [attr.id]="'step-'+i" [ngClass]="{'selected': active[i] }">
                             <span *ngIf="active[i]" class="active-tab"></span>
                             <div class="d-flex flex-column p-3">
@@ -249,7 +250,7 @@
                 </ng-container>
                 <div *ngIf="showLazyLoader" class="loading-placeholder">
                     <div *ngFor="let row of dummyRows" class="rows d-flex align-items-center mt-4 ml-3">
-                        <div class="mr-5">
+                        <div class="mr-4">
                             <odp-loading-placeholder [height]="16" [width]="120"></odp-loading-placeholder>
                         </div>
                         <div>
