@@ -2,8 +2,8 @@
 @import "src/assets/scss/bootstrap/_variables.scss";
 
 .actions {
-  min-height: 48px;
-  max-height: 48px;
+  min-height: 96px;
+  max-height: 96px;
 
   .state-model {
     font-size: 16px;
@@ -35,11 +35,9 @@
 }
 
 .view-body {
-  margin-right: 32px !important;
-  margin-left: 32px !important;
   min-height: calc(100vh - 242px);
   max-height: calc(100vh - 242px);
-  overflow: auto;
+  // overflow: auto;
 
   &.no-steps {
     min-height: calc(100vh - 136px);
@@ -102,10 +100,6 @@
       border-bottom: 4px solid transparent;
       transition: 0.25s;
 
-      &.active {
-        font-weight: bold;
-      }
-
       .step-no {
         min-width: 36px;
         max-width: 36px;
@@ -127,6 +121,16 @@
     min-width: 134px;
     max-width: 134px;
   }
+}
+
+.selected {
+  background: rgba($primary, 0.04);
+}
+
+.active-tab {
+  background: $primary;
+  border-radius: 0px 8px 8px 0px;
+  width: 3px !important
 }
 
 .all-steps-dropdown {
@@ -219,4 +223,10 @@
     background: black !important;
     color: white !important;
   }
+}
+
+.action-btn {
+  width: 142px;
+  min-height: 40px;
+  max-height: 40px;
 }

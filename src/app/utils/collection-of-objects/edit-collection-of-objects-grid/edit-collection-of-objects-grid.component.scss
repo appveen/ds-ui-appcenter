@@ -5,8 +5,17 @@
   display: grid;
   width: 100%;
   border: 1px solid #ECECEC;
-  max-height: 260px;
+  max-height: 273px;
   min-height: 250px !important;
+}
+
+.grid-container-modal {
+  display: grid;
+  width: 100%;
+  border: 1px solid #ECECEC;
+  max-height: 30vw;
+  min-height: 250px !important;
+  height: 30vw;
 }
 
 .buttonsRow {

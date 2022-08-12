@@ -302,7 +302,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         });
         self.active[val] = true;
         self.currentStep = val;
-        document.getElementById('step-' + val).scrollIntoView();
+        // document.getElementById('step-' + val).scrollIntoView();
     }
 
     showAllStepsDropdown(event) {
@@ -511,7 +511,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     hasPermission(method?: string): boolean {
         const self = this;
-        return self.commonService.hasPermission(self.schema._id, self.schema.role.roles, method);
+        return self.commonService.hasPermission(self.schema._id, self.schema.role?.roles, method);
     }
 
     isDocumentLocked() {

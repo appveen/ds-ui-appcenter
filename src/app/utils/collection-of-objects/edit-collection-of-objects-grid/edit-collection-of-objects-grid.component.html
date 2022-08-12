@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between align-items-center mb-2 buttonsRow">
-
+    <span class="fw-700">{{collectionFieldName}}</span>
     <div class="d-flex ml-auto">
         <button type="button" class="btn btn-link"
             *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
@@ -17,15 +17,24 @@
             <span class="odp-edit mr-2"></span>
             <span class="text">Bulk Edit ({{ selectedRecordsCount }})</span>
         </button>
-        <span class="fa fa-edit hover my-auto" (click)="openModal(rowData)" *ngIf="!isEditable">Edit</span>
+        <div class="d-flex  hover my-auto" (click)="openModal(rowData)" *ngIf="!isEditable">
+            <span class="dsi dsi-edit mr-1 align-self-center"></span>
+            <span>Edit</span>
+        </div>
     </div>
 
 
 </div>
-<div class="grid-container" [ngStyle]="gridStyle">
-    <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable"
-        [frameworkComponents]="frameworkComponents">
-    </ag-grid-angular>
+<div>
+    <div class="grid-container" [ngStyle]="gridStyle">
+        <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable"
+            [frameworkComponents]="frameworkComponents">
+        </ag-grid-angular>
+    </div>
+    <div class="d-flex mt-2" *ngIf="rowData.length > 3">
+        <span class="text-secondary mr-2">Showing 4 of {{rowData.length}}</span>
+        <span class="text-decoration-underline fw-600 hover" (click)="openModal(rowData)">View All</span>
+    </div>
 </div>
 <ng-template #newModal>
     <span class="font-24 fw-600">{{ collectionFieldName }}</span>
@@ -44,7 +53,7 @@
 
     <div class="modal-body scrollBox">
 
-        <div class="grid-container" [ngStyle]="gridStyle">
+        <div class="grid-container-modal">
             <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"
                 [frameworkComponents]="frameworkComponents">
             </ag-grid-angular>

@@ -131,4 +131,12 @@ export class ArrayControlComponent implements OnInit {
 			}
 		});
 	}
+
+	modifyForm(event) {
+		this.form.clear()
+		if (event.length > 0) {
+			this.form.setValue(event)
+		}
+		console.log(event);
+	}
 }

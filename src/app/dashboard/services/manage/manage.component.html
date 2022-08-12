@@ -1,11 +1,11 @@
-<div class="d-flex flex-column w-100 h-100 position-relative" [formGroup]="form">
+<div class="d-flex flex-column w-100 h-100 position-relative bg-light" [formGroup]="form">
   <!-- <div class="default-loader d-flex flex-column h-100 w-100" *ngIf="showLazyLoader">
     <div class="align-self-center text-center">
       <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
       <div class="text-secondary mt-2">Processing...</div>
     </div>
   </div> -->
-  <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
+  <!-- <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
     <div class="title d-flex align-items-center ml-2">
       <span class="odp-record text-primary mr-2"></span>
       <span class="m-0 font-weight-bold">Data Service</span>
@@ -21,21 +21,24 @@
     </div>
     <div class="actions">
       <div class="text-warning align-self-end" *ngIf="hasWorkflow" id="workflowReview">
-        {{ isEdit ? 'Any changes to this record will require approval(s).' : 'Approval(s) will be required to publish
-        this record.' }}
+        {{ isEdit ? 'Any changes to this record will require approval(s).' :
+        'Approval(s) will be required to publish this record.' }}
       </div>
     </div>
-  </div>
-  <div class="sub-header bg-light px-3 d-flex align-items-center"
+  </div> -->
+  <div class="sub-header bg-light px-3 d-flex align-items-center mr-4 ml-4"
     [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
     <div class='d-flex state-model' *ngIf="stateModelAttr">
       <span class='mr-2 text-secondary'>{{stateModelName}}</span>
       <span class='mr-2'>:</span>
       <span class='badge badge-primary mt-1'>{{stateModelAttrVal}}</span>
     </div>
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="title d-flex align-items-center">
-        &nbsp;
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <div class="d-flex my-auto">
+        <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover" [routerLink]="cancelUrl"></i>
+        <div class="fw-600 font-24" *ngIf="value?._id">
+          {{value._id}}
+        </div>
       </div>
       <div class=" d-flex">
         <button id="cancelBtn" type="button" class="btn btn-link mr-3" [routerLink]="cancelUrl">
@@ -68,8 +71,8 @@
           [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord" (click)="save(true)"
           *ngIf="!isEdit && !isDraft">
           <span class="fa fa-save mr-2"></span>
-          <span *ngIf="!hasWorkflow" class="text">Save &amp; create another</span>
-          <span *ngIf="hasWorkflow" class="text">Proceed &amp; create another</span>
+          <span *ngIf="!hasWorkflow" class="font-13 fw-600">Save &amp; create another</span>
+          <span *ngIf="hasWorkflow" class="font-13 fw-600">Proceed &amp; create another</span>
         </button>
         <div class="btn-group save-button">
           <button id="saveBtn" type="button" class="btn px-4 btn-min-width btn-primary"
@@ -96,20 +99,50 @@
       </div>
     </div>
   </div>
-  <div class="d-flex flex-column px-2 bg-light">
-    <div class="steps-wrapper d-flex justify-content-between w-100 bg-white rounded mb-3 px-3"
-      *ngIf="wizard.length > 0">
-      <div class="step-tabs d-flex align-items-center">
-        <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
-          <div class="step-tab d-flex align-items-center hover border-primary-hover" (click)="showCard(i)"
-            [attr.id]="'step-'+i" [ngClass]="{'active border-primary text-primary':active[i]}">
-            <div class="step-no d-flex align-items-center justify-content-center">{{i+1}}.</div>
-            <div class="step-name high-zIndex text-truncate" [ngbTooltip]="step.name" placement="top">{{step.name}}
-            </div>
+  <div class="d-flex align-items-center px-1 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px"
+    *ngIf="wizard.length > 0">
+    <ng-container *ngFor="let step of wizard;let stepIndex = index">
+      <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
+        class="d-flex experience-hooks px-3 align-items-center ml-auto">
+        <!-- <div class="text-secondary font-weight-bold experience-hooks-title">Available Actions</div> -->
+        <!-- <div class="d-flex experience-hooks-buttons"> -->
+        <button type="button" *ngFor="let ac of step.actions"
+          class="btn btn-outline-dark action-btn experience-hooks-btn mr-3 fw-600"
+          (click)="triggerHook(ac)">{{ac.name}}</button>
+        <!-- </div> -->
+        <!-- <div class="d-flex position-relative">
+          <button type="button" class="btn btn-link all-actions-dropdown-btn"
+            (click)="$event.stopPropagation();toggleAllActionsDropDown=!toggleAllActionsDropDown">
+            <span class="fa fa-ellipsis-h"></span>
+          </button>
+          <div *ngIf="toggleAllActionsDropDown" class="list-group all-actions-dropdown position-absolute"
+            #allActionsDropdown odpClickOutside (outside)="toggleAllActionsDropDown = false">
+            <div class="list-group-item list-group-item-action hover" *ngFor="let ac of step.actions; let i=index;"
+              (click)="triggerHook(ac);toggleAllActionsDropDown=false;">{{ac.name}}</div>
           </div>
-        </ng-container>
+        </div> -->
       </div>
-      <div class="step-controls d-flex align-items-center justify-content-end position-relative">
+    </ng-container>
+  </div>
+  <div class="d-flex flex-column px-2 bg-light">
+    <div class="row flex-column bg-white ml-4 mr-4" style="height: 100vh">
+      <div class="col-3 border-right pr-0 pl-0" style="min-height: 100vh" *ngIf="wizard.length > 0">
+        <div class="step-tabs d-flex flex-column">
+          <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
+            <div class="step-tab d-flex hover" style="min-height: 75px" (click)="showCard(i)" [attr.id]="'step-'+i"
+              [ngClass]="{'selected': active[i] }">
+              <span *ngIf="active[i]" class="active-tab"></span>
+              <div class="d-flex flex-column p-3">
+                <div [ngbTooltip]="" class="d-flex font-12 text-secondary">
+                  Step {{i +1}}
+                </div>
+                <div [ngbTooltip]="step.name" class="text-truncate fw-500">
+                  {{step.name}}</div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <!-- <div class="step-controls d-flex align-items-center justify-content-end position-relative">
         <button class="btn btn-link btn-sm high-zIndex" [disabled]="stepFirst"
           (click)="showCard(currentStep-1) ;tooltip1.close()" placement="top" ngbTooltip="Previous step"
           #tooltip1="ngbTooltip">
@@ -132,72 +165,50 @@
           <div class="list-group-item" *ngFor="let step of wizard; let i=index;let last=last;"
             (click)="showCard(i);hideAllStepsDropdown($event)" [ngClass]="{'active':active[i]}">{{step.name}}</div>
         </div>
+      </div> -->
       </div>
-    </div>
-    <div class="d-flex align-items-center">
-      <ng-container *ngFor="let step of wizard;let stepIndex = index">
-        <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
-          class="d-flex experience-hooks px-3 align-items-center mb-3">
-          <div class="text-secondary font-weight-bold experience-hooks-title">Available Actions</div>
-          <div class="d-flex experience-hooks-buttons">
-            <button type="button" *ngFor="let ac of step.actions"
-              class="btn btn-outline-{{ac.type}} experience-hooks-btn mr-3"
-              (click)="triggerHook(ac)">{{ac.name}}</button>
-          </div>
-          <div class="d-flex position-relative">
-            <button type="button" class="btn btn-link all-actions-dropdown-btn"
-              (click)="$event.stopPropagation();toggleAllActionsDropDown=!toggleAllActionsDropDown">
-              <span class="fa fa-ellipsis-h"></span>
-            </button>
-            <div *ngIf="toggleAllActionsDropDown" class="list-group all-actions-dropdown position-absolute"
-              #allActionsDropdown odpClickOutside (outside)="toggleAllActionsDropDown = false">
-              <div class="list-group-item list-group-item-action hover" *ngFor="let ac of step.actions; let i=index;"
-                (click)="triggerHook(ac);toggleAllActionsDropDown=false;">{{ac.name}}</div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-    <div class="d-flex flex-column w-100 h-100 bg-white rounded">
-      <div *ngIf="!showLazyLoader" class="form-body position-relative" [class.restrict-overflow]="restrictOverflow"
-        [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
-        <ng-container *ngIf="!isSchemaFree">
-          <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
-            <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
-              <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
-                <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
-                  <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
-                    <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
+
+      <div class="col-9 view-body pb-3" style="min-height: 100vh">
+        <div *ngIf="!showLazyLoader" class="form-body position-relative" [class.restrict-overflow]="restrictOverflow"
+          [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
+          <ng-container *ngIf="!isSchemaFree">
+            <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
+              <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
+                <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
+                  <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
+                    <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
+                      <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
+                      </odp-manage-control>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="wizard.length == 0">
+              <div class="d-flex flex-column py-3">
+                <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
+                  <div *ngIf="!checkStateModel(def)">
+                    <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
                     </odp-manage-control>
                   </div>
                 </ng-container>
               </div>
             </ng-container>
           </ng-container>
-          <ng-container *ngIf="wizard.length == 0">
-            <div class="d-flex flex-column py-3">
-              <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-                <div *ngIf="!checkStateModel(def)">
-                  <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
-                  </odp-manage-control>
-                </div>
-              </ng-container>
-            </div>
+          <ng-container *ngIf="isSchemaFree">
+            <odp-code-editor class="code-editor" [edit]="{status:true}" [theme]="selectedEditorTheme"
+              [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
+            </odp-code-editor>
           </ng-container>
-        </ng-container>
-        <ng-container *ngIf="isSchemaFree">
-          <odp-code-editor class="code-editor" [edit]="{status:true}" [theme]="selectedEditorTheme"
-            [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
-          </odp-code-editor>
-        </ng-container>
-      </div>
-      <div class="loading" *ngIf="showLazyLoader">
-        <div class="rows d-flex align-items-center mt-4 ml-3" *ngFor="let row of dummyRows">
-          <div class="mr-5">
-            <odp-loading-placeholder [height]="24" [width]="200"></odp-loading-placeholder>
-          </div>
-          <div>
-            <odp-loading-placeholder [height]="24" [width]="300"></odp-loading-placeholder>
+        </div>
+        <div class="loading" *ngIf="showLazyLoader">
+          <div class="rows d-flex align-items-center mt-4 ml-3" *ngFor="let row of dummyRows">
+            <div class="mr-4">
+              <odp-loading-placeholder [height]="24" [width]="200"></odp-loading-placeholder>
+            </div>
+            <div>
+              <odp-loading-placeholder [height]="24" [width]="300"></odp-loading-placeholder>
+            </div>
           </div>
         </div>
       </div>
