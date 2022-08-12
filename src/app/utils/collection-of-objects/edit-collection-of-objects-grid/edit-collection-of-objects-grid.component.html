@@ -87,7 +87,7 @@
 
     <div class="modal-body scrollBox">
         <div class="field-wrapper d-flex align-items-start px-3 mt-3" *ngFor="let def of definition.definition">
-            <odp-manage-control [definition]="def" [form]="formArray.controls[selectedRowIndex]"
+            <odp-manage-control [definition]="def" [form]="formArray?.controls[selectedRowIndex]"
                 *ngIf="selectedRowIndex !== null; else lazyLoader">
             </odp-manage-control>
 

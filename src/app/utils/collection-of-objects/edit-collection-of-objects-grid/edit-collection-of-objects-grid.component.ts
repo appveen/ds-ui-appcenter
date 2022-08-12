@@ -162,10 +162,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   onRowAdded() {
     if (this.addAllowed) {
       const formGroupControl = this.getFormObject();
-      formGroupControl.setValue({
-        label: '',
-        value: ''
-      })
+      formGroupControl.reset()
       if (!!this.gridApi) {
         let index = this.formArray.length;
         const selectedNodes = this.gridApi.getSelectedNodes();
@@ -177,7 +174,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         this.formArray.markAsDirty();
         this.selectedRowIndex = index;
         this.addedIndex = index;
-        this.editItem();
+        this.editItem(true);
 
         const displayIndex = index + 1;
         let pageToGo = Math.floor(displayIndex / AG_GRID_PAGINATION_COUNT);
@@ -258,7 +255,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     this.bulkEditModalRef.close();
   }
 
-  editItem() {
+  editItem(add?) {
     this.editBackup = this.formArray.value;
     this.isEditable = true
     this.showModalBackdrop = true;
@@ -272,7 +269,12 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         this.editBackup = null;
         this.addedIndex = null;
       }
-
+      else {
+        if (add) {
+          this.formArray.removeAt(this.selectedRowIndex)
+          this.rowData = this.formArray.value
+        }
+      }
       // this.showModalBackdrop = false;
 
     })

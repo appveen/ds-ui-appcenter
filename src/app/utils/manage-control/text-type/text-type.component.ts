@@ -40,7 +40,7 @@ export class TextTypeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if (this.control.value == null && this.specificType == 'select') {
+    if (this.control?.value == null && this.specificType == 'select') {
       this.control.setValue("");
     }
   }

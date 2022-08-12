@@ -145,7 +145,8 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex align-items-center px-3 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px">
+    <div class="d-flex align-items-center px-3 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px"
+        *ngIf="wizard.length > 0">
         <ng-container *ngFor="let step of wizard;let stepIndex = index">
             <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
                 class="d-flex experience-hooks px-3 align-items-center ml-auto">
@@ -220,7 +221,8 @@
             </div> -->
             </div>
 
-            <div [ngClass]="viewBodyClass" class="col-9 view-body pb-3 " style="min-height: 100vh">
+            <div [ngClass]="viewBodyClass" class="view-body pb-3"
+                [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}" style="min-height: 100vh">
                 <ng-container *ngIf="wizard.length > 0">
                     <ng-container
                         *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
