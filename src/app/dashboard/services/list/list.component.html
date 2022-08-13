@@ -1,11 +1,11 @@
-<div class="list-wrapper d-flex flex-column w-100 bg-light">
+<div class="list-wrapper d-flex flex-column w-100 bg-light p-32">
   <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
-  <div class="d-flex align-items-center justify-content-between pr-3 border-bottom header">
+  <div class="d-flex align-items-center justify-content-between border-bottom header">
     <div class="title d-flex align-items-center w-50" *ngIf="schema">
-      <span class="odp-record mr-2 text-primary ml-2"></span>
-      <span class="text m-0 font-weight-bold">{{schema?.name}}</span>
+      <!-- <span class="odp-record mr-2 text-primary ml-2"></span> -->
+      <span class="text m-0 fw-600 font-24">{{schema?.name}}</span>
     </div>
-    <div class="actions w-50 d-flex justify-content-end ignore-outside" *ngIf="schema">
+    <div class="actions w-50 d-flex justify-content-end ignore-outside mb-3" *ngIf="schema">
       <!--<button id="columnsBtn" class="btn btn-link ignore-outside" *ngIf="totalRecords > 0" (click)="showColumnOptions=true;">
           <span class="fa fa-cog mr-2 ignore-outside"></span>
           <span class="text ignore-outside">Columns</span>
@@ -15,12 +15,16 @@
           <span class="fa fa-upload mr-2"></span>
           <span class="text">Upload</span>
         </button>-->
-      <div class="btn-group">
-        <button type="button" class="btn btn-success active" *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
-          [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
-          <span class="fas fa-cloud-upload-alt text-white"></span>
+      <div class="d-flex align-items-center justify-content-between">
+        <button class="btn btn-link mr-4 font-14">
+          <span class="fa fa-download"></span>
+          <span> Export All </span>
         </button>
-        <button id="addDataBtn" type="button" class="btn btn-success d-flex align-items-center text-white"
+        <button type="button" class="btn btn-outline-primary btn-min-width mr-4" *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
+          [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
+          <span > Upload </span>
+        </button>
+        <button id="addDataBtn" type="button" class="btn btn-primary btn-min-width d-flex align-items-center text-white fw-600 font-14"
           *ngIf="hasPermission('POST')" [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">
           <span class="fas fa-plus mr-2"></span>
           <span>Add Data</span>
@@ -203,11 +207,11 @@
         <span class="fa fa-download mr-2"></span>
         <span class="text">Export ({{recordChecked}})</span>
       </button>
-      <button id="exportAllBtn" type="button" class="btn btn-link" *ngIf="!recordChecked && hasPermission()"
+      <!-- <button id="exportAllBtn" type="button" class="btn btn-link" *ngIf="!recordChecked && hasPermission()"
         (click)="exportData()">
         <span class="fa fa-download mr-2"></span>
         <span class="text">Export All</span>
-      </button>
+      </button> -->
       <button id="deleteRecordBtn" type="button" class="btn btn-link"
         *ngIf="recordCheckedForDelete && hasPermission('DELETE')" (click)="workflowAlert()">
         <span class="odp-trash mr-2"></span>
