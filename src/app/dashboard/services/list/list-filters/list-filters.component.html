@@ -142,7 +142,7 @@
 
 <div class="advanced-filter-section">
   <div class="d-flex align-items-center pt-3">
-    <button class="btn btn-outline-secondary font-12 mr-3">
+    <button class="btn btn-outline-secondary font-12 mr-3" (click)="showFilter()">
       <span class="fas fa-filter"></span>
     </button>
     <!-- <div class="col-2 p-0 position-relative mr-2">
@@ -198,5 +198,25 @@
       (click)="confirmDeleteModalRef.close(false)">No</button>
     <button id="deleteModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
       (click)="confirmDeleteModalRef.close(true)">Yes</button>
+  </div>
+</ng-template>
+
+<ng-template #filtereModal>
+  <div class="modal-header alert">
+    <h4 class="modal-title text-dark fw-600 font-20">Filter All Records</h4>
+    <button id="deleteModalCloseBtn" type="button" class="close" aria-label="Close"
+      (click)="filtereModalRef.close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <odp-search-for [allColumns]="allColumns" [filterModel]="filterModel" (filterModelChange)="createFilter($event)"
+      class="mb-3 pt-3 px-3"></odp-search-for>
+  </div>
+  <div class="modal-footer">
+    <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width"
+      (click)="filtereModalRef.close(false)">Cancel</button>
+    <button id="addFilterApplyBtn" type="button" class="btn btn-primary px-4 btn-min-width"
+      (click)="filtereModalRef.close(true)">Apply</button>
   </div>
 </ng-template>

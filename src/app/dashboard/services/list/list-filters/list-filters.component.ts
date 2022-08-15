@@ -122,6 +122,7 @@ interface ColFilter {
 export class ListFiltersComponent implements OnInit, OnDestroy {
   @ViewChild('inputInstance', { static: false }) inputInstance: NgbTypeahead;
   @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: TemplateRef<HTMLElement>;
+  @ViewChild('filtereModal', { static: false }) filtereModal: TemplateRef<HTMLElement>;
   @Input() allColumns: any;
   @Input() allFilters: any;
   @Input() appliedFilter: any;
@@ -130,6 +131,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   name: string;
   confirmDeleteModalRef: NgbModalRef;
+  filtereModalRef: NgbModalRef;
   queryObject: any;
   selectedColOrder: Array<any>;
   sortingColumns: Array<any>;
@@ -238,6 +240,16 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       self.ts.warning('Column already added');
     }
     self.name = '';
+  }
+
+  showFilter() {
+    const self = this;
+    self.filtereModalRef = self.modalService.open(self.filtereModal, { centered: true , size: 'lg'});
+    self.confirmDeleteModalRef.result.then(close => {
+      if (close) {
+        console.log('hi');
+      }
+    }, dismiss => { });
   }
 
   removeItem(index) {
