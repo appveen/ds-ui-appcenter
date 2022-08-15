@@ -1,4 +1,4 @@
-<div class="mb-2 custom-filter-container bg-white">
+<!-- <div class="mb-2 custom-filter-container bg-white">
   <div class="d-flex flex-column w-100">
     <div class="d-flex align-items-start options p-3">
       <div class="text-gray-medium label-text">
@@ -84,7 +84,6 @@
               *ngIf="sortValue.value === '-1'"></span>
             <span class="fas fa-lg fa-sort-amount-up ml-2 text-muted position-absolute"
               *ngIf="sortValue.value === '1'"></span>
-            <!-- <span class="fas fa-lg fa-angle-down text-primary position-absolute angle-pos"></span> -->
             <select [(ngModel)]="col.selectedOption" #sortValue>
               <option *ngFor="let option of col.sortingOptions;" [value]="option.value">
                 {{option.name}}
@@ -139,8 +138,50 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
+<div class="advanced-filter-section">
+  <div class="d-flex align-items-center pt-3">
+    <button class="btn btn-outline-secondary font-12 mr-3">
+      <span class="fas fa-filter"></span>
+    </button>
+    <!-- <div class="col-2 p-0 position-relative mr-2">
+      <input id="columns" type="text" class="form-control" [(ngModel)]="name" [ngbTypeahead]="search"
+        (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)"
+        [resultFormatter]="formatter" (selectItem)="selectItem($event)" placeholder="Choose from list"
+        #inputInstance="ngbTypeahead" />
+      <span class="fas fa-lg fa-plus-circle text-primary position-absolute" id="addColumn"></span>
+    </div> -->
+    <div ngbDropdown class="d-inline-block">
+      <button type="button" class="btn btn-outline-secondary font-12" id="dropdownBasic1" ngbDropdownToggle>View
+        Columns</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button class="font-12 text-secondary" *ngFor="let col of allColumns" ngbDropdownItem (click)="selectItem(col)">
+          {{ col.properties.label ? col.properties.label : col.properties.name }}
+        </button>
+
+      </div>
+    </div>
+    <div class="helper-text text-muted ml-3" *ngIf="selectedColOrder?.length > 1">
+      Click and drag the column names to re-arrange the order.
+    </div>
+  </div>
+  <div class="d-flex my-3 align-items-start ">
+    <div class="text-gray-medium label-text"></div>
+    <div class="d-flex drag-boundary flex-wrap" [sortablejs]="selectedColOrder">
+      <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex ">
+        <div class="col-name d-flex justify-content-center align-items-center py-1 px-2 rounded bg-white" [ngClass]="{'mr-2': !last}">
+          <div class="pr-2 font-12" [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">
+            {{ col.properties.label ? col.properties.label : col.properties.name }}
+          </div>
+          <div class="remove-col hover pr-2" (click)="removeItem(i)">
+            <span class="fas fa-sm fa-lg fa-times"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <ng-template #confirmDeleteModal>
   <div class="modal-header alert">
     <h4 class="modal-title text-danger">{{ deleteModal.title }}</h4>

@@ -189,9 +189,14 @@
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center justify-content-between list-options" [ngClass]="{'border-bottom': !advanceFilter}"
+  <div  [ngClass]="{'border-bottom': !advanceFilter}"
     *ngIf="totalRecords>0">
-    <div class="d-flex align-items-center justify-content-start">
+    <ng-container>
+      <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
+      (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
+    </odp-list-filters>
+    </ng-container>
+    <!-- <div class="d-flex align-items-center justify-content-start">
       <div class="p-1 filter-icon position-relative hover"
       [ngClass]="{'full-br': !advanceFilter, 'half-br': advanceFilter, 'bg-white': !selectedSavedView?.name || advanceFilter, 'bg-primary': selectedSavedView?.name && !advanceFilter, 'disabled': apiCallsPending}"
       (click)="advanceFilter=!advanceFilter" *ngIf="!isSchemaFree">
@@ -201,7 +206,7 @@
       <span *ngIf="advanceFilter" class="fas fa-times text-muted position-absolute"></span>
     </div>
   
-    </div>
+    </div> -->
     
     <div class="bg-white p-2 view-container d-flex align-items-center hover position-relative ignore-outside"
       *ngIf="!isSchemaFree">
@@ -283,9 +288,7 @@
     </div>
 
   </div>
-  <odp-list-filters #listFilters *ngIf="advanceFilter" [allColumns]="definition" [allFilters]="allFilters"
-  (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
-</odp-list-filters>
+
 
   <div class="d-flex align-items-center justify-content-between list-options"
     [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">

@@ -230,10 +230,10 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   selectItem(val) {
     const self = this;
-    val.preventDefault();
-    const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.item.properties.name);
+    // val.preventDefault();
+    const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
     if (index1 === -1) {
-      self.selectedColOrder.push(val.item);
+      self.selectedColOrder.push(val);
     } else {
       self.ts.warning('Column already added');
     }
