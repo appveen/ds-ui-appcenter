@@ -1,11 +1,11 @@
-<div class="list-wrapper d-flex flex-column w-100 bg-light">
+<div class="list-wrapper d-flex flex-column w-100 bg-light p-32">
   <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
-  <div class="d-flex align-items-center justify-content-between pr-3 border-bottom header">
+  <div class="d-flex align-items-center justify-content-between border-bottom header">
     <div class="title d-flex align-items-center w-50" *ngIf="schema">
-      <span class="odp-record mr-2 text-primary ml-2"></span>
-      <span class="text m-0 font-weight-bold">{{schema?.name}}</span>
+      <!-- <span class="odp-record mr-2 text-primary ml-2"></span> -->
+      <span class="text m-0 fw-600 font-24">{{schema?.name}}</span>
     </div>
-    <div class="actions w-50 d-flex justify-content-end ignore-outside" *ngIf="schema">
+    <div class="actions w-50 d-flex justify-content-end ignore-outside mb-3" *ngIf="schema">
       <!--<button id="columnsBtn" class="btn btn-link ignore-outside" *ngIf="totalRecords > 0" (click)="showColumnOptions=true;">
           <span class="fa fa-cog mr-2 ignore-outside"></span>
           <span class="text ignore-outside">Columns</span>
@@ -15,12 +15,18 @@
           <span class="fa fa-upload mr-2"></span>
           <span class="text">Upload</span>
         </button>-->
-      <div class="btn-group">
-        <button type="button" class="btn btn-success active" *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
-          [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
-          <span class="fas fa-cloud-upload-alt text-white"></span>
+      <div class="d-flex align-items-center justify-content-between">
+        <button class="btn btn-link mr-4 font-14" *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
+          <span class="fa fa-download"></span>
+          <span> Export All </span>
         </button>
-        <button id="addDataBtn" type="button" class="btn btn-success d-flex align-items-center text-white"
+        <button type="button" class="btn btn-outline-primary btn-min-width mr-4"
+          *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
+          [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
+          <span> Upload </span>
+        </button>
+        <button id="addDataBtn" type="button"
+          class="btn btn-primary btn-min-width d-flex align-items-center text-white fw-600 font-14"
           *ngIf="hasPermission('POST')" [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">
           <span class="fas fa-plus mr-2"></span>
           <span>Add Data</span>
@@ -183,7 +189,108 @@
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center justify-content-between pr-3 pl-2 list-options"
+  <div  [ngClass]="{'border-bottom': !advanceFilter}"
+    *ngIf="totalRecords>0">
+    <ng-container>
+      <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
+      (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
+    </odp-list-filters>
+    </ng-container>
+    <!-- <div class="d-flex align-items-center justify-content-start">
+      <div class="p-1 filter-icon position-relative hover"
+      [ngClass]="{'full-br': !advanceFilter, 'half-br': advanceFilter, 'bg-white': !selectedSavedView?.name || advanceFilter, 'bg-primary': selectedSavedView?.name && !advanceFilter, 'disabled': apiCallsPending}"
+      (click)="advanceFilter=!advanceFilter" *ngIf="!isSchemaFree">
+      <span *ngIf="!advanceFilter" class="fas fa-filter position-absolute"
+        [ngClass]="{'text-primary': !selectedSavedView?.name, 'text-white': selectedSavedView?.name}"></span>
+      <div *ngIf="selectedSavedView?.name" class="bg-white position-absolute sm-circle"></div>
+      <span *ngIf="advanceFilter" class="fas fa-times text-muted position-absolute"></span>
+    </div>
+  
+    </div> -->
+    
+    <div class="bg-white p-2 view-container d-flex align-items-center hover position-relative ignore-outside"
+      *ngIf="!isSchemaFree">
+      <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
+        (click)="showSaveViewDropDown=!showSaveViewDropDown">
+        <div class="ignore-outside">
+          <span class="fa fa-search text-gray-medium mr-1 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
+          <span class="fa fa-search text-primary mr-1 ignore-outside" *ngIf="selectedSavedView?.name"></span>
+          <span class="ignore-outside"
+            [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{
+            selectedSavedView?.name ? selectedSavedView?.name : 'All Saved Filters' }}</span>
+        </div>
+        <div class="ml-auto ignore-outside">
+          <span class="fas fa-angle-down text-primary ignore-outside"></span>
+        </div>
+      </div>
+      <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside" *ngIf="showSaveViewDropDown"
+        odpClickOutside (outside)="showSaveViewDropDown = false">
+        <div class="py-2 px-3 w-100 text-secondary filter-list-type d-flex align-items-center ignore-outside"
+          [ngClass]="{'border-bottom': !showSearchSavedView}">
+          <span class="mr-2 pr-2 border-right ignore-outside hover" *ngIf="!showSearchSavedView"
+            (click)="showPrivateViews=false;filterSavedViews()" [ngClass]="{'text-primary': !showPrivateViews}">
+            <strong>Everyone</strong>
+          </span>
+          <span *ngIf="!showSearchSavedView" class="ignore-outside hover" [ngClass]="{'text-primary': showPrivateViews}"
+            (click)="showPrivateViews=true;filterSavedViews()">
+            <strong>Only Me</strong>
+          </span>
+          <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchSavedView"
+            (click)="showSearchSavedView = false;savedViewSearchTerm='';filterSavedViews()"></span>
+          <div class="ml-auto hover ignore-outside" *ngIf="!showSearchSavedView && savedViews.length > 0"
+            (click)="showSearchSavedView = true">
+            <span class="fas fa-search text-muted ignore-outside"></span>
+          </div>
+          <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
+            <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside" [(ngModel)]="savedViewSearchTerm"
+              placeholder="Search save view" (keyup.enter)="filterSavedViews()" odpAutoFocus>
+            <span class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+          </div>
+        </div>
+        <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
+          <div *ngFor="let filter of savedViews"
+            class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
+            (mouseenter)="filter.hasOptions && filter.showOptions = true"
+            (mouseleave)="filter.hasOptions && filter.showOptions = false">
+            <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
+            <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
+            <span class="hover text-truncate filterNameWidth"
+              (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
+              [odpTruncated]="filter.name">{{ filter.name }}</span>
+            <span *ngIf="!filter.showOptions" class="text-secondary ml-auto position-absolute un-pos">
+              {{ filter.user }}
+            </span>
+            <span *ngIf="filter.hasOptions && !filter.showOptions"
+              class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
+            <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
+              [@slideIn]>
+              <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
+              <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
+              <div class="left-radius position-relative hover"
+                [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
+                (click)="changeFilterType(filter, 'private')">
+                <span class="fas fa-unlock-alt position-absolute icon-pos"
+                  [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
+              </div>
+              <div class="right-radius bg-white position-relative hover mr-2"
+                [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
+                (click)="changeFilterType(filter, 'public')">
+                <span class="fas fa-globe position-absolute icon-pos"
+                  [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noFilters>
+          <div class="text-secondary p-3">No filters are defined for this service yet</div>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="d-flex align-items-center justify-content-between list-options"
     [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
     <div class="d-flex align-items-center">
       <div class="d-flex align-items-center hover" (click)="selectAllRecords()" *ngIf="!listGrid?.showLoading">
@@ -203,11 +310,11 @@
         <span class="fa fa-download mr-2"></span>
         <span class="text">Export ({{recordChecked}})</span>
       </button>
-      <button id="exportAllBtn" type="button" class="btn btn-link" *ngIf="!recordChecked && hasPermission()"
+      <!-- <button id="exportAllBtn" type="button" class="btn btn-link" *ngIf="!recordChecked && hasPermission()"
         (click)="exportData()">
         <span class="fa fa-download mr-2"></span>
         <span class="text">Export All</span>
-      </button>
+      </button> -->
       <button id="deleteRecordBtn" type="button" class="btn btn-link"
         *ngIf="recordCheckedForDelete && hasPermission('DELETE')" (click)="workflowAlert()">
         <span class="odp-trash mr-2"></span>
@@ -240,92 +347,7 @@
         <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
       </div>
 
-      <div class="bg-white p-2 mr-3 view-container d-flex align-items-center hover position-relative ignore-outside"
-        *ngIf="!isSchemaFree">
-        <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
-          (click)="showSaveViewDropDown=!showSaveViewDropDown">
-          <div class="ignore-outside">
-            <span class="fa fa-search text-gray-medium mr-1 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
-            <span class="fa fa-search text-primary mr-1 ignore-outside" *ngIf="selectedSavedView?.name"></span>
-            <span class="ignore-outside"
-              [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{
-              selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
-          </div>
-          <div class="ml-auto ignore-outside">
-            <span class="fas fa-angle-down text-primary ignore-outside"></span>
-          </div>
-        </div>
-        <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside"
-          *ngIf="showSaveViewDropDown" odpClickOutside (outside)="showSaveViewDropDown = false">
-          <div class="py-2 px-3 w-100 text-secondary filter-list-type d-flex align-items-center ignore-outside"
-            [ngClass]="{'border-bottom': !showSearchSavedView}">
-            <span class="mr-2 pr-2 border-right ignore-outside hover" *ngIf="!showSearchSavedView"
-              (click)="showPrivateViews=false;filterSavedViews()" [ngClass]="{'text-primary': !showPrivateViews}">
-              <strong>Everyone</strong>
-            </span>
-            <span *ngIf="!showSearchSavedView" class="ignore-outside hover"
-              [ngClass]="{'text-primary': showPrivateViews}" (click)="showPrivateViews=true;filterSavedViews()">
-              <strong>Only Me</strong>
-            </span>
-            <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchSavedView"
-              (click)="showSearchSavedView = false;savedViewSearchTerm='';filterSavedViews()"></span>
-            <div class="ml-auto hover ignore-outside" *ngIf="!showSearchSavedView && savedViews.length > 0"
-              (click)="showSearchSavedView = true">
-              <span class="fas fa-search text-muted ignore-outside"></span>
-            </div>
-            <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
-              <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside" [(ngModel)]="savedViewSearchTerm"
-                placeholder="Search save view" (keyup.enter)="filterSavedViews()" odpAutoFocus>
-              <span class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
-            </div>
-          </div>
-          <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
-            <div *ngFor="let filter of savedViews"
-              class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
-              (mouseenter)="filter.hasOptions && filter.showOptions = true"
-              (mouseleave)="filter.hasOptions && filter.showOptions = false">
-              <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
-              <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
-              <span class="hover text-truncate filterNameWidth"
-                (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
-                [odpTruncated]="filter.name">{{ filter.name }}</span>
-              <span *ngIf="!filter.showOptions" class="text-secondary ml-auto position-absolute un-pos">
-                {{ filter.user }}
-              </span>
-              <span *ngIf="filter.hasOptions && !filter.showOptions"
-                class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
-              <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
-                [@slideIn]>
-                <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
-                <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
-                <div class="left-radius position-relative hover"
-                  [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
-                  (click)="changeFilterType(filter, 'private')">
-                  <span class="fas fa-unlock-alt position-absolute icon-pos"
-                    [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
-                </div>
-                <div class="right-radius bg-white position-relative hover mr-2"
-                  [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
-                  (click)="changeFilterType(filter, 'public')">
-                  <span class="fas fa-globe position-absolute icon-pos"
-                    [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <ng-template #noFilters>
-            <div class="text-secondary p-3">No filters are defined for this service yet</div>
-          </ng-template>
-        </div>
-      </div>
-      <div class="p-1 filter-icon position-relative hover"
-        [ngClass]="{'full-br': !advanceFilter, 'half-br': advanceFilter, 'bg-white': !selectedSavedView?.name || advanceFilter, 'bg-primary': selectedSavedView?.name && !advanceFilter, 'disabled': apiCallsPending}"
-        (click)="advanceFilter=!advanceFilter" *ngIf="!isSchemaFree">
-        <span *ngIf="!advanceFilter" class="fas fa-filter position-absolute"
-          [ngClass]="{'text-primary': !selectedSavedView?.name, 'text-white': selectedSavedView?.name}"></span>
-        <div *ngIf="selectedSavedView?.name" class="bg-white position-absolute sm-circle"></div>
-        <span *ngIf="advanceFilter" class="fas fa-times text-muted position-absolute"></span>
-      </div>
+
     </div>
   </div>
   <div class="no-record text-center mx-2 mt-2 bg-white rounded" *ngIf="!apiCallsPending && totalRecords==0">
@@ -335,10 +357,7 @@
           data</a>.</span>
     </h4>
   </div>
-  <odp-list-filters #listFilters *ngIf="advanceFilter" [allColumns]="definition" [allFilters]="allFilters"
-    (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
-  </odp-list-filters>
-
+ 
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
     <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"

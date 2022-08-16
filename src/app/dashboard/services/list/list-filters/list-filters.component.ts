@@ -122,6 +122,7 @@ interface ColFilter {
 export class ListFiltersComponent implements OnInit, OnDestroy {
   @ViewChild('inputInstance', { static: false }) inputInstance: NgbTypeahead;
   @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: TemplateRef<HTMLElement>;
+  @ViewChild('filtereModal', { static: false }) filtereModal: TemplateRef<HTMLElement>;
   @Input() allColumns: any;
   @Input() allFilters: any;
   @Input() appliedFilter: any;
@@ -130,6 +131,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   name: string;
   confirmDeleteModalRef: NgbModalRef;
+  filtereModalRef: NgbModalRef;
   queryObject: any;
   selectedColOrder: Array<any>;
   sortingColumns: Array<any>;
@@ -230,14 +232,25 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   selectItem(val) {
     const self = this;
-    val.preventDefault();
-    const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.item.properties.name);
+    // val.preventDefault();
+    const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
     if (index1 === -1) {
-      self.selectedColOrder.push(val.item);
+      self.selectedColOrder.push(val);
+      self.applyFilter();
     } else {
       self.ts.warning('Column already added');
     }
     self.name = '';
+  }
+
+  showFilter() {
+    const self = this;
+    self.filtereModalRef = self.modalService.open(self.filtereModal, { centered: true , size: 'lg'});
+    self.filtereModalRef.result.then(close => {
+      if (close) {
+        self.applyFilter();
+      }
+    }, dismiss => { });
   }
 
   removeItem(index) {
