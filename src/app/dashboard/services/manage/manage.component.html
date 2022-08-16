@@ -168,7 +168,8 @@
       </div> -->
       </div>
 
-      <div class="col-9 view-body pb-3" style="min-height: 100vh">
+      <div class="view-body pb-3" [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}"
+        style="min-height: 100vh">
         <div *ngIf="!showLazyLoader" class="form-body position-relative" [class.restrict-overflow]="restrictOverflow"
           [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
           <ng-container *ngIf="!isSchemaFree">
