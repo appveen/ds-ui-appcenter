@@ -5,28 +5,35 @@
   min-height: 40px;
   max-height: 40px;
 }
+
 .header {
   min-height: 48px;
   max-height: 48px;
+
   .title {
     font-size: 16px;
   }
 }
+
 .list-page-wrapper {
   min-height: calc(100vh - 148px);
+
   &.has-records {
     min-height: calc(100vh - 196px);
   }
 }
+
 .list-options {
   min-height: 48px;
   max-height: 48px;
+
   .view-container {
     width: 176px;
     height: 31px;
     border-radius: 4px;
     left: 83%;
     top: -69%;
+
     .filter-list {
       height: 298px;
       width: 360px;
@@ -39,27 +46,34 @@
       overflow-y: auto;
       overflow-x: hidden;
       cursor: default;
+
       &-type {
         height: 47px;
       }
+
       .filter-name {
         height: 40px;
+
         &:hover {
           background-color: $light;
         }
       }
+
       .sub-container {
         overflow-x: hidden;
         overflow-y: auto;
+
         .filterNameWidth {
           max-width: 150px;
         }
       }
     }
   }
+
   .filter-icon {
     width: 32px;
     height: 32px;
+
     span {
       top: 50%;
       left: 50%;
@@ -67,9 +81,11 @@
     }
   }
 }
+
 .list-wrapper {
   height: calc(100vh - 40px);
 }
+
 .no-record {
   height: calc(100vh - 104px);
 }
@@ -81,9 +97,11 @@
   // min-width: calc(100vw - 247px);
   // max-width: calc(100vw - 232px);
 }
+
 .word-break {
   word-break: break-word;
 }
+
 .column-selection {
   width: 300px;
   position: fixed;
@@ -92,9 +110,11 @@
   top: 97px;
   transition: 0.25s;
   box-shadow: 0 0 10px rgba($black, 0.16);
+
   &.show {
     right: 15px;
   }
+
   .card-body {
     .list {
       height: calc(100vh - 250px);
@@ -177,6 +197,7 @@
 .disabled {
   cursor: not-allowed;
 }
+
 .context-menu {
   min-width: 180px;
   max-width: 180px;
@@ -188,12 +209,14 @@
   border-radius: 6px;
   opacity: 1;
   align-items: flex-start;
+
   button {
     &:hover {
       background-color: $light;
     }
   }
 }
+
 .no-focus {
   box-shadow: none !important;
 }
@@ -252,6 +275,7 @@
     background: none;
     color: #000;
   }
+
   &.dropdown-item:focus {
     outline: none;
   }
@@ -268,6 +292,7 @@
   // top: 128px;
   top: 0px;
   z-index: 1060;
+
   &.show {
     right: 0;
   }

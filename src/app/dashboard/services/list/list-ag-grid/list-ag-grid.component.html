@@ -1,5 +1,5 @@
 <ag-grid-angular #agGrid style="width: 100%; height: 100%;" class="ag-theme-balham border-0" [columnDefs]="columnDefs"
-    rowSelection="multiple" rowMultiSelectWithClick="true" rowDeselection="true" rowModelType="infinite"
+    rowSelection="multiple" rowMultiSelectWithClick="true" rowDeselection="true" rowModelType="infinite" rowHeight=56
     [datasource]="dataSource" [floatingFilter]="true" cacheBlockSize="30" (rowDoubleClicked)="rowDoubleClicked($event)"
     (rowSelected)="rowSelected($event)" (sortChanged)="sortChanged($event)" (filterModified)="filterModified($event)"
     (columnResized)="columnResized($event)" (columnMoved)="columnMoved()" (cellContextMenu)="cellContextMenu($event)"
@@ -7,7 +7,7 @@
 </ag-grid-angular>
 
 <ng-template #clearFilterModal>
-    <div class="modal-header alert">
+    <div class=" modal-header alert">
         <h4 class="modal-title text-danger">Warning</h4>
         <button id="clearModalCloseBtn" type="button" class="close" aria-label="Close"
             (click)="clearFilterModalRef.close(false)">

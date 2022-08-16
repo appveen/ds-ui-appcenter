@@ -285,6 +285,9 @@
 
   .ag-header {
     background: #F7F7FB;
+    font-size: 13px !important;
+    font-weight: 500px;
+    height: 80px !important;
 
 
     .ag-header-cell-text {
@@ -490,6 +493,10 @@
 .actions {
   width: 140px;
   height: 40px !important;
+}
+
+.border-r11 {
+  border-radius: 11px;
 }
 
 // .btn-primary {

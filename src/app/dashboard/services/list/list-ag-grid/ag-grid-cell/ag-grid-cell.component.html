@@ -3,7 +3,7 @@
         <ng-container *ngIf="type === 'Identifier'">
             <a [routerLink]="['/' , currentAppId, 'services', serviceId, 'view', data._id]">{{value}}</a>
         </ng-container>
-        <ng-container *ngIf="type === 'Checkbox'">
+        <!-- <ng-container *ngIf="type === 'Checkbox'">
             <div class="d-flex align-items-center mt-1">
                 <div class="round-check d-flex align-items-center justify-content-center border hover"
                     [ngClass]="{'bg-primary border-primary':checked,'bg-light':!checked}">
@@ -12,7 +12,7 @@
                 <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"
                     [ngClass]="{'ml-2': data._metadata.workflow}"></div>
             </div>
-        </ng-container>
+        </ng-container> -->
         <ng-container *ngIf="type === 'Array'">
             <div class="">
                 {{value?value.length : '0'}} records
@@ -41,15 +41,15 @@
                     {{showPassword?'Hide':'Show'}}
                 </button> -->
                 <span class="fas eye-icon hover ml-2 text-primary"
-                [ngClass]="{'fa-eye ': !showPassword,'fa-eye-slash ': showPassword }"
-                (click)="showPassword=!showPassword;$event.stopPropagation();"></span>
+                    [ngClass]="{'fa-eye ': !showPassword,'fa-eye-slash ': showPassword }"
+                    (click)="showPassword=!showPassword;$event.stopPropagation();"></span>
             </ng-container>
         </div>
         <ng-container *ngIf="type === 'String' && properties.longText && !properties.richText">
-            <a  [routerLink]="['/', currentAppId, 'services', serviceId, 'view', id]">View</a>
+            <a [routerLink]="['/', currentAppId, 'services', serviceId, 'view', id]">View</a>
         </ng-container>
         <ng-container *ngIf="type === 'String' && !properties.longText && properties.richText">
-            <a  [routerLink]="['/', currentAppId, 'services', serviceId, 'view', id]">View</a>
+            <a [routerLink]="['/', currentAppId, 'services', serviceId, 'view', id]">View</a>
         </ng-container>
         <ng-container *ngIf="type === 'Number' && !properties.currency">
             <ng-container *ngIf="value || value === 0">

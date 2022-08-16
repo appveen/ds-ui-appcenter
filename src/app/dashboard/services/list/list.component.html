@@ -189,12 +189,11 @@
       </div>
     </div>
   </div>
-  <div  [ngClass]="{'border-bottom': !advanceFilter}"
-    *ngIf="totalRecords>0">
+  <div [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
     <ng-container>
       <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
-      (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
-    </odp-list-filters>
+        (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
+      </odp-list-filters>
     </ng-container>
     <!-- <div class="d-flex align-items-center justify-content-start">
       <div class="p-1 filter-icon position-relative hover"
@@ -207,7 +206,7 @@
     </div>
   
     </div> -->
-    
+
     <div class="bg-white p-2 view-container d-flex align-items-center hover position-relative ignore-outside"
       *ngIf="!isSchemaFree">
       <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
@@ -357,7 +356,7 @@
           data</a>.</span>
     </h4>
   </div>
- 
+
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
     <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"
