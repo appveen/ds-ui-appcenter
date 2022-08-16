@@ -236,6 +236,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
     if (index1 === -1) {
       self.selectedColOrder.push(val);
+      self.applyFilter();
     } else {
       self.ts.warning('Column already added');
     }
@@ -245,9 +246,9 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   showFilter() {
     const self = this;
     self.filtereModalRef = self.modalService.open(self.filtereModal, { centered: true , size: 'lg'});
-    self.confirmDeleteModalRef.result.then(close => {
+    self.filtereModalRef.result.then(close => {
       if (close) {
-        console.log('hi');
+        self.applyFilter();
       }
     }, dismiss => { });
   }
