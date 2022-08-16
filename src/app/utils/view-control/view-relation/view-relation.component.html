@@ -35,8 +35,8 @@
     <span class="text-muted">N.A.</span>
   </ng-container>
 
-  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">From</span>
+  <div *ngIf="isUpdated" class="text-muted text-decoration-line-through mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">From</span> -->
     <odp-view-relation-data [definition]="definition" [value]=oldVal></odp-view-relation-data>
     <!-- <ng-container *ngFor="let item of oldValues;let last =last">
       <ng-container *ngIf="!item.isSecureText">
@@ -73,13 +73,13 @@
       {{showPassword?'Hide':'Show'}}
     </button> -->
   </div>
-  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2" >To</span>
+  <div *ngIf="isUpdated" class="text-muted  mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">To</span> -->
     <odp-view-relation-data [definition]="definition" [value]=newVal *ngIf="newVal"></odp-view-relation-data>
     <ng-container *ngIf="!newVal">
       <span class="text-muted">N.A.</span>
     </ng-container>
-      <!-- <ng-container *ngFor="let item of newValues;let last =last">
+    <!-- <ng-container *ngFor="let item of newValues;let last =last">
         <ng-container *ngIf="!item.isSecureText">
           <a [routerLink]="relationLink+newVal._id" target="_blank" *ngIf="serviceAccess">
             {{item.value}}
@@ -114,11 +114,11 @@
         {{showPassword?'Hide':'Show'}}
       </button> -->
   </div>
-  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">Created</span>
+  <div *ngIf="isCreated" class="text-muted  mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">Created</span> -->
     <odp-view-relation-data [definition]="definition" [value]=newVal></odp-view-relation-data>
 
-      <!-- <ng-container *ngFor="let item of newValues;let last =last">
+    <!-- <ng-container *ngFor="let item of newValues;let last =last">
         <ng-container *ngIf="!item.isSecureText">
           <a [routerLink]="relationLink+newVal._id" target="_blank" *ngIf="serviceAccess">
             {{item.value}}

@@ -1,9 +1,9 @@
 <div class="d-flex" *ngIf="definition.value || oldValue || newValue">
   <div class="d-flex flex-column">
-    <div class="field-wrapper d-flex align-items-start px-3">
-      <div class="label-wrapper d-flex align-items-start">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3">
+      <div class=" label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Raw location</span>
+          <span class="text text-secondary">Raw location</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -13,21 +13,21 @@
         <span *ngIf="!userInput" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('userInput')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('userInput')" class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('userInput')}}
         </div>
-        <div *ngIf="getNewVal('userInput')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('userInput')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('userInput')">To</span>
+        <div *ngIf="getNewVal('userInput')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('userInput')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('userInput')">To</span> -->
           {{getNewVal('userInput')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Geocoded location</span>
+          <span class="text text-secondary">Geocoded location</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -37,21 +37,21 @@
         <span *ngIf="!formattedAddress" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('formattedAddress')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('formattedAddress')" class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('formattedAddress')}}
         </div>
-        <div *ngIf="getNewVal('formattedAddress')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('formattedAddress')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('formattedAddress')">To</span>
+        <div *ngIf="getNewVal('formattedAddress')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('formattedAddress')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('formattedAddress')">To</span> -->
           {{getNewVal('formattedAddress')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Town</span>
+          <span class="text text-secondary">Town</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -61,21 +61,21 @@
         <span *ngIf="!town" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('town')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('town')" class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('town')}}
         </div>
-        <div *ngIf="getNewVal('town')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('town')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('town')">To</span>
+        <div *ngIf="getNewVal('town')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('town')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('town')">To</span> -->
           {{getNewVal('town')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">State</span>
+          <span class="text text-secondary">State</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -85,21 +85,21 @@
         <span *ngIf="!state" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('state')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('state')" class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('state')}}
         </div>
-        <div *ngIf="getNewVal('state')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('state')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('state')">To</span>
+        <div *ngIf="getNewVal('state')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('state')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('state')">To</span> -->
           {{getNewVal('state')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Country</span>
+          <span class="text text-secondary">Country</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -109,21 +109,21 @@
         <span *ngIf="!country" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('country')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('country')" class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('country')}}
         </div>
-        <div *ngIf="getNewVal('country')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('country')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('country')">To</span>
+        <div *ngIf="getNewVal('country')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('country')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('country')">To</span> -->
           {{getNewVal('country')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Pin Code</span>
+          <span class="text text-secondary">Pin Code</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -133,21 +133,21 @@
         <span *ngIf="!pincode" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('pincode')" class="text-danger p-2 mt-2 history-value">
+        <div *ngIf="getOldVal('pincode')" class="text-muted text-decoration-line-through mt-2 history-value">
           <span class="text-muted mr-2">From</span>
           {{getOldVal('pincode')}}
         </div>
-        <div *ngIf="getNewVal('pincode')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('pincode')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('pincode')">To</span>
+        <div *ngIf="getNewVal('pincode')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('pincode')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('pincode')">To</span> -->
           {{getNewVal('pincode')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Latitude</span>
+          <span class="text text-secondary">Latitude</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -157,21 +157,22 @@
         <span *ngIf="!latitude" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('geometry.coordinates.1')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('geometry.coordinates.1')"
+          class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('geometry.coordinates.1')}}
         </div>
-        <div *ngIf="getNewVal('geometry.coordinates.1')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('geometry.coordinates.1')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('geometry.coordinates.1')">To</span>
+        <div *ngIf="getNewVal('geometry.coordinates.1')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('geometry.coordinates.1')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('geometry.coordinates.1')">To</span> -->
           {{getNewVal('geometry.coordinates.1')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text">Longitude</span>
+          <span class="text text-secondary">Longitude</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
@@ -181,13 +182,14 @@
         <span *ngIf="!longitude" class="text-muted">
           N.A.
         </span>
-        <div *ngIf="getOldVal('geometry.coordinates.0')" class="text-danger p-2 mt-2 history-value">
-          <span class="text-muted mr-2">From</span>
+        <div *ngIf="getOldVal('geometry.coordinates.0')"
+          class="text-muted text-decoration-line-through mt-2 history-value">
+          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('geometry.coordinates.0')}}
         </div>
-        <div *ngIf="getNewVal('geometry.coordinates.0')" class="text-success p-2 mt-2 history-value">
-          <span class="text-muted mr-2" *ngIf="!getOldVal('geometry.coordinates.0')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('geometry.coordinates.0')">To</span>
+        <div *ngIf="getNewVal('geometry.coordinates.0')" class="text-muted mt-2 history-value">
+          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('geometry.coordinates.0')">Created</span>
+          <span class="text-muted mr-2" *ngIf="getOldVal('geometry.coordinates.0')">To</span> -->
           {{getNewVal('geometry.coordinates.0')}}
         </div>
       </div>

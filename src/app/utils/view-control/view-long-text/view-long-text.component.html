@@ -11,8 +11,8 @@
     <ng-container *ngIf="!definition.value">
       <span class="text-muted">N.A.</span>
     </ng-container> -->
-  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">From</span>
+  <div *ngIf="isUpdated" class="text-muted text-decoration-line-through mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">From</span> -->
     <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:oldVal, type:'from'}"></ng-container>
 
     <!-- <div *ngIf="isenrichTextWithLinkRequired(oldVal)" [innerHTML]="getContent(enrichTextWithLink(oldVal))"></div> -->
@@ -20,8 +20,8 @@
         {{showPassword?oldVal:hideText(oldVal)}}
       </div> -->
   </div>
-  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">To</span>
+  <div *ngIf="isUpdated" class="text-muted mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">To</span> -->
     <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal, type:'to'}"></ng-container>
 
     <!-- <div *ngIf="isenrichTextWithLinkRequired(newVal)" [innerHTML]="getContent(enrichTextWithLink(newVal))"></div>
@@ -29,8 +29,8 @@
         {{showPassword?newVal:hideText(newVal)}}
       </div> -->
   </div>
-  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">Created</span>
+  <div *ngIf="isCreated" class="text-muted mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">Created</span> -->
     <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal, type:'created'}">
     </ng-container>
     <!-- <div *ngIf="isenrichTextWithLinkRequired(newVal)" [innerHTML]="getContent(enrichTextWithLink(newVal))"></div>

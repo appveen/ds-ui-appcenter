@@ -143,7 +143,7 @@
 <div class="advanced-filter-section">
   <div class="d-flex align-items-center pt-3">
     <button class="btn btn-outline-secondary font-12 mr-3" (click)="showFilter()">
-      <span class="fas fa-filter"></span>
+      <span class="dsi dsi-filter-alt"></span>
     </button>
     <!-- <div class="col-2 p-0 position-relative mr-2">
       <input id="columns" type="text" class="form-control" [(ngModel)]="name" [ngbTypeahead]="search"
@@ -170,7 +170,8 @@
     <div class="text-gray-medium label-text"></div>
     <div class="d-flex drag-boundary flex-wrap" [sortablejs]="selectedColOrder">
       <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex ">
-        <div class="col-name d-flex justify-content-center align-items-center py-1 px-2 rounded bg-white" [ngClass]="{'mr-2': !last}">
+        <div class="col-name d-flex justify-content-center align-items-center py-1 px-2 rounded bg-white"
+          [ngClass]="{'mr-2': !last}">
           <div class="pr-2 font-12" [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">
             {{ col.properties.label ? col.properties.label : col.properties.name }}
           </div>

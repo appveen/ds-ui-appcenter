@@ -39,7 +39,7 @@
 }
 
 .history-value {
-  background: #ffecb3;
+  // background: #ffecb3;
 }
 
 .modal-content {
@@ -497,6 +497,10 @@
 
 .border-r11 {
   border-radius: 11px;
+}
+
+.text-decoration-line-through {
+  text-decoration: line-through !important;
 }
 
 // .btn-primary {

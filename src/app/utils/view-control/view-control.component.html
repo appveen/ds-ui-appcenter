@@ -1,5 +1,5 @@
 <div class="field-wrapper d-flex align-items-start px-3 flex-column mt-3">
-  <div class="label-wrapper text-muted font-sm-12 " [ngStyle]="getLabelWidth()">
+  <div class="label-wrapper text-secondary font-sm-12 " [ngStyle]="getLabelWidth()">
     <div class="d-flex align-items-start">
       <label *ngIf="definition.type!='Object' && definition.type!='Array'" [attr.for]="definition.path"
         class="label-width d-flex align-items-start mb-0 text-secondary">
@@ -24,7 +24,7 @@
 <div class="field-wrapper d-flex align-items-start px-3 obj-bg pt-3 pb-3" *ngIf="definition.type=='Object'"
   [ngClass]="{'last-control': last}">
   <div class="d-flex flex-column w-100">
-    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-0 fw-700 px-3">
+    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-0 fw-700 px-3 font-20">
       <span class="text">{{definition.properties.label ? definition.properties.label :
         definition.properties.name}}</span>
     </label>
