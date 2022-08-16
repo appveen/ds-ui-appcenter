@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { Subscription } from 'rxjs';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'odp-history',
@@ -69,6 +70,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           data.forEach(e => {
             self.getUserForAudit(e);
             self.getWFData(e);
+            e['bg'] = this.getVColor()
             self.auditList.push(e);
           });
           self.selectedAudit.emit(self.auditList[0]);
@@ -189,5 +191,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     const self = this;
     self.toggle = false;
     self.toggleChange.emit(false);
+  }
+
+  getVColor() {
+    const clrArray = ['#44A8F1', '#4DC1BC', '#EB996E', '#2AD4AC'];
+    return _.sample(clrArray)
   }
 }

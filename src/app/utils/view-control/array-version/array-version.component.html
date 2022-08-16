@@ -8,7 +8,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span><br>
+          <!-- <span class="text-secondary">To&nbsp;</span><br> -->
           <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal,type:'to'}">
           </ng-container>
         </div>
@@ -31,7 +31,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span><br>
+          <!-- <span class="text-secondary">To&nbsp;</span><br> -->
           <span *ngIf="newVal?.length==0 || newVal ==null" class="text-secondary">No Items&nbsp;</span>
           <ng-container *ngFor="let data of newVal">
             <span>{{data}}</span><br>
@@ -58,7 +58,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span><br>
+          <!-- <span class="text-secondary">To&nbsp;</span><br> -->
           <span *ngIf="newVal?.length==0 || newVal == null" class="text-secondary">No Items&nbsp;</span>
           <ng-container *ngFor="let data of newVal">
             <span *ngIf="data==true">yes</span>
@@ -87,7 +87,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text text-secondary">To&nbsp;</span><br>
+          <!-- <span class="text text-secondary">To&nbsp;</span><br> -->
           <span *ngIf="newVal?.length==0 || newVal == null" class="text-secondary">No Items&nbsp;</span>
           <ng-container *ngFor="let data of newVal">
             <span class="old" [innerHTML]="data"></span><br>
@@ -96,7 +96,7 @@
       </ng-container>
       <ng-container *ngIf="isCreated">
         <div class="text-muted  mb-3">
-          <span class="text text-secondary">Created&nbsp;</span><br>
+          <!-- <span class="text text-secondary">Created&nbsp;</span><br> -->
           <ng-container *ngFor="let data of newVal">
             <span class="old" [innerHTML]="data"></span><br>
           </ng-container>
@@ -158,7 +158,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span>
+          <!-- <span class="text-secondary">To&nbsp;</span> -->
           <br>
           <span *ngIf="newVal?.length==0 || newVal==null" class="text-secondary">No Items&nbsp;</span>
 
@@ -208,7 +208,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span><br>
+          <!-- <span class="text-secondary">To&nbsp;</span><br> -->
           <span *ngIf="newVal?.length==0 || oldVal == null " class="text-secondary">No Items&nbsp;</span>
 
           <ng-container *ngFor="let data of newVal">
@@ -349,7 +349,7 @@
           </ng-container>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span><br>
+          <!-- <span class="text-secondary">To&nbsp;</span><br> -->
           <ng-container *ngFor="let data of newVal">
             <div class="d-flex">
               <div class="d-flex ">
@@ -532,7 +532,7 @@
           </div>
         </div>
         <div class="text-muted ">
-          <span class="text-secondary">To&nbsp;</span>
+          <!-- <span class="text-secondary">To&nbsp;</span> -->
           <div class="d-flex flex-column pt-3">
             <span *ngIf="newVal?.length==0 || newVal == null" class="text-secondary">No Items&nbsp;</span>
             <div class="d-flex" *ngFor="let val of newVal;">
@@ -632,7 +632,7 @@
         </div>
       </div>
       <div class="text-muted ">
-        <span class="text-secondary">To&nbsp;</span>
+        <!-- <span class="text-secondary">To&nbsp;</span> -->
         <div class="d-flex flex-column pt-3">
           <odp-view-collection-of-objects-grid *ngIf="newVal" [collectionFieldName]="collectionFieldName"
             [definition]="definition" [historyMode]="'new'" [newValue]="newVal" [workflowDoc]="workflowDoc">

@@ -495,12 +495,18 @@
   height: 40px !important;
 }
 
-.border-r11 {
-  border-radius: 11px;
+.border-6 {
+  border-radius: 6px;
 }
 
 .text-decoration-line-through {
   text-decoration: line-through !important;
+}
+
+.btn-outline-danger {
+  &:hover {
+    background-color: transparent !important;
+  }
 }
 
 // .btn-primary {
