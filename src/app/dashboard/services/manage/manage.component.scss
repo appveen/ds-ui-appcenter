@@ -30,10 +30,10 @@
 }
 
 .form-body {
-  max-height: calc(100vh - 186px);
-  height: calc(100vh - 186px);
-  overflow-y: auto;
-  overflow-x: auto;
+  // max-height: 100vh;
+  // height: calc(100vh - 186px);
+  // overflow-y: auto;
+  // overflow-x: auto;
 
   &.no-steps {
     min-height: calc(100vh - 128px);

@@ -1,3 +1,6 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
 .field-wrapper {
     min-height: 22px;
 
@@ -12,6 +15,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 word-break: break-word;
+                color: $dark;
                 // white-space: nowrap;
             }
         }

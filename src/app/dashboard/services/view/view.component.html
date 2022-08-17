@@ -248,8 +248,8 @@
             </div> -->
             </div>
 
-            <div [ngClass]="viewBodyClass" class="view-body pb-3"
-                [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}" style="min-height: 100vh">
+            <div [ngClass]="viewBodyClass" class="view-body p-3 min-vh-100"
+                [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
                 <ng-container *ngIf="wizard.length > 0">
                     <ng-container
                         *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">

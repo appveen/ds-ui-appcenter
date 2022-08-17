@@ -1,9 +1,10 @@
-<div class="field-wrapper d-flex align-items-start px-3 flex-column mt-3">
-  <div class="label-wrapper text-secondary font-sm-12 " [ngStyle]="getLabelWidth()">
+<div class="field-wrapper d-flex align-items-start flex-column mb-3"
+  *ngIf="definition.type!='Object' && definition.type!='Array'">
+  <div class="label-wrapper text-secondary font-sm-12 lh-18" [ngStyle]="getLabelWidth()">
     <div class="d-flex align-items-start">
       <label *ngIf="definition.type!='Object' && definition.type!='Array'" [attr.for]="definition.path"
         class="label-width d-flex align-items-start mb-0 text-secondary">
-        <span class="text">{{definition.properties.label ? definition.properties.label :
+        <span class="text text-secondary">{{definition.properties.label ? definition.properties.label :
           definition.properties.name}}</span>
         <small class="fa fa-info-circle ml-2 text-info mt-1 hover" *ngIf="definition.properties._description"
           placement="top" [ngbTooltip]="definition.properties._description"></small>
@@ -21,10 +22,10 @@
   </ng-container>
 </div>
 
-<div class="field-wrapper d-flex align-items-start px-3 obj-bg pt-3 pb-3" *ngIf="definition.type=='Object'"
+<div class="field-wrapper d-flex align-items-start mb-3" *ngIf="definition.type=='Object'"
   [ngClass]="{'last-control': last}">
-  <div class="d-flex flex-column w-100">
-    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-0 fw-700 px-3 font-20">
+  <div class="d-flex flex-column w-100 obj-bg p-3">
+    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-4 fw-700 font-20 lh-28">
       <span class="text">{{definition.properties.label ? definition.properties.label :
         definition.properties.name}}</span>
     </label>
@@ -36,10 +37,10 @@
   </div>
 </div>
 
-<div class="field-wrapper d-flex align-items-start obj-bg pt-3 pb-3" [class.px-3]="definition.level === 0"
-  *ngIf="definition.type=='Array'" [ngClass]="{'last-control': last}">
-  <div class="d-flex flex-column w-100 px-3">
-    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-0 fw-700 font-20">
+<div class="field-wrapper d-flex align-items-start mb-3" *ngIf="definition.type=='Array'"
+  [ngClass]="{'last-control': last}">
+  <div class="d-flex flex-column w-100">
+    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-1 fw-700 lh-22">
       <span class="text">{{definition.properties.label ? definition.properties.label :
         definition.properties.name}}</span>
     </label>

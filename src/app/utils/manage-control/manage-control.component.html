@@ -1,4 +1,4 @@
-<div class="field-wrapper px-3 mt-3" [formGroup]="form">
+<div class="field-wrapper mb-3" [formGroup]="form" *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
   <div class="mark-enable d-flex">
     <div *ngIf="markEnable && canEnable" class="custom-control custom-checkbox">
       <input type="checkbox" class="custom-control-input" [id]="checkboxKey" [(ngModel)]="toggleEnable"
@@ -10,7 +10,7 @@
   <div class="label-wrapper w-100">
     <div class="d-flex align-items-start">
       <label class="label-width d-flex" *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
-        <span class=" text"
+        <span class="text text-dark lh-18"
           [odpTruncated]="definition.properties.label ? definition.properties.label : definition.properties.name"
           [ngClass]="{'text-muted':!toggleEnable}">{{definition.properties.label ? definition.properties.label :
           definition.properties.name}}</span>
@@ -43,10 +43,10 @@
   </ng-container>
 </div>
 
-<div class="field-wrapper d-flex align-items-start px-3 pt-3 pb-3" [formGroup]="form" *ngIf="definition.type=='Object'">
-  <div class="d-flex flex-column obj-bg w-100 p-2">
-    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-0 fw-700 font-20">
-      <span class="text">{{definition.properties.label ? definition.properties.label :
+<div class="field-wrapper d-flex align-items-start mb-3" [formGroup]="form" *ngIf="definition.type=='Object'">
+  <div class="d-flex flex-column obj-bg w-100 p-3">
+    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-4 fw-700 font-20 lh-28">
+      <span class="text text-dark">{{definition.properties.label ? definition.properties.label :
         definition.properties.name}}</span>
     </label>
     <ng-container *ngFor="let def of definition.definition;let i = index;">
@@ -55,9 +55,9 @@
   </div>
 </div>
 
-<div class="field-wrapper d-flex flex-column align-items-start pb-3" [class.px-3]="definition.level === 0"
-  [formGroup]="form" *ngIf="definition.type=='Array'">
-  <div class="d-flex flex-column w-100" [class.pl-2]="definition?.level !== 0">
+<div class="field-wrapper d-flex flex-column align-items-start mb-3" [formGroup]="form"
+  *ngIf="definition.type=='Array'">
+  <div class="d-flex flex-column w-100">
     <odp-array-control #arrayControl [markEnable]="markEnable" [form]="arrayForm"
       [definition]="definition.definition[0]" [arrayDefinition]="definition"></odp-array-control>
   </div>
