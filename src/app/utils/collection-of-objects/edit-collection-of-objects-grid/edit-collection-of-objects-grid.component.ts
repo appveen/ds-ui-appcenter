@@ -396,6 +396,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         cellRenderer: 'customCellRenderer',
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
+        width: definition.type === 'Date' ? 162 : 80,
         editable: () => {
           if (definition.properties.readonly) {
             return false

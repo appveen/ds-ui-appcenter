@@ -1,8 +1,11 @@
 <div class="buttonsRow d-flex">
-    <button *ngIf="hasFilters" type="button" class="btn btn-link" (click)="clearFilters()">
-        <span class="fa fa-times mr-2"></span>
-        <span class="text">Clear Filters</span>
-    </button>
+    <span class="fw-700 lh-22">{{collectionFieldName}}</span>
+    <div class="d-flex ml-auto">
+        <button *ngIf="hasFilters" type="button" class="btn btn-link" (click)="clearFilters()">
+            <span class="fa fa-times mr-2"></span>
+            <span class="text">Clear Filters</span>
+        </button>
+    </div>
 </div>
 <div class="grid-container" [ngStyle]="{opacity : historyMode ? 0.5 : 1}">
     <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"

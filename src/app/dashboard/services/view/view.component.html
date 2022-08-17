@@ -202,7 +202,7 @@
     <div class="d-flex flex-column w-100 bg-light " *ngIf="!isSchemaFree" style="border-radius: 6px;">
         <div class="row flex-column bg-white ml-4 mr-4" style="height: 100vh">
             <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
-                class="col-3 border-right pr-0 pl-0" style="min-height: 100vh">
+                class="col-3 border-right pr-0 pl-0 min-vh-100">
                 <div class="step-tabs d-flex flex-column ">
                     <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
 
@@ -248,7 +248,7 @@
             </div> -->
             </div>
 
-            <div [ngClass]="viewBodyClass" class="view-body p-3 min-vh-100"
+            <div [ngClass]="viewBodyClass" class="view-body p-3 min-vh-100 w-100"
                 [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
                 <ng-container *ngIf="wizard.length > 0">
                     <ng-container

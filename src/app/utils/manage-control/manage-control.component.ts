@@ -87,4 +87,17 @@ export class ManageControlComponent implements OnInit, OnDestroy {
         }
     }
 
+    get controlType() {
+        const self = this;
+        if (self.definition.definition[0].type === 'Geojson') {
+            return 'map';
+        } else if (self.definition.definition[0].type === 'Object') {
+            return 'object';
+        } else if (self.definition.definition[0].type === 'Array') {
+            return 'array';
+        } else {
+            return 'others';
+        }
+    }
+
 }
