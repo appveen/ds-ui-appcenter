@@ -51,7 +51,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     };
     self.filterModel = {};
     self.element.nativeElement.classList.add('w-100');
-    self.element.nativeElement.style.marginTop = '6px';
+
     this.dateFilterType = 'equals';
   }
 

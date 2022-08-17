@@ -12,7 +12,7 @@ import { CommonService } from 'src/app/service/common.service';
   styleUrls: ['./col-of-objs-grid-cell.component.scss']
 })
 export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
-  params: ICellRendererParams;
+  params: any;
   data: any;
   value: any;
   definition: Definition;
@@ -27,6 +27,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
   serviceId: string;
   showPassword: boolean;
   id: string;
+  historyMode: boolean;
 
   get currentAppId() {
     return this.commonService?.getCurrentAppId();
@@ -45,12 +46,13 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
     return false;
   }
 
-  agInit(params: ICellRendererParams): void {
+  agInit(params): void {
     this.params = params;
     this.data = params.data || {};
     this.id = this.data._id;
     this.value = params.value;
     this.definition = params.colDef.refData;
+    this.historyMode = params.historyMode || false;
     this.init();
   }
 

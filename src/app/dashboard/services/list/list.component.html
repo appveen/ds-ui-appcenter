@@ -17,7 +17,7 @@
         </button>-->
       <div class="d-flex align-items-center justify-content-between">
         <button class="btn btn-link mr-4 font-14" *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
-          <span class="fa fa-download"></span>
+          <span class="dsi dsi-download"></span>
           <span> Export All </span>
         </button>
         <button type="button" class="btn btn-outline-primary btn-min-width mr-4"
@@ -28,7 +28,7 @@
         <button id="addDataBtn" type="button"
           class="btn btn-primary btn-min-width d-flex align-items-center text-white fw-600 font-14"
           *ngIf="hasPermission('POST')" [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">
-          <span class="fas fa-plus mr-2"></span>
+          <span class="dsi dsi-plus mr-2"></span>
           <span>Add Data</span>
         </button>
       </div>
@@ -189,12 +189,11 @@
       </div>
     </div>
   </div>
-  <div  [ngClass]="{'border-bottom': !advanceFilter}"
-    *ngIf="totalRecords>0">
+  <div [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
     <ng-container>
       <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
-      (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
-    </odp-list-filters>
+        (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
+      </odp-list-filters>
     </ng-container>
     <!-- <div class="d-flex align-items-center justify-content-start">
       <div class="p-1 filter-icon position-relative hover"
@@ -207,7 +206,7 @@
     </div>
   
     </div> -->
-    
+
     <div class="bg-white p-2 view-container d-flex align-items-center hover position-relative ignore-outside"
       *ngIf="!isSchemaFree">
       <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
@@ -239,12 +238,12 @@
             (click)="showSearchSavedView = false;savedViewSearchTerm='';filterSavedViews()"></span>
           <div class="ml-auto hover ignore-outside" *ngIf="!showSearchSavedView && savedViews.length > 0"
             (click)="showSearchSavedView = true">
-            <span class="fas fa-search text-muted ignore-outside"></span>
+            <span class="dsi dsi-search text-muted ignore-outside"></span>
           </div>
           <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
             <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside" [(ngModel)]="savedViewSearchTerm"
               placeholder="Search save view" (keyup.enter)="filterSavedViews()" odpAutoFocus>
-            <span class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+            <span class="dsi dsi-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
           </div>
         </div>
         <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
@@ -265,7 +264,7 @@
             <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
               [@slideIn]>
               <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
-              <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
+              <span class="dsi dsi-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
               <div class="left-radius position-relative hover"
                 [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
                 (click)="changeFilterType(filter, 'private')">
@@ -357,7 +356,7 @@
           data</a>.</span>
     </h4>
   </div>
- 
+
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
     <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"

@@ -1,31 +1,31 @@
 <input *ngIf="(type==='String' && !longText && !richText || type==='Identifier')" type="text"
-    class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
-<input *ngIf="type==='Number'" type="number" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+    class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
+<input *ngIf="type==='Number'" type="number" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
-<input *ngIf="type==='File'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+<input *ngIf="type==='File'" type="text" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
-<input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+<input *ngIf="type==='Geojson'" type="text" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
 <ng-container *ngIf="type==='Date'">
     <div ngbDropdown #dateDropdown="ngbDropdown" container="body" display="dynamic">
-        <button ngbDropdownToggle class="toggle-btn border btn btn-sm bg-white rounded w-100 d-flex align-items-center">
+        <button ngbDropdownToggle
+            class="toggle-btn border filter-dim btn btn-sm bg-white  w-100 d-flex align-items-center">
             <div class="clue">
                 <ng-container *ngIf="dateFilterSet && !!fromDate">
                     <strong class="text-primary" *ngIf="dateFilterType === 'equals'">
                         =&nbsp;&nbsp;
                     </strong>
                     <strong class="text-primary" *ngIf="dateFilterType === 'lessThan'">
-                        <&nbsp;&nbsp;
-                    </strong>
-                    <strong class="text-primary" *ngIf="dateFilterType === 'greaterThan'">
-                        >&nbsp;&nbsp;
-                    </strong>
-                    <span *ngIf="dateType === 'date'">
-                        {{ fromDate | date:'dd/MM/yyyy'}}
-                    </span>
-                    <span *ngIf="dateType !== 'date'">
-                        {{ fromDate | date:'dd/MM/yyyy, HH:mm'}}
-                    </span>
+                        <&nbsp;&nbsp; </strong>
+                            <strong class="text-primary" *ngIf="dateFilterType === 'greaterThan'">
+                                >&nbsp;&nbsp;
+                            </strong>
+                            <span *ngIf="dateType === 'date'">
+                                {{ fromDate | date:'dd/MM/yyyy'}}
+                            </span>
+                            <span *ngIf="dateType !== 'date'">
+                                {{ fromDate | date:'dd/MM/yyyy, HH:mm'}}
+                            </span>
                 </ng-container>
                 <ng-container *ngIf="dateFilterSet && !!toDate">
                     <strong class="text-primary" *ngIf="dateFilterType === 'inRange'">
@@ -42,7 +42,8 @@
         </button>
         <div class="dropdown-container" ngbDropdownMenu>
             <div class="form-group">
-                <select class="form-control" [(ngModel)]="dateFilterType" (ngModelChange)="dateFilterSet = false; toDate = null; fromDate = null">
+                <select class="form-control" [(ngModel)]="dateFilterType"
+                    (ngModelChange)="dateFilterSet = false; toDate = null; fromDate = null">
                     <option value="equals">Equals</option>
                     <option value="inRange">In Range</option>
                     <option value="lessThan">Less Than</option>
@@ -51,7 +52,8 @@
             </div>
             <div class="form-group">
                 <input [type]="dateType === 'date' ? 'date' : 'datetime-local'" class="form-control"
-                    [max]="dateType === 'date' ? '9999-12-31' : '9999-12-31T23:59'" [(ngModel)]="fromDate" (ngModelChange)="dateFilterSet = false">
+                    [max]="dateType === 'date' ? '9999-12-31' : '9999-12-31T23:59'" [(ngModel)]="fromDate"
+                    (ngModelChange)="dateFilterSet = false">
                 <ng-container *ngIf="dateFilterType === 'inRange'">
                     <div class="d-flex justify-content-center">
                         <strong>
@@ -60,10 +62,12 @@
                     </div>
                     <input #toDateRef *ngIf="dateType === 'date'" type="date"
                         [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
-                        min="{{ fromDate | date: 'yyyy-MM-dd' }}" max="9999-12-31" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
+                        min="{{ fromDate | date: 'yyyy-MM-dd' }}" max="9999-12-31" class="form-control"
+                        [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
                     <input #toDateRef *ngIf="dateType !== 'date'" type="datetime-local"
                         [class.is-invalid]="!!toDateRef?.validity?.rangeUnderflow"
-                        min="{{ fromDate | date: 'yyyy-MM-ddTHH:mm' }}" max="9999-12-31T23:59" class="form-control" [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
+                        min="{{ fromDate | date: 'yyyy-MM-ddTHH:mm' }}" max="9999-12-31T23:59" class="form-control"
+                        [(ngModel)]="toDate" (ngModelChange)="dateFilterSet = false">
                     <small class="text-danger" *ngIf="toDateRef?.nativeElement?.validity?.rangeUnderflow">{{
                         toDateRef?.nativeElement?.validationMessage }}</small>
                 </ng-container>
@@ -83,11 +87,11 @@
         </div>
     </div>
 </ng-container>
-<input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+<input *ngIf="type==='Relation'" type="text" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
-<input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="value" odpOnChange
+<input *ngIf="type==='User'" type="text" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
-<select *ngIf="type==='Boolean'" class="border rounded bg-white w-100" [(ngModel)]="value"
+<select *ngIf="type==='Boolean'" class="border filter-dim  bg-white w-100" [(ngModel)]="value"
     (ngModelChange)="onChange($event)">
     <option value="">--All--</option>
     <option value="true">Yes</option>

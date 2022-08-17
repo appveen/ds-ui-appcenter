@@ -595,6 +595,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       if (e.type === 'Checkbox') {
         (temp as AgGridColumn).width = 64;
         (temp as AgGridColumn).pinned = 'left';
+        (temp as AgGridColumn).headerCheckboxSelection = true;
+        (temp as AgGridColumn).checkboxSelection = true;
+
       } else {
         (temp as AgGridColumn).sortable = true;
         if (!self.schema.schemaFree) {
@@ -620,6 +623,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       (temp as AgGridColumn).hide = !e.show;
       self.columnDefs.push(temp);
     });
+    console.log(self.columnDefs)
   }
 
 

@@ -513,7 +513,7 @@ export class Theme {
     temp.push({ color: '#F4F5F5', name: 'light', textColor: '#202a36' });
     temp.push({ color: '#202a36', name: 'dark', textColor: '#ffffff' });
     temp.push({ color: '#1CAD49', name: 'success', textColor: '#ffffff' });
-    temp.push({ color: '#db0404', name: 'danger', textColor: '#ffffff' });
+    temp.push({ color: '#F26464', name: 'danger', textColor: '#ffffff' });
     temp.push({ color: '#17a2b8', name: 'info', textColor: '#ffffff' });
     temp.push({ color: '#ffc107', name: 'warning', textColor: '#202a36' });
     return temp;

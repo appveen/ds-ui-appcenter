@@ -4,7 +4,7 @@
         <span class="text">Clear Filters</span>
     </button>
 </div>
-<div class="grid-container">
+<div class="grid-container" [ngStyle]="{opacity : historyMode ? 0.5 : 1}">
     <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"
         [frameworkComponents]="frameworkComponents">
     </ag-grid-angular>

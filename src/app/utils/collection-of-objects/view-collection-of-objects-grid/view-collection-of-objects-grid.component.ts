@@ -134,6 +134,9 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
         sortable: false,
         resizable: true,
         cellRenderer: 'customCellRenderer',
+        cellRendererParams: {
+          historyMode: this.historyMode
+        },
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
         onCellDoubleClicked: (params) => {
@@ -170,7 +173,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       // onRowDoubleClicked: this.onRowDoubleClick.bind(this),
       onGridSizeChanged: this.forceResizeColumns.bind(this),
       rowHeight: 46,
-      headerHeight: 46,
+      headerHeight: this.historyMode ? 0 : 46,
       defaultColDef: {
         suppressMovable: true,
         suppressMenu: true
@@ -178,7 +181,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       suppressColumnVirtualisation: true,
       suppressPaginationPanel: true,
       suppressHorizontalScroll: true,
-      floatingFiltersHeight: 40
+      floatingFiltersHeight: this.historyMode ? 0 : 40
     };
   }
 

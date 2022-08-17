@@ -39,7 +39,7 @@
 }
 
 .history-value {
-  background: #ffecb3;
+  // background: #ffecb3;
 }
 
 .modal-content {
@@ -280,11 +280,15 @@
   font-size: 14px !important;
 
   .ag-root {
-    border: 0;
+    border: 1px solid #ECECEC;
+    border-radius: 8px !important;
   }
 
   .ag-header {
     background: #F7F7FB;
+    font-size: 13px !important;
+    font-weight: 500px;
+    height: 80px !important;
 
 
     .ag-header-cell-text {
@@ -490,6 +494,36 @@
 .actions {
   width: 140px;
   height: 40px !important;
+}
+
+.border-6 {
+  border-radius: 6px;
+}
+
+.text-decoration-line-through {
+  text-decoration: line-through !important;
+}
+
+.text-decoration-underline {
+  text-decoration: underline !important
+}
+
+.btn-outline-danger {
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+
+.lh-22 {
+  line-height: 22px;
+}
+
+.lh-28 {
+  line-height: 28px;
+}
+
+.lh-18 {
+  line-height: 18px;
 }
 
 // .btn-primary {

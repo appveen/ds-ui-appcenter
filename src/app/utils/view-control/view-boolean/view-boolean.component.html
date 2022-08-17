@@ -1,15 +1,15 @@
 <div class="d-flex flex-column value-wrapper">
   <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:definition.value}"></ng-container>
-  <div *ngIf="isUpdated" class="text-danger p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">From</span>
+  <div *ngIf="isUpdated" class="text-muted text-decoration-line-throughmt-2 history-value">
+    <!-- <span class="text-secondary mr-2">From</span> -->
     <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:oldVal}"></ng-container>
   </div>
-  <div *ngIf="isUpdated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">To</span>
+  <div *ngIf="isUpdated" class="text-muted mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">To</span> -->
     <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
   </div>
-  <div *ngIf="isCreated" class="text-success p-2 mt-2 history-value">
-    <span class="text-secondary mr-2">Created</span>
+  <div *ngIf="isCreated" class="text-muted mt-2 history-value">
+    <!-- <span class="text-secondary mr-2">Created</span> -->
     <ng-container *ngTemplateOutlet="values;context:{definition:definition,value:newVal}"></ng-container>
   </div>
 </div>

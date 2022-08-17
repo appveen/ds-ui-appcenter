@@ -70,9 +70,11 @@
         <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3"
           [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord" (click)="save(true)"
           *ngIf="!isEdit && !isDraft">
-          <span class="fa fa-save mr-2"></span>
-          <span *ngIf="!hasWorkflow" class="font-13 fw-600">Save &amp; create another</span>
-          <span *ngIf="hasWorkflow" class="font-13 fw-600">Proceed &amp; create another</span>
+          <!-- <span class="fa fa-save mr-2"></span> -->
+          <span *ngIf="!hasWorkflow" class="font-13 fw-600 text-decoration-underline text-dark">Save &amp; create
+            another</span>
+          <span *ngIf="hasWorkflow" class="font-13 fw-600 text-decoration-underline text-dark">Proceed &amp; create
+            another</span>
         </button>
         <div class="btn-group save-button">
           <button id="saveBtn" type="button" class="btn px-4 btn-min-width btn-primary"
@@ -125,7 +127,7 @@
     </ng-container>
   </div>
   <div class="d-flex flex-column px-2 bg-light">
-    <div class="row flex-column bg-white ml-4 mr-4" style="height: 100vh">
+    <div class="row flex-column bg-white ml-4 mr-4">
       <div class="col-3 border-right pr-0 pl-0" style="min-height: 100vh" *ngIf="wizard.length > 0">
         <div class="step-tabs d-flex flex-column">
           <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
@@ -168,9 +170,8 @@
       </div> -->
       </div>
 
-      <div class="view-body pb-3" [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}"
-        style="min-height: 100vh">
-        <div *ngIf="!showLazyLoader" class="form-body position-relative" [class.restrict-overflow]="restrictOverflow"
+      <div class="form-body p-3 min-vh-100" [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
+        <div *ngIf="!showLazyLoader" class="position-relative" [class.restrict-overflow]="restrictOverflow"
           [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
           <ng-container *ngIf="!isSchemaFree">
             <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
@@ -186,7 +187,7 @@
               </ng-container>
             </ng-container>
             <ng-container *ngIf="wizard.length == 0">
-              <div class="d-flex flex-column py-3">
+              <div class="d-flex flex-column">
                 <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
                   <div *ngIf="!checkStateModel(def)">
                     <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">

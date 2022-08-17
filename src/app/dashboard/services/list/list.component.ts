@@ -847,7 +847,7 @@ export class ListComponent implements OnInit, OnDestroy {
       width: 48,
       definition: [],
       properties: {
-        name: '#'
+        name: ''
       },
       checkbox: true
     });

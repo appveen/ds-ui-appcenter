@@ -1,5 +1,7 @@
-<div *ngIf="toggle" class="version-list d-flex bg-white ml-3 rounded border" odpClickOutside (outside)="close()" (mouseleave)="activeAudit=null">
+<div *ngIf="toggle" class="version-list d-flex bg-white ml-3 rounded border" odpClickOutside (outside)="close()"
+    (mouseleave)="activeAudit=null">
     <div class="d-flex flex-column">
+        <label class="fw-700 p-2">Edited Records ({{auditList.length}})</label>
         <div class="d-flex p-2">
             <!--<div class="d-inline font-13 font-weight-bold ignore-outside">
                 <span class="mr-2">{{auditCount}} Results found</span>
@@ -22,16 +24,15 @@
                 <div (click)="showDifference(ver);" *ngFor="let ver of auditList ;let i = index"
                     (mouseover)="activeAudit=ver" [ngClass]="{'bg-light': activeAudit?._id === ver._id}"
                     class="version-data d-flex align-item-center px-3 py-2" [id]="i">
-                    <div [ngClass]="{'text-warning':ver?.wfData?.length>0}"
-                        class="align-self-center font-lg text-primary font-weight-bold version-number">
-                        {{ver?.data._version}}
+                    <div [ngClass]="{'text-warning':ver?.wfData?.length>0}" class="border version-number d-flex mr-2"
+                        [ngStyle]="{'background-color' : ver.bg}">
+                        <span class="align-self-center font-12 fw-500 m-auto"> V{{ver?.data._version}}</span>
                     </div>
                     <div class="d-flex flex-column">
-                        <div [ngbTooltip]="ver?.name" class="font-13 text-dark font-weight-bold text-truncate"
-                            placement="top">
+                        <div [ngbTooltip]="ver?.name" class="fw-500 text-truncate text-dark" placement="top">
                             {{ver?.name}}
                         </div>
-                        <div class="font-sm text-secondary">
+                        <div class="font-12 text-secondary">
                             <span>{{ver?.timeStamp|date:'dd-MMM-yyyy hh:mm:ss a'}}</span><span
                                 *ngIf="ver?.wfData?.length>0" class="ml-2">&bull;
                                 &nbsp; Workflow</span>
