@@ -79,19 +79,7 @@
             </span>
             <span *ngIf="hasWorkflow" class="text">Proceed</span>
           </button>
-          <div *ngIf="(stateModelAttr && stateModelNextStates.length && ID && !isInitialStateOnEdit)"
-            class="btn-group state-model-dropdown" ngbDropdown role="group"
-            aria-label="Button group with nested dropdown">
-            <button class="btn dropdown-toggle-split btn-primary" ngbDropdownToggle
-              [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord">
-            </button>
-            <div class="dropdown-menu" ngbDropdownMenu>
-              <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
-                (click)='setStateAndSave(state)'>
-                {{state}}
-              </button>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
@@ -99,9 +87,21 @@
   <div class="d-flex align-items-center px-4 bg-white mr-4 ml-4 mb-2 " style="border-radius: 6px; height: 72px"
     *ngIf="wizard.length > 0 || stateModelAttr">
     <div class='d-flex state-model' *ngIf="stateModelAttr">
-      <span lass='mr-2 font-13 fw-500 state-version hover' style="color: #484848">{{stateModelName}}</span>
-      <span class='mr-2'>:</span>
+      <span lass='mr-2 font-13 fw-500 state-version hover m-auto' style="color: #484848">{{stateModelName}}</span>
+      <span class='mr-2 m-auto'>:</span>
       <input class='action-btn border border-6 font-12 ml-2' [value]="stateModelAttrVal" disabled>
+      <div *ngIf="(stateModelAttr && stateModelNextStates.length && ID && !isInitialStateOnEdit)"
+        class="btn-group state-model-dropdown" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+        <button class="btn dropdown-toggle-split btn-primary" ngbDropdownToggle
+          [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader || searchingRecord">
+        </button>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button class='state-model-option' ngbDropdownItem *ngFor='let state of stateModelNextStates'
+            (click)='setStateAndSave(state)'>
+            {{state}}
+          </button>
+        </div>
+      </div>
 
     </div>
     <ng-container *ngFor="let step of wizard;let stepIndex = index">
