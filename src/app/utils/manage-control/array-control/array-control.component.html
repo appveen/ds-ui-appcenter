@@ -1,5 +1,5 @@
 <ng-container *ngIf="specificType=='object'">
-  <div class="obj-bg">
+  <div>
     <odp-edit-collection-of-objects-grid #gridComponent [formArray]="form" [definition]="definition"
       [collectionFieldName]="arrayDefinition.properties.name" [isEditable]="false" (modifyForm)="modifyForm($event)">
     </odp-edit-collection-of-objects-grid>

@@ -28,15 +28,10 @@
   </div> -->
   <div class="sub-header bg-light px-3 d-flex align-items-center mr-4 ml-4"
     [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
-    <div class='d-flex state-model' *ngIf="stateModelAttr">
-      <span class='mr-2 text-secondary'>{{stateModelName}}</span>
-      <span class='mr-2'>:</span>
-      <span class='badge badge-primary mt-1'>{{stateModelAttrVal}}</span>
-    </div>
     <div class="d-flex align-items-center justify-content-between w-100">
       <div class="d-flex my-auto">
         <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover" [routerLink]="cancelUrl"></i>
-        <div class="fw-600 font-24" *ngIf="value?._id">
+        <div class="fw-600 font-24 id-wrap" *ngIf="value?._id">
           {{value._id}}
         </div>
       </div>
@@ -101,8 +96,13 @@
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center px-1 bg-white mr-4 ml-4 mb-2 mt-2" style="border-radius: 6px; height: 72px"
-    *ngIf="wizard.length > 0">
+  <div class="d-flex align-items-center px-4 bg-white mr-4 ml-4 mb-2 " style="border-radius: 6px; height: 72px"
+    *ngIf="wizard.length > 0 || stateModelAttr">
+    <div class='d-flex state-model' *ngIf="stateModelAttr">
+      <span lass='mr-2 font-13 fw-500 state-version hover' style="color: #484848">{{stateModelName}}</span>
+      <span class='mr-2'>:</span>
+      <span class='badge badge-primary mt-1'>{{stateModelAttrVal}}</span>
+    </div>
     <ng-container *ngFor="let step of wizard;let stepIndex = index">
       <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
         class="d-flex experience-hooks px-3 align-items-center ml-auto">
@@ -126,7 +126,7 @@
       </div>
     </ng-container>
   </div>
-  <div class="d-flex flex-column px-2 bg-light">
+  <div class="d-flex flex-column bg-light">
     <div class="row flex-column bg-white ml-4 mr-4">
       <div class="col-3 border-right pr-0 pl-0" style="min-height: 100vh" *ngIf="wizard.length > 0">
         <div class="step-tabs d-flex flex-column">

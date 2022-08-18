@@ -39,7 +39,7 @@
 
 <div class="field-wrapper d-flex align-items-start mb-3" *ngIf="definition.type=='Array'"
   [ngClass]="{'last-control': last}">
-  <div class="d-flex flex-column w-100">
+  <div class="d-flex flex-column w-100 obj-bg p-3">
     <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-1 fw-700 lh-22"
       *ngIf="controlType !== 'object'">
       <span class="text">{{definition.properties.label ? definition.properties.label :

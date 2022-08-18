@@ -1,9 +1,9 @@
-<div class="value-width position-relative w-100">
+<div class="value-width position-relative w-100 d-flex">
     <input class="form-control form-control-sm border"
         [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
         [type]="showPassword ? 'text' : 'password'" (keyup)="onEnter($event)" (change)="onChange($event.target.value)"
         #inputControl [attr.id]="definition.path" [ngModel]="password" [disabled]="control.disabled" autocomplete="off">
-    <span class="fas eye-icon eyeIcon position-absolute hover"
+    <span style="margin-left: -30px !important" class="fas eye-icon hover m-auto"
         [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash': showPassword }"
         (click)="showPassword= !showPassword"></span>
 </div>

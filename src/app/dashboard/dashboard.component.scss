@@ -7,23 +7,28 @@
   max-height: 72px;
   margin-left: 8px;
 }
+
 .sidenav-odp {
   min-width: 264px;
   max-width: 264px;
   margin-right: 0;
   transition: 0.25s;
+
   &.hide {
     margin-left: -264px;
   }
+
   .search {
     .fa-search {
       right: 10px;
       top: 12px;
     }
+
     input {
       height: 32px;
     }
   }
+
   .logo-holder {
     min-width: 264px;
     max-width: 264px;
@@ -33,6 +38,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     margin-bottom: 40px;
+
     .logo {
       width: 200px;
       height: 64px;
@@ -41,12 +47,14 @@
       background-position: -18px;
     }
   }
+
   .icons-holder {
     min-width: 264px;
     max-width: 264px;
     min-height: 32px;
     max-height: 32px;
     padding: 0px 20px;
+
     .icon-block {
       min-width: 32px;
       max-width: 32px;
@@ -55,21 +63,25 @@
       border-radius: 50%;
       border: 1px solid transparent;
       color: $border;
+
       &.active {
         background: $primary;
         color: $white;
       }
+
       &:hover {
         cursor: pointer;
         color: $primary;
         border: 1px solid $border-color;
         background: $white;
       }
+
       &:focus {
         outline: none;
       }
     }
   }
+
   .menu-label {
     min-height: 32px;
     max-height: 32px;
@@ -80,42 +92,51 @@
   min-height: calc(100vh);
   max-height: calc(100vh);
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .pinning-star {
   display: none;
 }
+
 .menu-list {
   min-height: calc(100vh - 200px);
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+
   .menu-list-item {
     min-height: 32px;
     max-height: 32px;
     padding-left: 8px;
+
     &:not(.text-white):hover {
       cursor: pointer;
       background: #ececec !important;
+
       .pinning-star {
         display: block;
       }
     }
+
     &:hover {
       .pinning-star {
         display: block;
         color: #3498db;
       }
     }
+
     .list-item-icon {
       min-height: 32px;
       max-height: 32px;
       min-width: 32px;
       max-width: 32px;
     }
+
     .list-item-label {
       min-width: 156px;
       max-width: 156px;
     }
+
     .type {
       // width: 22px;
       // height: 22px;
@@ -123,6 +144,7 @@
     }
   }
 }
+
 // .menu-list-item :hover .pinning-star{
 //   display: block;
 // }
@@ -130,21 +152,25 @@
   min-height: 40px;
   max-height: 40px;
   font-size: 13px;
+
   .sidenav-toggler {
     min-width: 40px;
     max-width: 40px;
     min-height: 40px;
     max-height: 40px;
   }
+
   .user-details {
     min-width: 192px;
     max-width: 192px;
     min-height: 32px;
     max-height: 32px;
     overflow: hidden;
+
     &:hover {
       background: $light;
     }
+
     .user-icon-holder {
       min-width: 24px;
       max-width: 24px;
@@ -152,11 +178,13 @@
       max-height: 24px;
       overflow: hidden;
     }
+
     .user-name {
       min-width: 122px;
       max-width: 122px;
     }
   }
+
   .user-details-dropdown {
     min-width: 160px;
     max-width: 160px;
@@ -169,25 +197,31 @@
     top: 38px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.32);
     overflow: hidden;
+
     .user-details-item {
       min-height: 40px;
       max-height: 40px;
+
       &:hover {
         cursor: pointer;
         background: $light;
       }
     }
+
     .user-details-footer {
       min-height: 50px;
+
       .powered-by,
       .info {
         min-height: 50px;
         max-height: 50px;
       }
+
       .powered-by {
         background-size: 174px;
         background-position: -10px -28px;
         background-repeat: no-repeat;
+
         small {
           font-size: 12px;
           top: 18px;
@@ -197,6 +231,7 @@
     }
   }
 }
+
 .sub-header {
   min-height: 48px;
   max-height: 48px;
@@ -216,9 +251,11 @@
   max-width: 230px;
   min-height: 32px;
   max-height: 32px;
+
   &:hover {
     background: $light;
   }
+
   .current-app-thumbnail {
     min-width: 32px;
     max-width: 32px;
@@ -226,6 +263,7 @@
     max-height: 32px;
     overflow: hidden;
     transition: 0.25s;
+
     img {
       min-width: 26px;
       max-width: 26px;
@@ -235,9 +273,11 @@
     }
   }
 }
+
 .username-holder {
   max-width: 90px;
 }
+
 .search-control {
   input {
     min-width: 231px;
@@ -247,13 +287,16 @@
     background: transparent;
     text-indent: 36px;
     font-size: 12px;
+
     &:focus {
       outline: none;
     }
+
     &::placeholder {
       color: $border;
     }
   }
+
   .fa-search {
     left: 16px;
     top: 19px;
@@ -265,12 +308,14 @@
 .user-options {
   min-height: 40px;
   max-height: 40px;
+
   .user-icon {
     min-width: 24px;
     max-width: 24px;
     min-height: 24px;
     max-height: 24px;
   }
+
   .user-name {
     font-size: 13px;
   }
@@ -298,6 +343,7 @@
       justify-content: center;
     }
   }
+
   .notification-dropdown {
     z-index: 10;
     overflow: hidden;
@@ -306,6 +352,7 @@
     top: 40px;
     box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.14);
     border-radius: 0.25rem;
+
     &:after {
       content: "";
       width: 0;
@@ -317,6 +364,7 @@
       position: fixed;
       margin-left: 195px;
     }
+
     .notification-dropdown-header {
       min-height: 38px;
       max-height: 38px;
@@ -348,6 +396,7 @@
         }
       }
     }
+
     .list-group {
       max-height: 385px;
       overflow-y: auto;
@@ -371,23 +420,29 @@
         border-radius: 4px;
       }
     }
+
     .ds-name {
       max-width: 180px;
       word-break: break-all;
     }
+
     .fa-circle {
       font-size: 5px;
     }
+
     .grey-medium {
       color: $gray-medium;
     }
+
     .file-label {
       min-width: 90px;
     }
+
     .file-name {
       min-width: 230px;
       max-width: 230px;
     }
+
     .status-circle {
       min-width: 40px;
       max-width: 40px;
@@ -402,6 +457,7 @@
 .last-login {
   font-size: 11px;
 }
+
 .staredContainer {
   min-width: 206px;
   max-width: 206px;

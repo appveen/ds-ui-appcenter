@@ -58,6 +58,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   rowData;
   private addAllowed = true;
   editor: boolean;
+  addRow: boolean;
 
   get rowCount() {
     return this.gridApi?.getDisplayedRowCount() || 0;
@@ -160,6 +161,10 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   onRowAdded() {
+    // if (this.addRow) {
+    //   this.addNewLine()
+    // }
+    // else {
     if (this.addAllowed) {
       const formGroupControl = this.getFormObject();
       formGroupControl.reset()
@@ -187,6 +192,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         }
       }
       this.addAllowed = false;
+      // }
     }
   }
 
@@ -399,12 +405,15 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         width: definition.type === 'Date' ? 162 : 80,
         editable: () => {
           if (definition.properties.readonly) {
+            this.addRow = false
             return false
           }
           if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
+            this.addRow = true
             return true
           }
           else {
+            this.addRow = false
             return false
           }
         },
@@ -469,20 +478,29 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       },
       suppressColumnVirtualisation: true,
       rowHeight: 46,
-      onCellValueChanged: (params) => {
-        const value = _.cloneDeep(params.data)
-        if (value['__index']) {
-          delete value['__index'];
-        }
-        this.formArray.at(params.rowIndex).setValue(value)
-      },
+      // onCellValueChanged: (params) => {
+      //   const value = _.cloneDeep(params.data)
+      //   if (value['__index']) {
+      //     delete value['__index'];
+      //   }
+      //   this.formArray.at(params.rowIndex).setValue(value)
+      // },
       headerHeight: 46,
       suppressPaginationPanel: true,
       suppressHorizontalScroll: true,
       floatingFiltersHeight: 40,
-      ...(this.definition.type === 'String' || this.definition.type === 'Number' ? { onRowDoubleClicked: this.onRowDoubleClick.bind(this) } : {})
+      ...(this.additionalOptions())
     };
 
+  }
+
+  additionalOptions() {
+    if (this.definition.type === 'String' || this.definition.type === 'Number') {
+      // this.addRow = false
+      return { onRowDoubleClicked: this.onRowDoubleClick.bind(this) }
+    }
+    // this.addRow = true
+    return {}
   }
 
   private onGridReady(event) {
@@ -555,7 +573,13 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   private refreshRowData() {
     this.prepareTable();
-    this.rowData = this.formArray.value
+    if (!this.addRow) {
+      this.rowData = this.formArray.value
+    }
+    else {
+      this.formArray.patchValue(this.rowData)
+    }
+
     // this.gridOptions?.api?.setRowData(this.formArray?.value.map((v, i) => ({ ...v, __index: i + 1 })));
     if (this.gridApi) {
       this.gridApi.refreshCells()
@@ -572,19 +596,28 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     this.editItem();
   }
 
-  refreshRow() {
-    if (this.gridApi) {
-      this.gridApi.setRowData(this.rowData)
-      this.gridApi.refreshCells()
-    }
-    this.onSelectionChanged();
-  }
+  // refreshRow() {
+  //   if (this.gridApi) {
+  //     this.gridApi.setRowData(this.rowData)
+  //     this.gridApi.refreshCells()
+  //   }
+  //   this.onSelectionChanged();
+  // }
 
   openModal(rowdata) {
     this.isEditable = true;
     this.modalOptions = { ...this.gridOptions, pagination: false }
     this.prepareTable()
     this.addnew();
+
+  }
+
+  addNewLine() {
+    this.rowData.push({});
+    this.gridApi.setRowData(this.rowData);
+    const index = this.rowData.length - 1;
+
+    // this.gridApi.
 
   }
   addnew() {
@@ -595,7 +628,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
       this.isEditable = false
       this.prepareTable();
-      this.refreshRow();
+      this.refreshRowData();
       this.forceResizeColumns();
       // this.addAllowed = true;
       // this.editBackup = null;

@@ -1,5 +1,5 @@
 <input *ngIf="(type==='String' && !longText && !richText || type==='Identifier')" type="text"
-    class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
+    class="border filter-dim bg-white w-100" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <input *ngIf="type==='Number'" type="number" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
 <input *ngIf="type==='File'" type="text" class="border filter-dim  bg-white w-100" [(ngModel)]="value" odpOnChange
@@ -9,7 +9,7 @@
 <ng-container *ngIf="type==='Date'">
     <div ngbDropdown #dateDropdown="ngbDropdown" container="body" display="dynamic">
         <button ngbDropdownToggle
-            class="toggle-btn border filter-dim btn btn-sm bg-white  w-100 d-flex align-items-center">
+            class="toggle-btn filter-dim border btn btn-sm bg-white  w-100 d-flex align-items-center">
             <div class="clue">
                 <ng-container *ngIf="dateFilterSet && !!fromDate">
                     <strong class="text-primary" *ngIf="dateFilterType === 'equals'">

@@ -230,3 +230,10 @@
   min-height: 40px;
   max-height: 40px;
 }
+
+.id-wrap {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 50vw;
+}
