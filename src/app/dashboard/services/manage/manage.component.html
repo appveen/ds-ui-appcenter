@@ -101,7 +101,8 @@
     <div class='d-flex state-model' *ngIf="stateModelAttr">
       <span lass='mr-2 font-13 fw-500 state-version hover' style="color: #484848">{{stateModelName}}</span>
       <span class='mr-2'>:</span>
-      <span class='badge badge-primary mt-1'>{{stateModelAttrVal}}</span>
+      <input class='action-btn border border-6 font-12 ml-2' [value]="stateModelAttrVal" disabled>
+
     </div>
     <ng-container *ngFor="let step of wizard;let stepIndex = index">
       <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"

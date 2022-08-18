@@ -126,10 +126,10 @@
             <span class='mr-2 font-13 fw-500 state-version hover' style="color: #484848"
                 title="{{stateModelName}}">{{stateModelName}}</span>
 
-            <span class='badge badge-primary'
-                *ngIf="(!showVersionHistory || (showVersionHistory && !stateModelCreated && !stateModelUpdated))">
-                {{stateModelAttrVal}}
-            </span>
+            <input class='action-btn border border-6 font-12 ml-2'
+                *ngIf="(!showVersionHistory || (showVersionHistory && !stateModelCreated && !stateModelUpdated))"
+                [value]="stateModelAttrVal" disabled>
+
             <div class='history-value p-2 font-sm' *ngIf="showVersionHistory && stateModelCreated">
                 <!-- <span class='text-secondary mr-2'>Created</span> -->
                 <span class='text-muted'>{{ activeAuditNewData[stateModelAttr] }}</span>
