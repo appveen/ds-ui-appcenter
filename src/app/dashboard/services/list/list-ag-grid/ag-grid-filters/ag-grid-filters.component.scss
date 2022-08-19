@@ -20,6 +20,6 @@
 
 
 .filter-dim {
-    height: 32px;
-    border-radius: 6px;
+    min-height: 32px !important;
+    border-radius: 6px !important;
 }

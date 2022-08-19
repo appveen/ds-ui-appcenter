@@ -12,8 +12,8 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
   @Input() activeId: string;
   activeMenuKey: string;
   openPanel: any = {
-    'pinnedDs': false,
-    'ds': false,
+    'pinnedDs': true,
+    'ds': true,
     'workflow': false,
   };
   constructor(private router: Router) {

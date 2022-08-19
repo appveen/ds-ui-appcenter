@@ -2,9 +2,9 @@
     <div class="d-flex">
         <div class="sidenav-odp bg-white" [ngClass]="{'hide':!showSideNav}">
             <div class="logo-holder border-right bg-white d-flex align-items-center">
-                <div *ngIf="!(selectedApp.logo && selectedApp.logo.full)" class="logo"></div>
-                <img class="customer-logo" *ngIf="selectedApp.logo && selectedApp.logo.full"
-                    [src]="selectedApp.logo.full" alt="Logo">
+                <div *ngIf="!(selectedApp?.logo && selectedApp?.logo?.full)" class="logo ml-3"></div>
+                <img class="customer-logo" *ngIf="selectedApp?.logo && selectedApp?.logo?.full"
+                    [src]="selectedApp?.logo?.full" alt="Logo">
             </div>
             <!-- <div class="search-control position-relative border-right">
                 <span class="fa fa-search position-absolute"></span>
@@ -37,13 +37,13 @@
             </div> -->
             <odp-dashboard-menu></odp-dashboard-menu>
         </div>
-        <div class="full-height d-flex flex-column w-100 bg-white" [@routerTransition]="getState(o)">
+        <div class="full-height d-flex flex-column w-100 bg-light" [@routerTransition]="getState(o)">
             <div class="top-header d-flex align-items-center justify-content-between pr-3 bg-white">
                 <div class="left-side d-flex align-items-center">
-                    <div class="sidenav-toggler d-flex align-items-center justify-content-center bg-primary text-white hover"
+                    <!-- <div class="sidenav-toggler d-flex align-items-center justify-content-center bg-primary text-white hover"
                         (click)="showSideNav=!showSideNav">
                         <span class="fa fa-bars"></span>
-                    </div>
+                    </div> -->
                     <div class="d-flex align-items-center ml-3">
                         <span class="text-muted">{{selectedMenuItem.label}}&nbsp;/&nbsp;</span>
                         <span class="text-dark">{{selectedMenuItem.name}}</span>

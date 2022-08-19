@@ -25,13 +25,7 @@
           *ngIf="definition.type==='Array'&&definition?.definition[0].properties._description" placement="top"
           [ngbTooltip]="definition?.definition[0].properties._description"></small>
       </label>
-      <label *ngIf="definition.type === 'Array'"></label>
-      <button type="button" class="btn btn-link pl-0 add-new ml-auto"
-        *ngIf="definition.type=='Array' && definition.definition[0].type !== 'Object' && !definition?.properties?.readonly && toggleEnable"
-        (click)="arrayControlRef.addNew()" [attr.id]="definition.path">
-        <span class="fa fa-plus-circle mr-2"></span>
-        <span class="text">Add new</span>
-      </button>
+
     </div>
     <div
       *ngIf="definition.properties.password || (definition.type=='Array' && definition.definition[0].properties?.password) ">
@@ -57,8 +51,20 @@
 
 <div class="field-wrapper d-flex flex-column align-items-start mb-3" [formGroup]="form"
   *ngIf="definition.type=='Array'">
-  <div class="d-flex flex-column w-100">
-    <odp-array-control #arrayControl [markEnable]="markEnable" [form]="arrayForm"
+  <div class="d-flex flex-column w-100 obj-bg p-3">
+    <div class="d-flex flex-row" *ngIf="controlType !== 'object'">
+      <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-1 fw-700 lh-22">
+        <span class="text">{{definition.properties.label ? definition.properties.label :
+          definition.properties.name}}</span>
+      </label>
+      <button type="button" class="btn btn-link pl-0 add-new ml-auto"
+        *ngIf="!definition?.properties?.readonly && toggleEnable" (click)="arrayControlRef.addNew()"
+        [attr.id]="definition.path">
+        <span class="fa fa-plus-circle mr-2 text-dark"></span>
+        <span class="text text-dark">Add new</span>
+      </button>
+    </div>
+    <odp-array-control #arrayControl [markEnable]=" markEnable" [form]="arrayForm"
       [definition]="definition.definition[0]" [arrayDefinition]="definition"></odp-array-control>
   </div>
 </div>

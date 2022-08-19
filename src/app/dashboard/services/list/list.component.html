@@ -1,4 +1,4 @@
-<div class="list-wrapper d-flex flex-column w-100 bg-light p-32">
+<div class="d-flex flex-column w-100 bg-light p-32 vh-100">
   <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
   <div class="d-flex align-items-center justify-content-between border-bottom header">
     <div class="title d-flex align-items-center w-50" *ngIf="schema">
@@ -357,7 +357,7 @@
     </h4>
   </div>
 
-  <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
+  <div *ngIf="!apiCallsPending && totalRecords>0" class="row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
     <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"
       *ngIf="totalRecords>0" odpClickOutside (outside)="showContextMenu = false" (click)="closeContextMenu();"

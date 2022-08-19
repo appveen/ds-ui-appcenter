@@ -92,8 +92,8 @@
 
 .data-container {
   overflow: auto;
-  min-height: calc(100vh - 136px);
-  max-height: calc(100vh - 136px);
+  min-height: 65vh;
+  // max-height: calc(100vh - 136px);
   // min-width: calc(100vw - 247px);
   // max-width: calc(100vw - 232px);
 }
