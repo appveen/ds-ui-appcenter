@@ -117,7 +117,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       customColumnFilterComponent: ColumnFilterComponent,
       customFloatingFilterComponent: FloatingFilterComponent,
     };
-    const columnDefs: Array<ColDef> = [
+    const columnDefs = [
       ...(
         this.showIndexColumn && !this.historyMode
           ? [{

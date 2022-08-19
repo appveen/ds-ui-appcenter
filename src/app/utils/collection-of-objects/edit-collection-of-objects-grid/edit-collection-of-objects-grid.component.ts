@@ -59,6 +59,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   private addAllowed = true;
   editor: boolean;
   addRow: boolean;
+  ogRowData: any;
 
   get rowCount() {
     return this.gridApi?.getDisplayedRowCount() || 0;
@@ -98,6 +99,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   ngOnInit() {
     this.flattenDefinition(this.definitionList, this.definition.definition);
     this.prepareTable();
+    this.openNew()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -161,10 +163,6 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   onRowAdded() {
-    // if (this.addRow) {
-    //   this.addNewLine()
-    // }
-    // else {
     if (this.addAllowed) {
       const formGroupControl = this.getFormObject();
       formGroupControl.reset()
@@ -179,7 +177,20 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         this.formArray.markAsDirty();
         this.selectedRowIndex = index;
         this.addedIndex = index;
-        this.editItem(true);
+
+
+        if (this.addRow) {
+
+          this.rowData.push(this.formArray.at(this.selectedRowIndex).value)
+          this.gridApi.setRowData(this.rowData)
+          this.gridApi.startEditingCell({
+            rowIndex: this.selectedRowIndex,
+            colKey: (this.gridOptions.columnApi.getDisplayedCenterColumns()[0]).getColId()
+          })
+        }
+        else {
+          this.editItem(true);
+        }
 
         const displayIndex = index + 1;
         let pageToGo = Math.floor(displayIndex / AG_GRID_PAGINATION_COUNT);
@@ -191,8 +202,6 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
           this.gridApi.paginationGoToPage(pageToGo);
         }
       }
-      this.addAllowed = false;
-      // }
     }
   }
 
@@ -229,7 +238,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   removeItem(nodeData: any) {
     this.formArray.removeAt(this.selectedRowIndex);
     this.formArray.markAsDirty();
-    this.gridApi.updateRowData({ remove: [nodeData] });
+    this.gridApi.applyTransaction({ remove: [nodeData] });
     setTimeout(() => {
       this.refreshRowData();
     }, 500);
@@ -287,24 +296,13 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   cancelEdit() {
-    // this.formArray.setValue(this.editBackup);
-    // this.formArray.updateValueAndValidity();
-    // if (this.addedIndex !== null) {
-    //   this.formArray.removeAt(this.addedIndex);
-    //   this.formArray.updateValueAndValidity();
-    // }
-    // this.isEditable = false
+
     this.addAllowed = true;
     this.editModalRef.close();
     // this.showModalBackdrop = false;
   }
   cancelNew() {
-    // this.formArray.setValue(this.editBackup);
-    // this.formArray.updateValueAndValidity();
-    // if (this.addedIndex !== null) {
-    //   this.formArray.removeAt(this.addedIndex);
-    //   this.formArray.updateValueAndValidity();
-    // }
+
     this.isEditable = false
     this.newModalRef.close();
     this.showModalBackdrop = false;
@@ -358,6 +356,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       customFloatingFilterComponent: FloatingFilterComponent,
       textEditor: TextEditor
     };
+    this.ogRowData = _.cloneDeep(this.rowData)
     const columnDefs: Array<ColDef> = [
       // {
       //   headerName: '#',
@@ -403,17 +402,15 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
         width: definition.type === 'Date' ? 162 : 80,
+        floatingFiltersHeight: 40,
         editable: () => {
           if (definition.properties.readonly) {
-            this.addRow = false
             return false
           }
           if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
-            this.addRow = true
             return true
           }
           else {
-            this.addRow = false
             return false
           }
         },
@@ -422,7 +419,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
             return {}
           }
           if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
-            return { component: 'textEditor', }
+            return { component: 'textEditor' }
           }
           else {
             return {}
@@ -471,7 +468,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       onSelectionChanged: this.onSelectionChanged.bind(this),
       suppressRowClickSelection: true,
       rowSelection: 'multiple',
-      rowDeselection: true,
+      suppressRowDeselection: true,
       defaultColDef: {
         suppressMovable: true,
         suppressMenu: true
@@ -488,19 +485,9 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       headerHeight: 46,
       suppressPaginationPanel: true,
       suppressHorizontalScroll: true,
-      floatingFiltersHeight: 40,
-      ...(this.additionalOptions())
+      // onRowDoubleClicked: this.onRowDoubleClick.bind(this)
     };
 
-  }
-
-  additionalOptions() {
-    if (this.definition.type === 'String' || this.definition.type === 'Number') {
-      // this.addRow = false
-      return { onRowDoubleClicked: this.onRowDoubleClick.bind(this) }
-    }
-    // this.addRow = true
-    return {}
   }
 
   private onGridReady(event) {
@@ -572,15 +559,13 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   private refreshRowData() {
-    this.prepareTable();
+    // this.prepareTable();
     if (!this.addRow) {
       this.rowData = this.formArray.value
     }
     else {
       this.formArray.patchValue(this.rowData)
     }
-
-    // this.gridOptions?.api?.setRowData(this.formArray?.value.map((v, i) => ({ ...v, __index: i + 1 })));
     if (this.gridApi) {
       this.gridApi.refreshCells()
     }
@@ -596,45 +581,43 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     this.editItem();
   }
 
-  // refreshRow() {
-  //   if (this.gridApi) {
-  //     this.gridApi.setRowData(this.rowData)
-  //     this.gridApi.refreshCells()
-  //   }
-  //   this.onSelectionChanged();
-  // }
 
-  openModal(rowdata) {
+  openModal() {
     this.isEditable = true;
     this.modalOptions = { ...this.gridOptions, pagination: false }
     this.prepareTable()
     this.addnew();
-
   }
 
-  addNewLine() {
-    this.rowData.push({});
-    this.gridApi.setRowData(this.rowData);
-    const index = this.rowData.length - 1;
-
-    // this.gridApi.
-
-  }
   addnew() {
     // this.editBackup = this.formArray.getRawValue();
     this.showModalBackdrop = true;
     this.newModalRef = this.ngbModal.open(this.newModal, { centered: true, backdrop: false, keyboard: false, windowClass: 'large-modal' })
     this.newModalRef.result.then((resp) => {
+      if (resp === 'save') {
+        this.isEditable = false
+        this.prepareTable();
+        this.refreshRowData();
+        this.forceResizeColumns();
+      }
+      else {
+        this.rowData = this.ogRowData
+        this.formArray.patchValue(this.rowData)
 
-      this.isEditable = false
-      this.prepareTable();
-      this.refreshRowData();
-      this.forceResizeColumns();
-      // this.addAllowed = true;
-      // this.editBackup = null;
-      // this.addedIndex = null;
+      }
+
       this.showModalBackdrop = false;
-      // this.formArray.setValue(this.rowData)
+    })
+  }
+
+  openNew() {
+    this.definitionList.forEach(definition => {
+      if (definition.type === 'String' || definition.type === 'Number') {
+        this.addRow = true;
+      }
+      else {
+        this.addRow = false
+      }
     })
   }
 }

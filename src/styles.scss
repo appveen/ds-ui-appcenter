@@ -276,10 +276,10 @@
 
 /*---- ODP AG-GRID START ----*/
 .ag-theme-balham {
-  font-family: "Inter";
+  font-family: $font-family-sans-serif;
   font-size: 14px !important;
 
-  .ag-root {
+  .ag-root-wrapper {
     border: 1px solid #ECECEC;
     border-radius: 8px !important;
   }

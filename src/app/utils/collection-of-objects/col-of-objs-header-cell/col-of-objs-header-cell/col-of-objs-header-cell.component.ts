@@ -23,4 +23,9 @@ export class ColOfObjsHeaderCellComponent implements IHeaderAngularComp {
     this.params.setSort(order, event.shiftKey);
   }
 
+  refresh(): boolean {
+    return false;
+  }
+
+
 }
