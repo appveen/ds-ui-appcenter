@@ -70,6 +70,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   selectedFontSize: any;
   schemaFreeCode: any;
   invalidSchemaFreeRecord: boolean;
+  statusArray: any;
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -124,6 +125,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       label: 'Save',
       keys: ['Ctrl', 'S']
     });
+
     self.subscriptions['ctrlSKey'] = self.shortcutService.ctrlSKey.subscribe(e => {
       self.save();
     });
@@ -202,7 +204,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     else return false;
   }
 
-  get stateModelAttrVal() {
+  stateModelAttrVal() {
     const self = this;
     if (self.form.get(self.stateModelAttr)) {
       return self.form.get(self.stateModelAttr).value;
@@ -210,25 +212,38 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     else return null;
   }
 
-  get stateModelNextStates() {
+  stateModelNextStates() {
     const self = this;
     if (self.form.get(self.stateModelAttr)) {
       let stateModelVal = self.form.get(self.stateModelAttr).value;
       if (stateModelVal != null && this.stateModelPath && this.stateModelPath[stateModelVal]) {
+
         return this.stateModelPath[stateModelVal];
       }
     }
     return [];
   }
 
-  setStateAndSave(state) {
+  // setStateAndSave(state) {
+  //   const self = this;
+  //   if (!self.hasWorkflow) {
+  //     self.form.get(self.stateModelAttr).patchValue(state);
+  //   } else {
+  //     self.tempState = state;
+  //   }
+  //   self.save();
+  // }
+
+  changeStatus(event) {
     const self = this;
-    if (!self.hasWorkflow) {
-      self.form.get(self.stateModelAttr).patchValue(state);
-    } else {
-      self.tempState = state;
-    }
-    self.save();
+    console.log(event.target.value)
+    self.form.get(self.stateModelAttr).patchValue(event.target.value);
+    // if (!self.hasWorkflow) {
+    //   self.form.get(self.stateModelAttr).patchValue(event);
+    // } else {
+    //   self.tempState = event;
+    // }
+    // console.log(self.form.get(self.stateModelAttr))
   }
 
   getSchema(serviceId: string) {
@@ -299,6 +314,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   }
                 }
               }
+              this.statusArray = this.stateModelNextStates() || [];
+              this.statusArray.unshift(self.stateModelAttrVal())
             },
             err => {
               if (err.status === 403) {
