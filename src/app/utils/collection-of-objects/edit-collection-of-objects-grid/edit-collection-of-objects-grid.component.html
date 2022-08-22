@@ -17,7 +17,7 @@
             <span class="odp-edit mr-2"></span>
             <span class="text">Bulk Edit ({{ selectedRecordsCount }})</span>
         </button>
-        <div class="d-flex  hover my-auto" (click)="openModal(rowData)" *ngIf="!isEditable">
+        <div class="d-flex  hover my-auto" (click)="openModal()" *ngIf="!isEditable">
             <span class="dsi dsi-edit mr-1 align-self-center"></span>
             <span>Edit</span>
         </div>
@@ -33,7 +33,7 @@
     </div>
     <div class="d-flex mt-2" *ngIf="rowData.length > 3">
         <span class="text-secondary mr-2">Showing 4 of {{rowData.length}}</span>
-        <span class="text-decoration-underline fw-600 hover" (click)="openModal(rowData)">View All</span>
+        <span class="text-decoration-underline fw-600 hover" (click)="openModal()">View All</span>
     </div>
 </div>
 <ng-template #newModal>
@@ -64,7 +64,7 @@
         <button type="button" class="btn btn-primary-outline actions" (click)="cancelNew()">
             Cancel
         </button>
-        <button type="button" class="btn btn-primary actions" *ngIf="isEditable" (click)="newModalRef.close()">
+        <button type="button" class="btn btn-primary actions" *ngIf="isEditable" (click)="newModalRef.close('save')">
             Proceed
         </button>
     </div>
