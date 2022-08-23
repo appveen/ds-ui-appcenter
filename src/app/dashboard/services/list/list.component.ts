@@ -839,18 +839,6 @@ export class ListComponent implements OnInit, OnDestroy {
   buildColumns() {
     const self = this;
     const temp = self.parseDefinition(self.schema.definition);
-    temp.unshift({
-      show: true,
-      key: '_checkbox',
-      dataKey: '_checkbox',
-      type: 'Checkbox',
-      width: 48,
-      definition: [],
-      properties: {
-        name: ''
-      },
-      checkbox: true
-    });
     if (self.isSchemaFree) {
       temp.push({
         show: true,

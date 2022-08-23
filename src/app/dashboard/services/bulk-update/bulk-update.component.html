@@ -1,11 +1,11 @@
-<div class="d-flex flex-column w-100 h-100 position-relative" [formGroup]="form">
+<div class="d-flex flex-column w-100 h-100 position-relative bg-light" [formGroup]="form">
   <!-- <div class="default-loader d-flex flex-column h-100 w-100" *ngIf="showLazyLoader">
       <div class="align-self-center text-center">
         <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
         <div class="text-secondary mt-2">Processing...</div>
       </div>
     </div> -->
-  <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
+  <!-- <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
     <div class="title d-flex align-items-center ml-2">
       <span class="odp-record text-primary mr-2"></span>
       <span class="m-0 font-weight-bold">Data Service</span>
@@ -28,13 +28,20 @@
         this record.' }}
       </div>
     </div>
-  </div>
-  <div class="sub-header bg-light px-3 d-flex align-items-center justify-content-end">
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="title d-flex align-items-center">
-        &nbsp;
+  </div> -->
+  <div class="sub-header bg-light px-3 d-flex align-items-center mr-4 ml-4"
+    [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <div class="d-flex my-auto">
+        <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover" [routerLink]="cancelUrl"></i>
+        <div class="fw-600 font-24 id-wrap" *ngIf="value?._id">
+          {{value._id}}
+        </div>
       </div>
-      <div class="actions">
+      <!-- <div class="title d-flex align-items-center">
+        &nbsp;
+      </div> -->
+      <div class="d-flex">
         <button id="cancelBtn" type="button" class="btn btn-link mr-3" [routerLink]="cancelUrl">
           <span class="fa fa-times mr-2"></span>
           <span class="text">Cancel</span>
@@ -45,18 +52,16 @@
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save as draft</span>
         </button>
-        <button id="saveBtn" type="button" class="btn px-4 btn-min-width"
-          [ngClass]="{'btn-primary':hasWorkflow,'btn-success':!hasWorkflow}"
+        <button id="saveBtn" type="button" class="btn btn-link mr-3 btn-primary"
           [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader" (click)="save()" *ngIf="!isDraft">
-          <span *ngIf="!hasWorkflow" class="text">Save</span>
-          <span *ngIf="hasWorkflow" class="text">Proceed</span>
+          <span *ngIf="!hasWorkflow" class="text action-button">Save</span>
+          <span *ngIf="hasWorkflow" class="text action-button">Proceed</span>
         </button>
       </div>
     </div>
   </div>
-  <div class="d-flex flex-column px-2 bg-light">
-    <div class="steps-wrapper d-flex justify-content-between w-100 bg-white rounded mb-3 px-3"
-      *ngIf="wizard.length > 0">
+  <div class="d-flex flex-column mr-4 ml-4 bg-light">
+    <div class="steps-wrapper d-flex justify-content-between w-100 bg-white mb-3 px-3" *ngIf="wizard.length > 0">
       <div class="step-tabs d-flex align-items-center">
         <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
           <div class="step-tab d-flex align-items-center hover border-primary-hover" (click)="showCard(i)"
@@ -116,7 +121,7 @@
         </div>
       </ng-container>
     </div>
-    <div class="d-flex flex-column w-100 h-100 bg-white rounded">
+    <div class="d-flex flex-column w-100 h-100 bg-white px-4 pb-4">
       <div *ngIf="!showLazyLoader" class="form-body position-relative"
         [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
         <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
