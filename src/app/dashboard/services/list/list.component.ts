@@ -1646,7 +1646,7 @@ export class ListComponent implements OnInit, OnDestroy {
   saveView() {
     const self = this;
     const currentUser = self.sessionService.getUser(true);
-    let data = self.searchForm.getRawValue();
+    let data = self.searchForm.value;
     self.filterPayload.name = data['name'];
     self.filterPayload.private = data['private']
     delete data['name'];
@@ -1696,6 +1696,12 @@ export class ListComponent implements OnInit, OnDestroy {
     self.secureFileService.changeFileId(null);
     self.fileEncryptionKey = null;
     window.open(downloadUrl);
+  }
+
+  toggleVisibility(event) {
+    console.log(event)
+    this.searchForm.get('private').patchValue(!event);
+    this.selectedSearch.private = !this.selectedSearch.private
   }
 }
 

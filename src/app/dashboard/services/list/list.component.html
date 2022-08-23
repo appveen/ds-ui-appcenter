@@ -16,10 +16,10 @@
           <span class="text">Upload</span>
         </button>-->
       <div class="d-flex align-items-center justify-content-between">
-        <button class="btn btn-link mr-4 font-14" *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
-          <span class="dsi dsi-download"></span>
+        <div class="mr-4 hover" *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
+          <span class="dsi text-dark dsi-upload font-14"></span>
           <span> Export All </span>
-        </button>
+        </div>
         <button type="button" class="btn btn-outline-primary btn-min-width mr-4"
           *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
           [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
@@ -34,16 +34,28 @@
       </div>
     </div>
   </div>
-  <div class='bg-white p-2' [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
-    <div class='d-flex align-items-center justify-content-between'>
-      <div ngbDropdown class="d-inline-block ">
+  <div class='bg-white border border-6' [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
+    <div class='d-flex align-items-center justify-content-between px-3 pb-2 pt-3'>
+      <div class="d-flex">
+        <span class="text-truncate max-width-100 fw-700 mr-3 font-14"
+          title="{{selectedSearch? selectedSearch.name : 'Filter' + ' : '}}">
+          {{selectedSearch? selectedSearch.name : "Filter" + ' : '}}
+        </span>
+        <span class="text-truncate max-width-100 text-muted" *ngIf="!selectedSearch"> {{searchForm.get('filter').value
+          || '{}'}}</span>
+        <div class="text-dark font-14 my-auto" *ngIf="selectedSearch">
+          <span class="dsi dsi-drop-down hover" (click)="collapse.toggle()"></span>
+        </div>
+      </div>
+      <!-- <div ngbDropdown class="d-inline-block ">
         <button class="btn btn-outline bg-white shadow-none p-0 search-button" ngbDropdownToggle>
-          <div class="d-inline-block text-truncate max-width-100 font-bold"
-            title="{{selectedSearch? selectedSearch.name : 'All Searches'}}">
-            {{selectedSearch? selectedSearch.name : "All Searches"}}
+          <div class="d-inline-block text-truncate max-width-100 fw-500 mr-2"
+            title="{{selectedSearch? selectedSearch.name : 'Filter'}}">
+            {{selectedSearch? selectedSearch.name : "Filter"}}
           </div>
         </button>
-        <i class="fas fa-chevron-down fa-sm ml-1 search-button hover" ngbDropdownToggle></i>
+        <span class="mr-2">:</span>
+        <span class="text-truncate max-width-100 text-muted"> {{searchForm.get('filter').value || '{}'}}</span>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
           <button ngbDropdownItem class='search-views px-3'
             (click)='selectSearch();isCollapsed?collapse.toggle():""'>New Search</button>
@@ -58,21 +70,39 @@
 
           </button>
         </div>
-      </div>
-      <div class='d-flex align-items-baseline mr-4'>
-        <div ngbDropdown class="search-options-section mr-2" *ngIf="selectedSearch && !saveAsNewSearch">
+      </div> -->
+      <div class='d-flex align-items-baseline'>
+        <!-- <div ngbDropdown class="search-options-section mr-2" *ngIf="selectedSearch && !saveAsNewSearch">
           <i class="fas fa-solid fa-ellipsis-h fa-rotate-90 fa-sm hover" id="searchOption" ngbDropdownToggle></i>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
             <button ngbDropdownItem (click)="deleteFilter(selectedSearch)"> Delete</button>
           </div>
+        </div> -->
+
+        <div class="d-flex">
+          <div class="my-auto">
+            <span class='dsi dsi-undo hover mr-3 font-20' (click)='clearSearch()'></span>
+          </div>
+          <button class="btn btn-primary btn-min-width mr-3" style="height:32px" (click)='run()' [disabled]="!(searchForm.get('project').valid &&
+          searchForm.get('filter').valid && searchForm.get('sort').valid)">
+            Run
+          </button>
+          <span class="mr-2 my-auto">More options</span>
+          <i class="fas fa-chevron-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+          <i class="fas fa-chevron-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
         </div>
-        <i class="fas fa-chevron-down fa-sm hover" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
-        <i class="fas fa-chevron-up fa-sm hover" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+        <!-- <div *ngIf="selectedSearch">
+          <div class="mr-3 hover" (click)='collapse.toggle()'>
+            <span class="dsi dsi-edit text-dark mr-2"></span>
+            <span class="text-dark fw-500 font-14">Edit</span>
+          </div>
+        </div> -->
+
       </div>
     </div>
-    <div class='row mr-4 ' *ngIf="selectedSearch && isCollapsed">
+    <div class='row mr-4 mt-3 px-3 pb-3' *ngIf="selectedSearch && isCollapsed">
       <div class='col-md-4 d-flex align-items-center'>
-        <span class='font-bold text-secondary mr-1'>
+        <span class='text-secondary mr-1'>
           Filter:
         </span>
         <span class="d-inline-block text-truncate view-search-parameters hover" title="{{selectedSearch.value.filter}}">
@@ -80,7 +110,7 @@
         </span>
       </div>
       <div class='col-md-4 d-flex align-items-center'>
-        <span class='font-bold text-secondary mr-1'>
+        <span class='text-secondary mr-1'>
           Project:
         </span>
         <span class="d-inline-block text-truncate view-project-sort-parameters hover"
@@ -89,7 +119,7 @@
         </span>
       </div>
       <div class='col-md-4 d-flex align-items-center'>
-        <span class='font-bold text-secondary mr-1'>
+        <span class='text-secondary mr-1'>
           Sort:
         </span>
         <span class="d-inline-block text-truncate view-project-sort-parameters hover"
@@ -115,33 +145,45 @@
       </div> -->
     </div>
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-      <div>
-        <div class="input-group mb-2">
-          <div class="input-group-prepend">
-            <div class="schema-free-filter-label pr-4 text-secondary font-bold">Filter :</div>
+      <div class="mt-1">
+        <div class="input-group mb-2 border-bottom">
+          <div class="input-group-prepend p-3">
+            <div class="schema-free-filter-label pr-3 text-secondary my-auto">Filter : </div>
+            <div class="d-flex flex-column">
+              <input type="text" class="form-control" formControlName='filter' class="sf-min-width schema-free-filters">
+              <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
+            </div>
           </div>
-          <input type="text" class="form-control" formControlName='filter' class="sf-min-width schema-free-filters">
-          <small class='text-danger' *ngIf="searchForm.get('filter').hasError('validJSON')">Invalid Format</small>
+
         </div>
-        <div class="input-group mb-2">
-          <div class="input-group-prepend">
-            <div class="schema-free-filter-label pr-3 text-secondary font-bold">Project :</div>
+        <div class="input-group mb-2 border-bottom">
+          <div class="input-group-prepend p-3">
+            <div class="schema-free-filter-label pr-2 text-secondary my-auto">Project : </div>
+            <div class="d-flex flex-column">
+              <input type="text" class="form-control" formControlName='project'
+                class="sf-min-width schema-free-filters">
+              <small class='text-danger'
+                *ngIf="searchForm.get('project').hasError('validJSON') || searchForm.get('project').hasError('validSearch')">Invalid
+                Format</small>
+            </div>
           </div>
-          <input type="text" class="form-control" formControlName='project' class="sf-min-width schema-free-filters">
-          <small class='text-danger'
-            *ngIf="searchForm.get('project').hasError('validJSON') || searchForm.get('project').hasError('validSearch')">Invalid
-            Format</small>
+
         </div>
         <div class="row">
           <div class="col-12">
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="schema-free-filter-label pr-3 text-secondary font-bold">Sort :</div>
+            <div class="input-group mb-2 border-bottom">
+              <div class="input-group-prepend p-3">
+                <div class="schema-free-filter-label pr-2 text-secondary my-auto">Sort : </div>
+                <div class="d-flex flex-column">
+
+                  <input type="text" class="form-control" formControlName='sort'
+                    class="sf-min-width schema-free-filters">
+                  <small class='text-danger'
+                    *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
+                    Format</small>
+                </div>
               </div>
-              <input type="text" class="form-control" formControlName='sort' class="sf-min-width schema-free-filters">
-              <small class='text-danger'
-                *ngIf="searchForm.get('sort').hasError('validJSON') || searchForm.get('sort').hasError('validSearch')">Invalid
-                Format</small>
+
             </div>
           </div>
           <!-- <div class="col-2">
@@ -166,26 +208,70 @@
         </div>
 
 
-        <div class='d-flex justify-content-end mr-2'>
-          <div>
-            <button class='btn btn-outline btn-link' (click)='clearSearch()'>Clear All</button>
+
+        <div class="d-flex bg-light">
+          <div class='px-3 py-2' [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
+            <div class='d-flex align-items-center justify-content-between'>
+              <div ngbDropdown class="d-inline-block ">
+                <div class="d-flex" ngbDropdownToggle>
+                  <span class="fw-500 font-12" *ngIf="!selectedSearch">New Filter</span>
+                  <div class="d-flex">
+                    <span class="fw-400 font-12" *ngIf="selectedSearch">Applied Filter : </span>
+                    <span class="fw-500 font-12" *ngIf="selectedSearch">{{selectedSearch?.name}}</span>
+                  </div>
+                </div>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 300px; height: 250px">
+                  <div ngbDropdownItem class='search-views p-3 hover border-bottom font-14'
+                    (click)='selectSearch();isCollapsed?collapse.toggle():""'>New Search View</div>
+                  <div class="mt-2">
+                    <span class="font-11 fw-500 text-secondary m-3" *ngIf="savedViews.length > 0">Saved Searches</span>
+                    <div ngbDropdownItem *ngFor="let filter of savedViews" class="search-views p-3 hover"
+                      (click)='selectSearch(filter)'>
+                      <div class="d-flex">
+                        <div title="{{filter.name}}"
+                          class="hover d-inline-block text-truncate max-width-100 font-14 text-dark"
+                          [ngClass]="{'fw-500' : filter?.name === selectedSearch?.name, 'fw-400':filter?.name !== selectedSearch?.name }">
+                          {{filter.name}}
+                        </div>
+                        <div *ngIf="!filter.private" class='ml-auto my-auto font-italic text-success'>Public</div>
+                        <div *ngIf="filter.private" class='ml-auto my-auto font-italic text-secondary'>Private</div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <button class="btn btn-outline-primary mr-2 btn-min-width" (click)='saveSearchViewModal()'
-              *ngIf="!saveAsNewSearch" [disabled]="!(searchForm.get('project').valid &&
-            searchForm.get('filter').valid && searchForm.get('sort').valid)">
-              Save View
-            </button>
-            <button class="btn btn-outline-primary btn-min-width mr-2" (click)='saveSearchViewModal()'
+          <div class="mr-2 hover font-12 fw-500 my-auto" (click)='saveSearchViewModal()' *ngIf="!saveAsNewSearch"
+            [ngClass]="{'text-muted' : !(searchForm.get('project').valid &&
+              searchForm.get('filter').valid && searchForm.get('sort').valid), 'text-primary':(searchForm.get('project').valid &&
+              searchForm.get('filter').valid && searchForm.get('sort').valid) }">
+            Save
+          </div>
+          <div class="d-flex ml-auto my-auto mr-3">
+            <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="saveAsNewSearch" [ngClass]="{'pe-none fw-400': !(searchForm.get('project').valid &&
+            searchForm.get('filter').valid && searchForm.get('sort').valid)}"> Save as New Filter</div>
+
+            <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="selectedSearch && !saveAsNewSearch"
+              (click)="deleteFilter(selectedSearch)"> Delete filter</div>
+            <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="selectedSearch" (click)="saveView()"> Save
+              Changes
+            </div>
+            <div class="d-flex" [ngClass]="{'pe-none': !selectedSearch}">
+
+              <span class="font-12 fw-500 mr-2">{{selectedSearch?.private ? 'Private' : 'Public'}}</span>
+
+              <odp-switch [checked]="!selectedSearch?.private" (onChange)="toggleVisibility($event)"></odp-switch>
+            </div>
+
+          </div>
+          <!-- <button class="btn btn-outline-primary btn-min-width mr-2" (click)='saveSearchViewModal()'
               *ngIf="saveAsNewSearch" [disabled]="!(searchForm.get('project').valid &&
             searchForm.get('filter').valid && searchForm.get('sort').valid)">Save
-              as New Search</button>
-            <button class="btn btn-primary btn-min-width" (click)='run()' [disabled]="!(searchForm.get('project').valid &&
-            searchForm.get('filter').valid && searchForm.get('sort').valid)">
-              Run
-            </button>
-          </div>
+              as New Search</button> -->
         </div>
+
       </div>
     </div>
   </div>
@@ -207,7 +293,7 @@
   
     </div> -->
 
-    <div class="bg-white p-2 view-container d-flex align-items-center hover position-relative ignore-outside"
+    <div class="bg-white p-3 view-container d-flex align-items-center hover position-relative ignore-outside"
       *ngIf="!isSchemaFree">
       <div class="d-flex align-items-center w-100 ignore-outside" [ngClass]="{'disabled': apiCallsPending}"
         (click)="showSaveViewDropDown=!showSaveViewDropDown">
@@ -325,7 +411,8 @@
         <span class="text">View</span>
       </button>
       <button type="button" class="btn btn-link"
-        *ngIf="recordChecked && recordChecked==1 && hasPermission('PUT') && canEdit" (click)="edit()" id="editButton">
+        *ngIf="recordChecked && recordChecked==1 && hasPermission('PUT') && canEdit"
+        (click)="editFilter(selectedSearch)" id="editButton">
         <span class="odp-edit mr-2"></span>
         <span class="text">Edit</span>
       </button>
@@ -512,47 +599,29 @@
 </ng-template>
 
 <ng-template #createNewFilter>
-  <div class="modal-header alert">
-    <h4 class="modal-title">Save Filter View</h4>
-    <button id="clearModalCloseBtn" type="button" class="btn no-focus  close" aria-label="Close"
-      (click)="createNewFilterRef.close(false)">
-      <span aria-hidden="true">&times;</span>
-    </button>
+  <div class="alert px-4 pt-4 d-block">
+    <div class="d-flex flex-row">
+      <span class="font-20 fw-600">Save Filter View</span>
+      <button id="clearModalCloseBtn" type="button" class="btn no-focus close ml-auto" aria-label="Close"
+        (click)="createNewFilterRef.close(false)">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <span class="text-secondary font-12">Will save the current filtered data view, which can later be accessed from "
+      Saved view " </span>
+
   </div>
 
-  <div class="modal-body" [formGroup]='searchForm'>
+  <div class="px-4" [formGroup]='searchForm' style="min-height: 400px; max-height: 400px">
     <div class='mb-3'>
-      <div>Search Name</div>
-      <input type="text" class='form-control' formControlName='name'
+      <div class="font-14 mb-2 text-dark">Filter Name</div>
+      <input type="text" class='form-control input-dim' formControlName='name'
         [ngClass]="{'is-invalid': (!searchForm.get('name').valid && searchForm.get('name').touched) }">
       <small class='text-danger' *ngIf="(!searchForm.get('name').valid && searchForm.get('name').touched)">
-        Search Name is required
+        Filter Name is required
       </small>
     </div>
-    <div class='d-flex mb-3'>
-      <div class='text-secondary font-normal font-bold mr-3'>
-        Filter:
-      </div>
-      <div class="d-inline-block text-truncate mw-100">
-        {{searchForm.controls.filter.value}}
-      </div>
-    </div>
-    <div class='d-flex mb-3'>
-      <div class='text-secondary font-normal font-bold mr-3'>
-        Project:
-      </div>
-      <div class="d-inline-block text-truncate mw-100">
-        {{searchForm.controls.project.value}}
-      </div>
-    </div>
-    <div class='d-flex mb-3'>
-      <div class='text-secondary font-normal font-bold mr-3'>
-        Sort:
-      </div>
-      <div class="d-inline-block text-truncate mw-100">
-        {{searchForm.controls.sort.value}}
-      </div>
-    </div>
+
     <!-- <div class='d-flex mb-3 justify-content-between'>
       <div class="d-flex w-50">
         <div class='text-secondary font-normal font-bold mr-3'>
@@ -571,21 +640,47 @@
         </div>
       </div>
     </div> -->
-    <div class='font-bold'>
+    <div class='font-14 fw-700 mt-4'>
       Select Filter visilibilty
     </div>
-    <label class="mr-4">
+    <label class="mr-4 mt-3">
       <input type="radio" [value]=false formControlName="private" class="mr-2">
-      <span>Public</span>
+      <span class="font-14 text-dark">Public</span>
     </label>
     <label>
       <input type="radio" [value]=true formControlName="private" class="mr-2">
-      <span>Private</span>
+      <span class="font-14 text-dark">Private</span>
     </label>
+    <div class="border border-6 mt-4" style="background-color: #F5F5F8">
 
+      <div class='d-flex border-bottom p-3'>
+        <div class='text-secondary font-14 fw-500 mr-3'>
+          Filter:
+        </div>
+        <div class="d-inline-block text-truncate mw-100">
+          {{searchForm.controls.filter.value}}
+        </div>
+      </div>
+      <div class='d-flex border-bottom p-3'>
+        <div class='text-secondary font-14 fw-500 mr-3'>
+          Project:
+        </div>
+        <div class="d-inline-block text-truncate mw-100 font-14 fw-400 text-dark">
+          {{searchForm.controls.project.value}}
+        </div>
+      </div>
+      <div class='d-flex p-3'>
+        <div class="text-secondary font-14 fw-500 mr-3 font-14 fw-400 text-dark">
+          Sort:
+        </div>
+        <div class="d-inline-block text-truncate mw-100 font-14 fw-400 text-dark">
+          {{searchForm.controls.sort.value}}
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="modal-footer">
-    <button id="clearModalCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width"
+  <div class="d-flex p-4 justify-content-end">
+    <button id="clearModalCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width mr-3"
       (click)="createNewFilterRef.close(false)">
       Cancel
     </button>

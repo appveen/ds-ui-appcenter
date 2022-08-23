@@ -619,6 +619,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             suppressFilterButton: true
           };
         }
+        else {
+          (temp as AgGridColumn).width = 250;
+        }
         (temp as AgGridColumn).suppressMenu = true;
         (temp as AgGridColumn).headerClass = 'hide-filter-icon';
         (temp as AgGridColumn).resizable = true;
