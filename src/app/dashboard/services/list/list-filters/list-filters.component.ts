@@ -228,7 +228,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     );
   }
 
-  formatter = (x) => x.properties.label ? x.properties.label : x.properties.name 
+  formatter = (x) => x.properties.label ? x.properties.label : x.properties.name
 
   selectItem(val) {
     const self = this;
@@ -245,7 +245,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   showFilter() {
     const self = this;
-    self.filtereModalRef = self.modalService.open(self.filtereModal, { centered: true , size: 'lg'});
+    self.filtereModalRef = self.modalService.open(self.filtereModal, { centered: true, size: 'lg' });
     self.filtereModalRef.result.then(close => {
       if (close) {
         self.applyFilter();
@@ -260,6 +260,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       if (close) {
         self.allColumns.push(self.selectedColOrder[index]);
         self.selectedColOrder.splice(index, 1);
+        self.applyFilter()
       }
     }, dismiss => { });
   }
