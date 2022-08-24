@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -22,8 +22,9 @@ export class ServiceListComponent implements OnInit {
   preference: any;
   searchText: string;
   @Input() dsType: string;
+  @Output() onStarredAction: EventEmitter<any> = new EventEmitter();
 
-  constructor(private appService: AppService,
+  constructor(public appService: AppService,
     private commonService: CommonService,
     private dashboardService: DashboardService,
     private router: Router) {
@@ -84,15 +85,10 @@ export class ServiceListComponent implements OnInit {
             this.pinnedDs = _.filter(res, function (u) {
               return keyMap[u._id] !== undefined;
             });
-            this.preference.value.forEach(element => {
-              const index = this.records.findIndex(ele => ele._id === element._id);
-              if (index > -1) {
-                this.records.splice(index, 1)
-              }
-            });
+
           }
 
-          this.appService.fetchedServiceList = [...this.records, ...this.pinnedDs];
+          this.appService.fetchedServiceList = [...this.records];
           if (!this.activeId) {
             this.loadDataService(this.pinnedDs?.length ? this.pinnedDs[0] : res[0]);
           } else {
@@ -175,7 +171,11 @@ export class ServiceListComponent implements OnInit {
         const index = this.records.findIndex(ele => ele._id === element._id);
         if (index > -1) {
           this.pinnedDs.unshift(this.records[index]);
-          this.records.splice(index, 1)
+          this.getPreferences();
+          if (this.dsType === 'ds') {
+            this.onStarredAction.emit('pinnedDs')
+          }
+          // this.records.splice(index, 1)
         }
       });
     }, err => {
@@ -197,13 +197,30 @@ export class ServiceListComponent implements OnInit {
         }
         index = this.pinnedDs.findIndex(ele => ele._id === serviceId);
         if (index > -1) {
-          this.records.push(this.pinnedDs[index]);
+          // this.records.push(this.pinnedDs[index]);
           this.records.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-          this.pinnedDs.splice(index, 1)
+          this.pinnedDs.splice(index, 1);
+          this.getPreferences();
+          if (this.dsType === 'ds') {
+            this.onStarredAction.emit('pinnedDs')
+          } else {
+            this.onStarredAction.emit('ds')
+          }
         }
       }, err => {
         this.commonService.errorToast(err, 'Unable to remove dataservice from pinned list');
       })
+    }
+  }
+
+  isPinned(item) {
+    const id = item._id;
+    let exists;
+    if (this.preference?.value && Array.isArray(this.preference?.value)) {
+      exists = this.preference?.value?.find(element =>
+        element._id === id
+      );
+      return exists
     }
   }
 }

@@ -4,13 +4,10 @@
 </div>
 <div class="text-muted ml-2 my-1">Starred</div> -->
 <ng-container *ngIf="dsType=='pinnedDs'">
-    <div *ngIf="pinnedDs.length<1" class="mb-1  staredContainer">
-        <div class="d-flex flex-column p-3  justify-content-center align-items-center">
-            <span class="fa fa-star text-primary p-2"></span>
-            <span class="font-bold p-1 font-sm-12">Starred items</span>
-            <span class="text-muted font-sm-12">
-                for quick access
-            </span>
+    <div *ngIf="!pinnedDs || pinnedDs.length==0"
+        class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+        <div class="d-flex align-items-center">
+            <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
         </div>
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadDataService(item,true)"
@@ -20,7 +17,7 @@
             <!-- <div class="list-item-icon d-flex align-items-center">
                 <span class="odp-record"></span>
             </div> -->
-            <span class="fa fa-star mr-3 pinning-star"
+            <span class="fa fa-star mr-3 pinned-star"
                 (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
             <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
                 {{item.name}}
@@ -44,11 +41,13 @@
             <!-- <div class="list-item-icon d-flex align-items-center">
             <span class="odp-record"></span>
         </div> -->
-            <span class="fa fa-star mr-3 pinning-star" *ngIf="pinnedDs.length<5"
-                (click)="addToStaredList(item._id);$event.stopPropagation();"></span>
+            <span class="fa fa-star mr-3" *ngIf="pinnedDs.length<5"
+                [ngClass]="{'pinning-star' : !isPinned(item), 'pinned-star' : isPinned(item)}"
+                (click)=" !isPinned(item) ? addToStaredList(item._id): removeFromStaredList(item._id);$event.stopPropagation();"></span>
             <span class="fa fa-star text-white mr-3 pinning-star" ngbTooltip="You can only pin upto 5 data services"
                 *ngIf="pinnedDs.length>=5" (click)="$event.stopPropagation();"></span>
-            <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
+            <div class="list-item-label d-flex align-items-center text-truncate text-secondary"
+                [odpTruncated]="item.name" [ngClass]="{'text-dark fw-600': appService?.serviceId === item._id}">
                 {{item.name}}
             </div>
         </div>

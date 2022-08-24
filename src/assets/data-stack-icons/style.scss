@@ -27,7 +27,7 @@
   font-size: 18px;
   display: inline-block;
 
-  &.dsi-sm{
+  &.dsi-sm {
     font-size: 0.875rem !important;
   }
 }
@@ -54,7 +54,8 @@
   &:before {
     content: $dsi-group;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #CBE7CE;
   }
 }
@@ -75,7 +76,8 @@
   &:before {
     content: $dsi-library;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #F7DEC2;
   }
 }
@@ -253,7 +255,8 @@
   &:before {
     content: $dsi-attach;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #D7F5D1;
   }
 }
@@ -316,7 +319,8 @@
   &:before {
     content: $dsi-calendar;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #FFE6D8;
   }
 }
@@ -502,7 +506,8 @@
   &:before {
     content: $dsi-text;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #E7CBD4;
   }
 }
@@ -511,7 +516,8 @@
   &:before {
     content: $dsi-boolean;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #CBE7CE;
   }
 }
@@ -568,7 +574,8 @@
   &:before {
     content: $dsi-location;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #CAF0F3;
   }
 }
@@ -577,7 +584,8 @@
   &:before {
     content: $dsi-number;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #E7CBE6;
   }
 }
@@ -592,7 +600,8 @@
   &:before {
     content: $dsi-array;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #D3E4FF;
   }
 }
@@ -625,7 +634,20 @@
   &:before {
     content: $dsi-id;
   }
-  &.dsi-bg{
+
+  &.dsi-bg {
     background: #C9D5E8;
+  }
+}
+
+.dsi-ds {
+  &:before {
+    content: $dsi-ds;
+  }
+}
+
+.dsi-workflow {
+  &:before {
+    content: $dsi-workflow;
   }
 }

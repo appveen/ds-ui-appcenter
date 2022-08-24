@@ -10,13 +10,13 @@
             [ngClass]="{'fa-chevron-up': openPanel['pinnedDs'],'fa-chevron-down': !openPanel['pinnedDs']}">
         </span>
     </div>
-    <div *ngIf="openPanel['pinnedDs']">
-        <odp-service-list [dsType]="'pinnedDs'"></odp-service-list>
+
+    <div *ngIf="openPanel['pinnedDs']" class="bg-v-light">
+        <odp-service-list [dsType]="'pinnedDs'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
     </div>
     <div class="px-4 menu-item d-flex align-items-center justify-content-between hover" (click)="togglePanel('ds')">
         <div>
-            <span class="odp-record text-secondary font-14 mr-3" [ngClass]="{'text-primary': openPanel['ds'],'text-secondary': 
-            !openPanel['ds']}"></span>
+            <span class="odp-record text-secondary font-14 mr-3"></span>
             <span class="text-secondary font-14 fw-500" [ngClass]="{'text-dark fw-500': openPanel['ds'],'text-secondary': 
             !openPanel['ds']}">Data Services</span>
         </div>
@@ -24,9 +24,9 @@
             [ngClass]="{'fa-chevron-up': openPanel['ds'],'fa-chevron-down': !openPanel['ds']}"></span>
     </div>
     <div *ngIf="openPanel['ds']">
-        <odp-service-list [dsType]="'ds'"></odp-service-list>
+        <odp-service-list [dsType]="'ds'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
     </div>
-    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover"
+    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('workflow')">
         <div>
             <span class="odp-workflow text-secondary font-14 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
@@ -40,6 +40,7 @@
     <div *ngIf="openPanel['workflow']">
         <odp-workflow-list></odp-workflow-list>
     </div>
+
     <!-- <ng-container *ngIf="activeMenuKey=='services'">
         <odp-service-list></odp-service-list>
     </ng-container>
