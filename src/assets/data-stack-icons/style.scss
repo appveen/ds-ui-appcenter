@@ -646,8 +646,14 @@
   }
 }
 
-.dsi-workflow {
+.dsi-wf {
   &:before {
-    content: $dsi-workflow;
+    content: $dsi-wf;
+  }
+}
+
+.dsi-bookmark1 {
+  &:before {
+    content: $dsi-bookmark1;
   }
 }
