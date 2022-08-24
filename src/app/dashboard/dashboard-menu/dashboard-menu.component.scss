@@ -3,8 +3,12 @@
   max-height: calc(100vh - 104px);
   overflow-y: auto;
 
+  .pinned {
+    color: #fcd452 !important;
+  }
+
   .fa-star {
-    color: #fcd452;
+    color: #dfe1e2
   }
 
   .menu-item {
@@ -13,6 +17,9 @@
   }
 }
 
+.lh-17 {
+  line-height: 17px;
+}
 
 .bg-v-light {
   background: #fafafb;

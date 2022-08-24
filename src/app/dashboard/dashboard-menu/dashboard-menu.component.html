@@ -2,12 +2,12 @@
     <div class="px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('pinnedDs')">
         <div>
-            <span class="fa fa-star font-14 mr-3"></span>
-            <span class="text-secondary font-14 fw-500" [ngClass]="{'text-dark fw-500': openPanel['pinnedDs'],'text-secondary': 
+            <span class="fa fa-star font-14 mr-3" [ngClass]="{'pinned': openPanel['pinnedDs']}"></span>
+            <span class="font-14 fw-500 lh-17" [ngClass]="{'text-dark': openPanel['pinnedDs'],'text-secondary': 
             !openPanel['pinnedDs']}">Starred Records</span>
         </div>
-        <span class="fa text-secondary mt-1"
-            [ngClass]="{'fa-chevron-up': openPanel['pinnedDs'],'fa-chevron-down': !openPanel['pinnedDs']}">
+        <span class="fa mt-1"
+            [ngClass]="{'fa-chevron-up text-secondary ': openPanel['pinnedDs'],'fa-chevron-down text-muted': !openPanel['pinnedDs']}">
         </span>
     </div>
 
@@ -16,12 +16,13 @@
     </div>
     <div class="px-4 menu-item d-flex align-items-center justify-content-between hover" (click)="togglePanel('ds')">
         <div>
-            <span class="odp-record text-secondary font-14 mr-3"></span>
-            <span class="text-secondary font-14 fw-500" [ngClass]="{'text-dark fw-500': openPanel['ds'],'text-secondary': 
+            <span class="odp-record text-secondary font-14 mr-3" [ngClass]="{'text-primary': openPanel['ds'],'text-secondary': 
+            !openPanel['ds']}"></span>
+            <span class="font-14 fw-500 lh-17" [ngClass]="{'text-dark': openPanel['ds'],'text-secondary': 
             !openPanel['ds']}">Data Services</span>
         </div>
-        <span class="fa mt-1 text-secondary"
-            [ngClass]="{'fa-chevron-up': openPanel['ds'],'fa-chevron-down': !openPanel['ds']}"></span>
+        <span class="fa mt-1"
+            [ngClass]="{'fa-chevron-up text-secondary': openPanel['ds'],'fa-chevron-down text-muted': !openPanel['ds']}"></span>
     </div>
     <div *ngIf="openPanel['ds']">
         <odp-service-list [dsType]="'ds'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
@@ -31,11 +32,11 @@
         <div>
             <span class="odp-workflow text-secondary font-14 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}"></span>
-            <span class="text-secondary font-14 fw-500" [ngClass]="{'text-dark fw-500': openPanel['workflow'],'text-secondary': 
+            <span class="font-14 fw-500 lh-17" [ngClass]="{'text-dark': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}">Workflows</span>
         </div>
-        <span class="fa fa-chevron-down text-secondary mt-1"
-            [ngClass]="{'fa-chevron-up': openPanel['workflow'],'fa-chevron-down': !openPanel['workflow']}"></span>
+        <span class="fa mt-1"
+            [ngClass]="{'fa-chevron-up text-secondary': openPanel['workflow'],'fa-chevron-down text-muted': !openPanel['workflow']}"></span>
     </div>
     <div *ngIf="openPanel['workflow']">
         <odp-workflow-list></odp-workflow-list>

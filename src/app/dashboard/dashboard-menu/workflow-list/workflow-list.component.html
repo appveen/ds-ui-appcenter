@@ -2,10 +2,11 @@
     <span class="fa fa-search position-absolute"></span>
     <input type="text" class="border-0" placeholder="Search" [(ngModel)]="searchText">
 </div> -->
-<div class="menu-list-item d-flex align-items-center text-secondary" (click)="loadWorkflowOverview()">
+<div class="menu-list-item d-flex align-items-center text-secondary" (click)="loadWorkflowOverview()"
+    *ngIf="records.length>0">
     All Records - Workflow
 </div>
-<ng-container *ngFor="let item of records | serviceSearch:searchText">
+<ng-container *ngFor=" let item of records | serviceSearch:searchText">
     <div *ngIf="item?.name" class="menu-list-item d-flex align-items-center justify-content-between"
         (click)="loadWorkflow(item, true)"
         [ngClass]="{'text-dark':item?._id === activeId,'text-secondary':item?._id !== activeId}">
@@ -13,7 +14,7 @@
             <!-- <div class="list-item-icon d-flex align-items-center">
                 <span class="odp-workflow"></span>
             </div> -->
-            <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item?.name">
+            <div class="list-item-label d-flex align-items-center text-truncate lh-22" [odpTruncated]="item?.name">
                 {{item?.name}}
             </div>
         </div>
@@ -24,8 +25,8 @@
     </div>
 </ng-container>
 <div *ngIf="!records || records.length==0"
-    class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+    class="menu-list-item d-flex align-items-center justify-content-between text-secondary">
     <div class="d-flex align-items-center">
-        <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
+        <div class="list-item-label d-flex align-items-center text-muted pl-2 font-11 fw-500">NO RECORDS</div>
     </div>
 </div>

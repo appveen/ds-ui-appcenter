@@ -5,9 +5,9 @@
 <div class="text-muted ml-2 my-1">Starred</div> -->
 <ng-container *ngIf="dsType=='pinnedDs'">
     <div *ngIf="!pinnedDs || pinnedDs.length==0"
-        class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+        class="menu-list-item d-flex align-items-center justify-content-between text-secondary">
         <div class="d-flex align-items-center">
-            <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
+            <div class="list-item-label d-flex align-items-center text-muted pl-2 font-11 fw-500">NO RECORDS</div>
         </div>
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between" (click)="loadDataService(item,true)"
@@ -19,7 +19,7 @@
             </div> -->
             <span class="fa fa-star mr-3 pinned-star"
                 (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
-            <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item.name">
+            <div class="list-item-label d-flex align-items-center text-truncate lh-22" [odpTruncated]="item.name">
                 {{item.name}}
             </div>
         </div>
@@ -30,8 +30,8 @@
 <!-- <hr class="m-0">
 <div class="text-muted ml-2 my-1">Others</div> -->
 <ng-container *ngIf="dsType=='ds'">
-    <div class="menu-list-item d-flex align-items-center text-secondary" (click)="loadServiceOverview()">
-        All Records - DS
+    <div class="menu-list-item d-flex align-items-center " (click)="loadServiceOverview()" *ngIf="records.length > 0">
+        <span class="text-secondary ml-4">All Records - DS</span>
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"
         (click)="loadDataService(item,true)" [attr.data-id]="item._id"
@@ -46,7 +46,7 @@
                 (click)=" !isPinned(item) ? addToStaredList(item._id): removeFromStaredList(item._id);$event.stopPropagation();"></span>
             <span class="fa fa-star text-white mr-3 pinning-star" ngbTooltip="You can only pin upto 5 data services"
                 *ngIf="pinnedDs.length>=5" (click)="$event.stopPropagation();"></span>
-            <div class="list-item-label d-flex align-items-center text-truncate text-secondary"
+            <div class="list-item-label d-flex align-items-center text-truncate text-secondary lh-22"
                 [odpTruncated]="item.name" [ngClass]="{'text-dark fw-600': appService?.serviceId === item._id}">
                 {{item.name}}
             </div>
@@ -54,9 +54,9 @@
 
     </div>
     <div *ngIf="!records || records.length==0"
-        class="menu-list-item d-flex align-items-center justify-content-between bg-light text-secondary">
+        class="menu-list-item d-flex align-items-center justify-content-between text-secondary">
         <div class="d-flex align-items-center">
-            <div class="list-item-label d-flex align-items-center text-muted pl-2">No Records</div>
+            <div class="list-item-label d-flex align-items-center text-muted pl-2 font-11 fw-500">NO RECORDS</div>
         </div>
     </div>
 </ng-container>
