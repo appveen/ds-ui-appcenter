@@ -436,7 +436,7 @@
     </h4>
   </div>
 
-  <div *ngIf="!apiCallsPending && totalRecords>0" class="row m-0 position-relative bg-white"
+  <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
     <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"
       *ngIf="totalRecords>0" odpClickOutside (outside)="showContextMenu = false" (click)="closeContextMenu();"
