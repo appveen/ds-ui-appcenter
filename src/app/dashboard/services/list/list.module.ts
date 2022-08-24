@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule,DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -31,6 +31,7 @@ import { SearchForFieldComponent } from './list-filters/search-for/search-for-fi
 import { AutoFocusModule } from 'src/app/utils/directives/auto-focus/auto-focus.module';
 import { ListUserViewComponent } from './list-view/list-user-view/list-user-view.component';
 import { ListAgGridModule } from './list-ag-grid/list-ag-grid.module';
+import { SwitchModule } from '../../../utils/switch/switch.module';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: ListComponent, canActivate: [ListGuard] },
@@ -54,7 +55,8 @@ const routes: Routes = [
     LoadingPlaceholderModule,
     AutoFocusModule,
     PdfViewerModule,
-    ListAgGridModule
+    ListAgGridModule,
+    SwitchModule
   ],
   declarations: [
     ListComponent,

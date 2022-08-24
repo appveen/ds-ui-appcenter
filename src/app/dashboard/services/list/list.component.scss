@@ -92,7 +92,7 @@
 
 .data-container {
   overflow: auto;
-  min-height: 62vh;
+  min-height: 65vh;
   // max-height: calc(100vh - 136px);
   // min-width: calc(100vw - 247px);
   // max-width: calc(100vw - 232px);
@@ -231,7 +231,7 @@
   outline: none;
   border: 0;
   background: none;
-  border-bottom: 1px solid #ececec;
+  // border-bottom: 1px solid #ececec;
 }
 
 .sf-min-width {
@@ -240,6 +240,11 @@
 
 .schema-free-filter-label {
   min-width: 70px;
+}
+
+.dropdown-toggle::after {
+  margin: auto 0;
+  margin-left: 16px;
 }
 
 .search-options-section {
@@ -296,4 +301,10 @@
   &.show {
     right: 0;
   }
+}
+
+.input-dim {
+  width: 300px;
+  min-height: 40px;
+  max-height: 40px;
 }

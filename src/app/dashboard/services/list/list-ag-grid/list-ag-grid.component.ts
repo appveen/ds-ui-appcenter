@@ -580,9 +580,19 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   }
 
   createColumnDefs() {
-    const self = this;
-
-    self.columns.forEach((e, i) => {
+    this.columns.unshift({
+      show: true,
+      key: '_checkbox',
+      dataKey: '_checkbox',
+      type: 'Checkbox',
+      width: 20,
+      definition: [],
+      properties: {
+        name: ''
+      },
+      checkbox: true
+    })
+    this.columns.forEach((e, i) => {
       const temp: any = {};
       if (e.properties) {
         if (e.properties.label) {
@@ -593,14 +603,14 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       }
       (temp as AgGridColumn).field = e.dataKey;
       if (e.type === 'Checkbox') {
-        (temp as AgGridColumn).width = 64;
+        (temp as AgGridColumn).width = 40;
         (temp as AgGridColumn).pinned = 'left';
         (temp as AgGridColumn).headerCheckboxSelection = true;
         (temp as AgGridColumn).checkboxSelection = true;
 
       } else {
         (temp as AgGridColumn).sortable = true;
-        if (!self.schema.schemaFree) {
+        if (!this.schema.schemaFree) {
           (temp as AgGridColumn).filter = 'agTextColumnFilter';
           (temp as AgGridColumn).floatingFilterComponentFramework = AgGridFiltersComponent;
           (temp as AgGridColumn).filterParams = {
@@ -608,6 +618,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             suppressAndOrCondition: true,
             suppressFilterButton: true
           };
+        }
+        else {
+          (temp as AgGridColumn).width = 250;
         }
         (temp as AgGridColumn).suppressMenu = true;
         (temp as AgGridColumn).headerClass = 'hide-filter-icon';
@@ -621,9 +634,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
       (temp as AgGridColumn).refData = e;
       (temp as AgGridColumn).hide = !e.show;
-      self.columnDefs.push(temp);
+      this.columnDefs.push(temp);
     });
-    console.log(self.columnDefs)
   }
 
 

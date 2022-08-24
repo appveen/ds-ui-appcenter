@@ -4,33 +4,40 @@
 .header {
   min-height: 40px;
   max-height: 40px;
+
   .title {
     font-size: 16px;
+
     .text-primary {
       font-size: 16px !important;
     }
   }
+
   .actions {
     .text-warning {
       font-size: 12px;
     }
   }
 }
+
 .sub-header {
-  min-height: 48px;
-  max-height: 48px;
+  min-height: 96px;
+  max-height: 96px;
 }
+
 .form-body {
   min-height: calc(100vh - 186px);
   max-height: calc(100vh - 186px);
   height: calc(100vh - 186px);
   overflow-y: auto;
   overflow-x: auto;
+
   &.no-steps {
     min-height: calc(100vh - 128px);
     max-height: calc(100vh - 128px);
     height: calc(100vh - 128px);
   }
+
   &.has-actions {
     min-height: calc(100vh - 242px);
     max-height: calc(100vh - 242px);
@@ -48,6 +55,7 @@
   outline: 0;
   max-height: 234px;
   overflow: auto;
+
   .list-group-item {
     &:not(.active):hover {
       cursor: pointer;
@@ -73,8 +81,10 @@
 .steps-wrapper {
   min-height: 42px;
   max-height: 42px;
+
   .step-tabs {
     overflow: hidden;
+
     .step-tab {
       min-width: 150px;
       max-width: 150px;
@@ -82,20 +92,24 @@
       max-height: 42px;
       border-bottom: 4px solid transparent;
       transition: 0.25s;
+
       &.active {
         font-weight: bold;
       }
+
       .step-no {
         min-width: 36px;
         max-width: 36px;
         min-height: 42px;
         max-height: 42px;
       }
+
       .step-name {
         max-width: 114px;
       }
     }
   }
+
   .step-controls {
     min-width: 134px;
     max-width: 134px;
@@ -105,14 +119,17 @@
 .experience-hooks {
   min-height: 40px;
   max-height: 40px;
+
   .experience-hooks-title {
     min-width: 120px;
     max-width: 120px;
   }
+
   .experience-hooks-buttons {
     min-width: calc(100vw - 416px);
     max-width: calc(100vw - 416px);
     overflow: hidden;
+
     .experience-hooks-btn {
       min-width: 160px;
       max-width: 160px;
@@ -121,6 +138,7 @@
       padding: 0;
     }
   }
+
   .btn-link {
     padding: 0;
   }

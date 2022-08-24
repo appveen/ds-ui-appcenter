@@ -6,35 +6,46 @@
   min-height: 48px;
   max-height: 48px;
   padding-left: 51px;
+
   &:not(.text-white):hover {
     cursor: pointer;
     background: #ececec !important;
+
     .pinning-star {
       display: block;
     }
   }
+
   &:hover {
     .pinning-star {
       display: block;
       color: #fcd452;
     }
   }
+
   .list-item-icon {
     min-height: 32px;
     max-height: 32px;
     min-width: 32px;
     max-width: 32px;
   }
+
   .list-item-label {
     min-width: 156px;
     max-width: 156px;
   }
+
   .type {
     border-radius: 20%;
   }
 }
+
 .pinning-star {
   color: #dfe1e2;
+}
+
+.pinned-star {
+  color: #fcd452;
 }
 
 .search-control {
@@ -46,13 +57,16 @@
     background: transparent;
     text-indent: 36px;
     font-size: 12px;
+
     &:focus {
       outline: none;
     }
+
     &::placeholder {
       color: $border;
     }
   }
+
   .fa-search {
     left: 16px;
     top: 19px;

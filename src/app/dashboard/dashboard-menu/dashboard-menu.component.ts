@@ -50,4 +50,8 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
   togglePanel(panel) {
     this.openPanel[panel] = !this.openPanel[panel];
   }
+
+  onStarredAction(event) {
+    this.togglePanel(event);
+  }
 }
