@@ -14,7 +14,7 @@
     <div class="row no-gutters">
         <div class="col-3" *ngFor="let srvc of services">
             <div class="bg-white ds-item mr-3 rounded mt-3">
-                <div class="px-3 pt-3">
+                <div class="px-3 pt-3" (click)="loadDataService(srvc)">
                     <div class="ds-name font-11 fw-500">{{srvc.name}}</div>
                     <div class="last-updated font-11 font-italic">Last Updated {{lastUpdated(srvc)}}</div>
                     <div class="ds-info mb-3">

@@ -25,8 +25,8 @@
 }
 
 .value-wrapper {
-  min-width: 400px;
-  max-width: 400px;
+  // min-width: 400px;
+  // max-width: 400px;
   word-break: break-all;
 }
 
@@ -145,6 +145,10 @@
 
 .font-11 {
   font-size: 11px;
+}
+
+.font-18 {
+  font-size: 18px;
 }
 
 .font-13 {
@@ -292,7 +296,7 @@
     background: #F7F7FB;
     font-size: 13px !important;
     font-weight: 500px;
-    height: 80px !important;
+    // height: 80px !important;
 
 
     .ag-header-cell-text {

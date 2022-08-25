@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
+import { AppService } from '../../../service/app.service';
+import { DashboardService } from '../../dashboard.service';
 
 @Component({
   selector: 'odp-service-overview',
@@ -16,7 +19,10 @@ export class ServiceOverviewComponent implements OnInit {
   filter: any;
 
   constructor(
-    private commonService: CommonService
+    private commonService: CommonService,
+    public appService: AppService,
+    private dashboardService: DashboardService,
+    private router: Router
   ) {
   }
 
@@ -27,7 +33,15 @@ export class ServiceOverviewComponent implements OnInit {
     self.showLazyLoader = true;
     self.getServices();
   }
+  loadDataService(service: any) {
+    this.appService.serviceId = service._id;
+    this.dashboardService.selectedService.emit(service);
 
+    this.router.navigateByUrl(['', this.commonService.app._id, 'services'].join('/')).then(() => {
+      this.router.navigate(['/', this.commonService.app._id, 'services', service._id, 'list']);
+    });
+
+  }
   search(value) {
     const self = this;
     if (!value || !value.trim()) {
@@ -53,8 +67,8 @@ export class ServiceOverviewComponent implements OnInit {
   getServices() {
     const self = this;
     const filter: any = { status: 'Active', app: self.commonService.app._id };
-    if(self.searchTerm){
-      filter.name =  '/' + self.searchTerm + '/';
+    if (self.searchTerm) {
+      filter.name = '/' + self.searchTerm + '/';
     }
     if (!self.commonService.userDetails.isSuperAdmin
       && self.commonService.servicesWithAccess.length > 0 && !self.commonService.isAppAdmin()) {
