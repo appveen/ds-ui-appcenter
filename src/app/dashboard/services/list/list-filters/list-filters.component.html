@@ -171,7 +171,7 @@
     <div class="d-flex drag-boundary flex-wrap" [sortablejs]="selectedColOrder">
       <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex ">
         <div class="hover col-name d-flex justify-content-center align-items-center py-1 px-2 rounded bg-white"
-          [ngClass]="{'mr-2': !last}">
+          (mousedown)="onDrag()" [ngClass]="{'mr-2': !last}">
           <div class="pr-2 font-12" [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">
             {{ col.properties.label ? col.properties.label : col.properties.name }}
           </div>

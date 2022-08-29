@@ -253,6 +253,10 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     }, dismiss => { });
   }
 
+  onDrag() {
+    setTimeout(() => { this.applyFilter() }, 1000)
+  }
+
   removeItem(index) {
     const self = this;
 
