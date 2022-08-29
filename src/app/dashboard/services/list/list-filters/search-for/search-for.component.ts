@@ -1,4 +1,4 @@
-import {  Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AppService } from 'src/app/service/app.service';
 import * as _ from 'lodash';
 import { FilterModel } from './search-for-field/search-for-field.component';
@@ -61,6 +61,12 @@ export class SearchForComponent implements OnInit {
 
   ngOnInit() {
     const self = this;
+    self.filterModel.push({
+      dataKey: '_id',
+      filterType: 'equals',
+      filterValue: '',
+      filterObject: {}
+    });
   }
 
   addColForSearch() {
@@ -87,5 +93,5 @@ export class SearchForComponent implements OnInit {
     self.filterModelChange.emit(self.filterModel);
   }
 
-  
+
 }

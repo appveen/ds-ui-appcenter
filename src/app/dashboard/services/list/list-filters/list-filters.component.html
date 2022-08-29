@@ -202,18 +202,18 @@
   </div>
 </ng-template>
 <ng-template #filtereModal>
-  <div class="alert d-flex">
+  <div class="d-flex px-4 pt-4 mb-3">
     <h4 class=" text-dark fw-600 font-20">Filter All Records</h4>
     <button id="deleteModalCloseBtn" type="button" class="close ml-auto" aria-label="Close"
       (click)="filtereModalRef.close(false)">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="modal-body">
+  <div class="px-4" style="max-height: 40vh; min-height: 40vh; overflow: auto;">
     <odp-search-for [allColumns]="allColumns" [filterModel]="filterModel" (filterModelChange)="createFilter($event)"
-      class="mb-3 pt-3 px-3"></odp-search-for>
+      class="mb-3 pt-2 px-4"></odp-search-for>
   </div>
-  <div class="ml-auto p-2">
+  <div class="ml-auto p-4">
     <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width mr-2"
       (click)="filtereModalRef.close(false)">Cancel</button>
     <button id="addFilterApplyBtn" type="button" class="btn btn-primary px-4 btn-min-width"

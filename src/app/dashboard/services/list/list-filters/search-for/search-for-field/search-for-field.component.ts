@@ -15,6 +15,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   @ViewChild('filterTypeEle', { static: false })
   filterTypeEle: ElementRef<HTMLSelectElement>;
   @Input() columns: Definition[];
+  @Input() index: any;
   @Input() filterModel: FilterModel;
   @Output() filterModelChange: EventEmitter<any>;
   toggleFromDate: boolean;

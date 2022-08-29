@@ -7,8 +7,8 @@
 
 .col-name-dd {
   min-width: 156px;
-  min-height: 32px;
-  max-height: 32px;
+  min-height: 40px;
+  // max-height: 32px;
   border-radius: 4px;
 }
 
@@ -19,9 +19,11 @@
   border: 1px solid $border;
   border-radius: 6px;
   overflow: hidden;
+
   .filter-txt {
     font-family: inherit;
     border: none !important;
+
     &-disabled {
       border: none;
       background-color: #f6f6f6;
@@ -35,6 +37,7 @@
   .new-row {
     opacity: 0;
   }
+
   &:hover .new-row {
     opacity: 1;
     cursor: pointer;
@@ -46,6 +49,7 @@
     left: 88%;
     pointer-events: none;
   }
+
   select {
     -webkit-appearance: button;
     outline: none;
@@ -56,6 +60,7 @@
     border: none;
     font-weight: bold;
     background-color: $gray-light-1;
+
     option {
       font-weight: bold;
     }
@@ -67,6 +72,7 @@
     border-right: 1px solid $border;
   }
 }
-.custom-select{
-  min-height: 32px;
+
+.custom-select {
+  min-height: 40px;
 }

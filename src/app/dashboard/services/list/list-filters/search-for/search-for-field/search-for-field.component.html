@@ -1,28 +1,39 @@
 <div class="d-flex align-items-center row-content">
-  <div class="fas fa-bars text-muted mr-2 hover"></div>
-  <div class="input-group col-name-dd mr-2">
-    <select class="custom-select" [(ngModel)]="filterModel.dataKey" (change)="onFieldChange()">
+  <!-- <div class="fas fa-bars text-muted mr-2 hover"></div> -->
+  <div class="input-group col-name-dd mr-4 d-flex flex-column">
+    <label class="font-14 fw-400 text-dark" *ngIf="index === 0">Columns</label>
+    <select placeholder="Select" class="custom-select w-100 border-6" [(ngModel)]="filterModel.dataKey"
+      (change)="onFieldChange()">
       <option *ngFor="let col of allFields;" [value]="col.dataKey">
         {{ col.properties.label ? col.properties.label : col.properties.name }}</option>
     </select>
   </div>
-  <div class="col-filter mr-2 d-flex">
-    <div class="options-dd d-flex align-items-center text-primary position-relative">
-      <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
-      <select #filterTypeEle [(ngModel)]="filterModel.filterType" (change)="valueChange()">
+  <div class="input-group col-name-dd mr-4 d-flex flex-column">
+    <label class="font-14 fw-400 text-dark" *ngIf="index === 0">Condition</label>
+    <select placeholder="Select" #filterTypeEle class="custom-select w-100 border-6"
+      [(ngModel)]="filterModel.filterType" (change)="valueChange()">
+      <option *ngFor="let option of filterTypeOptions" [value]="option.value">
+        {{option.name}}
+      </option>
+    </select>
+  </div>
+  <div class="input-group col-name-dd mr-4 d-flex flex-column">
+    <label class="font-14 fw-400 text-dark" *ngIf="index === 0">Value</label>
+    <!-- <div class="options-dd d-flex align-items-center text-primary position-relative">
+      <select placeholder="Select" #filterTypeEle [(ngModel)]="filterModel.filterType" (change)="valueChange()">
         <option *ngFor="let option of filterTypeOptions" [value]="option.value">
           {{option.name}}
         </option>
       </select>
-    </div>
+    </div> -->
     <ng-container *ngIf="selectedFieldType !== 'Date' && selectedFieldType !== 'Boolean'">
-      <input *ngIf="selectedFieldType !== 'Number'" type="text" class="w-100 p-2 filter-txt font-sm"
+      <input *ngIf="selectedFieldType !== 'Number'" type="text" class="w-100 p-2 filter-txt border border-6"
         [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
       <input *ngIf="selectedFieldType === 'Number' && filterModel.filterType !== 'inRange'" type="number"
-        class="w-100 p-2 filter-txt font-sm" [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
+        class="w-100 p-2 filter-txt border border-6" [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
     </ng-container>
     <input *ngIf="selectedFieldType === 'Boolean'" type="text"
-      class="w-100 p-2 filter-txt-disabled text-secondary font-sm" [value]="filterTypeEle.value" disabled>
+      class="w-100 p-2 filter-txt-disabled text-secondary border border-6" [value]="filterTypeEle.value" disabled>
     <div *ngIf="selectedFieldType === 'Date'" class="d-flex align-items-center w-100">
       <div class="d-flex align-items-center mr-3 w-50 h-100 px-2 bg-white"
         [ngClass]="{'date-picker-from': filterModel.filterType === 'inRange'}"
@@ -31,8 +42,10 @@
           <span class="fa fa-calendar mr-2 text-primary"></span>
           <span class="text-primary">{{ filterModel.filterType === 'inRange' ? 'From' : 'Date' }}</span>
         </div>
-        <span class="timestamp font-sm ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ startDate ? ( startDate | date: 'd MMM y') : '' }}</span>
-        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ startDate ? ( startDate | date: 'd MMM y, HH:mm:ss') : '' }}</span>
+        <span class="timestamp  ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ startDate ? ( startDate |
+          date: 'd MMM y') : '' }}</span>
+        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ startDate ? ( startDate
+          | date: 'd MMM y, HH:mm:ss') : '' }}</span>
         <span class="fas fa-angle-down text-primary"></span>
         <div class="position-absolute">
           <odp-date-picker *ngIf="toggleFromDate" [togglePicker]="toggleFromDate"
@@ -48,8 +61,10 @@
           <span class="fa fa-calendar mr-2 text-primary"></span>
           <span class="text-primary">To</span>
         </div>
-        <span class="timestamp font-sm ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ endDate ? (endDate | date: 'd MMM y') : '' }}</span>
-        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ endDate ? (endDate | date: 'd MMM y, HH:mm:ss') : '' }}</span>
+        <span class="timestamp  ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ endDate ? (endDate | date:
+          'd MMM y') : '' }}</span>
+        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ endDate ? (endDate |
+          date: 'd MMM y, HH:mm:ss') : '' }}</span>
         <span class="fas fa-angle-down text-primary"></span>
         <div class="position-absolute">
           <odp-date-picker *ngIf="toggleToDate" [togglePicker]="toggleToDate"
@@ -62,8 +77,8 @@
     <div *ngIf="selectedFieldType === 'Number' && filterModel.filterType === 'inRange'"
       class="d-flex align-items-center w-100">
       <input type="number" placeholder="From" style="border-right: 1px solid #bdbdbd !important"
-        class="w-50 p-2 filter-txt font-sm" [(ngModel)]="fromNumber" (blur)="fromNumberChange()">
-      <input type="number" placeholder="To" class="w-50 p-2 filter-txt font-sm" [(ngModel)]="toNumber"
+        class="w-50 p-2 filter-txt border border-6" [(ngModel)]="fromNumber" (blur)="fromNumberChange()">
+      <input type="number" placeholder="To" class="w-50 p-2 filter-txt border border-6" [(ngModel)]="toNumber"
         (blur)="toNumberChange()">
     </div>
   </div>
