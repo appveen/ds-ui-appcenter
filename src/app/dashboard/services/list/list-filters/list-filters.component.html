@@ -170,7 +170,7 @@
     <div class="text-gray-medium label-text"></div>
     <div class="d-flex drag-boundary flex-wrap" [sortablejs]="selectedColOrder">
       <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex ">
-        <div class="col-name d-flex justify-content-center align-items-center py-1 px-2 rounded bg-white"
+        <div class="hover col-name d-flex justify-content-center align-items-center py-1 px-2 rounded bg-white"
           [ngClass]="{'mr-2': !last}">
           <div class="pr-2 font-12" [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">
             {{ col.properties.label ? col.properties.label : col.properties.name }}
@@ -184,9 +184,9 @@
   </div>
 </div>
 <ng-template #confirmDeleteModal>
-  <div class="modal-header alert">
-    <h4 class="modal-title text-danger">{{ deleteModal.title }}</h4>
-    <button id="deleteModalCloseBtn" type="button" class="close" aria-label="Close"
+  <div class="alert d-flex">
+    <h4 class="text-danger">{{ deleteModal.title }}</h4>
+    <button id="deleteModalCloseBtn" type="button" class="close ml-auto" aria-label="Close"
       (click)="confirmDeleteModalRef.close(false)">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -194,17 +194,17 @@
   <div class="modal-body">
     <p class="text-center">{{ deleteModal.message }}</p>
   </div>
-  <div class="modal-footer">
-    <button id="deleteModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
+  <div class="ml-auto p-2">
+    <button id="deleteModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width mr-2"
       (click)="confirmDeleteModalRef.close(false)">No</button>
     <button id="deleteModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
       (click)="confirmDeleteModalRef.close(true)">Yes</button>
   </div>
 </ng-template>
 <ng-template #filtereModal>
-  <div class="modal-header alert">
-    <h4 class="modal-title text-dark fw-600 font-20">Filter All Records</h4>
-    <button id="deleteModalCloseBtn" type="button" class="close" aria-label="Close"
+  <div class="alert d-flex">
+    <h4 class=" text-dark fw-600 font-20">Filter All Records</h4>
+    <button id="deleteModalCloseBtn" type="button" class="close ml-auto" aria-label="Close"
       (click)="filtereModalRef.close(false)">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -213,8 +213,8 @@
     <odp-search-for [allColumns]="allColumns" [filterModel]="filterModel" (filterModelChange)="createFilter($event)"
       class="mb-3 pt-3 px-3"></odp-search-for>
   </div>
-  <div class="modal-footer">
-    <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width"
+  <div class="ml-auto p-2">
+    <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width mr-2"
       (click)="filtereModalRef.close(false)">Cancel</button>
     <button id="addFilterApplyBtn" type="button" class="btn btn-primary px-4 btn-min-width"
       (click)="filtereModalRef.close(true)">Apply</button>

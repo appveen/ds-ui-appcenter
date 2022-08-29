@@ -6,6 +6,8 @@ export interface App {
     logo?: Logo;
     users?: Array<string>;
     groups?: Array<string>;
+    firstLetter?: string;
+    bg?: any;
 }
 
 export interface AppCenterStyle {

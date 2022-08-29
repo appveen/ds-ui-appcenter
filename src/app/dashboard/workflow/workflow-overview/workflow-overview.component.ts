@@ -26,20 +26,19 @@ export class WorkflowOverviewComponent implements OnInit {
 
   getServices() {
     const self = this;
-    const filter: any = { status: 'Active', app: self.commonService.app._id,'workflowConfig.enabled': true  };
+    const filter: any = { status: 'Active', app: self.commonService.app._id, 'workflowConfig.enabled': true };
     if (!self.commonService.userDetails.isSuperAdmin
       && self.commonService.servicesWithAccess.length > 0 && !self.commonService.isAppAdmin()) {
       filter._id = {
         $in: self.commonService.servicesWithAccess
       };
     }
-    if(self.searchTerm){
-      filter.name =  '/' + self.searchTerm + '/';
+    if (self.searchTerm) {
+      filter.name = '/' + self.searchTerm + '/';
     }
     const options: GetOptions = {
       count: -1,
       filter,
-      select: 'name',
       sort: 'name'
     };
 

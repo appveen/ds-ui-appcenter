@@ -2,7 +2,7 @@
   <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
   <div class="d-flex align-items-center justify-content-between header">
     <div class="title d-flex align-items-center w-50" *ngIf="schema">
-      <!-- <span class="odp-record mr-2 text-primary ml-2"></span> -->
+      <span class="dsi dsi-arrow-left font-16 mr-2 text-secondary hover" (click)="goToAll()"></span>
       <span class="text m-0 fw-600 font-24">{{schema?.name}}</span>
     </div>
     <div class="actions w-50 d-flex justify-content-end ignore-outside mb-3" *ngIf="schema">
@@ -370,8 +370,7 @@
 
 </div>
 <div>
-  <div class="d-flex align-items-center justify-content-between list-options bg-white"
-    [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
+  <div class="d-flex align-items-center justify-content-between list-options bg-white" *ngIf="totalRecords>0">
     <div class="d-flex align-items-center">
       <div style="margin-left: 10px;" class="d-flex align-items-cente hover" (click)="selectAllRecords()"
         *ngIf="!listGrid?.showLoading">

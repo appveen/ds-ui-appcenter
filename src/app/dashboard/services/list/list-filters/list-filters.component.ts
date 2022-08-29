@@ -255,14 +255,18 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   removeItem(index) {
     const self = this;
-    self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
-    self.confirmDeleteModalRef.result.then(close => {
-      if (close) {
-        self.allColumns.push(self.selectedColOrder[index]);
-        self.selectedColOrder.splice(index, 1);
-        self.applyFilter()
-      }
-    }, dismiss => { });
+
+    self.allColumns.push(self.selectedColOrder[index]);
+    self.selectedColOrder.splice(index, 1);
+    self.applyFilter()
+    // self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
+    // self.confirmDeleteModalRef.result.then(close => {
+    //   if (close) {
+    //     self.allColumns.push(self.selectedColOrder[index]);
+    //     self.selectedColOrder.splice(index, 1);
+    //     self.applyFilter()
+    //   }
+    // }, dismiss => { });
   }
 
   addColForSort() {

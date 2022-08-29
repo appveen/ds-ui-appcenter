@@ -1,6 +1,6 @@
 import { animate, group, keyframes, query, state, style, transition, trigger } from '@angular/animations';
 import { NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, ActivatedRoute } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 import { AppService } from 'src/app/service/app.service';
 import { App } from 'src/app/interfaces/app';
 import { DashboardService } from './dashboard.service';
+import { DashboardMenuComponent } from './dashboard-menu/dashboard-menu.component';
 
 @Component({
     selector: 'odp-dashboard',
@@ -81,6 +82,7 @@ import { DashboardService } from './dashboard.service';
     ]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+    @ViewChild(DashboardMenuComponent) dashboardMenu: DashboardMenuComponent
     name: string;
     showSideNav: boolean;
     subscriptions: any;
@@ -99,7 +101,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     selectedMenuItem: any;
     constructor(
         private appService: AppService,
-        private commonService: CommonService,
+        public commonService: CommonService,
         private sessionService: SessionService,
         private dashboardService: DashboardService,
         private router: Router,
@@ -325,6 +327,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.router.navigate(['/', app._id]);
         }
         this.dashboardService.appChanged.emit(app);
+        this.dashboardMenu.openPanel['ds'] = false;
+        this.dashboardMenu.openPanel['pinnedDs'] = false;
+        this.dashboardMenu.openPanel['workflow'] = false;
     }
 
     onNotificationScroll(event: Event) {

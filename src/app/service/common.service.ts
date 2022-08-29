@@ -250,6 +250,15 @@ export class CommonService {
     return new Promise<any>((resolve, reject) => {
       self.subscriptions['getAllApps'] = self.get('user', '/admin/app', options).subscribe(
         res => {
+
+          res.forEach((item) => {
+            item.firstLetter = item._id.charAt(0);
+            item.bg = this.appColor();
+            if (_.isEmpty(item.logo)) {
+              delete item.logo;
+            }
+            self.appList.push(item);
+          });
           self.appList = res;
           self.app = self.appList[0];
           resolve(res);
@@ -259,6 +268,18 @@ export class CommonService {
         }
       );
     });
+  }
+
+  appColor() {
+    const colorArray = [
+      '#B2DFDB',
+      '#B2EBF2',
+      '#B3E5FC',
+      '#A5D6A7',
+      '#C5E1A5',
+      '#E6EE9C',
+    ];
+    return _.sample(colorArray);
   }
 
   private _fetchUserRolesApi_() {

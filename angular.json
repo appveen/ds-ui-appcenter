@@ -83,6 +83,7 @@
           "options": {
             "browserTarget": "odp-ui-appcenter:build",
             "proxyConfig": "proxy.conf.json",
+            "sourceMap": false,
             "baseHref": "/",
             "port": 4201
           },

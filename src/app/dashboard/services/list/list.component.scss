@@ -19,7 +19,7 @@
   min-height: calc(100vh - 280px);
 
   &.has-records {
-    min-height: calc(100vh - 280px);
+    min-height: 100vh;
   }
 }
 
@@ -87,7 +87,7 @@
 }
 
 .no-record {
-  height: calc(100vh - 104px);
+  height: 100vh;
 }
 
 .data-container {

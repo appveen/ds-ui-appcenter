@@ -1,10 +1,15 @@
 <div class="d-flex flex-column w-100 h-100">
     <div class="d-flex">
-        <div class="sidenav-odp bg-white" [ngClass]="{'hide':!showSideNav}">
-            <div class="logo-holder border-right bg-white d-flex align-items-center">
-                <div *ngIf="!(selectedApp?.logo && selectedApp?.logo?.full)" class="logo ml-3"></div>
-                <img class="customer-logo" *ngIf="selectedApp?.logo && selectedApp?.logo?.full"
-                    [src]="selectedApp?.logo?.full" alt="Logo">
+        <div class="sidenav-odp bg-white" [ngClass]="{'collapse':!showSideNav}">
+            <div class="d-flex  border-right">
+                <div class="logo-holder bg-white d-flex align-items-center">
+                    <div *ngIf="!(selectedApp?.logo && selectedApp?.logo?.full)" class="logo ml-3"></div>
+                    <img class="customer-logo" *ngIf="selectedApp?.logo && selectedApp?.logo?.full"
+                        [src]="selectedApp?.logo?.full" alt="Logo">
+                </div>
+
+                <!-- <span class="dsi dsi-close ml-auto p-3" (click)="showSideNav=!showSideNav"></span> -->
+
             </div>
             <!-- <div class="search-control position-relative border-right">
                 <span class="fa fa-search position-absolute"></span>
@@ -40,10 +45,6 @@
         <div class="full-height d-flex flex-column w-100 bg-light" [@routerTransition]="getState(o)">
             <div class="top-header d-flex align-items-center justify-content-between pr-3 bg-white">
                 <div class="left-side d-flex align-items-center">
-                    <!-- <div class="sidenav-toggler d-flex align-items-center justify-content-center bg-primary text-white hover"
-                        (click)="showSideNav=!showSideNav">
-                        <span class="fa fa-bars"></span>
-                    </div> -->
                     <div class="d-flex align-items-center ml-3">
                         <span class="text-muted">{{selectedMenuItem.label}}&nbsp;/&nbsp;</span>
                         <span class="text-dark">{{selectedMenuItem.name}}</span>
@@ -88,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="current-app d-flex align-items-center hover rounded border mr-3"
+                    <!-- <div class="current-app d-flex align-items-center hover rounded border mr-3"
                         (click)="toggleAppOptions()">
                         <div class="current-app-thumbnail d-flex align-items-center justify-content-center mr-2"
                             ngbTooltip="Switch App" placement="bottom">
@@ -103,6 +104,30 @@
                         </div>
                         <div *ngIf="multipleApps" class="ml-auto mr-2">
                             <span class="fas fa-angle-down text-primary"></span>
+                        </div>
+                    </div> -->
+                    <div class="current-app d-flex align-items-center border rounded mr-3 hover ignore-outside"
+                        (click)="toggleAppOptions()">
+                        <div class="current-app-thumbnail d-flex align-items-center justify-content-center mx-2"
+                            ngbTooltip="Switch App" placement="bottom"
+                            [ngStyle]="{ 'background-color': selectedApp.bg }" [ngClass]="{
+                'img-app': selectedApp.logo && selectedApp.logo.thumbnail
+              }">
+                            <img *ngIf="selectedApp.logo && selectedApp.logo.thumbnail"
+                                [src]="selectedApp.logo.thumbnail" alt="Logo" />
+                            <span *ngIf="!selectedApp?.logo?.thumbnail">{{selectedApp.firstLetter}}</span>
+                        </div>
+                        <div class="current-app-name text-dark text-truncate" ngbTooltip="Current App"
+                            placement="bottom">
+                            {{ selectedApp._id }}
+                        </div>
+                        <div class="text-primary"></div>
+                        <!-- <div *ngIf="isAppAdmin" class="d-flex align-items-center justify-content-center ml-1">
+                            <span class="fa fa-star text-warning" ngbTooltip="You are admin of this App"
+                                placement="bottom"></span>
+                        </div> -->
+                        <div *ngIf="commonService.appList.length > 1" class="ml-auto mr-2">
+                            <span class="fas fa-angle-down text-accent"></span>
                         </div>
                     </div>
                     <div class="user-details d-flex align-items-center hover rounded border ignore-outside"

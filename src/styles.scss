@@ -294,7 +294,7 @@
 
   .ag-header {
     background: #F7F7FB;
-    font-size: 13px !important;
+    font-size: 12px !important;
     font-weight: 500px;
     // height: 80px !important;
 
@@ -314,6 +314,7 @@
   .ag-cell {
     display: flex;
     align-items: center;
+    font-size: 13px !important;
   }
 
   .ag-cell.ag-cell-inline-editing {

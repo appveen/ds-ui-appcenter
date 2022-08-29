@@ -1703,6 +1703,10 @@ export class ListComponent implements OnInit, OnDestroy {
     this.searchForm.get('private').patchValue(!event);
     this.selectedSearch.private = !this.selectedSearch.private
   }
+
+  goToAll() {
+    this.router.navigate(['/', this.commonService.app._id, 'services', 'overview']);
+  }
 }
 
 
