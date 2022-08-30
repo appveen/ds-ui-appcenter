@@ -155,9 +155,27 @@
     <div ngbDropdown class="d-inline-block">
       <button type="button" class="btn btn-outline-secondary font-12" id="dropdownBasic1" ngbDropdownToggle>View
         Columns</button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button class="font-12 text-secondary" *ngFor="let col of allColumns" ngbDropdownItem (click)="selectItem(col)">
-          {{ col.properties.label ? col.properties.label : col.properties.name }}
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+        style="max-height: 250px; overflow: auto; min-width: 330px;">
+        <div class="d-flex my-2 ml-3">
+          <span class="font-14 fw-700">View Column</span>
+          <div class="d-flex ml-auto">
+            <span class="font-13 fw-600 text-decoration-underline mr-2 hover" (click)="selectAll()">Select All</span>
+            <span class="font-13 fw-600 text-decoration-underline mr-2 hover" (click)="clearAll()">Clear All</span>
+          </div>
+        </div>
+        <span class="py-2 pr-2 pl-3">
+          <input class="border border-6 pl-2 w-100" style="height: 40px;max-width: 21vw" autofocus
+            placeholder="Search Column" (keyup)="searchFilterColumns($event)">
+        </span>
+        <button class="font-12 text-secondary pl-1" *ngFor="let col of filterColumns" ngbDropdownItem
+          (click)="selectItem(col)">
+          <div class="d-flex pl-3 py-2">
+            <odp-round-check class="mr-3" [checked]="isSelected(col)" (checkedChange)="checkCol($event,col)">
+            </odp-round-check>
+            <span class="font-14 fw-400 text-dark"> {{ col?.properties?.label ? col?.properties?.label :
+              col?.properties?.name }}</span>
+          </div>
         </button>
 
       </div>
@@ -203,13 +221,17 @@
 </ng-template>
 <ng-template #filtereModal>
   <div class="d-flex px-4 pt-4 mb-3">
-    <h4 class=" text-dark fw-600 font-20">Filter All Records</h4>
+    <div class="d-flex flex-column">
+      <h4 class=" text-dark fw-600 font-20">Filter All Records</h4>
+      <span class="font-14 fw-400 text-secondary mt-2" *ngIf="loadedRecordsCount">Showing {{loadedRecordsCount}} of
+        {{currentTotalCount}}</span>
+    </div>
     <button id="deleteModalCloseBtn" type="button" class="close ml-auto" aria-label="Close"
       (click)="filtereModalRef.close(false)">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="px-4" style="max-height: 40vh; min-height: 40vh; overflow: auto;">
+  <div class="px-4" style="max-height: 30vh; min-height: 10vh; overflow: auto;">
     <odp-search-for [allColumns]="allColumns" [filterModel]="filterModel" (filterModelChange)="createFilter($event)"
       class="mb-3 pt-2 px-4"></odp-search-for>
   </div>

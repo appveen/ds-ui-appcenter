@@ -4,7 +4,9 @@
     <label class="font-14 fw-400 text-dark" *ngIf="index === 0">Columns</label>
     <select placeholder="Select" class="custom-select w-100 border-6" [(ngModel)]="filterModel.dataKey"
       (change)="onFieldChange()">
-      <option *ngFor="let col of allFields;" [value]="col.dataKey">
+      <input class="border border-6 pl-2 w-100" style="height: 40px;" autofocus placeholder="Search Column"
+        (keyup)="searchFilterColumns($event)">
+      <option *ngFor="let col of allFields;" [value]="col.dataKey" class="py-2">
         {{ col.properties.label ? col.properties.label : col.properties.name }}</option>
     </select>
   </div>

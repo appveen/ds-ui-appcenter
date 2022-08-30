@@ -9,6 +9,7 @@ import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { FilterModel } from './search-for/search-for-field/search-for-field.component';
 import { SessionService } from 'src/app/service/session.service';
+import * as _ from 'lodash'
 
 interface FilterData {
   _id?: string;
@@ -126,6 +127,8 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   @Input() allColumns: any;
   @Input() allFilters: any;
   @Input() appliedFilter: any;
+  @Input() currentTotalCount: any;
+  @Input() loadedRecordsCount: any
   @Output() refine: EventEmitter<any>;
   @Output() filterCleared: EventEmitter<boolean>;
 
@@ -155,6 +158,9 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   filterApplied$: Subscription;
   showSeparateCreateBtn: boolean;
   hasOptions = true;
+  filterColumns: any;
+  unfilteredColumns: any;
+
 
   constructor(private ts: ToastrService,
     private appService: AppService,
@@ -163,6 +169,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     private sessionService: SessionService) {
     const self = this;
     self.allColumns = [];
+    self.filterColumns = [];
     self.allFilters = [];
     self.filterModel = [];
     self.selectedColOrder = [];
@@ -209,6 +216,8 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.filterApplied$ = self.appService.filterApplied.subscribe(() => {
       self.selectFilter(self.appService.existingFilter);
     });
+    self.filterColumns = _.cloneDeep(self.allColumns);
+    self.unfilteredColumns = _.cloneDeep(self.allColumns);
     if (self.allColumns && self.allColumns.length > 0) {
       const index = self.allColumns.findIndex(e => e.key === '_checkbox');
       if (index > -1) {
@@ -241,6 +250,14 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       self.ts.warning('Column already added');
     }
     self.name = '';
+  }
+
+  isSelected(val) {
+    const index = this.selectedColOrder.findIndex(e => (e?.properties?.name || e?.properties?.label) === val?.properties?.name)
+    if (index === -1) {
+      return false
+    }
+    return true
   }
 
   showFilter() {
@@ -500,5 +517,34 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     if (self.confirmDeleteModalRef) {
       self.confirmDeleteModalRef.close();
     }
+  }
+
+  checkCol(event, col) {
+    if (event) {
+      this.selectItem(col)
+    }
+    else {
+      const index = this.selectedColOrder.findIndex(e => e.properties.name === col.properties.name)
+      this.removeItem(index)
+    }
+  }
+
+  searchFilterColumns(event) {
+    const value = event.target.value;
+    this.filterColumns = _.cloneDeep(this.unfilteredColumns)
+
+    if (value !== '') {
+      this.filterColumns = this.filterColumns.filter(e => e.properties?.name?.toLowerCase().includes(value));
+    }
+
+  }
+
+  selectAll() {
+    this.selectedColOrder = _.cloneDeep(this.filterColumns);
+    this.applyFilter();
+  }
+  clearAll() {
+    this.selectedColOrder = [];
+    this.applyFilter();
   }
 }

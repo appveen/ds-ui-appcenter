@@ -5,6 +5,7 @@ import { Definition } from 'src/app/interfaces/definition';
 import { CommonService } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { FormService } from 'src/app/service/form.service';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'odp-search-for-field',
@@ -31,6 +32,7 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
   duplicateInRangeDateField: boolean;
   dateFieldType: string;
   filterTypeOptions: Array<{ name: string; value: string }>;
+  filteredColumns: any;
 
   constructor(
     private commonService: CommonService,
@@ -77,6 +79,8 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.filteredColumns = _.cloneDeep(this.allFields)
+
   }
 
   ngOnDestroy() {
@@ -691,11 +695,11 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
     else {
       self.filterTypeOptions = [
         {
-          name: 'Equals',
+          name: 'Equal to',
           value: 'equals'
         },
         {
-          name: 'Not equal',
+          name: 'Not equal to',
           value: 'notEqual'
         },
         {
@@ -708,6 +712,16 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
         }
       ];
     }
+  }
+
+  searchFilterColumns(event) {
+    const value = event.target.value;
+    this.filteredColumns = _.cloneDeep(this.allFields)
+
+    if (value !== '') {
+      this.filteredColumns.filter(e => e.properties?.name?.toLowerCase().includes(value));
+    }
+
   }
 }
 

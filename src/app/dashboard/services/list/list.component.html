@@ -270,7 +270,8 @@
   <div [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0 &&  !isSchemaFree">
     <div class="d-flex">
       <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
-        (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
+        (filterCleared)="resetFilter(true)" (refine)="onRefine($event)" [loadedRecordsCount]="loadedRecordsCount"
+        [currentTotalCount]="currentTotalCount">
       </odp-list-filters>
       <div class="p-3 ml-auto mb-auto d-flex align-items-center hover position-relative ignore-outside"
         *ngIf="!isSchemaFree">
