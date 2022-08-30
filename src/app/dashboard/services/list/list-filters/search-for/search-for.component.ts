@@ -60,13 +60,7 @@ export class SearchForComponent implements OnInit {
   }
 
   ngOnInit() {
-    const self = this;
-    self.filterModel.push({
-      dataKey: '_id',
-      filterType: 'equals',
-      filterValue: '',
-      filterObject: {}
-    });
+    // const self = this;
   }
 
   addColForSearch() {
