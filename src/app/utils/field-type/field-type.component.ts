@@ -16,17 +16,17 @@ export class FieldTypeComponent implements OnInit {
     const self = this;
     self.definition = {};
     self.iconTypeMap = {
-      Identifier: 'odp-id',
-      String: 'odp-abc',
-      Number: 'odp-123',
-      Boolean: 'odp-boolean',
-      Date: 'odp-calendar',
-      Object: 'odp-group',
-      Array: 'odp-array',
-      Geojson: 'odp-location',
-      File: 'odp-attach',
-      Relation: 'odp-references',
-      User: 'fa fa-user',
+      Identifier: 'dsi-id',
+      String: 'dsi-text',
+      Number: 'dsi-number',
+      Boolean: 'dsi-boolean',
+      Date: 'dsi-date',
+      Object: 'dsi-object',
+      Array: 'dsi-array',
+      Geojson: 'dsi-location',
+      File: 'dsi-file-text',
+      Relation: 'dsi-relation',
+      User: 'dsi-user',
     };
   }
 

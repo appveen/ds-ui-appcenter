@@ -36,15 +36,15 @@ export class NotificationItemComponent implements OnInit {
       'bg-danger': this.isError(),
     };
     this.iconGlyph = {
-      'odp-check': this.isSuccess() || this.isPartialSuccess(),
-      'odp-times': this.isError(),
-      'odp-cloud-upload': this.isIntermediate() && !this.isError(),
-      'odp-clock': this.isPending(),
+      'dsi-check': this.isSuccess() || this.isPartialSuccess(),
+      'dsi-close': this.isError(),
+      'dsi-cloud': this.isIntermediate() && !this.isError(),
+      'dsi-clock': this.isPending(),
     };
     this.iconHoverGlyph = {
-      'odp-download': this.isDownloadable(),
-      'odp-search': this.isReviewable(),
-      'odp-view': !this.isDownloadable() && !this.isReviewable(),
+      'dsi-download': this.isDownloadable(),
+      'dsi-search': this.isReviewable(),
+      'dsi-view': !this.isDownloadable() && !this.isReviewable(),
     };
 
     if (this.item.type === 'import') {

@@ -1,7 +1,7 @@
 <div class="notification-container" [class.unread]="!item.isRead" [class.clear]="isClearHover" [class.mb-2]="isLast"
     (mouseenter)="isHover = true" (mouseleave)="isHover = false" (click)="takeAction($event)">
     <div class="notification-title-section">
-        <span class="odp-record mr-2"></span>
+        <span class="dsi dsi-data-service mr-2"></span>
         <span class="text ds-name">{{item.name}}</span>
         <span class="fa fa-circle fa-xs mx-1"></span>
         <span class="text">{{item.type}}</span>
@@ -11,7 +11,7 @@
     </div>
     <div class="notification-body">
         <div class="icon-container" [ngClass]="iconBg">
-            <span class="text-white" [ngClass]="isClearHover ? 'odp-trash' : isHover ? iconHoverGlyph : iconGlyph">
+            <span class="text-white dsi" [ngClass]="isClearHover ? 'dsi-trash' : isHover ? iconHoverGlyph : iconGlyph">
             </span>
         </div>
         <div class="content">

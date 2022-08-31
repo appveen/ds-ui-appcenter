@@ -1,7 +1,7 @@
 <div class="workflow-wrapper">
-    <div class="header d-flex align-items-center justify-content-between pr-3 bg-light border-bottom w-100">
+    <!-- <div class="header d-flex align-items-center justify-content-between pr-3 bg-light border-bottom w-100">
         <div class="title d-flex align-items-center ml-2">
-            <span class="odp-workflow mr-2 text-primary"></span>
+            <span class="dsi dsi-branch mr-2 text-primary"></span>
             <span class="text m-0 font-weight-bold">Work Items</span>
             <div class="mx-2">
                 <span class="text-secondary">/</span>
@@ -9,47 +9,47 @@
             <div class="text-secondary">{{schema?.name}}</div>
         </div>
         <span class="text text-primary font-weight-bold hover">Refresh</span>
-    </div>
-    <div class="tabs d-flex bg-white align-items-center border-bottom">
+    </div> -->
+    <div class="tabs d-flex bg-white align-items-center border-bottom border-top">
         <div class="text-muted py-2 hover border-right sbTabs d-flex justify-content-between"
             (click)="selectOperation(0);" [ngClass]="{'bg-primary text-white':activeTab==0}">
             <div class="d-flex align-items-center mr-1">
-                <span class="odp-create font-13 ml-1" [ngClass]="{' text-white':activeTab==0}"></span>
-                <span class="font-13 ml-1" [ngClass]="{' text-white':activeTab==0}">New Records</span>
+                <span class="dsi dsi-plus-circle font-13 mx-2" [ngClass]="{'text-white':activeTab==0}"></span>
+                <span class="font-13 ml-1" [ngClass]="{'text-white':activeTab==0}">New Records</span>
             </div>
-            <div class="  -flex align-items-center justify-content-center mr-2" [ngClass]="{'text-white':activeTab==0}">
+            <div class="d-flex align-items-center justify-content-center mr-2" [ngClass]="{'text-white':activeTab==0}">
                 <small>{{newRecordCount}}</small>
             </div>
         </div>
-        <div class="text-muted  py-2 hover border-right sbTabs d-flex justify-content-between"
+        <div class="text-muted py-2 hover border-right sbTabs d-flex justify-content-between"
             (click)="selectOperation(1)" [ngClass]="{'bg-primary text-white':activeTab==1}">
             <div class="d-flex align-items-center mr-1">
-                <span class="odp-edit font-13 ml-1 " [ngClass]="{' text-white':activeTab==1}"></span>
-                <span class="font-13 ml-1" [ngClass]="{' text-white':activeTab==1}">Updates</span>
+                <span class="dsi dsi-edit font-13 mx-2 " [ngClass]="{'text-white':activeTab==1}"></span>
+                <span class="font-13 ml-1" [ngClass]="{'text-white':activeTab==1}">Updates</span>
             </div>
-            <div class="  d-flex align-items-center justify-content-center mr-2"
+            <div class="d-flex align-items-center justify-content-center mr-2"
                 [ngClass]="{'text-white':activeTab==1}">
                 <small>{{updatedRecordCount}}</small>
             </div>
         </div>
-        <div class="text-muted  py-2 hover border-right sbTabs d-flex justify-content-between"
+        <div class="text-muted py-2 hover border-right sbTabs d-flex justify-content-between"
             (click)="selectOperation(2)" [ngClass]="{'bg-primary text-white':activeTab==2}">
             <div class="d-flex align-items-center mr-1">
-                <span class="odp-delete font-13 ml-1" [ngClass]="{' text-white':activeTab==2}"></span>
-                <span class="font-13 ml-1" [ngClass]="{' text-white':activeTab==2}">Deletes</span>
+                <span class="dsi dsi-trash font-13 mx-2" [ngClass]="{'text-white':activeTab==2}"></span>
+                <span class="font-13 ml-1" [ngClass]="{'text-white':activeTab==2}">Deletes</span>
             </div>
-            <div class="  d-flex align-items-center justify-content-center mr-2"
+            <div class="d-flex align-items-center justify-content-center mr-2"
                 [ngClass]="{'text-white' :activeTab==2}">
                 <small>{{deleteRecordCount}}</small>
             </div>
         </div>
-        <div class="text-muted  py-2 hover border-right sbTabs d-flex justify-content-between"
+        <div class="text-muted py-2 hover border-right sbTabs d-flex justify-content-between"
             (click)="selectOperation(3)" [ngClass]="{'bg-primary text-white':activeTab==3}">
             <div class="d-flex align-items-center mr-1">
-                <span class="odp-delete font-13 ml-1" [ngClass]="{' text-white':activeTab==3}"></span>
-                <span class="font-13 ml-1" [ngClass]="{' text-white':activeTab==3}">Draft</span>
+                <span class="dsi dsi-file-text font-13 mx-2" [ngClass]="{'text-white':activeTab==3}"></span>
+                <span class="font-13 ml-1" [ngClass]="{'text-white':activeTab==3}">Draft</span>
             </div>
-            <div class="   d-flex align-items-center justify-content-center mr-2"
+            <div class="d-flex align-items-center justify-content-center mr-2"
                 [ngClass]="{'text-white ':activeTab==3}">
                 <small>{{draftRecordCount}}</small>
             </div>
@@ -66,7 +66,7 @@
                 </div>
                 <button id="respond" type="button" class="btn btn-link ignore-outside" (click)="clearFilters()"
                     *ngIf="hasFilters">
-                    <span class="fa fa-times mr-2"></span>
+                    <span class="dsi dsi-close mr-2"></span>
                     <span class="text font-bold ignore-outside">Clear Filter</span>
                 </button>
 
@@ -90,7 +90,7 @@
             <div class="d-flex align-items-center">
                 <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
                     *ngIf="selectedSavedView" (click)="resetFilter()">
-                    <span class="fas fa-redo fa-flip-horizontal"></span>
+                    <span class="dsi dsi-undo"></span>
                     <span class="pl-2">Reset Filter</span>
                 </div>
                 <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
@@ -101,16 +101,16 @@
                     <div class="d-flex align-items-center w-100 ignore-outside"
                         (click)="showFilterList = !showFilterList; ">
                         <div class="ignore-outside">
-                            <span class="fa fa-search text-gray-medium mr-1 ignore-outside"
+                            <span class="dsi dsi-search text-gray-medium mr-1 ignore-outside"
                                 *ngIf="!selectedSavedView?.name"></span>
-                            <span class="fa fa-search text-primary mr-1 ignore-outside"
+                            <span class="dsi dsi-search text-primary mr-1 ignore-outside"
                                 *ngIf="selectedSavedView?.name"></span>
                             <span class="ignore-outside"
                                 [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{
                                 selectedSavedView?.name ? selectedSavedView?.name : 'Saved Views' }}</span>
                         </div>
                         <div class="ml-auto ignore-outside">
-                            <span class="fas fa-angle-down text-primary ignore-outside"></span>
+                            <span class="dsi dsi-drop-down text-primary ignore-outside"></span>
                         </div>
                     </div>
                     <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside"
@@ -124,17 +124,17 @@
                             <span *ngIf="!showSearchFilter" class="ignore-outside hover"
                                 [ngClass]="{'text-primary': !allFiltersListed}"
                                 (click)="filterAllFilter('private')"><strong>Only Me</strong></span>
-                            <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchFilter"
+                            <span class="text-primary dsi dsi-arrow-left hover ignore-outside" *ngIf="showSearchFilter"
                                 (click)="showSearchFilter = false"></span>
                             <div class="ml-auto hover ignore-outside" *ngIf="!showSearchFilter && allFilters.length > 0"
                                 (click)="showSearchFilter = true">
-                                <span class="fas fa-search text-muted ignore-outside"></span>
+                                <span class="dsi dsi-search text-muted ignore-outside"></span>
                             </div>
                             <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchFilter">
                                 <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside"
                                     placeholder="Search save view" #searchFilter odpAutoFocus>
                                 <span
-                                    class="fas fa-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+                                    class="dsi dsi-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
                             </div>
                         </div>
                         <div *ngIf="allFilters.length > 0; else noFilters" class="h-100 sub-container">
@@ -151,11 +151,11 @@
                                     class="text-secondary ml-auto position-absolute un-pos">{{
                                     filter.user }}</span>
                                 <span *ngIf="filter.hasOptions && !filter.showOptions"
-                                    class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
+                                    class="dsi dsi-more-vertical text-muted hover position-absolute ellipses-pos"></span>
                                 <div *ngIf="filter.hasOptions && filter.showOptions"
                                     class="ml-auto d-flex align-items-center hover">
-                                    <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
-                                    <span class="fas fa-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
+                                    <span class="dsi dsi-edit icon-color mr-3" (click)="editFilter(filter)"></span>
+                                    <span class="dsi dsi-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
                                     <div class="left-radius position-relative hover"
                                         [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
                                         (click)="changeFilterType(filter, 'private')">
@@ -179,10 +179,10 @@
                 <div *ngIf="wfService.showFilterIcon" class="p-1 filter-icon position-relative hover"
                     [ngClass]="{'full-br': !showfilterOptions, 'half-br': showfilterOptions,
                   'bg-white': !selectedSavedView || showfilterOptions, 'bg-primary': selectedSavedView && !showfilterOptions}" (click)="toggleFilterOptions()">
-                    <span *ngIf="!showfilterOptions" class="fas fa-filter position-absolute"
+                    <span *ngIf="!showfilterOptions" class="dsi dsi-filter-alt position-absolute"
                         [ngClass]="{'text-primary': !selectedSavedView, 'text-white': selectedSavedView}"></span>
                     <div *ngIf="selectedSavedView" class="bg-white position-absolute sm-circle"></div>
-                    <span *ngIf="showfilterOptions" class="fas fa-times text-muted position-absolute"></span>
+                    <span *ngIf="showfilterOptions" class="dsi dsi-close text-muted position-absolute"></span>
                 </div>
             </div>
         </ng-container>

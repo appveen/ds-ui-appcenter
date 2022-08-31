@@ -1,7 +1,7 @@
 <div [formGroup]="form">
   <div class="d-flex  column-container justify-content-between p-2" *ngIf="definition">
     <div class="title d-flex align-items-center w-50">
-      <span class="odp-record fa-lg mr-2 text-primary-dark"></span>
+      <span class="dsi dsi-data-service fa-lg mr-2 text-primary"></span>
       <span class="text m-0">{{definition?.name}}</span>
       <span class="objIcon mr-1" *ngIf="parentDef"></span>
       <span *ngIf="parentDef">{{parentDef?.properties?.name}}</span>
@@ -13,7 +13,7 @@
 
   </div>
   <div class="title d-flex align-items-center w-50" *ngIf="!definition">
-    <span class="odp-record fa-lg mr-2 text-primary-dark"></span>
+    <span class="dsi dsi-data-service fa-lg mr-2 text-primary"></span>
     <span class="text m-0">{{schemaName}}</span>
     <span class="fa fa fa-angle-right text-secondary mx-1"></span>
     <span class="objIcon mr-1"></span>

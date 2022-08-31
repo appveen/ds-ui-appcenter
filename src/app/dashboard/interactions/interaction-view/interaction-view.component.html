@@ -1,6 +1,8 @@
 <div class="default-loader d-flex justify-content-center h-100 w-100" *ngIf="showLazyLoading">
   <div class="align-self-center text-center">
-    <span class="fa fa-spinner fa-pulse fa-lg fa-3x"></span>
+    <div class="spinner-border text-dark" role="status">
+      <span class="sr-only">Processing...</span>
+    </div>
     <div class="text-secondary mt-2">Processing...</div>
   </div>
 </div>
@@ -90,7 +92,7 @@
         </span><br>
       </div> -->
 
-      <table >
+      <table>
         <tr>
           <ng-container *ngIf="interactionData?.createTimestamp">
             <td class="text-muted ">Invocation Time: </td>

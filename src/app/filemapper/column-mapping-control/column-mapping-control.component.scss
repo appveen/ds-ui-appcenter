@@ -4,7 +4,7 @@
 .column-container{
     min-width: 550px;
     max-width: 590px;
-    min-height: 56px;
+    min-height: 56px;   
     display: block;
     // max-height: 56px;
     .propName {
@@ -15,8 +15,8 @@
     .colDiv{
         min-width: 296px;
         max-width: 296px;
-        min-height: 32px;
-        max-height: 32px;
+        // min-height: 32px;
+        // max-height: 32px;
         color:  #B5B8BC;
         padding-right: 20px !important;
         &:focus {

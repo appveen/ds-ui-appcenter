@@ -1,4 +1,4 @@
-<div class="column-container py-3 px-2 border-bottom align-items-center w-100 hover "
+<div class="column-container py-3 px-2 align-items-center w-100 hover rounded"
     (dragover)="dragOverEvent($event)">
     <div class="propName pr-3 d-flex align-items-center">
         <odp-field-type [definition]="definition"></odp-field-type>
@@ -6,11 +6,8 @@
             [odpTruncated]="definition?.properties?.label ? definition?.properties?.label :definition?.properties?.name">
             {{definition?.properties?.label ? definition?.properties?.label :definition?.properties?.name}}
         </div>
-        <sup placement="top" ngbTooltip="Required" *ngIf="definition.properties.required"
-            class="text-danger high-zIndex">
-            <small class="fa fa-asterisk"></small>
-        </sup>
-        <small class="fa fa-info-circle ml-2 text-info mt-1 hover high-zIndex"
+        <small *ngIf="definition.properties.required" class="dsi dsi-required" ngbTooltip="Required"></small>
+        <small class="dsi dsi-info-circle ml-2 text-info mt-1 hover high-zIndex"
             *ngIf="definition.properties._description" placement="top"
             [ngbTooltip]="definition.properties._description"></small>
     </div>
@@ -22,7 +19,7 @@
         [ngClass]="{'border bg-white font-bold text-dark':model}" (blur)="showInput=false" [(ngModel)]='model'
         [ngbTypeahead]="search" placeholder="Type name (You can also drag and drop)" (selectItem)="selectData($event)"
         [resultFormatter]="resultFrmatter" [inputFormatter]="inputFormatter" (dragenter)="dragEnterEvent($event)"
-        (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)" >
+        (dragleave)="dragLeaveEvent($event)" (drop)="dropEvent($event)">
 
     <!-- secure text type handling -->
 
@@ -143,18 +140,21 @@
                         class="fa fa fa-angle-right  ml-1"></span>
 
                 </div>
-                <span class=" text-secondary index-value hover mb-2" *ngIf="tempArray[i]">{{tempArray[i]?.position}}</span>
+                <span class=" text-secondary index-value hover mb-2"
+                    *ngIf="tempArray[i]">{{tempArray[i]?.position}}</span>
 
-                <span class="fa fa-times text-secondary times-ClearArray hover mb-2 ml-4" *ngIf="tempArray[i]"
+                <span class="dsi dsi-close text-secondary times-ClearArray hover mb-2 ml-4" *ngIf="tempArray[i]"
                     (click)="clearMappingArray(i)" ngbTooltip="Remove mapping"></span>
                 <span class="fa fa-plus text-muted ml-2 mb-2" (click)="addControl()"></span>
             </div>
-            <span class="fa fa-times text-muted ml-auto" *ngIf="form.value.length>1" (click)="removeControl(i)"></span>
+            <span class="dsi dsi-close text-muted ml-auto" *ngIf="form.value.length>1"
+                (click)="removeControl(i)"></span>
         </div>
     </div>
 
     <span class=" text-secondary index-value hover " *ngIf="model ">{{indexValue}}</span>
-    <span class="fa fa-times times-Clear text-secondary" *ngIf="model" (click)="clearMapping()" ngbTooltip="Remove mapping"></span>
+    <span class="dsi dsi-close times-Clear text-secondary" *ngIf="model" (click)="clearMapping()"
+        ngbTooltip="Remove mapping"></span>
 </div>
 
 <div class="column-modal child-Mapping position-fixed" *ngIf="showObjectMapping">
