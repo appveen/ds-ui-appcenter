@@ -3,7 +3,7 @@
         (click)="togglePanel('pinnedDs')">
         <div>
             <span class="fa fa-star font-14 mr-3" [ngClass]="{'pinned': openPanel['pinnedDs']}"></span>
-            <span class="font-14 fw-500 lh-17" [ngClass]="{'text-dark': openPanel['pinnedDs'],'text-secondary': 
+            <span class="font-14 fw-500" [ngClass]="{'text-dark': openPanel['pinnedDs'],'text-secondary': 
             !openPanel['pinnedDs']}">Starred Records</span>
         </div>
         <span class="fa mt-1"
@@ -18,7 +18,7 @@
         <div>
             <span class="dsi dsi-ds text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['ds'],'text-secondary': 
             !openPanel['ds']}"></span>
-            <span class="font-14 fw-500 lh-17" [ngClass]="{'text-dark': openPanel['ds'],'text-secondary': 
+            <span class="font-14 fw-500" [ngClass]="{'text-dark': openPanel['ds'],'text-secondary': 
             !openPanel['ds']}">Data Services</span>
         </div>
         <span class="fa mt-1"
@@ -32,7 +32,7 @@
         <div>
             <span class="dsi dsi-wf text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}"></span>
-            <span class="font-14 fw-500 lh-17" [ngClass]="{'text-dark': openPanel['workflow'],'text-secondary': 
+            <span class="font-14 fw-500" [ngClass]="{'text-dark': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}">Workflows</span>
         </div>
         <span class="fa mt-1"

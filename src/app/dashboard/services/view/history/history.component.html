@@ -1,9 +1,9 @@
-<div *ngIf="toggle" class="version-list d-flex bg-white ml-3 rounded border" odpClickOutside (outside)="close()"
+<div *ngIf="toggle" class="version-list d-flex bg-white rounded border" odpClickOutside (outside)="close()"
     (mouseleave)="activeAudit=null">
     <div class="d-flex flex-column">
-        <label class="fw-700 p-2">Edited Records ({{auditList.length}})</label>
-        <div class="d-flex p-2">
-            <!--<div class="d-inline font-13 font-weight-bold ignore-outside">
+        <span class="fw-600 p-2">Edited Records ({{auditList.length}})</span>
+        <!-- <div class="d-flex p-2">
+            <div class="d-inline font-13 font-weight-bold ignore-outside">
                 <span class="mr-2">{{auditCount}} Results found</span>
                 <span (click)="clearSearch()" class="text-danger btn btn-link btn-sm">
                     Clear Filter
@@ -17,14 +17,14 @@
                 *ngIf="sliderAnimate" class="d-inline"
                 class="text-primary ignore-outside font-13 font-weight-bold hover">
                 &lt; Back
-            </div> -->
-        </div>
+            </div>
+        </div> -->
         <div class="version-list-content" (scroll)="loadMore($event)">
             <ng-container *ngIf="auditList.length>0">
                 <div (click)="showDifference(ver);" *ngFor="let ver of auditList ;let i = index"
                     (mouseover)="activeAudit=ver" [ngClass]="{'bg-light': activeAudit?._id === ver._id}"
                     class="version-data d-flex align-item-center px-3 py-2" [id]="i">
-                    <div [ngClass]="{'text-warning':ver?.wfData?.length>0}" class="border version-number d-flex mr-2"
+                    <div [ngClass]="{'text-warning':ver?.wfData?.length>0}" class="border version-number d-flex mr-2 rounded"
                         [ngStyle]="{'background-color' : ver.bg}">
                         <span class="align-self-center font-12 fw-500 m-auto"> V{{ver?.data._version}}</span>
                     </div>

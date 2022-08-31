@@ -1,6 +1,6 @@
 .menu-list {
-  min-height: calc(100vh - 104px);
-  max-height: calc(100vh - 104px);
+  min-height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
   overflow-y: auto;
 
   .pinned {
@@ -15,10 +15,6 @@
     min-height: 48px;
     max-height: 48px;
   }
-}
-
-.lh-17 {
-  line-height: 17px;
 }
 
 .bg-v-light {

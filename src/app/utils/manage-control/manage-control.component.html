@@ -10,7 +10,7 @@
   <div class="label-wrapper w-100">
     <div class="d-flex align-items-start">
       <label class="label-width d-flex" *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
-        <span class="text text-dark lh-18"
+        <span class="text text-dark"
           [odpTruncated]="definition.properties.label ? definition.properties.label : definition.properties.name"
           [ngClass]="{'text-muted':!toggleEnable}">{{definition.properties.label ? definition.properties.label :
           definition.properties.name}}</span>
@@ -38,8 +38,8 @@
 </div>
 
 <div class="field-wrapper d-flex align-items-start mb-3" [formGroup]="form" *ngIf="definition.type=='Object'">
-  <div class="d-flex flex-column obj-bg w-100 p-3">
-    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-4 fw-700 font-20 lh-28">
+  <div class="d-flex flex-column bg-light w-100 p-3 rounded">
+    <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-4 fw-700 font-20">
       <span class="text text-dark">{{definition.properties.label ? definition.properties.label :
         definition.properties.name}}</span>
     </label>
@@ -51,9 +51,9 @@
 
 <div class="field-wrapper d-flex flex-column align-items-start mb-3" [formGroup]="form"
   *ngIf="definition.type=='Array'">
-  <div class="d-flex flex-column w-100 obj-bg p-3">
+  <div class="d-flex flex-column w-100 bg-light p-3 rounded">
     <div class="d-flex flex-row" *ngIf="controlType !== 'object'">
-      <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-1 fw-700 lh-22">
+      <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-1 fw-700">
         <span class="text">{{definition.properties.label ? definition.properties.label :
           definition.properties.name}}</span>
       </label>

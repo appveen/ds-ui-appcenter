@@ -40,6 +40,7 @@
 
 .history-value {
   // background: #ffecb3;
+  color: $gray-500;
 }
 
 .modal-content {
@@ -440,15 +441,6 @@ $weights: 400, 500, 600, 700, 800, 900;
   background: rgba(0, 0, 0, 0.6);
 }
 
-.actions {
-  width: 140px;
-  height: 40px !important;
-}
-
-.border-6 {
-  border-radius: 6px;
-}
-
 .text-decoration-line-through {
   text-decoration: line-through !important;
 }
@@ -461,18 +453,6 @@ $weights: 400, 500, 600, 700, 800, 900;
   &:hover {
     background-color: transparent !important;
   }
-}
-
-.lh-22 {
-  line-height: 22px;
-}
-
-.lh-28 {
-  line-height: 28px;
-}
-
-.lh-18 {
-  line-height: 18px;
 }
 
 .vh-100 {

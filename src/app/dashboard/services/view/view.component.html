@@ -22,8 +22,8 @@
         </div>
         <div class="bg-light actions d-flex pr-3 w-100 ml-4">
             <div class="d-flex my-auto">
-                <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover"
-                    [routerLink]="['/', currentAppId, 'services', schema._id, 'list']"></i>
+                <span class="dsi dsi-arrow-left text-secondary my-auto mr-3 hover"
+                    [routerLink]="['/', currentAppId, 'services', schema._id, 'list']"></span>
                 <div class="fw-600 font-24 id-wrap">
                     {{value._id}}
                 </div>
@@ -75,13 +75,14 @@
                     <span class="fa fa-trash mr-2 font-13"></span>
                     <span class="text font-13">Delete</span>
                 </button> -->
-                <button (click)="toggleHistory()" *ngIf="auditAvailable" class="btn btn-link px-3" type="button">
-                    <span class="fa fa-clock mr-2 font-13"></span>
+                <button (click)="toggleHistory()" *ngIf="auditAvailable"
+                    class="btn btn-link px-3 mr-3 d-flex align-items-center" type="button">
+                    <span class="dsi dsi-clock mr-2 font-14"></span>
                     <span class="text font-13">History</span>
                 </button>
                 <button (click)="review()" *ngIf="canReview" class="btn btn-outline-primary">Review</button>
                 <button (click)="manage(value._id)" *ngIf="hasPermission('PUT') && !documentLocked"
-                    class="btn btn-primary px-3 action-btn" id="_editButton" type="button">
+                    class="btn btn-primary px-3 btn-min-width" id="_editButton" type="button">
                     <span class="text">Edit</span>
                 </button>
                 <!-- <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link px-3"
@@ -102,12 +103,9 @@
                         <odp-workflow-history [auditList]="selectedAudit?.wfData"></odp-workflow-history>
                     </div>
                 </div>
-                <button class="btn-outline-danger action-btn hover border-6"
+                <button class="btn btn-outline-dark btn-min-width hover rounded"
                     (click)="showVersionHistory=false;clearVersion()">
-                    <!-- <span class="odp-exit-left text-primary mr-2"></span> -->
-                    <span class="text-danger">
-                        Exit History
-                    </span>
+                    Exit History
                 </button>
             </div>
         </div>
@@ -120,13 +118,13 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex align-items-center px-4 bg-white mr-4 ml-4 mb-2 mt-2 border-6" style="min-height: 72px"
+    <div class="d-flex align-items-center px-4 bg-white mr-4 ml-4 mb-2 mt-2 rounded" style="min-height: 72px"
         *ngIf="wizard.length > 0 || showVersionHistory || stateModelAttr">
         <div class='state-model d-flex align-items-center ' *ngIf='!showLazyLoader && stateModelAttr'>
             <span class='mr-2 font-13 fw-500 state-version hover m-auto' style="color: #484848"
                 title="{{stateModelName}}">{{stateModelName}}</span>
 
-            <input class='action-btn border border-6 font-12 ml-3 pl-2'
+            <input class='btn-min-width border rounded font-12 ml-3 pl-2'
                 *ngIf="(!showVersionHistory || (showVersionHistory && !stateModelCreated && !stateModelUpdated))"
                 [value]="stateModelAttrVal" disabled>
 
@@ -152,19 +150,19 @@
             <div class="d-flex align-items-center">
                 <div class="d-flex align-items-center justify-content-between">
                     <button (click)="toggleVerHistory($event)"
-                        class="btn px-3 mr-3 history-version-button show-history bg-white" type="button">
+                        class="btn btn-white mr-3 history-version-button border border-grey" type="button">
                         <div class="d-flex align-items-center justify-content-between">
-                            <h6 class=" m-0">
+                            <span class="font-14 fw-500 mr-2 text-primary">
                                 {{selectedAudit?.data._version}}
-                            </h6>
+                            </span>
                             <span [ngbTooltip]="selectedAudit?.name" class="text-dark fw-500 text-truncate"
                                 placement="top">{{selectedAudit?.name}}</span>
-                            <span class="text-primary fa fa-angle-down"></span>
+                            <span class="text-primary dsi dsi-drop-down ml-3"></span>
                         </div>
                     </button>
                 </div>
                 <div class="d-flex align-items-center">
-                    <span class="fa fa-calendar-alt text-muted"></span>
+                    <span class="dsi dsi-calendar text-muted"></span>
                     <i class="ml-2 mb-0 text-dark">
                         {{selectedAudit?.timeStamp|date:'dd-MMM-yyyy hh:mm:ssa'}}
                     </i>
@@ -178,7 +176,7 @@
                     <!-- <div class="text-secondary font-weight-bold w-100 text-nowrap">Available Actions</div> -->
                     <!-- <div class="d-flex experience-hooks-buttons ml-auto"> -->
                     <button (click)="triggerHook(ac)" *ngFor="let ac of step.actions"
-                        class="btn action-btn btn-outline-dark experience-hooks-btn mr-3 fw-600"
+                        class="btn btn-min-width btn-outline-dark experience-hooks-btn mr-3 fw-600"
                         type="button">{{ac.name}}</button>
                     <!-- </div> -->
                     <!-- <div class="d-flex position-relative">
@@ -199,7 +197,7 @@
         </div>
     </div>
     <div class="d-flex flex-column w-100 bg-light " *ngIf="!isSchemaFree" style="border-radius: 6px;">
-        <div class="row flex-column bg-white ml-4 mr-4" style="height: 100vh">
+        <div class="row flex-column bg-white mx-4 rounded" style="height: 100vh">
             <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
                 class="col-3 border-right pr-0 pl-0 min-vh-100">
                 <div class="step-tabs d-flex flex-column ">
@@ -247,7 +245,7 @@
             </div> -->
             </div>
 
-            <div [ngClass]="viewBodyClass" class="bg-white p-3 min-vh-100 w-100"
+            <div [ngClass]="viewBodyClass" class="bg-white p-3 min-vh-100 w-100 rounded"
                 [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
                 <ng-container *ngIf="wizard.length > 0">
                     <ng-container
