@@ -427,12 +427,12 @@
       </div>
     </div>
   </div>
-  <div class="no-record text-center mx-2 mt-2 bg-white rounded" *ngIf="!apiCallsPending && totalRecords==0">
+  <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!apiCallsPending && totalRecords==0">
     <div class="no-records-img mx-auto"></div>
-    <h4 class="text-muted">This data service does not have any records, yet. <span *ngIf="hasPermission('POST')">You
+    <span class="text-grey font-16">This data service does not have any records, yet. <span *ngIf="hasPermission('POST')">You
         could get started by <a [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">adding
           data</a>.</span>
-    </h4>
+    </span>
   </div>
 
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
