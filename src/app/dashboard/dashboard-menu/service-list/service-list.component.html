@@ -30,13 +30,15 @@
 <!-- <hr class="m-0">
 <div class="text-muted ml-2 my-1">Others</div> -->
 <ng-container *ngIf="dsType=='ds'">
-    <div class="menu-list-item d-flex align-items-center " (click)="loadServiceOverview()" *ngIf="records.length > 0">
-        <span class="text-secondary ml-4">All Records - DS</span>
+    <div class="menu-list-item d-flex align-items-center text-secondary" *ngIf="records.length > 0"
+        routerLinkActive="text-dark fw-600" [routerLink]="['/', app, 'services', 'overview']"
+        (click)="activeId=null;appService.serviceId=null">
+        <span class="ml-4">All Records - DS</span>
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"
         (click)="loadDataService(item,true)" [attr.data-id]="item._id"
         *ngFor="let item of records | serviceSearch:searchText"
-        [ngClass]="{' text-dark hover':item._id === activeId,'text-secondary':item._id !== activeId}">
+        [ngClass]="{'text-dark hover':item._id === activeId,'text-secondary':item._id !== activeId}">
         <div class="d-flex align-items-center">
             <!-- <div class="list-item-icon d-flex align-items-center">
             <span class="odp-record"></span>

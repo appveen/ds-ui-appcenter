@@ -143,10 +143,6 @@ export class ServiceListComponent implements OnInit {
     }
   }
 
-  loadServiceOverview() {
-    this.router.navigate(['/', this.commonService.app._id, 'services', 'overview']);
-  }
-
   addToStaredList(serviceId) {
     const data = {
       userId: this.commonService.userDetails._id,
@@ -223,8 +219,9 @@ export class ServiceListComponent implements OnInit {
       return exists
     }
   }
-}
-function input() {
-  throw new Error('Function not implemented.');
+
+  get app() {
+    return this.commonService.app._id;
+  }
 }
 

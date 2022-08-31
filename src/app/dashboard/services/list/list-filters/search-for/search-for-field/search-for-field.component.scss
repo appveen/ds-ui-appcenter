@@ -13,9 +13,9 @@
 }
 
 .col-filter {
-  min-width: 528px;
-  min-height: 33px;
-  max-height: 33px;
+  min-width: 500px;
+  min-height: 32px;
+  max-height: 32px;
   border: 1px solid $border;
   border-radius: 6px;
   overflow: hidden;
@@ -52,13 +52,7 @@
     padding-left: 10px;
     width: 130px;
     height: 35px;
-    color: $capiot-blue;
     border: none;
-    font-weight: bold;
-    background-color: $gray-light-1;
-    option {
-      font-weight: bold;
-    }
   }
 }
 

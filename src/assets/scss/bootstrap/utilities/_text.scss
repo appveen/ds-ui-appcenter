@@ -49,13 +49,6 @@
   @include fill-emphasis-variant(".fill-#{$color}", $value);
 }
 
-.text-body { color: $body-color !important; }
-.text-muted { color: $text-muted !important; }
-.text-gray-medium { color: $gray-medium !important;}
-
-.text-black-50 { color: rgba($black, .5) !important; }
-.text-white-50 { color: rgba($white, .5) !important; }
-
 // Misc
 
 .text-hide {

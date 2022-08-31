@@ -8,11 +8,12 @@
       <odp-search-for-field [columns]="allColumns" [filterModel]="filterModel[i]"
         (filterModelChange)="onFilterModelChange($event,i)">
       </odp-search-for-field>
-      <div class="fas fa-times text-danger hover mr-3" (click)="removeRow(i)"></div>
-      <div class="fas fa-plus text-primary new-row" (click)="addColForSearch()"></div>
+      <div class="dsi dsi-minus-circle text-danger hover mr-3" (click)="removeRow(i)"></div>
+      <div class="dsi dsi-plus-circle text-primary new-row" (click)="addColForSearch()"></div>
     </div>
-    <button class="pl-0 text-primary font-sm btn btn-link" (click)="addColForSearch()">
-      <strong><span class="fas fa-lg fa-plus-circle mr-2"></span> Select Field</strong>
+    <button type="button" class="pl-0 text-primary font-sm btn btn-link d-flex align-items-center" (click)="addColForSearch()">
+      <span class="dsi dsi-plus-circle mr-2"></span>
+      <span>Select Field</span>
     </button>
   </div>
 </div>

@@ -1,32 +1,34 @@
 <div class="d-flex flex-column w-100 bg-light p-3">
   <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
-  <div class="d-flex align-items-center justify-content-between header">
+  <div class="d-flex align-items-center justify-content-between header mb-3">
     <div class="title d-flex align-items-center w-50" *ngIf="schema">
       <!-- <span class="odp-record mr-2 text-primary ml-2"></span> -->
       <span class="text m-0 fw-600 font-24">{{schema?.name}}</span>
     </div>
-    <div class="actions w-50 d-flex justify-content-end ignore-outside mb-3" *ngIf="schema">
-      <!--<button id="columnsBtn" class="btn btn-link ignore-outside" *ngIf="totalRecords > 0" (click)="showColumnOptions=true;">
+    <div class="actions w-50 d-flex justify-content-end ignore-outside" *ngIf="schema">
+      <!--<button id="columnsBtn" class="btn btn-link d-flex align-items-center ignore-outside" *ngIf="totalRecords > 0" (click)="showColumnOptions=true;">
           <span class="fa fa-cog mr-2 ignore-outside"></span>
           <span class="text ignore-outside">Columns</span>
         </button>-->
-      <!--<button id="uploadDataBtn" type="button" class="btn btn-link mr-3" *ngIf="hasPermission('POST') || hasPermission('PUT')"
+      <!--<button id="uploadDataBtn" type="button" class="btn btn-link d-flex align-items-center mr-3" *ngIf="hasPermission('POST') || hasPermission('PUT')"
           [routerLink]="['/src/services/',schema._id,'filemapper']">
           <span class="fa fa-upload mr-2"></span>
           <span class="text">Upload</span>
         </button>-->
       <div class="d-flex align-items-center justify-content-between">
-        <div class="mr-4 hover" *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
-          <span class="dsi text-dark dsi-upload font-14"></span>
+        <button type="button" class="btn btn-link d-flex align-items-center text-dark"
+          *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
+          <span class="dsi dsi-download font-14 mr-2"></span>
           <span> Export All </span>
-        </div>
-        <button type="button" class="btn btn-outline-primary btn-min-width mr-4"
+        </button>
+        <button type="button" class="btn btn-link d-flex align-items-center text-dark"
           *ngIf="(hasPermission('POST') || hasPermission('PUT'))"
           [routerLink]="['/',selectedAppId,'services',schema._id,'filemapper']">
+          <span class="dsi dsi-upload font-14 mr-2"></span>
           <span> Upload </span>
         </button>
         <button id="addDataBtn" type="button"
-          class="btn btn-primary btn-min-width d-flex align-items-center text-white fw-600 font-14"
+          class="btn btn-primary btn-min-width d-flex align-items-center text-white fw-600 font-14 ml-3"
           *ngIf="hasPermission('POST')" [routerLink]="['/',selectedAppId,'services',schema._id,'manage']">
           <span class="dsi dsi-plus mr-2"></span>
           <span>Add Data</span>
@@ -34,8 +36,7 @@
       </div>
     </div>
   </div>
-  <div class='bg-white border border-6' [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
-
+  <div class="bg-white border border-6" [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
     <div class="mt-1">
       <div class="input-group border-bottom">
         <div class="input-group-prepend p-3" *ngIf="!isCollapsed || !selectedSearch">
@@ -47,8 +48,8 @@
         </div>
         <div class="input-group-prepend p-3" *ngIf="isCollapsed && selectedSearch">
           <span class="fw-700 font-14 text-dark mr-3">{{selectedSearch?.name}}</span>
-          <i class="fas fa-chevron-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
-          <i class="fas fa-chevron-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+          <i class="dsi dsi-drop-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+          <i class="dsi dsi-drop-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
         </div>
 
         <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch">
@@ -60,8 +61,8 @@
             Run
           </button>
           <span class="mr-2 my-auto">More options</span>
-          <i class="fas fa-chevron-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
-          <i class="fas fa-chevron-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
+          <i class="dsi dsi-drop-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
+          <i class="dsi dsi-drop-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
         </div>
         <div class="my-auto ml-auto" *ngIf="selectedSearch && isCollapsed ">
           <div class="mr-3 hover" (click)='collapse.toggle()'>
@@ -267,70 +268,69 @@
 
     </div> -->
   </div>
-  <div [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0 &&  !isSchemaFree">
-    <div class="d-flex">
+  <div *ngIf="totalRecords>0 &&  !isSchemaFree">
+    <div class="d-flex align-items-center justify-content-between">
       <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
         (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
       </odp-list-filters>
-      <div class="p-3 ml-auto mb-auto d-flex align-items-center hover position-relative ignore-outside"
-        *ngIf="!isSchemaFree">
-        <div class="d-flex p-2 border border-dark bg-white align-items-center ignore-outside"
-          style="height:40px; border-radius: 8px;" [ngClass]="{'disabled': apiCallsPending}"
-          (click)="showSaveViewDropDown=!showSaveViewDropDown">
-          <div class="ignore-outside">
-            <span class="fa fa-search text-gray-medium mr-1 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
-            <span class="fa fa-search text-primary mr-1 ignore-outside" *ngIf="selectedSavedView?.name"></span>
-            <span class="ignore-outside mr-2"
-              [ngClass]="{'text-primary font-weight-bold': selectedSavedView?.name, 'text-gray-medium': !selectedSavedView?.name}">{{
+      <div class="d-flex align-items-center hover position-relative ignore-outside" *ngIf="!isSchemaFree">
+        <div class="d-flex p-2 border bg-white align-items-center ignore-outside rounded font-13" style="height:40px;"
+          [ngClass]="{'disabled': apiCallsPending}" (click)="showSaveViewDropDown=!showSaveViewDropDown">
+          <div class="ignore-outside d-flex align-items-center">
+            <span class="dsi dsi-search text-secondary mr-2 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
+            <span class="dsi dsi-search text-primary mr-2 ignore-outside" *ngIf="selectedSavedView?.name"></span>
+            <span class="ignore-outside mr-3 "
+              [ngClass]="{'text-primary': selectedSavedView?.name, 'text-secondary': !selectedSavedView?.name}">{{
               selectedSavedView?.name ? selectedSavedView?.name : 'All Saved Filters' }}</span>
           </div>
           <div class="ml-auto ignore-outside">
-            <span class="fas fa-angle-down text-primary ignore-outside"></span>
+            <span class="dsi dsi-drop-down text-secondary ignore-outside"></span>
           </div>
         </div>
-        <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside border border-6"
-          style="top:58px; right: 20px; z-index:1" *ngIf="showSaveViewDropDown" odpClickOutside
-          (outside)="showSaveViewDropDown = false">
+        <div class="position-absolute filter-list bg-white d-flex flex-column ignore-outside border rounded"
+          *ngIf="showSaveViewDropDown" odpClickOutside (outside)="showSaveViewDropDown = false">
           <div class="py-2 px-3 w-100 text-secondary filter-list-type d-flex align-items-center ignore-outside"
             [ngClass]="{'border-bottom': !showSearchSavedView}">
             <span class="mr-2 pr-2 border-right ignore-outside hover" *ngIf="!showSearchSavedView"
               (click)="showPrivateViews=false;filterSavedViews()" [ngClass]="{'text-primary': !showPrivateViews}">
-              <strong>Everyone</strong>
+              <span class="fw-500">Everyone</span>
             </span>
             <span *ngIf="!showSearchSavedView" class="ignore-outside hover"
               [ngClass]="{'text-primary': showPrivateViews}" (click)="showPrivateViews=true;filterSavedViews()">
-              <strong>Only Me</strong>
+              <span class="fw-500">Only Me</span>
             </span>
             <span class="text-primary fas fa-arrow-left hover ignore-outside" *ngIf="showSearchSavedView"
               (click)="showSearchSavedView = false;savedViewSearchTerm='';filterSavedViews()"></span>
             <div class="ml-auto hover ignore-outside" *ngIf="!showSearchSavedView && savedViews.length > 0"
               (click)="showSearchSavedView = true">
-              <span class="dsi dsi-search text-muted ignore-outside"></span>
+              <span class="dsi dsi-search text-mid-grey ignore-outside"></span>
             </div>
-            <div class="position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
-              <input type="text" class="form-control pl-4 py-2 pr-2 ignore-outside" [(ngModel)]="savedViewSearchTerm"
+            <div class="filter-search position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
+              <input type="text" class="form-control ignore-outside" [(ngModel)]="savedViewSearchTerm"
                 placeholder="Search save view" (keyup.enter)="filterSavedViews()" odpAutoFocus>
-              <span class="dsi dsi-search text-muted position-absolute srch-icon-pos ignore-outside"></span>
+              <span class="dsi dsi-search text-mid-grey position-absolute srch-icon-pos ignore-outside"></span>
             </div>
           </div>
           <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
             <div *ngFor="let filter of savedViews"
-              class="filter-name p-3 d-flex align-items-center position-relative ignore-outside"
+              class="filter-name px-3 py-2 d-flex align-items-center justify-content-between position-relative ignore-outside"
               (mouseenter)="filter.hasOptions && filter.showOptions = true"
               (mouseleave)="filter.hasOptions && filter.showOptions = false">
-              <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
-              <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
-              <span class="hover text-truncate filterNameWidth"
-                (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
-                [odpTruncated]="filter.name">{{ filter.name }}</span>
-              <span *ngIf="!filter.showOptions" class="text-secondary ml-auto position-absolute un-pos">
+              <div class="d-flex align-items-center">
+                <!-- <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted mr-3"></span>
+                <span *ngIf="!filter.private" class="fas fa-globe text-muted mr-3"></span> -->
+                <span class="hover text-truncate filterNameWidth"
+                  (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
+                  [odpTruncated]="filter.name">{{ filter.name }}</span>
+              </div>
+              <span *ngIf="!filter.showOptions" class="text-secondary">
                 {{ filter.user }}
               </span>
               <span *ngIf="filter.hasOptions && !filter.showOptions"
-                class="fas fa-ellipsis-h text-muted hover position-absolute ellipses-pos"></span>
+                class="dsi dsi-more-vertical text-muted hover position-absolute ellipses-pos"></span>
               <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
                 [@slideIn]>
-                <span class="odp-edit icon-color mr-3" (click)="editFilter(filter)"></span>
+                <span class="dsi dsi-edit icon-color mr-3" (click)="editFilter(filter)"></span>
                 <span class="dsi dsi-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
                 <div class="left-radius position-relative hover"
                   [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
@@ -362,60 +362,57 @@
       <div *ngIf="selectedSavedView?.name" class="bg-white position-absolute sm-circle"></div>
       <span *ngIf="advanceFilter" class="fas fa-times text-muted position-absolute"></span>
     </div>
-  
     </div> -->
-
   </div>
-
-
 </div>
 <div>
-  <div class="d-flex align-items-center justify-content-between list-options bg-white"
+  <div class="d-flex align-items-center justify-content-between list-options bg-light"
     [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
-    <div class="d-flex align-items-center">
-      <div style="margin-left: 10px;" class="d-flex align-items-cente hover" (click)="selectAllRecords()"
-        *ngIf="!listGrid?.showLoading">
+    <div class="d-flex align-items-center pl-3">
+      <div class="d-flex align-items-cente hover" (click)="selectAllRecords()" *ngIf="!listGrid?.showLoading">
         <odp-round-check [checked]="checkAll" [white]="true" (checkedChange)="selectAllRecords()"></odp-round-check>
-        <strong class="text-primary ml-2">Select all </strong>
+        <span class="text-primary ml-2">Select All</span>
       </div>
-      <button id="clearFiltersBtn" type="button" class="btn btn-link" *ngIf="hasFilters" (click)="clearFilters()">
-        <span class="fa fa-times mr-2"></span>
+      <button id="clearFiltersBtn" type="button" class="btn btn-link d-flex align-items-center" *ngIf="hasFilters"
+        (click)="clearFilters()">
+        <span class="dsi dsi-close mr-2"></span>
         <span class="text">Clear filters</span>
       </button>
-      <button id="clearSortBtn" type="button" class="btn btn-link" *ngIf="hasSort" (click)="clearSort()">
-        <span class="fa fa-times mr-2"></span>
+      <button id="clearSortBtn" type="button" class="btn btn-link d-flex align-items-center" *ngIf="hasSort"
+        (click)="clearSort()">
+        <span class="dsi dsi-close mr-2"></span>
         <span class="text">Clear sort</span>
       </button>
-      <button id="exportBtn" type="button" class="btn btn-link" *ngIf="recordChecked && hasPermission()"
-        (click)="exportData()">
-        <span class="fa fa-download mr-2"></span>
+      <button id="exportBtn" type="button" class="btn btn-link d-flex align-items-center"
+        *ngIf="recordChecked && hasPermission()" (click)="exportData()">
+        <span class="dsi dsi-download mr-2"></span>
         <span class="text">Export ({{recordChecked}})</span>
       </button>
-      <!-- <button id="exportAllBtn" type="button" class="btn btn-link" *ngIf="!recordChecked && hasPermission()"
+      <!-- <button id="exportAllBtn" type="button" class="btn btn-link d-flex align-items-center" *ngIf="!recordChecked && hasPermission()"
         (click)="exportData()">
-        <span class="fa fa-download mr-2"></span>
+        <span class="dsi dsi-download mr-2"></span>
         <span class="text">Export All</span>
       </button> -->
-      <button id="deleteRecordBtn" type="button" class="btn btn-link"
+      <button id="deleteRecordBtn" type="button" class="btn btn-link d-flex align-items-center"
         *ngIf="recordCheckedForDelete && hasPermission('DELETE')" (click)="workflowAlert()">
-        <span class="odp-trash mr-2"></span>
+        <span class="dsi dsi-trash mr-2"></span>
         <span class="text">Delete ({{recordCheckedForDelete}})</span>
       </button>
-      <button id="_viewBtn" type="button" class="btn btn-link" *ngIf="recordChecked && recordChecked==1"
-        (click)="view()">
-        <span class="fa fa-eye mr-2"></span>
+      <button id="_viewBtn" type="button" class="btn btn-link d-flex align-items-center"
+        *ngIf="recordChecked && recordChecked==1" (click)="view()">
+        <span class="dsi dsi-view mr-2"></span>
         <span class="text">View</span>
       </button>
-      <button type="button" class="btn btn-link"
+      <button type="button" class="btn btn-link d-flex align-items-center"
         *ngIf="recordChecked && recordChecked==1 && hasPermission('PUT') && canEdit"
         (click)="editFilter(selectedSearch)" id="editButton">
-        <span class="odp-edit mr-2"></span>
+        <span class="dsi dsi-edit mr-2"></span>
         <span class="text">Edit</span>
       </button>
-      <button type="button" class="btn btn-link"
+      <button type="button" class="btn btn-link d-flex align-items-center"
         *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit && !isSchemaFree" (click)="bulkEdit()"
         id="bulkEditButton">
-        <span class="odp-edit mr-2"></span>
+        <span class="dsi dsi-edit mr-2"></span>
         <span class="text">Bulk Edit ({{recordChecked}})</span>
       </button>
     </div>
@@ -425,11 +422,9 @@
         <span class="fas fa-redo fa-flip-horizontal"></span>
         <span class="pl-2">Reset Filter</span>
       </div> -->
-      <div class="text-gray-medium mr-3" *ngIf="loadedRecordsCount">
+      <div class="text-secondary mr-3" *ngIf="loadedRecordsCount">
         <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
       </div>
-
-
     </div>
   </div>
   <div class="no-record text-center mx-2 mt-2 bg-white rounded" *ngIf="!apiCallsPending && totalRecords==0">
@@ -442,54 +437,53 @@
 
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
     [ngClass]="{'has-records':totalRecords>0}">
-    <div class="data-container p-0 w-100" #dataContainer [ngClass]="{'border-top': advanceFilter}"
-      *ngIf="totalRecords>0" odpClickOutside (outside)="showContextMenu = false" (click)="closeContextMenu();"
-      (contextmenu)="false">
+    <div class="data-container p-0 w-100" #dataContainer *ngIf="totalRecords>0" odpClickOutside
+      (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
       <odp-list-ag-grid #listGrid *ngIf="definition && definition.length >0" [schema]="schema" [columns]="definition"
         [selectAll]="selectAll" [applySavedView]="applySavedView" (removedSavedView)="removedSavedView($event)"
         (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)"
         (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
         (rightClick)="onRightClick($event)" (scroll)="showContextMenu = false"></odp-list-ag-grid>
-      <div class="  d-flex flex-column  position-absolute  context-menu" *ngIf="showContextMenu"
+      <div class="d-flex flex-column  position-absolute  context-menu" *ngIf="showContextMenu"
         [ngStyle]="getPosition()">
         <!-- [ngStyle]="getPosition()" (contextmenu)="false"> -->
-
         <ng-container *ngIf="recordChecked<2">
-
-          <button class="btn btn-link d-flex w-100" (click)="exportData(selectedRow.data._id)">
-            <span class="fa fa-download mr-2 mt-1"></span> <span>Export</span>
+          <button class="btn btn-link d-flex align-items-center d-flex w-100"
+            (click)="exportData(selectedRow.data._id)">
+            <span class="dsi dsi-download mr-2"></span> <span>Export</span>
           </button>
-          <button class="btn btn-link d-flex w-100" (click)="view(selectedRow.data._id)">
-            <span class="fa fa-eye mr-2 mt-1"></span> <span>View</span>
+          <button class="btn btn-link d-flex align-items-center d-flex w-100" (click)="view(selectedRow.data._id)">
+            <span class="dsi dsi-view mr-2"></span> <span>View</span>
           </button>
-          <button class="btn btn-link d-flex w-100" *ngIf="hasPermission('PUT') && canEdit"
+          <button class="btn btn-link d-flex align-items-center d-flex w-100" *ngIf="hasPermission('PUT') && canEdit"
             (click)="edit(selectedRow.data._id)">
-            <span class="odp-edit mr-2 mt-1"></span><span>Edit</span>
+            <span class="dsi dsi-edit mr-2"></span><span>Edit</span>
           </button>
-          <button class="btn btn-link d-flex w-100" *ngIf="hasPermission('POST')"
+          <button class="btn btn-link d-flex align-items-center d-flex w-100" *ngIf="hasPermission('POST')"
             (click)="cloneRecord(selectedRow.data._id)">
-            <span class="fa fa-copy mr-2 mt-1"></span><span>Clone</span></button>
-          <button class="btn btn-link d-flex   w-100" *ngIf="hasPermission('DELETE')"
+            <span class="dsi dsi-copy mr-2"></span><span>Clone</span></button>
+          <button class="btn btn-link d-flex align-items-center d-flex   w-100" *ngIf="hasPermission('DELETE')"
             (click)="workflowAlert(selectedRow.data._id)">
-            <span class="odp-trash mt-1 mr-2"></span> <span>Delete</span></button>
+            <span class="dsi dsi-trash mr-2"></span>
+            <span>Delete</span>
+          </button>
         </ng-container>
         <ng-container *ngIf="recordChecked >1">
-          <button id="exportBtn" type="button" class="btn btn-link d-flex w-100"
+          <button id="exportBtn" type="button" class="btn btn-link d-flex align-items-center d-flex w-100"
             *ngIf="recordChecked && hasPermission()" (click)="exportData()">
-            <span class="fa fa-download mr-2 mt-1"></span>
+            <span class="dsi dsi-download mr-2"></span>
             <span class="text">Export ({{recordChecked}})</span>
           </button>
-          <button type="button" class="btn btn-link d-flex w-100"
+          <button type="button" class="btn btn-link d-flex align-items-center d-flex w-100"
             *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit" (click)="bulkEdit()" id="bulkEditButton">
-            <span class="odp-edit mr-2 mt-1"></span>
+            <span class="dsi dsi-edit mr-2"></span>
             <span class="text">Bulk Edit ({{recordChecked}})</span>
           </button>
-          <button id="deleteRecordBtn" type="button" class="btn btn-link d-flex w-100"
+          <button id="deleteRecordBtn" type="button" class="btn btn-link d-flex align-items-center d-flex w-100"
             *ngIf="recordCheckedForDelete && hasPermission('DELETE')" (click)="workflowAlert()">
-            <span class="odp-trash mr-2 mt-1"></span>
+            <span class="dsi dsi-trash mr-2"></span>
             <span class="text">Delete ({{recordCheckedForDelete}})</span>
           </button>
-
         </ng-container>
       </div>
     </div>
@@ -534,22 +528,22 @@
     <div class="d-flex flex-column bg-light font-weight-bold">
       <div class="d-flex align-items-start px-3 pt-3">
         <span *ngIf="workflowModalOptions.operation == 'POST'" class="text-primary d-flex align-items-center mr-2">
-          <span class="odp-plus-circle mr-1"></span>
+          <span class="odp-plus-circle mr-2"></span>
           <span>Create:</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="text-warning d-flex align-items-center mr-2">
-          <span class="odp-edit fa-lg mr-1"></span>
+          <span class="dsi dsi-edit mr-2"></span>
           <span>Edit:</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'DELETE'" class="text-danger d-flex align-items-center mr-2">
-          <span class="odp-trash mr-1"></span>
+          <span class="dsi dsi-trash mr-2"></span>
           <span>Delete:</span>
         </span>
         <span class="text-dark word-break">{{workflowModalOptions._id}}</span>
       </div>
       <div class="d-flex align-items-center justify-content-between p-3">
         <span class="d-flex align-items-center">
-          <span class="text-secondary mr-1">Submitted by</span>
+          <span class="text-secondary mr-2">Submitted by</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length <= 52">{{workflowModalOptions?.requestedBy}}</span>
           <span *ngIf="workflowModalOptions?.requestedBy?.length > 52" class="text-truncate requestedBy high-zIndex"
             [ngbTooltip]="workflowModalOptions?.requestedBy"
@@ -567,7 +561,7 @@
         <div class="d-flex flex-column align-items-start pl-3 w-100">
           <input #workflowFileUploadInput class="d-none" type="file" name="workflowFileUpload" id="workflowFileUpload"
             (change)="uploadWorkflowFile($event)">
-          <button class="btn btn-link p-0" (click)="workflowFileUploadInput.click()">
+          <button class="btn btn-link d-flex align-items-center p-0" (click)="workflowFileUploadInput.click()">
             <span class="fa fa-paperclip mr-1"></span>
             <span class="text">Add</span>
           </button>
@@ -650,7 +644,6 @@
       <span class="font-14 text-dark">Private</span>
     </label>
     <div class="border border-6 mt-4" style="background-color: #F5F5F8">
-
       <div class='d-flex border-bottom p-3'>
         <div class='text-secondary font-14 fw-500 mr-3'>
           Filter:
@@ -716,8 +709,8 @@
   *ngIf="secureFileId">
   <div class="d-flex align-items-center justify-content-between">
     <h3>Download File</h3>
-    <button type="button" class="btn btn-link p-0" (click)="closeSecureFileDownload()">
-      <span class="fa fa-times fa-lg"></span>
+    <button type="button" class="btn btn-link d-flex align-items-center p-0" (click)="closeSecureFileDownload()">
+      <span class="dsi dsi-close"></span>
     </button>
   </div>
   <hr>

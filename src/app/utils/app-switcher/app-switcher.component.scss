@@ -1,71 +1,41 @@
 @import "src/assets/scss/bootstrap/_functions.scss";
 @import "src/assets/scss/bootstrap/_variables.scss";
 
-.overlay {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  background: rgba($color: #000000, $alpha: 0.6);
-  opacity: 0;
-}
+
 .app-switcher-window {
-  min-width: 382px;
-  max-width: 382px;
-  min-height: 465px;
-  max-height: 465px;
+  min-width: 260px;
+  max-width: 260px;
+  min-height: 320px;
+  max-height: 460px;
   position: fixed;
-  z-index: 1070;
-  top: 36px;
-  right: 224px;
+  z-index: 2;
+  top: 50px;
+  right: 80px;
   background: $white;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
   box-sizing: border-box;
-  box-shadow: 4px 4px 10px rgba($color: #000, $alpha: 0.4);
-  .active-app {
-    top: -32px;
-    right: -58px;
-    width: 218px;
-    font-size: 13px;
-  }
-  .search-label {
-    min-width: 76px;
-    max-width: 76px;
-  }
-  .search-box {
-    min-width: 220px;
-    max-width: 220px;
-    border-radius: 50px;
-    padding-left: 35px;
-  }
-  .d-flex.flex-wrap {
-    overflow-y: auto;
-  }
+  box-shadow: 0px 1px 4px rgba($color: #000, $alpha: 0.4);
+
   .app-card {
-    &.active {
-      .app-thumbnail {
-        border-color: rgba($primary, 0.5);
-      }
-    }
+    // &.active {
+    //   .app-thumbnail {
+    //     border-color: rgba($primary, 0.5);
+    //   }
+    // }
+
     &:hover {
-      .app-thumbnail {
-        box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.2);
-      }
+      background: $light;
     }
+
     .app-thumbnail {
-      min-width: 48px;
-      max-width: 48px;
-      min-height: 48px;
-      max-height: 48px;
-      border-radius: 8px;
+      min-width: 32px;
+      max-width: 32px;
+      min-height: 32px;
+      max-height: 32px;
+      border-radius: 6px;
       overflow: hidden;
       transition: 0.25s;
-      border: 3px solid transparent;
       outline: 0;
+
       img {
         min-width: 50px;
         max-width: 50px;
@@ -73,48 +43,15 @@
         max-height: 50px;
       }
     }
+
     .app-name {
-        max-width: 50px;
-        word-break: break-all;
+      max-width: 150px;
+      word-break: break-all;
     }
   }
-  &::before {
-    content: '';
-    display: inline-block;
-    height: 32px;
-    width: 230px;
-    background-color: $white;
-    position: absolute;
-    top: -32px;
-    right: 0;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-  }
-}
-
-::-webkit-input-placeholder {
-  text-align: center;
-  color: $gray-500;
-}
-
-:-moz-placeholder { /* Firefox 18- */
-  text-align: center;
-  color: $gray-500;
-}
-
-::-moz-placeholder {  /* Firefox 19+ */
-  text-align: center;
-  color: $gray-500;
-}
-
-:-ms-input-placeholder {
-  text-align: center;
-  color: $gray-500;
 }
 
 .srch-pos {
-  left: 38%;
+  right: 16px;
   pointer-events: none;
 }
-
-

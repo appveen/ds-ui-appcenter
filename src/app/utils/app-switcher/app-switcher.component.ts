@@ -7,68 +7,7 @@ import { FilterAppPipe } from 'src/app/pipes/filter-app.pipe';
 @Component({
     selector: 'odp-app-switcher',
     templateUrl: './app-switcher.component.html',
-    styleUrls: ['./app-switcher.component.scss'],
-    animations: [
-        trigger('slideIn', [
-        state('hidden', style({
-          transform: 'translateY(-20vh)',
-          opacity: '0'
-        })),
-        state('visible', style({
-          transform: 'translateY(0)',
-          opacity: '1'
-        })),
-        transition('hidden => visible', [
-          animate('400ms ease-in', keyframes([
-            style({
-              opacity: 0,
-              transform: 'translateY(-10vh)'
-            }),
-            style({
-              opacity: 1,
-              transform: 'translateY(0)'
-            })
-          ]))
-        ]),
-        transition('visible => hidden', [
-          animate('500ms ease-out', keyframes([
-            style({
-              opacity: .7,
-              transform: 'translateY(-10vh)'
-            }),
-            style({
-              opacity: .5,
-              transform: 'translateY(-20vh)'
-            }),
-            style({
-              opacity: 0
-            })
-          ]))
-        ])
-      ]),
-        trigger('toggleOverlay', [
-            state('visible', style({ opacity: '1' })),
-            state('hidden', style({ opacity: '0' })),
-            transition('*=>visible', [
-                style({ opacity: '0' }),
-                animate('200ms ease-in', style({ opacity: '1' }))
-            ]),
-          transition('visible=>hidden', [
-            style({opacity: '1'}),
-            animate('100ms ease-out', keyframes([
-              style({
-                opacity: .7
-              }),
-              style({
-                opacity: .5
-              }),
-              style({
-                opacity: 0
-              })
-            ]))
-          ])
-        ])
-    ]
+    styleUrls: ['./app-switcher.component.scss']
 })
 export class AppSwitcherComponent implements OnInit, AfterViewInit {
 

@@ -1,5 +1,5 @@
 <input type="checkbox" class="d-none" [ngModel]="checked" (ngModelChange)="onChange(null, $event)">
-<div class="round-check d-flex align-items-center justify-content-center border" [ngClass]="{'bg-primary border-primary':checked,'bg-light':!checked && !white && !disabled,'bg-white':(!checked && white) || 
+<div class="round-check d-flex align-items-center justify-content-center border border-grey" [ngClass]="{'bg-primary border-primary':checked,'bg-light':!checked && !white && !disabled,'bg-white':(!checked && white) || 
   disabled,'hover':!disabled}" (click)="onChange($event, !checked)">
   <span *ngIf="checked" class="fa fa-check text-white"></span>
   <!-- <span *ngIf="disabled" class="fa fa-times text-muted"></span> -->

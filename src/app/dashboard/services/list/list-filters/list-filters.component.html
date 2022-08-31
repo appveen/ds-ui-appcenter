@@ -141,8 +141,8 @@
 </div> -->
 
 <div class="advanced-filter-section">
-  <div class="d-flex align-items-center pt-2">
-    <button class="btn btn-outline-secondary font-12 mr-3" (click)="showFilter()">
+  <div class="d-flex align-items-center">
+    <button class="btn btn-white border d-flex align-items-center font-12 mr-3" (click)="showFilter()">
       <span class="dsi dsi-filter-alt"></span>
     </button>
     <!-- <div class="col-2 p-0 position-relative mr-2">
@@ -153,20 +153,22 @@
       <span class="fas fa-lg fa-plus-circle text-primary position-absolute" id="addColumn"></span>
     </div> -->
     <div ngbDropdown class="d-inline-block">
-      <button type="button" class="btn btn-outline-secondary font-12" id="dropdownBasic1" ngbDropdownToggle>View
-        Columns</button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button class="font-12 text-secondary" *ngFor="let col of allColumns" ngbDropdownItem (click)="selectItem(col)">
-          {{ col.properties.label ? col.properties.label : col.properties.name }}
-        </button>
-
+      <button type="button" class="btn btn-white border d-flex align-items-center font-12" ngbDropdownToggle>
+        View Columns
+      </button>
+      <div ngbDropdownMenu>
+        <ng-container *ngFor="let col of allColumns">
+          <button *ngIf="col && col.properties && col.properties.name" class="font-12 text-dark" ngbDropdownItem (click)="selectItem(col)">
+            {{ col.properties.label ? col.properties.label : col.properties.name }}
+          </button>
+        </ng-container>
       </div>
     </div>
     <div class="helper-text text-muted ml-3" *ngIf="selectedColOrder?.length > 1">
       Click and drag the column names to re-arrange the order.
     </div>
   </div>
-  <div class="d-flex my-3 align-items-start ">
+  <div class="d-flex align-items-start">
     <div class="text-gray-medium label-text"></div>
     <div class="d-flex drag-boundary flex-wrap" [sortablejs]="selectedColOrder">
       <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex ">
@@ -202,21 +204,24 @@
   </div>
 </ng-template>
 <ng-template #filtereModal>
-  <div class="modal-header alert">
-    <h4 class="modal-title text-dark fw-600 font-20">Filter All Records</h4>
-    <button id="deleteModalCloseBtn" type="button" class="close" aria-label="Close"
-      (click)="filtereModalRef.close(false)">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <odp-search-for [allColumns]="allColumns" [filterModel]="filterModel" (filterModelChange)="createFilter($event)"
-      class="mb-3 pt-3 px-3"></odp-search-for>
-  </div>
-  <div class="modal-footer">
-    <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary px-4 btn-min-width"
-      (click)="filtereModalRef.close(false)">Cancel</button>
-    <button id="addFilterApplyBtn" type="button" class="btn btn-primary px-4 btn-min-width"
-      (click)="filtereModalRef.close(true)">Apply</button>
+  <div class="modal-body p-4">
+    <div class="d-flex align-items-center justify-content-between">
+      <h4 class="modal-title text-dark fw-600 font-20">Filter All Records</h4>
+      <button id="deleteModalCloseBtn" type="button" class="close" (click)="filtereModalRef.close(false)">
+        <!-- <span aria-hidden="true">&times;</span> -->
+        <span class="dsi dsi-close"></span>
+      </button>
+    </div>
+    <div class="filter-body">
+      <odp-search-for [allColumns]="allColumns" [filterModel]="filterModel" (filterModelChange)="createFilter($event)"
+        class="my-3">
+      </odp-search-for>
+    </div>
+    <div class="d-flex align-items-center justify-content-end">
+      <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary mr-3 btn-min-width"
+        (click)="filtereModalRef.close(false)">Cancel</button>
+      <button id="addFilterApplyBtn" type="button" class="btn btn-primary btn-min-width"
+        (click)="filtereModalRef.close(true)">Apply</button>
+    </div>
   </div>
 </ng-template>

@@ -11,7 +11,6 @@ import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { HttpEventType } from '@angular/common/http';
 import { CanComponentDeactivate } from 'src/app/guard/route.guard';
 import { DashboardService } from '../../dashboard.service';
-import { SelectorFlags } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'odp-manage',

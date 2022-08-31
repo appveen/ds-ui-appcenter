@@ -1,36 +1,34 @@
-<div [@toggleOverlay]="state" class="overlay" (click)="onCancel()"></div>
-<div class="app-switcher-window d-flex flex-column justify-content-start align-items-center">
-  <div class="d-flex align-items-center p-3 position-relative hover" (click)="onCancel()">
-    <div class="active-app d-flex align-items-center position-absolute text-truncate">
-      <odp-app-icon color="aaa" class="mr-2 pt-1" size="24"></odp-app-icon>
-      <span class="pl-1 text-truncate" [ngbTooltip]="activeApp._id" >{{ activeApp._id }}</span>
-      <span class="text-primary ml-auto pt-1 fas fa-angle-down"></span>
-    </div>
-    <input type="text" class="form-control search-box" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
-    <span class="fas fa-search position-absolute text-muted srch-pos" [ngClass]="{'d-none': searchBox.value}"></span>
+<!-- <div [@toggleOverlay]="state" class="overlay" (click)="onCancel()"></div> -->
+<div class="app-switcher-window d-flex flex-column rounded p-3" odpClickOutside
+  (outside)="onCancel()">
+  <div class="d-flex align-items-center position-relative hover" (click)="onCancel()">
+    <input type="text" class="form-control search-box" placeholder="Search" (keyup.enter)="onEnter($event)"
+      [(ngModel)]="searchTerm" #searchBox>
+    <span class="dsi dsi-search position-absolute text-muted srch-pos" [ngClass]="{'d-none': searchBox.value}"></span>
   </div>
-  <div class="d-flex flex-wrap justify-content-center">
-    <div class="app-card d-flex flex-column my-3 mx-4" *ngFor="let app of appList|filterApp: searchTerm;let appIndex = index;" 
-      (click)="selectApp(app)">
-      <div class="app-thumbnail d-flex align-items-center justify-content-center bg-light hover" [ngClass]="{'border-primary-light':activeApp._id == app._id}">
+  <div class="d-flex flex-column mt-3">
+    <div class="app-card d-flex align-items-center justify-content-start rounded p-2 hover font-14"
+      *ngFor="let app of appList|filterApp: searchTerm;let appIndex = index;" (click)="selectApp(app)"
+      [ngClass]="{'text-dark fw-600':activeApp._id == app._id,'text-secondary fw-500':activeApp._id != app._id}">
+      <div class="app-thumbnail d-flex align-items-center justify-content-center hover mr-2"
+        [ngStyle]="{ 'background-color': app.bg }">
         <img *ngIf="app.logo && app.logo.thumbnail" [src]="app.logo.thumbnail" alt="Logo">
-        <odp-app-icon *ngIf="!app.logo || !app.logo.thumbnail" color="aaa"></odp-app-icon>
+        <span class="text-dark" *ngIf="!app.logo || !app.logo.thumbnail">{{app.firstLetter}}</span>
       </div>
-      <div class="app-name text-center mt-2 text-truncate" [autoClose]="false" [ngbTooltip]="app._id">{{app._id}}</div>
+      <div class="app-name text-truncate" [autoClose]="false" [ngbTooltip]="app._id">{{app._id}}</div>
     </div>
   </div>
 </div>
 <!-- <div class="app-switcher-window d-flex flex-column justify-content-start align-items-center rounded bg-light" odpClickOutside [ignore]="['.current-app']" (outside)="onCancel()"> -->
-  <!-- <div class="d-flex align-items-center p-3 position-relative hover" (click)="onCancel()">
+<!-- <div class="d-flex align-items-center p-3 position-relative hover" (click)="onCancel()">
       <div class="active-app d-flex align-items-center position-absolute">
-        <odp-app-icon color="aaa" class="mr-2 pt-1" size="24"></odp-app-icon>
         <span class="pl-1">{{ activeApp._id }}</span>
-        <span class="text-primary ml-auto pt-1 fas fa-angle-down"></span>
+        <span class="text-primary ml-auto pt-1 dsi dsi-drop-down"></span>
       </div>
       <input type="text" class="form-control search-box" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
-      <span class="fas fa-search position-absolute text-muted srch-pos" [ngClass]="{'d-none': searchBox.value}"></span>
+      <span class="dsi dsi-search position-absolute text-muted srch-pos" [ngClass]="{'d-none': searchBox.value}"></span>
     </div> -->
-  <!-- <div class="search-box w-100">
+<!-- <div class="search-box w-100">
       <span class="fa fa-search position-absolute text-muted"></span>
       <input type="text" class="border-0" placeholder="Search" (keyup.enter)="onEnter($event)" [(ngModel)]="searchTerm" #searchBox>
   </div>

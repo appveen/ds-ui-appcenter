@@ -4,50 +4,52 @@
         <div class="text-secondary mt-2">Processing...</div>
     </div>
 </div>
-<div class="service-overview-page w-100 " *ngIf="!showLazyLoader">
-    <div class="d-flex align-items-center justify-content-between">
-        <div class="font-22 fw-700">All Records - DS</div>
-        <div>
-            <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();"></odp-search-box>
+<div class="p-2">
+    <div class="service-overview-page w-100 p-4" *ngIf="!showLazyLoader">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="font-22 fw-700">All Records - DS</div>
+            <div>
+                <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();"></odp-search-box>
+            </div>
         </div>
-    </div>
-    <div class="row no-gutters">
-        <div class="col-3" *ngFor="let srvc of services">
-            <div class="bg-white ds-item mr-3 rounded mt-3">
-                <div class="px-3 pt-3" (click)="loadDataService(srvc)">
-                    <div class="ds-name font-11 fw-500">{{srvc.name}}</div>
-                    <div class="last-updated font-11 font-italic">Last Updated {{lastUpdated(srvc)}}</div>
-                    <div class="ds-info mb-3">
-                        <div class="row no-gutters">
-                            <div class="col-6">
-                                <div class="font-11 font-secondary">Attributes</div>
-                                <div class="font-14 fw-700">{{totalAttributes(srvc)}}</div>
-                            </div>
-                            <div class="col-6">
-                                <div class="font-11 font-secondary">Records</div>
-                                <div class="font-14 fw-700">{{ totalRecords(srvc)}}</div>
+        <div class="row no-gutters">
+            <div class="col-3" *ngFor="let srvc of services">
+                <div class="bg-white ds-item mr-3 rounded mt-3">
+                    <div class="px-3 pt-3" (click)="loadDataService(srvc)">
+                        <div class="ds-name font-11 fw-500 text-uppercase text-dark">{{srvc.name}}</div>
+                        <div class="last-updated font-11 fw-400 font-italic text-grey">Last Updated {{lastUpdated(srvc)}}</div>
+                        <div class="ds-info mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-6">
+                                    <div class="font-11 fw-400 text-secondary">Attributes</div>
+                                    <div class="font-14 fw-700 text-dark">{{totalAttributes(srvc)}}</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="font-11 fw-400 text-secondary">Records</div>
+                                    <div class="font-14 fw-700 text-dark">{{ totalRecords(srvc)}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="border-top px-3 pt-1">
-                    <div class="row no-gutters">
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <div class="mb-1 mr-2">
-                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.workflowConfig.enabled ,
-                                    'text-secondary': !srvc.workflowConfig.enabled }"></i>
+                    <div class="border-top px-3 pt-1">
+                        <div class="row no-gutters">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="mb-1 mr-2">
+                                        <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.workflowConfig.enabled ,
+                                        'text-light-grey': !srvc.workflowConfig.enabled }"></i>
+                                    </div>
+                                    <div class="font-12 fw-400 text-secondary">Workflow</div>
                                 </div>
-                                <div class="font-12 text-secondary">Workflow</div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <div class="mb-1 mr-2">
-                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.stateModel.enabled ,
-                                    'text-secondary': !srvc.stateModel.enabled }"></i>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="mb-1 mr-2">
+                                        <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.stateModel.enabled ,
+                                        'text-light-grey': !srvc.stateModel.enabled }"></i>
+                                    </div>
+                                    <div class="font-12 fw-400 text-secondary">State Model</div>
                                 </div>
-                                <div class="font-12 text-secondary">State Model</div>
                             </div>
                         </div>
                     </div>

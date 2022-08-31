@@ -3,7 +3,7 @@
     [datasource]="dataSource" [floatingFilter]="true" cacheBlockSize="30" (rowDoubleClicked)="rowDoubleClicked($event)"
     (rowSelected)="rowSelected($event)" (sortChanged)="sortChanged($event)" (filterModified)="filterModified($event)"
     (columnResized)="columnResized($event)" (columnMoved)="columnMoved()" (cellContextMenu)="cellContextMenu($event)"
-    (bodyScroll)="scrollEvent()" [overlayNoRowsTemplate]="noRowsTemplate">
+    (bodyScroll)="scrollEvent()" [overlayNoRowsTemplate]="noRowsTemplate" rowHeight="32">
 </ag-grid-angular>
 
 <ng-template #clearFilterModal>

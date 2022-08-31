@@ -12,12 +12,17 @@
 $white: #fff !default;
 $gray-100: #F5F5F8 !default;
 // $gray-200: #e9ecef !default;
-$gray-200: #E5E5E5 !default;
+// $gray-200: #E5E5E5 !default;
+// $gray-200: #9B9EA4 !default;
 
-$gray-300: #dee2e6 !default;
-$gray-400: #ced4da !default;
-$gray-500: #adb5bd !default;
+$gray-200: #F5F5F8 !default;
+
+$gray-300: #DFE1E2 !default;
+$gray-400: #B5B8BC !default;
+$gray-500: #9B9EA4 !default;
+
 // $gray-600: #6c757d !default;
+// $gray-600: #6C7584 !default;
 $gray-600: #6C7584 !default;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
@@ -43,9 +48,9 @@ $purple: #6f42c1 !default;
 $pink: #e83e8c !default;
 $red: #F26464 !default;
 $orange: #fd7e14 !default;
-$yellow: #fba200 !default;
+$yellow: #FF9052 !default;
 // $green:   #1c9963 !default;
-$green: #1CAD49 !default;
+$green: #2FC48F !default;
 $teal: #20c997 !default;
 $cyan: #17a2b8 !default;
 
@@ -80,9 +85,8 @@ $danger: $red  !default;
 $light: $gray-200  !default;
 $dark: #181818 !default;
 
-$border: #bdbdbd !default;
+$border: #ECECEC !default;
 $gray-medium: #747E8D;
-$gray-light-1: #efefef;
 $default-color: $capiot-blue  !default;
 
 $theme-colors: (
@@ -96,6 +100,10 @@ $theme-colors: map-merge(("primary": $primary,
       "danger": $danger,
       "light": $light,
       "dark": $dark,
+      "white": $white,
+      "grey": $gray-500,
+      "mid-grey": $gray-400,
+      "light-grey": $gray-300,
       "default-color":$capiot-blue), $theme-colors
 );
 // stylelint-enable
@@ -222,7 +230,7 @@ $line-height-lg: 1.5 !default;
 $line-height-sm: 1.5 !default;
 
 $border-width: 1px !default;
-$border-color: #DFE1E2 !default;
+$border-color: $border  !default;
 
 $border-radius: 6px !default;
 
@@ -431,7 +439,7 @@ $input-bg: $white  !default;
 $input-disabled-bg: $gray-200  !default;
 
 $input-color: $gray-700  !default;
-$input-border-color: $gray-400  !default;
+$input-border-color: $border  !default;
 $input-border-width: $input-btn-border-width  !default;
 $input-box-shadow: inset 0 1px 1px rgba($black, .075) !default;
 

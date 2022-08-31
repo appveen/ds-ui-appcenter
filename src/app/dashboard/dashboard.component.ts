@@ -81,7 +81,6 @@ import { DashboardService } from './dashboard.service';
     ]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-    name: string;
     showSideNav: boolean;
     subscriptions: any;
     version: string;
@@ -121,9 +120,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.ngbToolTipConfig.container = 'body';
         this.commonService.apiCalls.componentLoading = false;
-        if (this.commonService.userDetails.basicDetails && this.commonService.userDetails.basicDetails.name) {
-            this.name = this.commonService.userDetails.basicDetails.name;
-        }
         this.route.params.subscribe(params => {
             if (params.app === '~') {
                 if (!this.commonService.app) {
@@ -605,6 +601,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     get enableB2b() {
         return this.commonService.userDetails.b2BEnable;
+        // return true;
+    }
+
+    get name() {
+        if (this.commonService.userDetails.basicDetails && this.commonService.userDetails.basicDetails.name) {
+            return this.commonService.userDetails.basicDetails.name;
+        }
+    }
+
+    get username() {
+        if (this.commonService.userDetails && this.commonService.userDetails.username) {
+            return this.commonService.userDetails.username;
+        }
         // return true;
     }
 }

@@ -251,6 +251,10 @@ export class CommonService {
       self.subscriptions['getAllApps'] = self.get('user', '/admin/app', options).subscribe(
         res => {
           self.appList = res;
+          self.appList.forEach(app => {
+            app.firstLetter = app._id.charAt(0);
+            app.bg = this.appColor();
+          });
           self.app = self.appList[0];
           resolve(res);
         },
@@ -568,6 +572,8 @@ export class CommonService {
                 self.appList.forEach(app => {
                   const temp = res.find(e => e._id === app._id);
                   if (temp) {
+                    app.firstLetter = app._id.charAt(0);
+                    app.bg = self.appColor();
                     app.logo = temp.logo;
                     app.appCenterStyle = temp.appCenterStyle;
                     app.description = temp.description;
@@ -814,6 +820,10 @@ export class CommonService {
     }
     if (response.apps && response.apps.length > 0) {
       self.appList = response.apps;
+      self.appList.forEach(app => {
+        app.firstLetter = app._id.charAt(0);
+        app.bg = this.appColor();
+      });
       self.app = self.appList[0];
     }
     if (self.userDetails.rbacUserToSingleSession || self.userDetails.rbacUserCloseWindowToLogout) {
@@ -1653,6 +1663,18 @@ export class CommonService {
     }
 
     return this.app._id || this.appList[0]._id || '';
+  }
+
+  appColor() {
+    const colorArray = [
+      '#B2DFDB',
+      '#B2EBF2',
+      '#B3E5FC',
+      '#A5D6A7',
+      '#C5E1A5',
+      '#E6EE9C',
+    ];
+    return _.sample(colorArray);
   }
 }
 

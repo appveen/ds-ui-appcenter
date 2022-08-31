@@ -3,17 +3,21 @@
 
 .search-box {
   width: 300px !important;
+  height: 40px;
+
   input {
     width: 300px !important;
-    background-color: $light;
+    height: 40px;
     text-indent: 10px;
     padding: 0.25rem 0.75rem 0.25rem 0.12rem;
-    border-radius: 20px;
+    border-radius: 6px;
+
     &:active,
     &:focus {
       background-color: $white;
     }
   }
+
   .info,
   .fa-times-circle {
     right: 10px;

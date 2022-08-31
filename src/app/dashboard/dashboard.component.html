@@ -52,23 +52,25 @@
                 <div class="right-side d-flex align-items-center">
                     <div class="notification mr-3 position-relative" odpClickOutside
                         [ignore]="['.clearNotificationBtn']" (outside)="toggleNotification=false">
-                        <div class="notification-icon d-flex align-items-center justify-content-center border rounded hover text-secondary"
+                        <div class="notification-icon d-flex align-items-center justify-content-center hover text-secondary"
                             [class.border-primary]="!!newNotificationsCount"
                             (click)="toggleNotification=!toggleNotification">
-                            <span class="far fa-bell" [class.text-primary]="!!newNotificationsCount"></span>
-                            <div class="notification-count bg-primary text-white" *ngIf="!!newNotificationsCount">
+                            <span class="dsi" [class.dsi-notification]="!newNotificationsCount"
+                                [class.dsi-notification-active]="newNotificationsCount"></span>
+                            <!-- <div class="notification-count bg-primary text-white" *ngIf="!!newNotificationsCount">
                                 {{ unreadNotificationsCount }}
-                            </div>
+                            </div> -->
                         </div>
                         <div *ngIf="toggleNotification"
-                            class="notification-dropdown d-flex flex-column position-absolute border bg-light">
-                            <div class="notification-dropdown-header d-flex align-items-center justify-content-between px-3"
-                                [class.noNotifs]="!hasNotifications">
-                                <div class="noNotif-icon" *ngIf="!hasNotifications">
-                                    <span class="far fa-bell text-primary"></span>
-                                </div>
-                                <div class="font-weight-bold">
-                                    {{ hasNotifications ? 'Notifications' : 'No Notifications' }}
+                            class="notification-dropdown d-flex flex-column position-absolute border bg-white">
+                            <div
+                                class="notification-dropdown-header d-flex align-items-center justify-content-between px-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="dsi mr-2" [class.dsi-notification]="!hasNotifications"
+                                        [class.dsi-notification-active]="hasNotifications"></span>
+                                    <div class="fw-400">
+                                        {{ hasNotifications ? 'Notifications' : 'No Notifications' }}
+                                    </div>
                                 </div>
                                 <button *ngIf="hasNotifications" type="button"
                                     class="btn btn-link btn-sm p-0 text-secondary"
@@ -88,54 +90,70 @@
                             </div>
                         </div>
                     </div>
-                    <div class="current-app d-flex align-items-center hover rounded border mr-3"
+                    <div class="current-app d-flex align-items-center hover rounded border mr-3 ignore-outside px-2"
                         (click)="toggleAppOptions()">
-                        <div class="current-app-thumbnail d-flex align-items-center justify-content-center mr-2"
-                            ngbTooltip="Switch App" placement="bottom">
+                        <div class="current-app-thumbnail rounded d-flex align-items-center justify-content-center mr-2"
+                            [ngStyle]="{background:selectedApp.bg}">
                             <img *ngIf="selectedApp.logo && selectedApp.logo.thumbnail"
                                 [src]="selectedApp.logo.thumbnail" alt="Logo">
-                            <odp-app-icon class="pt-1" *ngIf="!selectedApp.logo || !selectedApp.logo.thumbnail"
-                                color="aaa" size="24"></odp-app-icon>
+                            <span
+                                *ngIf="!selectedApp.logo || !selectedApp.logo.thumbnail">{{selectedApp.firstLetter}}</span>
                         </div>
                         <div class="current-app-name text-dark text-truncate" ngbTooltip="Current App"
                             placement="bottom">
                             {{selectedApp._id}}
                         </div>
-                        <div *ngIf="multipleApps" class="ml-auto mr-2">
-                            <span class="fas fa-angle-down text-primary"></span>
+                        <div *ngIf="multipleApps" class="ml-auto">
+                            <span class="dsi dsi-drop-down text-primary"></span>
                         </div>
                     </div>
-                    <div class="user-details d-flex align-items-center hover rounded border ignore-outside"
-                        (click)="showProfileOptions=!showProfileOptions">
+                    <div class="user-details d-flex align-items-center hover ignore-outside"
+                        (click)="showProfileOptions=!showProfileOptions" [ngbTooltip]="name">
                         <div
                             class="user-icon-holder border rounded-circle d-flex align-items-center justify-content-center mx-2">
-                            <span class="fa fa-user text-muted"></span>
+                            <span class="dsi dsi-user font-13 text-muted"></span>
                         </div>
-                        <div class="user-name text-truncate" [ngbTooltip]="name">{{name}}</div>
-                        <span class="user-options-icon fa fa-cog text-primary ml-2"></span>
+                        <!-- <div class="user-name text-truncate">{{name}}</div> -->
                     </div>
-                    <div *ngIf="showProfileOptions" class="user-details-dropdown position-absolute bg-white rounded"
+                    <div *ngIf="showProfileOptions" class="user-details-dropdown position-absolute bg-white rounded p-4"
                         [ignore]="['.user-details']" odpClickOutside (outside)="showProfileOptions=false">
+                        <div
+                            class="user-details-container position-relative d-flex align-items-center h-100 w-100 pb-4 border-bottom ng-tns-c110-3">
+                            <div
+                                class="user-details-thumbnail d-flex align-items-center justify-content-center rounded-circle bg-light border border-light mr-4 ng-tns-c110-3">
+                                <span class="dsi dsi-user text-grey ng-tns-c110-3"></span>
+                            </div>
+                            <div class="user-details-data d-flex flex-column ng-tns-c110-3">
+                                <div class="user-details-name text-truncate font-20 fw-600 ng-tns-c110-3">
+                                    {{name}}
+                                </div>
+                                <div class="user-details-more text-truncate font-14 fw-400 text-grey ng-tns-c110-3">
+                                    {{username}}
+                                </div>
+                            </div>
+                        </div>
+
                         <div *ngIf="authType && authType === 'local'"
-                            class="user-details-item px-3 d-flex align-items-center"
+                            class="user-details-item font-14 fw-500 py-2 d-flex align-items-center rounded mt-3"
                             (click)="showProfileOptions=false;toggleChangePassword=true;">
-                            <span class="fa fa-shield-alt mr-2"></span>
-                            <span class="text">Change Password</span>
+                            <span class="text-secondary dsi dsi-settings mr-2"></span>
+                            <span class="text-dark">Change Password</span>
                         </div>
-                        <div class="user-details-item px-3 d-flex align-items-center"
+                        <div class="user-details-item font-14 fw-500 py-2 d-flex align-items-center rounded"
                             (click)="showProfileOptions=false;logout()">
-                            <span class="odp-exit-right mr-2 text-danger"></span>
-                            <span class="text">Logout</span>
+                            <span class="text-secondary dsi dsi-logout mr-2"></span>
+                            <span class="text-dark">Logout</span>
                         </div>
-                        <div class="user-details-footer border-top d-flex flex-column">
+                        <div class="user-details-footer border rounded d-flex flex-column mt-3">
                             <div class="powered-by position-relative"></div>
                         </div>
-                        <div class="last-login d-flex flex-column px-2">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <span class="text-muted">Last Login:</span>
-                                <small class="text-primary font-weight-bold">v{{version}}</small>
+                        <div
+                            class="last-login d-flex align-items-center justify-content-between mt-3 font-12 fw-400 text-grey">
+                            <div class="d-flex align-items-center">
+                                <span class="mr-2">Last Login:</span>
+                                <span class="">{{lastLogin | date:'yyyy MMM dd, HH:mm:ss'}}</span>
                             </div>
-                            <span class="text-secondary">{{lastLogin | date:'yyyy MMM dd, HH:mm:ss'}}</span>
+                            <span class="">v{{version}}</span>
                         </div>
                     </div>
                 </div>

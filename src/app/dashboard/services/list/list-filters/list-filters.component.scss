@@ -8,6 +8,7 @@
   -webkit-box-shadow: 0 0 4px rgba($black, .2);
   -moz-box-shadow: 0 0 4px rgba($black, .2);
   box-shadow: 0 0 10px rgba($black, .2);
+
   &::before {
     position: absolute;
     content: '';
@@ -37,6 +38,7 @@
     overflow-y: auto;
     z-index: 10;
     top: 22px;
+
     .filter-name {
       &:hover {
         background-color: $light;
@@ -65,14 +67,17 @@
     color: $dark;
     border: 1px solid $border;
     background-color: $gray-200;
+
     &:hover {
       background-color: $white;
     }
+
     padding: 8px;
   }
 
   .remove-col {
     color: $secondary;
+
     &:hover {
       color: $red;
     }
@@ -82,6 +87,7 @@
     .new-row {
       opacity: 0;
     }
+
     &:hover .new-row {
       opacity: 1;
       cursor: pointer;
@@ -90,8 +96,9 @@
 
   .custom-select {
     min-width: 190px;
+
     option {
-      color: $gray-medium !important;
+      color: $gray-medium  !important;
     }
   }
 
@@ -100,6 +107,7 @@
       left: 85%;
       pointer-events: none;
     }
+
     select {
       -webkit-appearance: button;
       outline: none;
@@ -112,6 +120,7 @@
       border-radius: 4px;
       background-color: $white;
       text-indent: 26px;
+
       option {
         font-weight: bold;
         color: $gray-medium;
@@ -156,6 +165,10 @@
   }
 }
 
-.advanced-filter-section{
+.advanced-filter-section {
   min-height: 40px;
+}
+
+.filter-body {
+  min-height: 300px;
 }

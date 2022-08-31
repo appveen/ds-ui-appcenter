@@ -118,73 +118,18 @@
 }
 
 
-.fw-500 {
-  font-weight: 500;
+@for $i from 7 through 26 {
+  .font-#{$i} {
+    font-size: #{$i}px;
+  }
 }
 
+$weights: 400, 500, 600, 700, 800, 900;
 
-.font-7 {
-  font-size: 7px;
-}
-
-.fw-700 {
-  font-weight: 700;
-}
-
-.fw-600 {
-  font-weight: 600;
-}
-
-.font-22 {
-  font-size: 22px;
-}
-
-.font-14 {
-  font-size: 14px;
-}
-
-.font-11 {
-  font-size: 11px;
-}
-
-.font-18 {
-  font-size: 18px;
-}
-
-.font-13 {
-  font-size: 13px;
-}
-
-.font-xl {
-  font-size: 18px;
-}
-
-.font-lg {
-  font-size: 16px;
-}
-
-.font-normal {
-  font-size: 14px;
-}
-
-.font-sm-12 {
-  font-size: 12px;
-}
-
-.font-xs {
-  font-size: 10px;
-}
-
-.font-bold {
-  font-weight: bold;
-}
-
-.font-20 {
-  font-size: 20px;
-}
-
-.font-24 {
-  font-size: 24px;
+@each $size in $weights {
+  .fw-#{$size} {
+    font-weight: $size;
+  }
 }
 
 
@@ -288,19 +233,18 @@
   font-size: 14px !important;
 
   .ag-root-wrapper {
-    border: 1px solid #ECECEC;
-    border-radius: 8px !important;
+    border: 0px;
   }
 
   .ag-header {
-    background: #F7F7FB;
-    font-size: 13px !important;
-    font-weight: 500px;
-    // height: 80px !important;
-
+    // background: #F7F7FB;
+    background: $gray-200;
 
     .ag-header-cell-text {
       text-transform: uppercase;
+      font-size: 13px !important;
+      font-weight: 400;
+      // color: $gray-500;
       color: $secondary;
     }
 
@@ -314,14 +258,11 @@
   .ag-cell {
     display: flex;
     align-items: center;
+    color: $dark;
   }
 
   .ag-cell.ag-cell-inline-editing {
     height: 48px !important;
-  }
-
-  .ag-center-cols-viewport {
-    overflow-x: hidden;
   }
 
   .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right) {

@@ -1,5 +1,5 @@
 <div class="menu-list border-right">
-    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover"
+    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
         (click)="togglePanel('pinnedDs')">
         <div>
             <span class="fa fa-star font-14 mr-3" [ngClass]="{'pinned': openPanel['pinnedDs']}"></span>
@@ -11,10 +11,10 @@
         </span>
     </div>
 
-    <div *ngIf="openPanel['pinnedDs']" class="bg-v-light">
+    <div class="border-top" *ngIf="openPanel['pinnedDs']">
         <odp-service-list [dsType]="'pinnedDs'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
     </div>
-    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover" (click)="togglePanel('ds')">
+    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover border-top" (click)="togglePanel('ds')">
         <div>
             <span class="dsi dsi-ds text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['ds'],'text-secondary': 
             !openPanel['ds']}"></span>
@@ -24,10 +24,10 @@
         <span class="fa mt-1"
             [ngClass]="{'fa-chevron-up text-secondary': openPanel['ds'],'fa-chevron-down text-muted': !openPanel['ds']}"></span>
     </div>
-    <div *ngIf="openPanel['ds']">
+    <div class="border-top" *ngIf="openPanel['ds']">
         <odp-service-list [dsType]="'ds'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
     </div>
-    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover"
+    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
         (click)="togglePanel('workflow')">
         <div>
             <span class="dsi dsi-wf text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
@@ -38,7 +38,7 @@
         <span class="fa mt-1"
             [ngClass]="{'fa-chevron-up text-secondary': openPanel['workflow'],'fa-chevron-down text-muted': !openPanel['workflow']}"></span>
     </div>
-    <div *ngIf="openPanel['workflow']">
+    <div class="border-top" *ngIf="openPanel['workflow']">
         <odp-workflow-list></odp-workflow-list>
     </div>
 
