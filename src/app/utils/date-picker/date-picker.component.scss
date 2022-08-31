@@ -1,11 +1,12 @@
 @import 'src/assets/scss/bootstrap/_functions.scss';
 @import 'src/assets/scss/bootstrap/_variables.scss';
 
-.picker-overlay{
+.picker-overlay {
     position: relative;
-    width: 320px;
+    width: 230px;
     overflow: hidden;
-    &.floating{
+
+    &.floating {
         z-index: 10;
         position: absolute;
         border-radius: 4px;
@@ -15,77 +16,92 @@
         margin-bottom: 30px;
     }
 }
-.date-grid{
-    height: 211px;   
+
+.date-grid {
+    height: 211px;
 }
-.day{
-    width: 38px;
+
+.day {
+    width: 28px;
 }
-.date{
-    width: 43px;
-    height: 43px;
-    //line-height: 30px;
+
+.date {
+    width: 28px;
+    height: 28px;
     text-align: center;
-    border-radius: 50%;
-    &.disabled{
-        color: rgba(0,0,0,0.2) !important;
+    border-radius: 6px;
+
+    &.disabled {
+        color: rgba(0, 0, 0, 0.2) !important;
     }
-    &:not(.disabled):hover{
+
+    &:not(.disabled):hover {
         cursor: pointer;
         background: rgba(0, 0, 0, 0.16);
     }
 }
-.month{
+
+.month {
     width: 63px;
     height: 63px;
     line-height: 63px;
     text-align: center;
     border-radius: 4px;
     font-size: 16px;
-    &:hover{
+
+    &:hover {
         cursor: pointer;
         background: rgba(0, 0, 0, 0.16);
     }
 }
-.year{
+
+.year {
     width: 84px;
     height: 84px;
     line-height: 84px;
     text-align: center;
     border-radius: 4px;
     font-size: 16px;
-    &:hover{
+
+    &:hover {
         cursor: pointer;
         background: rgba(0, 0, 0, 0.16);
     }
 }
+
 .time {
-  height: 40px;
+    height: 40px;
 }
-.time-select{
+
+.time-select {
     font-size: 13px;
     background: #fff;
     border: 0;
     outline: 0;
 }
-.calender{
-    width: 320px;
-    height: 325px;
+
+.calender {
+    width: 228px;
+    height: 234px;
     overflow: hidden;
-    .page{
+
+    .page {
         //width: 254px;
         //height: 297px;
         transition: 0.25s;
-        &.show{
+
+        &.show {
             right: 0;
             transition: 0.25s;
         }
-      .month-dates {
-        text-transform: uppercase;
-        color: $gray-medium;
-      }
-      .options {
-        height: 40px;
-      }
+
+        .month-dates {
+            text-transform: uppercase;
+            color: $gray-medium;
+        }
+
+        .options {
+            height: 28px;
+        }
     }
 }

@@ -2,7 +2,7 @@
   <!-- <div class="d-flex flex-column w-100" [ngClass]="{'bg-dark':appCenterStyle?.theme === 'dark','bg-white':appCenterStyle?.theme != 'dark'}"> -->
   <div class="d-flex align-items-center justify-content-between header mb-3">
     <div class="title d-flex align-items-center w-50" *ngIf="schema">
-      <!-- <span class="odp-record mr-2 text-primary ml-2"></span> -->
+      <!-- <span class="dsi dsi-data-service mr-2 text-primary ml-2"></span> -->
       <span class="text m-0 fw-600 font-24">{{schema?.name}}</span>
     </div>
     <div class="actions w-50 d-flex justify-content-end ignore-outside" *ngIf="schema">
@@ -531,7 +531,7 @@
     <div class="d-flex flex-column bg-light font-weight-bold">
       <div class="d-flex align-items-start px-3 pt-3">
         <span *ngIf="workflowModalOptions.operation == 'POST'" class="text-primary d-flex align-items-center mr-2">
-          <span class="odp-plus-circle mr-2"></span>
+          <span class="dsi dsi-plus-circle mr-2"></span>
           <span>Create:</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="text-warning d-flex align-items-center mr-2">

@@ -110,7 +110,7 @@
             <div class="mt-2 d-flex hover" *ngIf="flow.isExpanded">
                 <div (click)="showDatedd = !showDatedd" class="ignore-outside">
                     <strong class="text-primary font-sm-12 mr-1 ignore-outside">{{ currentMonth }}</strong>
-                    <span class="odp-angle-down fa-xs text-primary mt-1 ignore-outside"></span>
+                    <span class="dsi dsi-drop-down fa-xs text-primary mt-1 ignore-outside"></span>
                 </div>
                 <div class="ml-auto d-flex count-container" *ngIf="flow.isExpanded && !noDataForChart">
                     <div class="mr-2 d-flex flex-column count-box all p-1">
@@ -233,11 +233,11 @@
         <div class="mb-2 mf-heading p-2 text-truncate font-normal" [ngStyle]="getHeaderbgColor(streak.status)">
             {{streak.txnId}}</div>
         <div class="font-sm d-flex mb-2 text-dark">
-            <span class="odp-microflow fa-lg"></span>
+            <span class="dsi dsi-flow fa-lg"></span>
             <strong>{{ streak.mfName }}</strong>
         </div>
         <div class="font-sm-12 d-flex align-items-center text-dark">
-            <span class="odp-clock fa-sm-12 mr-2"></span>
+            <span class="dsi dsi-clock fa-sm-12 mr-2"></span>
             <span>{{ streak.timeStamp|date: 'dd-MM-yyyy hh:mm:ss' }}</span>
         </div>
     </div>

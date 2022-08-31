@@ -12,7 +12,7 @@
         <div class="d-flex ml-auto">
             <span *ngIf="supportedTimezones.length<2 || control.disabled"
                 class="mr-2 text-primary align-self-center">{{selectedTimezone}}</span>
-            <span *ngIf="control.value" class="fa fa-times-circle" (click)="clearValue()"></span>
+            <span *ngIf="control.value" class="dsi dsi-close-circle" (click)="clearValue()"></span>
         </div>
 
 

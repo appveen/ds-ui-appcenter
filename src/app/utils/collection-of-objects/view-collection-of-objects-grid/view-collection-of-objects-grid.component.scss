@@ -4,10 +4,11 @@
     // border: 1px solid #ECECEC;
     max-height: 273px;
     min-height: 250px;
+    overflow: hidden;
 }
 
 .buttonsRow {
-    min-height: 32px;
+    min-height: 48px;
     align-items: center;
     justify-content: end;
 }

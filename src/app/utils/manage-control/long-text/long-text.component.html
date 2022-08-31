@@ -1,5 +1,5 @@
 <div class="long-text-wrapper">
-  <textarea #textarea class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError}"
+  <textarea #textarea class="form-control h-100" [ngClass]="{'is-invalid':requiredError}"
     (change)="getContent(textarea.value)" (keyup)="onKeyup($event);getContent(textarea.value)" rows="5"
     [attr.id]="definition.path" (click)="onClick($event)" [disabled]="control.disabled"></textarea>
 

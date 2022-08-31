@@ -14,21 +14,21 @@
                 <div class="icon-block d-flex justify-content-center align-items-center position-relative"
                     [routerLink]="['services']"
                     [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'services'}">
-                    <span class="odp-record"></span>
+                    <span class="dsi dsi-data-service"></span>
                 </div>
                 <div class="icon-block d-flex justify-content-center align-items-center position-relative"
                     [routerLink]="['workflow']" [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'workflow'}">
-                    <span class="odp-workflow"></span>
+                    <span class="dsi dsi-branch"></span>
                     <span class="red-dot fa fa-sm fa-circle position-absolute" *ngIf="notificationList.length>0"></span>
                 </div>
                 <div *ngIf="enableB2b" class="icon-block d-flex justify-content-center align-items-center position-relative"
                     [routerLink]="['interactions/all']"
                     [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'interactions'}">
-                    <span class="odp-flows"></span>
+                    <span class="dsi dsi-flows"></span>
                 </div>
                 <div class="icon-block d-flex justify-content-center align-items-center position-relative"
                     [routerLink]="['bookmark']" [ngClass]="{'bg-primary text-white':selectedMenuItem.key == 'bookmark'}">
-                    <span class="odp-bookmark"></span>
+                    <span class="dsi dsi-bookmark"></span>
                 </div>
             </div> -->
             <!-- <div

@@ -69,7 +69,7 @@
       </div>
     </div>
     <span class="fas text-right hover ml-2 text-primary mt-1 position-absolute eyeIcon" *ngIf="value && isSecureText"
-      [ngClass]="{'fa-eye': !showPassword[type],'fa-eye-slash': showPassword[type]} "
+      [ngClass]="{'dsi-view': !showPassword[type],'dsi-hide': showPassword[type]} "
       (click)="togglePassword(value,type)"></span>
   </div>
 </ng-template>

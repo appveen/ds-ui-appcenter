@@ -40,8 +40,8 @@
                     (click)="showPassword=!showPassword;$event.stopPropagation();">
                     {{showPassword?'Hide':'Show'}}
                 </button> -->
-                <span class="fas eye-icon hover ml-2 text-primary"
-                    [ngClass]="{'fa-eye ': !showPassword,'fa-eye-slash ': showPassword }"
+                <span class="dsi eye-icon hover ml-2 text-primary"
+                    [ngClass]="{'dsi-view': !showPassword,'dsi-hide ': showPassword }"
                     (click)="showPassword=!showPassword;$event.stopPropagation();"></span>
             </ng-container>
         </div>
@@ -81,7 +81,7 @@
                 <span class="text ml-1">Yes</span>
             </span>
             <span *ngIf="!value" class="text-muted">
-                <span class="fa fa-times-circle"></span>
+                <span class="dsi dsi-close-circle"></span>
                 <span class="text ml-1">No</span>
             </span>
         </ng-container>

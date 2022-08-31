@@ -1,44 +1,53 @@
-<div class="relation-control-wrapper position-relative">
-
+<div class="relation-control-wrapper position-relative d-flex align-items-center">
     <ng-container *ngIf="!definition.properties.readonly">
-        <div class="input-group">
-            <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt"
-                class="form-control form-control-sm form-control-rounded" [ngClass]="{'is-invalid':requiredError}"
-                [attr.id]="definition.path" (change)="selectOption()" (keyup)="onEnter($event)"
-                (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue" [disabled]="control.disabled">
+        <div class="input-group mr-3">
+            <select *ngIf="recordsCount<=10 && !isSerachFieldSecureTxt" class="form-control"
+                [ngClass]="{'is-invalid':requiredError}" [attr.id]="definition.path" (change)="selectOption()"
+                (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
+                [disabled]="control.disabled">
                 <option *ngIf="!definition.properties.required" value="">---select---</option>
                 <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
             </select>
-            <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt "
-                class="form-control form-control-sm form-control-rounded" [ngClass]="{'is-invalid':requiredError}"
-                [ngModel]="selectedValue" type="{{searchFieldType == 'number'? 'number': 'text' }}"
-                style="overflow-y:auto; max-height:80vh" [ngbTypeahead]="search" [inputFormatter]="formatter"
-                #typeAhead="ngbTypeahead" (selectItem)="selectItem($event)" [resultFormatter]="formatter"
-                #relationTypeInput (focus)="itemSelected = true" [disabled]="definition.properties.readonly"
-                (keyup)="onEnter($event)" (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
-            <div class="input-group-append">
+            <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control"
+                [ngClass]="{'is-invalid':requiredError}" [ngModel]="selectedValue"
+                type="{{searchFieldType == 'number'? 'number': 'text' }}" style="overflow-y:auto; max-height:80vh"
+                [ngbTypeahead]="search" [inputFormatter]="formatter" #typeAhead="ngbTypeahead"
+                (selectItem)="selectItem($event)" [resultFormatter]="formatter" #relationTypeInput
+                (focus)="itemSelected = true" [disabled]="definition.properties.readonly" (keyup)="onEnter($event)"
+                (blur)="onBlur()" (focus)="onFocus($event)" [attr.id]="definition.path">
+            <!-- <div class="input-group-append">
                 <a *ngIf="control?.value?._id" class="btn btn-outline-primary btn-sm"
                     [routerLink]="relationLink+control.value._id" target="_blank">
-                    <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
                     <span class="fa fa-external-link-alt"></span>
                 </a>
                 <a *ngIf="!control?.value?._id" class="btn btn-outline-primary btn-sm" [routerLink]="relationLinkList"
                     target="_blank">
-                    <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
                     <span class="fa fa-external-link-alt"></span>
                 </a>
-            </div>
+            </div> -->
+        </div>
+        <div class="d-flex">
+            <button *ngIf="control?.value?._id" class="btn btn-white border"
+                [routerLink]="relationLink+control.value._id" target="_blank">
+                <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
+                <span class="fa fa-link"></span>
+            </button>
+            <button *ngIf="!control?.value?._id" class="btn btn-white border" [routerLink]="relationLinkList"
+                target="_blank">
+                <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
+                <span class="fa fa-link"></span>
+            </button>
         </div>
     </ng-container>
 
     <ng-container *ngIf="definition.properties.readonly">
-        <a [routerLink]="relationLink+control.value._id" target="_blank" *ngIf="control?.value?._id">
+        <button *ngIf="control?.value?._id" [routerLink]="relationLink+control.value._id" target="_blank">
             {{formatter(relatedData)?formatter(relatedData):control.value._id}}
-        </a>
+        </button>
         <span class="text-muted" *ngIf="!control?.value?._id">N.A</span>
     </ng-container>
 
-    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
+    <div *ngIf="requiredError" class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded"
         [ngClass]="{'bg-error':requiredError}">
         <ng-container *ngIf="!definition.properties.errorMessage">
             <div *ngIf="requiredError">

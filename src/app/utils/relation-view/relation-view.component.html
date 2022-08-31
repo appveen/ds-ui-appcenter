@@ -14,9 +14,9 @@
                     target="_blank">{{searchFieldValue}}</a>
                 <span *ngIf="!serviceAccess">{{searchFieldValue}}</span>
             </ng-container>
-            <span class="fa p-0 ml-2" 
+            <span class="dsi p-0 ml-2" 
                 (click)="showPassword=!showPassword;$event.stopPropagation();"
-                [ngClass]="{'fa-eye-slash':showPassword,'fa-eye':!showPassword}">
+                [ngClass]="{'dsi-hide':showPassword,'dsi-view':!showPassword}">
             </span>
         </ng-container>
     </ng-container>

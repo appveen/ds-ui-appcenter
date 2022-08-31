@@ -2,7 +2,7 @@
     <div class="d-flex flex-column w-100">
         <!-- <div class="header d-flex align-items-center justify-content-between bg-light"> -->
         <!-- <div class="title d-flex align-items-center ml-2">
-                <span class="odp-record text-primary mr-2"></span>
+                <span class="dsi dsi-data-service text-primary mr-2"></span>
                 <span class="font-weight-bold m-0">Data Service</span>
                 <div class="mx-2">
                     <span class="text-secondary">/</span>
@@ -72,7 +72,7 @@
                 class="d-flex align-items-center ml-auto mr-4">
                 <!-- <button (click)="workflowAlert()" *ngIf="hasPermission('DELETE') && !documentLocked"
                     class="btn btn-link px-3" type="button">
-                    <span class="fa fa-trash mr-2 font-13"></span>
+                    <span class="dsi dsi-trash mr-2 font-13"></span>
                     <span class="text font-13">Delete</span>
                 </button> -->
                 <button (click)="toggleHistory()" *ngIf="auditAvailable"
@@ -95,7 +95,7 @@
                 <div *ngIf="selectedAudit?.wfData && selectedAudit?.wfData?.length>0" class="d-flex">
                     <span (click)="showVersionHistoryWF=!showVersionHistoryWF;$event.stopPropagation()"
                         class="text-warning font-13 mr-3 font-weight-bold hover ignore-outside">
-                        <span class="odp-lock"></span>
+                        <span class="dsi dsi-id"></span>
                         <span class="ml-2">Workflow</span>
                     </span>
                     <div *ngIf="showVersionHistoryWF" class="workflow-content rounded border bg-light" odpClickOutside
@@ -359,17 +359,17 @@
             <div class="d-flex align-items-center px-3 pt-3">
                 <span *ngIf="workflowModalOptions.operation == 'POST'"
                     class="text-primary d-flex align-items-center mr-2">
-                    <span class="odp-plus-circle mr-1"></span>
+                    <span class="dsi dsi-plus-circle mr-1"></span>
                     <span>Create:</span>
                 </span>
                 <span *ngIf="workflowModalOptions.operation == 'PUT'"
                     class="text-warning d-flex align-items-center mr-2">
-                    <span class="odp-edit fa-lg mr-1"></span>
+                    <span class="dsi dsi-edit fa-lg mr-1"></span>
                     <span>Update:</span>
                 </span>
                 <span *ngIf="workflowModalOptions.operation == 'DELETE'"
                     class="text-danger d-flex align-items-center mr-2">
-                    <span class="odp-trash mr-1"></span>
+                    <span class="dsi dsi-trash mr-1"></span>
                     <span>Delete:</span>
                 </span>
                 <span class="text-dark">{{workflowModalOptions._id}}</span>

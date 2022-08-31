@@ -10,7 +10,7 @@
                         <div class="form-group">
                             <label for="">Username</label>
                             <div class="input-group input-group-sm">
-                                <input type="text" class="form-control form-control-sm" name="username" [(ngModel)]="user.username" readonly>
+                                <input type="text" class="form-control" name="username" [(ngModel)]="user.username" readonly>
                             </div>
                         </div>
                         <table class="table table-sm table-bordered">
@@ -45,27 +45,27 @@
                         <div class="form-group">
                             <label for="">Old Password</label>
                             <div class="input-group">
-                                <input [type]="cp ? 'text' : 'password'" class="form-control form-control-sm" formControlName="oldpassword">
+                                <input [type]="cp ? 'text' : 'password'" class="form-control" formControlName="oldpassword">
                                 <span class="input-group-addon" (click)="cp=!cp">
-                                    <span class="fa" [ngClass]="{'fa-eye-slash':cp,'fa-eye':!cp}"></span>
+                                    <span class="dsi" [ngClass]="{'dsi-hide':cp,'dsi-view':!cp}"></span>
                                 </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="">New Password</label>
                             <div class="input-group">
-                                <input [type]="np ? 'text' : 'password'" class="form-control form-control-sm" formControlName="newpassword">
+                                <input [type]="np ? 'text' : 'password'" class="form-control" formControlName="newpassword">
                                 <span class="input-group-addon" (click)="np=!np">
-                                    <span class="fa" [ngClass]="{'fa-eye-slash':np,'fa-eye':!np}"></span>
+                                    <span class="dsi" [ngClass]="{'dsi-hide':np,'dsi-view':!np}"></span>
                                 </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="">Confirm Password</label>
                             <div class="input-group">
-                                <input [type]="cfp ? 'text' : 'password'" class="form-control form-control-sm" formControlName="confirmpassword">
+                                <input [type]="cfp ? 'text' : 'password'" class="form-control" formControlName="confirmpassword">
                                 <span class="input-group-addon" (click)="cfp=!cfp">
-                                    <span class="fa" [ngClass]="{'fa-eye-slash':cfp,'fa-eye':!cfp}"></span>
+                                    <span class="dsi" [ngClass]="{'dsi-hide':cfp,'dsi-view':!cfp}"></span>
                                 </span>
                             </div>
                             <small class="text-danger" *ngIf="passwordForm.controls.confirmpassword.touched && passwordForm.controls.confirmpassword.hasError('match')">Passwords do not match</small>

@@ -9,7 +9,7 @@
   <div class="d-flex flex-column mt-3">
     <div class="app-card d-flex align-items-center justify-content-start rounded p-2 hover font-14"
       *ngFor="let app of appList|filterApp: searchTerm;let appIndex = index;" (click)="selectApp(app)"
-      [ngClass]="{'text-dark fw-600':activeApp._id == app._id,'text-secondary fw-500':activeApp._id != app._id}">
+      [ngClass]="{'text-dark fw-500':activeApp._id == app._id,'text-secondary fw-400':activeApp._id != app._id}">
       <div class="app-thumbnail d-flex align-items-center justify-content-center hover mr-2"
         [ngStyle]="{ 'background-color': app.bg }">
         <img *ngIf="app.logo && app.logo.thumbnail" [src]="app.logo.thumbnail" alt="Logo">

@@ -43,9 +43,9 @@
         </ng-container>
       </ng-container>
     </div>
-    <span class="fas eyeIcon text-right hover ml-2 text-primary position-absolute"
+    <span class="dsi eyeIcon text-right hover ml-2 text-primary position-absolute"
       *ngIf="isSecureText && definition.value"
-      [ngClass]="{'fa-eye': !showPassword[type],'fa-eye-slash mt-1': showPassword[type]}"
+      [ngClass]="{'dsi-view': !showPassword[type],'dsi-hide mt-1': showPassword[type]}"
       (click)="togglePassword(value,type)"></span>
   </div>
 </ng-template>

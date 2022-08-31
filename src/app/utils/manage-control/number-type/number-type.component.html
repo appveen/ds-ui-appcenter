@@ -5,11 +5,11 @@
         <span *ngIf="definition.properties.currency == 'USD'">&#36;</span>
         <span *ngIf="definition.properties.currency == 'NA'">{{definition.properties.currency}}</span>
     </div>
-    <input *ngIf="specificType === 'number' || specificType === 'currency'" class="form-control form-control-sm"
+    <input *ngIf="specificType === 'number' || specificType === 'currency'" class="form-control"
         [ngClass]="{'is-invalid pr-4':requiredError || minError || maxError ,'symbol':specificType === 'currency'}"
         type="number" [formControl]="control" (change)="setValue()" (keyup)="onKeyup($event)" (focus)="onFocus()"
         #numberTypeInput [attr.id]="definition.path" [disabled]="definition.properties.readonly || control.disabled">
-    <select *ngIf="specificType === 'select'" class="form-control form-control-sm"
+    <select *ngIf="specificType === 'select'" class="form-control"
         [ngClass]="{'is-invalid pr-4':requiredError}" (change)="setValue()" (keyup)="onKeyup($event)"
         (focus)="onFocus()" [formControl]="control" #numberTypeInput [attr.id]="definition.path"
         [disabled]="definition.properties.readonly || control.disabled">

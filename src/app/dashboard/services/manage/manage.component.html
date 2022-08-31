@@ -1,4 +1,4 @@
-<div class="d-flex flex-column w-100 h-100 position-relative bg-light" [formGroup]="form">
+<div class="d-flex flex-column w-100 h-100 position-relative bg-light px-4" [formGroup]="form">
   <!-- <div class="default-loader d-flex flex-column h-100 w-100" *ngIf="showLazyLoader">
     <div class="align-self-center text-center">
       <div class="spinner-border text-dark" role="status">
@@ -9,7 +9,7 @@
   </div> -->
   <!-- <div class="header d-flex align-items-center justify-content-between w-100 pr-3 bg-light border-bottom">
     <div class="title d-flex align-items-center ml-2">
-      <span class="odp-record text-primary mr-2"></span>
+      <span class="dsi dsi-data-service text-primary mr-2"></span>
       <span class="m-0 font-weight-bold">Data Service</span>
       <div class="mx-2">
         <span class="text-secondary">/</span>
@@ -28,70 +28,71 @@
       </div>
     </div>
   </div> -->
-  <div class="sub-header bg-light px-3 d-flex align-items-center mr-4 ml-4"
+  <div class="sub-header d-flex align-items-center"
     [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
     <div class="d-flex align-items-center justify-content-between w-100">
       <div class="d-flex my-auto">
-        <i class="fa fa-arrow-left text-secondary my-auto mr-2 hover" [routerLink]="cancelUrl"></i>
-        <div class="fw-600 font-24 id-wrap" *ngIf="value?._id">
+        <span class="dsi dsi-arrow-left text-secondary my-auto mr-2 hover" [routerLink]="cancelUrl"></span>
+        <!-- <div class="fw-600 font-24 id-wrap" *ngIf="value?._id">
           {{value._id}}
+        </div> -->
+        <div class="fw-600 font-24 id-wrap">
+          {{schema.name}}
         </div>
       </div>
       <div class=" d-flex">
-        <button id="cancelBtn" type="button" class="btn btn-link mr-3" [routerLink]="cancelUrl">
-          <span class="fa fa-times mr-2"></span>
-          <span class="text">Cancel</span>
+        <button id="cancelBtn" type="button" class="btn btn-link d-flex align-items-center mr-3"
+          [routerLink]="cancelUrl">
+          <!-- <span class="dsi dsi-close mr-2"></span> -->
+          <span class="text-dark font-13 fw-600">Cancel</span>
         </button>
-        <button id="discardDraftBtn" type="button" class="btn btn-link mr-3" (click)="discardDraft()"
-          *ngIf="!isEdit && isDraft">
-          <span class="fa fa-trash mr-2"></span>
-          <span class="text">Discard</span>
+        <button id="discardDraftBtn" type="button" class="btn btn-link d-flex align-items-center mr-3"
+          (click)="discardDraft()" *ngIf="!isEdit && isDraft">
+          <!-- <span class="dsi dsi-trash mr-2"></span> -->
+          <span class="text-dark font-13 fw-600">Discard</span>
         </button>
-        <button id="saveDraftBtn" type="button" class="btn btn-link mr-3"
+        <button id="saveDraftBtn" type="button" class="btn btn-link d-flex align-items-center mr-3"
           [disabled]="!form.valid || showLazyLoader || searchingRecord" (click)="saveDraft()"
           *ngIf="!isEdit && isDraft">
-          <span class="fa fa-file mr-2"></span>
-          <span class="text">Save draft</span>
+          <!-- <span class="dsi dsi-file mr-2"></span> -->
+          <span class="text-dark font-13 fw-600">Save draft</span>
         </button>
-        <button id="submitDraftBtn" type="button" class="btn btn-primary px-4 btn-min-width"
+        <button id="submitDraftBtn" type="button" class="btn btn-primary btn-min-width"
           [disabled]="!form.valid || !form.dirty || showLazyLoader || searchingRecord" (click)="submitDraft()"
           *ngIf="isDraft">
           <span class="text">Save and Proceed</span>
         </button>
-        <button id="saveAsDraftBtn" type="button" class="btn btn-link mr-3"
+        <button id="saveAsDraftBtn" type="button" class="btn btn-link d-flex align-items-center mr-3"
           [disabled]="!form.valid || draftReqInProgress || showLazyLoader || searchingRecord" (click)="saveAsDraft()"
           *ngIf="!isDraft && hasWorkflow">
-          <span class="fa fa-file mr-2"></span>
-          <span class="text">Save as draft</span>
+          <!-- <span class="dsi dsi-file mr-2"></span> -->
+          <span class="text-dark font-13 fw-600">Save as draft</span>
         </button>
-        <button id="saveAndCreateBtn" type="button" class="btn btn-link mr-3"
+        <button id="saveAndCreateBtn" type="button" class="btn btn-link d-flex align-items-center mr-3"
           [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord" (click)="save(true)"
           *ngIf="!isEdit && !isDraft">
-          <!-- <span class="fa fa-save mr-2"></span> -->
-          <span *ngIf="!hasWorkflow" class="font-13 fw-600 text-decoration-underline text-dark">Save &amp; create
-            another</span>
-          <span *ngIf="hasWorkflow" class="font-13 fw-600 text-decoration-underline text-dark">Proceed &amp; create
-            another</span>
+          <span *ngIf="!hasWorkflow" class="font-13 fw-600 text-dark">
+            Save &amp; Create Another
+          </span>
+          <span *ngIf="hasWorkflow" class="font-13 fw-600 text-dark">
+            Proceed &amp; Create Another
+          </span>
         </button>
         <div class="btn-group save-button">
-          <button id="saveBtn" type="button" class="btn px-4 btn-min-width btn-primary"
+          <button id="saveBtn" type="button" class="btn btn-min-width btn-primary"
             [disabled]="((!form.valid || !form.dirty) && !isSchemaFree) || reqInProgress || showLazyLoader || searchingRecord || invalidSchemaFreeRecord"
             (click)="save()" *ngIf="!isDraft">
-            <span *ngIf="!hasWorkflow" class="text">Save
-            </span>
+            <span *ngIf="!hasWorkflow" class="text">Save</span>
             <span *ngIf="hasWorkflow" class="text">Proceed</span>
           </button>
-
         </div>
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center px-3 bg-white mr-4 ml-4 mb-2 " style="border-radius: 6px; height: 72px"
-    *ngIf="wizard.length > 0 || stateModelAttr">
-    <div class='d-flex state-model' *ngIf="stateModelAttr">
-      <span class="mr-2 font-13 fw-500 state-version hover m-auto" style="color: #484848">{{stateModelName}}</span>
-
-      <select class='action-btn border border-6 font-12 ml-3 pl-2 bg-white' (change)="changeStatus($event)"
+  <div class="d-flex align-items-center bg-white rounded-lg mb-3 p-3" *ngIf="wizard.length > 0 || stateModelAttr">
+    <div class="d-flex align-items-center state-model" *ngIf="stateModelAttr">
+      <span class="mr-2 font-13 fw-500 state-version hover text-uppercase">{{stateModelName}}</span>
+      <select class="form-control btn-min-width font-12 fw-400" (change)="changeStatus($event)"
         [value]="form.get(stateModelAttr)?.value">
         <option [value]="state" *ngFor="let state of statusArray" [value]="state">{{state}}</option>
       </select>
@@ -107,7 +108,6 @@
           </button>
         </div>
       </div> -->
-
     </div>
     <ng-container *ngFor="let step of wizard;let stepIndex = index">
       <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
@@ -132,91 +132,65 @@
       </div>
     </ng-container>
   </div>
-  <div class="d-flex flex-column bg-light">
-    <div class="row flex-column bg-white ml-4 mr-4">
-      <div class="col-3 border-right pr-0 pl-0" style="min-height: 100vh" *ngIf="wizard.length > 0">
-        <div class="step-tabs d-flex flex-column">
-          <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
-            <div class="step-tab d-flex hover" style="min-height: 75px" (click)="showCard(i)" [attr.id]="'step-'+i"
-              [ngClass]="{'selected': active[i] }">
-              <span *ngIf="active[i]" class="active-tab"></span>
-              <div class="d-flex flex-column p-3">
-                <div [ngbTooltip]="" class="d-flex font-12 text-secondary">
-                  Step {{i +1}}
-                </div>
-                <div [ngbTooltip]="step.name" class="text-truncate fw-500">
-                  {{step.name}}</div>
+  <div class="d-flex flex-column bg-white rounded-lg">
+    <div class="border-right" *ngIf="wizard.length > 0">
+      <div class="step-tabs d-flex flex-column">
+        <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
+          <div class="step-tab d-flex hover" style="min-height: 75px" (click)="showCard(i)" [attr.id]="'step-'+i"
+            [ngClass]="{'selected': active[i] }">
+            <span *ngIf="active[i]" class="active-tab"></span>
+            <div class="d-flex flex-column p-3">
+              <div [ngbTooltip]="" class="d-flex font-12 text-secondary">
+                Step {{i +1}}
               </div>
+              <div [ngbTooltip]="step.name" class="text-truncate fw-500">
+                {{step.name}}</div>
             </div>
-          </ng-container>
-        </div>
-        <!-- <div class="step-controls d-flex align-items-center justify-content-end position-relative">
-        <button class="btn btn-link btn-sm high-zIndex" [disabled]="stepFirst"
-          (click)="showCard(currentStep-1) ;tooltip1.close()" placement="top" ngbTooltip="Previous step"
-          #tooltip1="ngbTooltip">
-          <span class="fa fa-angle-left"></span>
-        </button>
-        <span class="steps-info text-secondary">
-          {{currentStep+1}} of {{wizard.length}}
-        </span>
-        <button class="btn btn-link btn-sm high-zIndex" [disabled]="stepLast"
-          (click)="showCard(currentStep+1);tooltip2.close()" placement="top" ngbTooltip="Next step"
-          #tooltip2="ngbTooltip">
-          <span class="fa fa-angle-right"></span>
-        </button>
-        <button class="btn btn-link btn-sm high-zIndex" (click)="showAllStepsDropdown($event)" placement="top"
-          ngbTooltip="All step">
-          <span class="fa fa-ellipsis-h"></span>
-        </button>
-        <div class="list-group all-steps-dropdown position-absolute" tabindex="0" #allStepsDropdown
-          (blur)="hideAllStepsDropdown($event)">
-          <div class="list-group-item" *ngFor="let step of wizard; let i=index;let last=last;"
-            (click)="showCard(i);hideAllStepsDropdown($event)" [ngClass]="{'active':active[i]}">{{step.name}}</div>
-        </div>
-      </div> -->
+          </div>
+        </ng-container>
       </div>
+    </div>
 
-      <div class="form-body p-3 min-vh-100" [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
-        <div *ngIf="!showLazyLoader" class="position-relative" [class.restrict-overflow]="restrictOverflow"
-          [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
-          <ng-container *ngIf="!isSchemaFree">
-            <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
-              <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
-                <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
-                  <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
-                    <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
-                      <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
-                      </odp-manage-control>
-                    </div>
-                  </ng-container>
-                </div>
-              </ng-container>
-            </ng-container>
-            <ng-container *ngIf="wizard.length == 0">
-              <div class="d-flex flex-column">
-                <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-                  <div *ngIf="!checkStateModel(def)">
-                    <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
+    <div class="form-body p-3 min-vh-100" [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
+      <div *ngIf="!showLazyLoader" class="position-relative" [class.restrict-overflow]="restrictOverflow"
+        [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
+        <ng-container *ngIf="!isSchemaFree">
+          <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
+            <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
+              <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
+                <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
+                  <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
+                    <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
                     </odp-manage-control>
                   </div>
                 </ng-container>
               </div>
             </ng-container>
           </ng-container>
-          <ng-container *ngIf="isSchemaFree">
-            <odp-code-editor class="code-editor" [edit]="{status:true}" [theme]="selectedEditorTheme"
-              [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
-            </odp-code-editor>
+          <ng-container *ngIf="wizard.length == 0">
+            <div class="d-flex flex-column">
+              <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
+                <div *ngIf="!checkStateModel(def)">
+                  <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
+                  </odp-manage-control>
+                </div>
+              </ng-container>
+            </div>
           </ng-container>
-        </div>
-        <div class="loading" *ngIf="showLazyLoader">
-          <div class="rows d-flex align-items-center mt-4 ml-3" *ngFor="let row of dummyRows">
-            <div class="mr-4">
-              <odp-loading-placeholder [height]="24" [width]="200"></odp-loading-placeholder>
-            </div>
-            <div>
-              <odp-loading-placeholder [height]="24" [width]="300"></odp-loading-placeholder>
-            </div>
+        </ng-container>
+        <ng-container *ngIf="isSchemaFree">
+          <odp-code-editor class="code-editor" [edit]="{status:true}" [theme]="selectedEditorTheme"
+            [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
+          </odp-code-editor>
+        </ng-container>
+      </div>
+      <div class="loading" *ngIf="showLazyLoader">
+        <div class="rows d-flex align-items-center mt-4 ml-3" *ngFor="let row of dummyRows">
+          <div class="mr-4">
+            <odp-loading-placeholder [height]="24" [width]="200"></odp-loading-placeholder>
+          </div>
+          <div>
+            <odp-loading-placeholder [height]="24" [width]="300"></odp-loading-placeholder>
           </div>
         </div>
       </div>
@@ -236,15 +210,15 @@
     <div class="d-flex flex-column bg-light font-weight-bold" *ngIf="workflowModalOptions.operation != 'POST'">
       <div class="d-flex align-items-center px-3 pt-3">
         <span *ngIf="workflowModalOptions.operation == 'POST'" class="text-primary d-flex align-items-center mr-2">
-          <span class="odp-plus-circle mr-1"></span>
+          <span class="dsi dsi-plus-circle mr-1"></span>
           <span>Create:</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'PUT'" class="text-warning d-flex align-items-center mr-2">
-          <span class="odp-edit fa-lg mr-1"></span>
+          <span class="dsi dsi-edit fa-lg mr-1"></span>
           <span>Update:</span>
         </span>
         <span *ngIf="workflowModalOptions.operation == 'DELETE'" class="text-danger d-flex align-items-center mr-2">
-          <span class="odp-trash mr-1"></span>
+          <span class="dsi dsi-trash mr-1"></span>
           <span>Delete:</span>
         </span>
         <span class="text-dark">{{workflowModalOptions._id}}</span>
@@ -316,17 +290,17 @@
   </div>
 </ng-template>
 <ng-template #pageChangeModalTemplate>
-  <div class="modal-body p-4">
+  <div class="modal-body p-0">
     <div class="circle bg-dark">
       <span class="fa fa-exclamation-triangle text-white"></span>
     </div>
     <p class="text-dark font-weight-bold text-center">Unsaved changes</p>
     <p class="text-secondary text-center">You have unsaved changes, are you sure you want to leave?</p>
-  </div>
-  <div class="modal-footer p-3 bg-light">
-    <button type="button" class="btn btn-secondary px-4 btn-min-width"
-      (click)="pageChangeModalTemplateRef.close(false)">No</button>
-    <button type="button" class="btn btn-danger px-4 btn-min-width"
-      (click)="pageChangeModalTemplateRef.close(true)">Yes</button>
+    <div class="d-flex align-item-center justify-content-end mt-4">
+      <button type="button" class="btn btn-secondary btn-min-width mr-3"
+        (click)="pageChangeModalTemplateRef.close(false)">No</button>
+      <button type="button" class="btn btn-danger btn-min-width"
+        (click)="pageChangeModalTemplateRef.close(true)">Yes</button>
+    </div>
   </div>
 </ng-template>

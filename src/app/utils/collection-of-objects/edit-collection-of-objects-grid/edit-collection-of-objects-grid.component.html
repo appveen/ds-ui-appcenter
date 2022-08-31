@@ -1,32 +1,32 @@
 <div class="d-flex justify-content-between align-items-center mb-2 buttonsRow">
     <span class="fw-700">{{collectionFieldName}}</span>
     <div class="d-flex ml-auto">
-        <button type="button" class="btn btn-link"
+        <button type="button" class="btn btn-link text-dark d-flex align-items-center"
             *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
             (click)="removeSelectedNodes()">
-            <span class="odp-trash mr-2"></span>
+            <span class="dsi dsi-trash mr-2"></span>
             <span class="text">Remove selected ({{selectedRecordsCount}})</span>
         </button>
-        <button *ngIf="hasFilters" type="button" class="btn btn-link" (click)="clearFilters()">
-            <span class="fa fa-times mr-2"></span>
+        <button *ngIf="hasFilters" type="button" class="btn btn-link text-dark d-flex align-items-center"
+            (click)="clearFilters()">
+            <span class="dsi dsi-close mr-2"></span>
             <span class="text">Clear Filters</span>
         </button>
-        <button type="button" class="btn btn-link"
+        <button type="button" class="btn btn-link text-dark d-flex align-items-center"
             *ngIf="!!selectedRecordsCount && selectedRecordsCount > 1&& !definition?.properties?.readonly"
             (click)="bulkEdit()" id="bulkEditButton">
-            <span class="odp-edit mr-2"></span>
+            <span class="dsi dsi-edit mr-2"></span>
             <span class="text">Bulk Edit ({{ selectedRecordsCount }})</span>
         </button>
-        <div class="d-flex  hover my-auto" (click)="openModal()" *ngIf="!isEditable">
-            <span class="dsi dsi-edit mr-1 align-self-center"></span>
+        <button type="button" class="btn btn-link text-dark d-flex align-items-center" (click)="openModal()"
+            *ngIf="!isEditable">
+            <span class="dsi dsi-edit mr-2"></span>
             <span>Edit</span>
-        </div>
+        </button>
     </div>
-
-
 </div>
 <div>
-    <div class="grid-container" [ngStyle]="gridStyle">
+    <div class="grid-container row border-top" [ngStyle]="gridStyle">
         <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable"
             [frameworkComponents]="frameworkComponents">
         </ag-grid-angular>
@@ -37,63 +37,55 @@
     </div>
 </div>
 <ng-template #newModal>
-    <span class="font-24 fw-600">{{ collectionFieldName }}</span>
-    <div class="d-flex align-items ml-auto" *ngIf="isEditable">
-        <button type="button" class="btn btn-link mr-2" *ngIf="formArray.enabled" (click)="onRowAdded()">
-            <span class="fa fa-plus-circle mr-2"></span>
-            <span class="text">Add new</span>
-        </button>
-        <button type="button" class="btn btn-link"
-            *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
-            (click)="removeSelectedNodes()">
-            <span class="odp-trash mr-2"></span>
-            <span class="text">Remove selected ({{selectedRecordsCount}})</span>
-        </button>
-    </div>
-
-    <div class="modal-body scrollBox">
-
-        <div class="grid-container-modal">
+    <div class="modal-body scrollBox d-flex flex-column p-4">
+        <div class="font-24 fw-600 mb-3">{{ collectionFieldName }}</div>
+        <div class="d-flex align-items ml-auto" *ngIf="isEditable">
+            <button type="button" class="btn btn-link d-flex align-items-center mr-2" *ngIf="formArray.enabled"
+                (click)="onRowAdded()">
+                <span class="dsi dsi-plus-circle mr-2"></span>
+                <span class="text">Add new</span>
+            </button>
+            <button type="button" class="btn btn-link d-flex align-items-center"
+                *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
+                (click)="removeSelectedNodes()">
+                <span class="dsi dsi-trash mr-2"></span>
+                <span class="text">Remove selected ({{selectedRecordsCount}})</span>
+            </button>
+        </div>
+        <div class="grid-container-modal rounded border my-4">
             <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"
                 [frameworkComponents]="frameworkComponents">
             </ag-grid-angular>
         </div>
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary-outline actions" (click)="cancelNew()">
-            Cancel
-        </button>
-        <button type="button" class="btn btn-primary actions" *ngIf="isEditable" (click)="newModalRef.close('save')">
-            Proceed
-        </button>
+        <div class="d-flex align-items-center justify-content-end mt-auto">
+            <button type="button" class="btn btn-outline-primary mr-3" (click)="cancelNew()">
+                Cancel
+            </button>
+            <button type="button" class="btn btn-primary" *ngIf="isEditable" (click)="newModalRef.close('save')">
+                Proceed
+            </button>
+        </div>
     </div>
 </ng-template>
 
 <ng-template #editModal>
-    <span class="font-24 fw-600">{{ collectionFieldName }}</span>
-    <div class="d-flex align-items ml-auto" *ngIf="isEditable">
-        <!-- <button type="button" class="btn btn-link mr-2" *ngIf="formArray.enabled" (click)="onRowAdded()">
-            <span class="fa fa-plus-circle mr-2"></span>
-            <span class="text">Add new</span>
-        </button> -->
-        <button type="button" class="btn btn-link"
-            *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
-            (click)="removeSelectedNodes()">
-            <span class="odp-trash mr-2"></span>
-            <span class="text">Remove selected ({{selectedRecordsCount}})</span>
-        </button>
-    </div>
-
-    <div class="modal-body scrollBox">
+    <div class="modal-body scrollBox d-flex flex-column p-4">
+        <div class="font-24 fw-600">{{ collectionFieldName }}</div>
+        <div class="d-flex align-items ml-auto" *ngIf="isEditable">
+            <button type="button" class="btn btn-link d-flex align-items-center"
+                *ngIf="isButtonsRowShown && !!selectedRecordsCount && !definition?.properties?.readonly"
+                (click)="removeSelectedNodes()">
+                <span class="dsi dsi-trash mr-2"></span>
+                <span class="text">Remove selected ({{selectedRecordsCount}})</span>
+            </button>
+        </div>
         <div class="field-wrapper d-flex align-items-start px-3 mt-3" *ngFor="let def of definition.definition">
             <odp-manage-control [definition]="def" [form]="formArray?.controls[selectedRowIndex]"
                 *ngIf="selectedRowIndex !== null; else lazyLoader">
             </odp-manage-control>
-
             <ng-template #lazyLoader>
                 <div class="loading">
-                    <div class="rows d-flex align-items-center mt-4 ml-3">
+                    <div class="rows d-flex align-items-center my-4 ml-3">
                         <div class="mr-5">
                             <odp-loading-placeholder [height]="24" [width]="200"></odp-loading-placeholder>
                         </div>
@@ -104,39 +96,37 @@
                 </div>
             </ng-template>
         </div>
-
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary-outline actions" (click)="cancelEdit()">
-            Cancel
-        </button>
-        <button type="button" class="btn btn-primary actions" *ngIf="isEditable"
-            (click)="editModalRef.close('proceed')">
-            Proceed
-        </button>
+        <div class="d-flex align-items-center justify-content-end mt-auto">
+            <button type="button" class="btn btn-outline-primary mr-3" (click)="cancelEdit()">
+                Cancel
+            </button>
+            <button type="button" class="btn btn-primary" *ngIf="isEditable" (click)="editModalRef.close('proceed')">
+                Proceed
+            </button>
+        </div>
     </div>
 </ng-template>
 
 <ng-template #bulkEditModal>
-    <div class="modal-header bg-light">
-        <strong>Bulk Edit {{ collectionFieldName }}</strong>
-        <div><small><strong>{{ selectedRecordsCount }}</strong> items selected</small></div>
-    </div>
-    <div class="modal-body scrollBox">
-        <div class="field-wrapper d-grid align-items-start px-3 mt-3 w-100"
+    <div class="modal-body scrollBox p-4 d-flex flex-column">
+        <div class="d-flex align-items-center">
+            <div class="font-24 fw-600">Bulk Edit {{ collectionFieldName }}</div>
+            <div><small><span class="fw-500">{{ selectedRecordsCount }}</span> items selected</small></div>
+        </div>
+        <div class="field-wrapper d-grid align-items-start px-3 my-4 w-100"
             *ngFor="let def of definition.definition; let first = first">
             <odp-manage-control markEnable="true" [definition]="def" [form]="bulkEditForm" [first]="first">
             </odp-manage-control>
         </div>
-    </div>
-    <div class="modal-footer bg-light">
-        <button type="button" class="btn btn-secondary" (click)="bulkEditModalRef.close()">
-            Cancel
-        </button>
-        <button type="button" class="btn btn-primary" (click)="onBulkEditConfirm()" [disabled]="bulkEditForm.invalid">
-            Apply
-        </button>
+        <div class="d-flex align-items-center justify-content-end mt-auto">
+            <button type="button" class="btn btn-outline-primary mr-3" (click)="bulkEditModalRef.close()">
+                Cancel
+            </button>
+            <button type="button" class="btn btn-primary" (click)="onBulkEditConfirm()"
+                [disabled]="bulkEditForm.invalid">
+                Apply
+            </button>
+        </div>
     </div>
 </ng-template>
 <div class="custom-backdrop" [class.show]="showModalBackdrop"></div>

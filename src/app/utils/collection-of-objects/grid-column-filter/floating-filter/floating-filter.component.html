@@ -11,7 +11,7 @@
     <option [value]="false">No</option>
 </select> -->
 <input *ngIf="type==='String' || type==='File' || type==='Geojson' || type==='Relation' || type==='User'" type="text"
-    class="border bg-white w-100 filter-dim mb-2" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
+    class="border bg-white w-100 rounded filter-dim mb-2" [(ngModel)]="value" odpOnChange (textChange)="onChange($event)">
 <input *ngIf="type==='Number'" type="number" class="border bg-white w-100 mb-2" [(ngModel)]="value" odpOnChange
     (textChange)="onChange($event)">
 <input *ngIf="type==='Date'" type="date" max="9999-12-31" class="border bg-white w-100 mb-2" [(ngModel)]="value"

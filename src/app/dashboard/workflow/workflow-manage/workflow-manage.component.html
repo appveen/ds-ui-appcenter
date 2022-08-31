@@ -39,11 +39,11 @@
             <div class="d-flex flex-column ml-3 record-detail">
                 <span class="font-weight-bold text-muted">Type</span>
                 <div class="d-flex">
-                    <span class="odp-plus-circle text-primary mt-1" *ngIf="selectedData.operation == 'POST'"></span>
-                    <span class="odp-edit text-warning mt-1 mr-1" *ngIf="selectedData.operation == 'PUT'"></span>
-                    <span class="odp-trash text-danger font-sm mt-1" *ngIf="selectedData.operation == 'DELETE'"></span>
+                    <span class="dsi dsi-plus-circle text-primary mr-2" *ngIf="selectedData.operation == 'POST'"></span>
+                    <span class="dsi dsi-edit text-warning mr-2" *ngIf="selectedData.operation == 'PUT'"></span>
+                    <span class="dsi dsi-trash text-danger mr-2" *ngIf="selectedData.operation == 'DELETE'"></span>
                     <span class="ml-1" *ngIf="selectedData.operation == 'POST'">Create</span>
-                    <span class="ml-1" *ngIf="selectedData.operation == 'PUT'" class="mr-3">Edit</span>
+                    <span class="ml-1" *ngIf="selectedData.operation == 'PUT'">Edit</span>
                     <span class="ml-1" *ngIf="selectedData.operation == 'DELETE'">Delete</span>
                 </div>
             </div>
@@ -53,12 +53,12 @@
 
                 <ng-container *ngIf="editMode">
                     <button type="button" class="btn btn-link" id="closeReview" (click)="closeData()">
-                        <span class="fa fa-times mr-2"></span>
+                        <span class="dsi dsi-close mr-2"></span>
                         <span class="text">Cancel</span>
                     </button>
                     <button type="button" class="btn btn-link mx-2" *ngIf="canEditDraft" id="discardDraft"
                         (click)="discardDraft()" [disabled]="showLazyLoader">
-                        <span class="fa fa-trash mr-2"></span>
+                        <span class="dsi dsi-trash mr-2"></span>
                         <span class="text">Discard</span>
                     </button>
                     <div class="btn-group">
@@ -94,7 +94,7 @@
                         <button *ngIf="canEditDocument && (canEditDraft || canRespond)" type="button"
                             class="btn btn-link ml-2" id="canEditDocument" (click)="editMode=true;"
                             [disabled]="showLazyLoader">
-                            <span class="fa fa-pencil-alt mr-2"></span>
+                            <span class="dsi dsi-edit mr-2"></span>
                             <span class="text">Edit</span>
                         </button>
                         <button type="button" class="btn btn-primary ml-2 btn-min-width" id="canReview"
@@ -120,7 +120,7 @@
                 <!-- <div class="btn-group">
                     <button type="button" class="btn btn-outline-primary" id="closeReview" (click)="closeData()">
                         <ng-container *ngIf="canEditDraft">
-                            <span class="fa fa-times mr-2"></span>
+                            <span class="dsi dsi-close mr-2"></span>
                             <span class="text">Cancel</span>
                         </ng-container>
                         <ng-container *ngIf="!canEditDraft">
@@ -340,17 +340,17 @@
                 <div class="d-flex align-items-center px-3 pt-3">
                     <span *ngIf="workflowModalOptions.operation == 'POST'"
                         class="text-primary d-flex align-items-center mr-2">
-                        <span class="odp-plus-circle mr-1"></span>
+                        <span class="dsi dsi-plus-circle mr-1"></span>
                         <span>Create:</span>
                     </span>
                     <span *ngIf="workflowModalOptions.operation == 'PUT'"
                         class="text-warning d-flex align-items-center mr-2">
-                        <span class="odp-edit fa-lg mr-1"></span>
+                        <span class="dsi dsi-edit mr-1"></span>
                         <span>Update:</span>
                     </span>
                     <span *ngIf="workflowModalOptions.operation == 'DELETE'"
                         class="text-danger d-flex align-items-center mr-2">
-                        <span class="odp-trash mr-1"></span>
+                        <span class="dsi dsi-trash mr-1"></span>
                         <span>Delete:</span>
                     </span>
                     <span class="text-dark">{{workflowModalOptions._id}}</span>
@@ -415,7 +415,7 @@
         <div class="d-flex flex-column bg-light font-weight-bold ignore-outside">
             <div class="d-flex align-items-center px-3 pt-3 ignore-outside">
                 <span class="text-danger d-flex align-items-center mr-2 ignore-outside">
-                    <span class="odp-trash mr-1 ignore-outside"></span>
+                    <span class="dsi dsi-trash mr-1 ignore-outside"></span>
                     <span class="ignore-outside">Delete:</span>
                 </span>
                 <span class="text-dark ignore-outside">{{selectedData.documentId}}</span>
@@ -487,7 +487,7 @@
             <div class="d-flex flex-column bg-light font-weight-bold" *ngIf="workflowModalOptions.operation != 'POST'">
                 <div class="d-flex align-items-center px-3 pt-3">
                     <span class="text-primary d-flex align-items-center mr-2">
-                        <span class="odp-edit mr-1"></span>
+                        <span class="dsi dsi-edit mr-1"></span>
                         <span>Discard:</span>
                     </span>
 

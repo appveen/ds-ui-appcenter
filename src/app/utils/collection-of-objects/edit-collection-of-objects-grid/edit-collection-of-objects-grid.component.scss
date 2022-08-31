@@ -3,23 +3,31 @@
 
 .grid-container {
   display: grid;
-  width: 100%;
-  border: 1px solid #ECECEC;
-  max-height: 273px;
-  min-height: 250px !important;
+  // width: 100%;
+  // border: 1px solid #ECECEC;
+  min-height: 300px;
+  max-height: 500px;
+  overflow: hidden;
 }
 
 .grid-container-modal {
   display: grid;
   width: 100%;
   // border: 1px solid #ECECEC;
-  max-height: 30vw;
-  min-height: 250px !important;
-  height: 30vw;
+  min-height: 300px;
+  max-height: 500px;
+}
+
+.btn-link {
+  &:hover {
+    .dsi {
+      text-decoration: none !important;
+    }
+  }
 }
 
 .buttonsRow {
-  height: 32px;
+  height: 48px;
 
   * {
     user-select: none;
@@ -58,7 +66,7 @@
 
 
 .scrollBox {
-  height: calc(100vh - 185px);
+  height: calc(100vh - 160px);
   overflow: auto;
 }
 
@@ -90,17 +98,4 @@
   &.show {
     display: block;
   }
-}
-
-.disabled-text {
-  color: #6A7179 !important;
-  pointer-events: none;
-}
-
-::ng-deep .modal-content {
-  padding: 32px
-}
-
-::ng-deep .modal-footer {
-  border-top: none !important;
 }

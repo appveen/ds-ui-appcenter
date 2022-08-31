@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center justify-content-between w-100">
         <h4>{{title}}</h4>
         <button type="button" class="btn btn-link text-dark" (click)="dismiss()">
-            <span class="fa fa-times"></span>
+            <span class="dsi dsi-close"></span>
         </button>
     </div>
 </div>
@@ -48,7 +48,7 @@
                                 <span class="filename font-weight-bold">{{file.name}}</span>
                                 <span class="font-xs text-muted">{{file.size|filesize}} . {{file.type}}</span>
                             </div>
-                            <span class="fa fa-times hover" (click)="removeWorkflowFile(fileIndex)"></span>
+                            <span class="dsi dsi-close hover" (click)="removeWorkflowFile(fileIndex)"></span>
                         </div>
                     </div>
                     <label
@@ -86,14 +86,14 @@
             <button *ngIf="hasDiscardDraft" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
                 (click)="respond('Discard')">
                 <span class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-danger">
-                    <span class="fa fa-trash"></span>
+                    <span class="dsi dsi-trash"></span>
                 </span>
                 <span class="text">Discard Draft</span>
             </button>
             <button *ngIf="hasReject" type="button" class="btn btn-light bg-white d-flex align-items-center ml-2"
                 (click)="respond('Reject')">
                 <span class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white bg-danger">
-                    <span class="fa fa-times"></span>
+                    <span class="dsi dsi-close"></span>
                 </span>
                 <span class="text">Reject</span>
             </button>

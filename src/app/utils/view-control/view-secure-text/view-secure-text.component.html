@@ -30,8 +30,8 @@
                 {{showPassword[type]?'Hide':'Show'}}
             </button> -->
 
-            <span class="fas eye-icon eyeIcon position-absolute hover ml-2 text-primary"
-                [ngClass]="{'fa-eye': !showPassword[type],'fa-eye-slash mt-1': showPassword[type] }"
+            <span class="dsi eye-icon eyeIcon position-absolute hover ml-2 text-primary"
+                [ngClass]="{'dsi-view': !showPassword[type],'dsi-hide mt-1': showPassword[type] }"
                 (click)="showDecryptedValue(value,type)"></span>
         </ng-container>
         <span *ngIf="!value || !value?.value" class="text-muted">N.A.</span>

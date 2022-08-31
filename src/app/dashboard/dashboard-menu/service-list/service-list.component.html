@@ -15,7 +15,7 @@
         [ngClass]="{'bg-primary text-white hover':item._id === activeId,'text-secondary':item._id !== activeId}">
         <div class="d-flex align-items-center">
             <!-- <div class="list-item-icon d-flex align-items-center">
-                <span class="odp-record"></span>
+                <span class="dsi dsi-data-service"></span>
             </div> -->
             <span class="fa fa-star mr-3 pinned-star"
                 (click)="removeFromStaredList(item._id);$event.stopPropagation();"></span>
@@ -41,7 +41,7 @@
         [ngClass]="{'text-dark hover':item._id === activeId,'text-secondary':item._id !== activeId}">
         <div class="d-flex align-items-center">
             <!-- <div class="list-item-icon d-flex align-items-center">
-            <span class="odp-record"></span>
+            <span class="dsi dsi-data-service"></span>
         </div> -->
             <span class="fa fa-star mr-3" *ngIf="pinnedDs.length<5"
                 [ngClass]="{'pinning-star' : !isPinned(item), 'pinned-star' : isPinned(item)}"

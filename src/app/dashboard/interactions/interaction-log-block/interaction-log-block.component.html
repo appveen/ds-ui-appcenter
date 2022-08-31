@@ -24,7 +24,7 @@
     <div class="d-flex position-absolute date-container hover ignore-outside"
       (click)="showDatedd = !showDatedd; is.byPassIndex = true;">
       <strong class="text-primary font-sm-12 mr-1 ignore-outside">{{ currentMonth }}</strong>
-      <span class="odp-angle-down fa-xs text-primary mt-1 ignore-outside"></span>
+      <span class="dsi dsi-drop-down fa-xs text-primary mt-1 ignore-outside"></span>
     </div>
     <div class="position-absolute border dateMnth-dd hover ignore-outside" *ngIf="showDatedd" odpClickOutside
       (outside)="showDatedd = false;" [ignore]="['.ignore-outside']">

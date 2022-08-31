@@ -57,3 +57,11 @@
 .rounded-0 {
   border-radius: 0 !important;
 }
+
+.rounded-lg {
+  border-radius: $border-radius-lg !important;
+}
+
+.rounded-sm {
+  border-radius: $border-radius-sm !important;
+}

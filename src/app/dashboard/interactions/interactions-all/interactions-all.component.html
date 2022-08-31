@@ -1,7 +1,7 @@
 <div class="w-100 h-100 bg-light">
     <div class="header d-flex align-items-center justify-content-between border-bottom border-top">
         <div class="title d-flex align-items-center">
-            <span class="odp-flows mx-2 text-primary"></span>
+            <span class="dsi dsi-flow mx-2 text-primary"></span>
             <span class="text-dark font-weight-bold">Interactions</span>
             <button type="button" class="btn btn-primary btn-sm ml-3" (click)="syncData()">
                 <span class="fa fa-sync mr-2"></span>
@@ -52,11 +52,11 @@
         </div>
         <button *ngIf="hasFilters" id="clearFiltersBtn" type="button" class="btn btn-link"
             (click)="clearInlineFilters()">
-            <span class="fa fa-times mr-2"></span>
+            <span class="dsi dsi-close mr-2"></span>
             <span class="text">Clear Filters</span>
         </button>
         <button *ngIf="hasSort" id="clearSortBtn" type="button" class="btn btn-link" (click)="clearSort()">
-            <span class="fa fa-times mr-2"></span>
+            <span class="dsi dsi-close mr-2"></span>
             <span class="text">Clear Sort</span>
         </button>
         <button *ngIf="reDownloadCount>0" id="triggerReDownloadBtn" type="button" class="btn btn-link"

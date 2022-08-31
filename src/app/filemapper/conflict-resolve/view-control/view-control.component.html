@@ -21,7 +21,7 @@
   <ng-container *ngIf="type === 'Error'">
     <span class="text-danger" placement="left"
       [ngbTooltip]="originalData?.errorMessage">{{originalData?.errorMessage}}</span>
-    <!-- <div class="fa fa-exclamation-circle text-danger" [ngbTooltip]="originalData?.errorMessage"></div> -->
+    <!-- <div class="dsi dsi-danger-circle text-danger" [ngbTooltip]="originalData?.errorMessage"></div> -->
   </ng-container>
   <ng-container *ngIf="type === 'Array'">
     <div class="">
@@ -78,7 +78,7 @@
       <span class="text ml-1">Yes</span>
     </span>
     <span *ngIf="!value" class="text-muted">
-      <span class="fa fa-times-circle"></span>
+      <span class="dsi dsi-close-circle"></span>
       <span class="text ml-1">No</span>
     </span>
   </ng-container>

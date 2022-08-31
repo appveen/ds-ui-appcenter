@@ -1,23 +1,23 @@
 <div class="text-control-wrapper position-relative" id="form-control">
   <ng-container *ngIf="specificType=='password'">
-    <!-- <input class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
+    <!-- <input class="form-control" [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
       type="password" [formControl]="control" (keyup)="onEnter($event)" (focus)="onFocus()" #inputControl [attr.id]="definition.path"> -->
     <odp-secure-text-type [control]="control" [definition]="definition" (keyupEvent)="onEnter($event)">
     </odp-secure-text-type>
   </ng-container>
   <ng-container *ngIf="specificType=='email'">
-    <input class="form-control form-control-sm rounded" [ngClass]="{'is-invalid':requiredError || emailError}"
+    <input class="form-control" [ngClass]="{'is-invalid':requiredError || emailError}"
       type="email" [formControl]="control" (keyup)="onEnter($event)" (blur)="tabOut()" (focus)="onFocus()" #inputControl
       [attr.id]="definition.path" [disabled]="definition?.properties?.readonly || control?.disabled">
   </ng-container>
   <ng-container *ngIf="specificType=='text'">
-    <input class="form-control form-control-sm rounded"
+    <input class="form-control"
       [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}" type="text"
       [formControl]="control" (keyup)="onEnter($event)" (blur)="tabOut()" (focus)="onFocus()" #inputControl
       [attr.id]="definition.path" [disabled]="definition?.properties?.readonly || control?.disabled">
   </ng-container>
   <ng-container *ngIf="specificType == 'select'">
-    <select class="form-control form-control-sm rounded" id="_selectInput" [ngClass]="{'is-invalid':requiredError}"
+    <select class="form-control" id="_selectInput" [ngClass]="{'is-invalid':requiredError}"
       [formControl]="control" (keyup)="onEnter($event)" (focus)="onFocus()" #inputControl [attr.id]="definition.path"
       [disabled]="definition?.properties?.readonly || control?.disabled">
       <option *ngIf="!definition?.properties?.required" value="">---select---</option>

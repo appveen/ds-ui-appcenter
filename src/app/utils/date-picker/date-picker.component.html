@@ -23,27 +23,27 @@
           <!--<span class="float-left text-secondary">
             <small class="font-weight-bold">Date</small>
           </span>-->
-          <span class="fas fa-caret-left fa-lg hover text-primary" (click)="decreaseMonth()"></span>
+          <span class="dsi dsi-arrow-left font-16 hover text-primary" (click)="decreaseMonth()"></span>
           <span class="ml-auto mr-auto">
-            <select #month class="text-primary time-select font-weight-bold" (change)="selectMonth({key:month.value})">
+            <select #month class="text-primary time-select fw-400" (change)="selectMonth({key:month.value})">
               <option [value]="mon.key" *ngFor="let mon of months">{{mon.label}}</option>
             </select>
-            <select #year class="text-primary time-select font-weight-bold" (change)="selectYear({key:year.value})">
+            <select #year class="text-primary time-select fw-400" (change)="selectYear({key:year.value})">
               <option [value]="year.key" *ngFor="let year of years">{{year.key}}</option>
             </select>
           </span>
-          <span class="fas fa-caret-right fa-lg hover text-primary" (click)="increaseMonth()"></span>
+          <span class="dsi dsi-arrow-right font-16 hover text-primary" (click)="increaseMonth()"></span>
         </div>
-        <div class="month-dates pl-3 pt-2 d-flex justify-content-around">
-          <span class="day float-left" *ngFor="let day of week;let f=first;let l=last">
-            <small class="font-weight-bold">{{day}}</small>
+        <div class="month-dates pl-3 pt-2 d-flex align-item-center font-11">
+          <span class="day text-center" *ngFor="let day of week;let f=first;let l=last">
+            <small class="fw-500">{{day}}</small>
           </span>
         </div>
-        <div class="clearfix pl-2" id="_datePicker">
-          <span class="date float-left d-flex justify-content-center align-items-center " *ngFor="let day of dateList;let f=first;let l=last;let i=index"
-            [ngClass]="{'active text-white bg-success':day.today && day.show,'text-secondary':!day.today,'disabled':!day.show}"
+        <div class="d-flex flex-wrap pl-3" id="_datePicker">
+          <span class="date d-flex justify-content-center align-items-center" *ngFor="let day of dateList;let f=first;let l=last;let i=index"
+            [ngClass]="{'active text-white bg-success':day.today && day.show,'text-dark':!day.today,'disabled':!day.show}"
             (click)="$event.stopPropagation();selectDate(day)" id="_day">
-            <small class="font-weight-bold">{{day.label}}</small>
+            <small class="fw-400">{{day.label}}</small>
           </span>
         </div>
       </div>
@@ -86,9 +86,9 @@
   </ng-container>
   <ng-container *ngIf="options.buttons">
     <hr class="m-0">
-    <div class="footer text-right p-3">
-      <button id="cancelBtn" class="btn btn-link mx-4" (click)="$event.stopPropagation();cancel()">Cancel</button>
-      <button id="doneBtn" class="btn btn-outline-primary px-4 btn-min-width" (click)="$event.stopPropagation();done()">Done</button>
+    <div class="footer text-right px-2 py-1">
+      <button id="cancelBtn" class="btn btn-sm btn-link" (click)="$event.stopPropagation();cancel()">Cancel</button>
+      <button id="doneBtn" class="btn btn-sm btn-link" (click)="$event.stopPropagation();done()">Done</button>
     </div>
   </ng-container>
 </div>

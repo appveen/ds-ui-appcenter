@@ -1,13 +1,13 @@
 <div class="value-width position-relative w-100 d-flex">
-    <input class="form-control form-control-sm border"
+    <input class="form-control"
         [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
         [type]="showPassword ? 'text' : 'password'" (keyup)="onEnter($event)" (change)="onChange($event.target.value)"
         #inputControl [attr.id]="definition.path" [ngModel]="password" [disabled]="control.disabled" autocomplete="off">
-    <span style="margin-left: -30px !important" class="fas eye-icon hover m-auto"
-        [ngClass]="{'fa-eye': !showPassword,'fa-eye-slash': showPassword }"
+    <span style="margin-left: -30px !important" class="dsi eye-icon hover m-auto"
+        [ngClass]="{'dsi-view': !showPassword,'dsi-show': showPassword }"
         (click)="showPassword= !showPassword"></span>
 </div>
-<ng-container *ngIf="!definition.properties.errorMessage ">
+<ng-container *ngIf="!definition.properties.errorMessage">
     <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary border"
         *ngIf="(requiredError  || patternError || minLengthError || maxLengthError )"
         [ngClass]="{'bg-error':requiredError  || patternError || minLengthError || maxLengthError}">
@@ -22,7 +22,7 @@
     </div>
 </ng-container>
 
-<ng-container *ngIf="definition.properties.errorMessage  ">
+<ng-container *ngIf="definition.properties.errorMessage">
     <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary border"
         *ngIf="requiredError  || patternError || minLengthError || maxLengthError"
         [ngClass]="{'bg-error':requiredError  || patternError || minLengthError || maxLengthError}">

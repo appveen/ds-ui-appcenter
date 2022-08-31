@@ -610,7 +610,7 @@
         </ng-container>
         <button type="button" class="btn btn-sm btn-link p-0 ml-2 eyeIcon position-absolute pr-4"
           (click)="showDecryptedValue(value,i,type)">
-          <span class='fas' [ngClass]="{'fa-eye': !showPassword[i+type], 'fa-eye-slash': showPassword[i+type]}"></span>
+          <span class="dsi" [ngClass]="{'dsi-view': !showPassword[i+type], 'dsi-hide': showPassword[i+type]}"></span>
           <!-- {{showPassword[i+type]?'Hide':'Show'}} -->
         </button>
       </ng-container>

@@ -18,12 +18,12 @@
   </ng-container>
   <ng-container *ngIf="type === 'status'">
     <div class="d-flex align-items-center">
-      <span *ngIf="status == 'Approved'" class="odp-check text-success font-xsm "></span>
-      <span *ngIf="status == 'Rejected' || status == 'Failed'" class="odp-times text-danger font-xsm"></span>
-      <span *ngIf="status == 'Pending'" class="odp-arrow-right text-primary font-sm"></span>
-      <span *ngIf="status == 'Draft'" class="far fa-file  font-sm text-dark"></span>
-      <span *ngIf="status == 'Rework'" class="odp-rework font-sm text-warning"></span>
-      <span *ngIf="status == 'Discarded'" class="fa fa-circle text-secondary mr-1 fa-xs"></span>
+      <span *ngIf="status == 'Approved'" class="dsi dsi-check text-success font-12"></span>
+      <span *ngIf="status == 'Rejected' || status == 'Failed'" class="dsi dsi-close text-danger font-12"></span>
+      <span *ngIf="status == 'Pending'" class="dsi dsi-arrow-right text-primary font-12"></span>
+      <span *ngIf="status == 'Draft'" class="dsi dsi-file text-dark font-12"></span>
+      <span *ngIf="status == 'Rework'" class="dsi dsi-refresh text-warning font-12"></span>
+      <span *ngIf="status == 'Discarded'" class="dsi dsi-ban text-secondary font-12"></span>
       <span class="font-bold text-dark ml-2" *ngIf="status=='Pending'">Pending Review</span>
       <span class="text-muted ml-2" *ngIf="status!='Pending'">{{status}}</span>
     </div>
@@ -117,7 +117,7 @@
       <span class="text ml-1">Yes</span>
     </span>
     <span *ngIf="!value" class="text-muted">
-      <span class="fa fa-times-circle"></span>
+      <span class="dsi dsi-close-circle"></span>
       <span class="text ml-1">No</span>
     </span>
   </ng-container>

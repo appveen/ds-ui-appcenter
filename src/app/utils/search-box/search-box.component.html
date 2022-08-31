@@ -9,6 +9,6 @@
     </div>
     <span #infoTooltip="ngbTooltip" *ngIf="!searchInput.value" class="info fa fa-info-circle text-mid-grey position-absolute high-zIndex"
         [ngbTooltip]="info" container="body" [placement]="toolTipDirection">&nbsp;</span>
-    <span *ngIf="searchInput.value" class="fa fa-times-circle text-danger position-absolute hover" (click)="clear()"
+    <span *ngIf="searchInput.value" class="dsi dsi-close-circle text-danger position-absolute hover" (click)="clear()"
         ngbTooltip="Clear Search" container="body" [placement]="toolTipDirection"></span>
 </div>
