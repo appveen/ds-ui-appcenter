@@ -165,15 +165,15 @@
 </div>
 
 <ng-template #workflowModal id="_workflowModal">
-  <div class="modal-header bg-dark">
-    <h5 class="modal-title text-white">{{workflowModalOptions.title}}</h5>
-    <button id="workflowModalCloseBtn" type="button" class="close" aria-label="Close"
-      (click)="reqInProgress = false; workflowModalRef.close(false)">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body p-0 d-flex flex-column">
-    <div class="d-flex flex-column bg-light font-weight-bold" *ngIf="workflowModalOptions.operation != 'POST'">
+  <div class="modal-body p-4 d-flex flex-column">
+    <div class="d-flex align-item-center">
+      <div class="font-22 fw-500 text-dark">{{workflowModalOptions.title}}</div>
+      <button id="workflowModalCloseBtn" type="button" class="close" aria-label="Close"
+        (click)="reqInProgress = false; workflowModalRef.close(false)">
+        <span class="dsi dsi-close"></span>
+      </button>
+    </div>
+    <div class="d-flex flex-column" *ngIf="workflowModalOptions.operation != 'POST'">
       <div class="d-flex align-items-center px-3 pt-3">
         <span *ngIf="workflowModalOptions.operation == 'POST'" class="text-primary d-flex align-items-center mr-2">
           <span class="dsi dsi-plus-circle mr-1"></span>
@@ -227,10 +227,10 @@
       <label for="comments" class="text-secondary">Comments</label>
       <textarea id="comments" class="form-control" placeholder="Provide the reviewer with some helpful information"
         [(ngModel)]="workflowModalOptions.remarks" odpAutoFocus></textarea>
-      <div class="d-flex justify-content-between mt-3">
-        <button class="btn btn-outline-primary min-width-control" id="workflowModalCancelBtn"
+      <div class="d-flex justify-content-between mt-4">
+        <button class="btn btn-outline-dark mr-3" id="workflowModalCancelBtn"
           (click)="workflowModalRef.close(false); reqInProgress = false;">Cancel</button>
-        <button class="btn btn-success min-width-control" id="workflowModalSubmitBtn"
+        <button class="btn btn-success" id="workflowModalSubmitBtn"
           (click)="workflowModalRef.close(true)">Submit</button>
       </div>
     </div>
@@ -238,32 +238,33 @@
 </ng-template>
 
 <ng-template #confirmDiscardModal>
-  <div class="modal-header alert">
-    <h4 class="modal-title text-danger">Discard draft</h4>
-    <button id="discardModalCloseBtn" type="button" class="close" aria-label="Close"
-      (click)="confirmDiscardModalRef.close(false)">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p class="text-center">Are you sure, you want to discard this draft?</p>
-  </div>
-  <div class="modal-footer">
-    <button id="discardModalCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
-      (click)="confirmDiscardModalRef.close(false)">No</button>
-    <button id="discardModalYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
-      (click)="confirmDiscardModalRef.close(true)">Yes</button>
+  <div class="modal-body p-4 d-flex flex-column">
+    <div class="d-flex align-item-center ">
+      <div class="font-22 fw-500 text-danger">Discard draft</div>
+      <button id="discardModalCloseBtn" type="button" class="close" aria-label="Close"
+        (click)="confirmDiscardModalRef.close(false)">
+        <span class="dsi dsi-close"></span>
+      </button>
+    </div>
+    <p class="text-center my-4">Are you sure, you want to discard this draft?</p>
+    <div class="d-flex align-item-center justify-content-end mt-auto">
+      <button id="discardModalCancelBtn" type="button" class="btn btn-outline-dark mr-3"
+        (click)="confirmDiscardModalRef.close(false)">No</button>
+      <button id="discardModalYesBtn" type="button" class="btn btn-danger"
+        (click)="confirmDiscardModalRef.close(true)">Yes</button>
+    </div>
   </div>
 </ng-template>
+
 <ng-template #pageChangeModalTemplate>
-  <div class="modal-body p-0">
+  <div class="modal-body p-4 d-flex flex-column">
     <div class="circle bg-dark">
       <span class="fa fa-exclamation-triangle text-white"></span>
     </div>
     <p class="text-dark font-weight-bold text-center">Unsaved changes</p>
     <p class="text-secondary text-center">You have unsaved changes, are you sure you want to leave?</p>
     <div class="d-flex align-item-center justify-content-end mt-4">
-      <button type="button" class="btn btn-secondary btn-min-width mr-3"
+      <button type="button" class="btn btn-outline-dark btn-min-width mr-3"
         (click)="pageChangeModalTemplateRef.close(false)">No</button>
       <button type="button" class="btn btn-danger btn-min-width"
         (click)="pageChangeModalTemplateRef.close(true)">Yes</button>
@@ -273,10 +274,10 @@
 
 
 <ng-template #partialSuccess>
-  <div class="modal-header">
-    <div class="modal-title">Partial Success</div>
-  </div>
-  <div class="modal-body p-4 partial-success">
+  <div class="modal-body p-4 partial-success d-flex flex-column">
+    <div class="d-flex align-item-center">
+      <div class="font-22 fw-500">Partial Success</div>
+    </div>
     <table class="table table-sm table-bordered">
       <tr>
         <th>ID</th>
@@ -287,8 +288,8 @@
         <td [ngClass]="{'text-success':item.success,'text-danger':!item.success}">{{item.message}}</td>
       </tr>
     </table>
-  </div>
-  <div class="modal-footer p-3">
-    <button type="button" class="btn btn-dark btn-min-width" (click)="partialSuccessRef.close(true)">Ok</button>
+    <div class="d-flex align-item-center justify-content-end mt-auto">
+      <button type="button" class="btn btn-dark btn-min-width" (click)="partialSuccessRef.close(true)">Ok</button>
+    </div>
   </div>
 </ng-template>
