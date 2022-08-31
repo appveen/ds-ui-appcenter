@@ -98,7 +98,7 @@
               [ngClass]="{'date-picker-from': item.filterType === 'inRange'}"
               (click)="item.toggleFromDate = true; item.toggleToDate = false; $event.stopPropagation();">
               <div class="d-flex align-items-center">
-                <span class="fa fa-calendar mr-2 text-primary"></span>
+                <span class="dsi dsi-calendar mr-2 text-primary"></span>
                 <span class="text-primary">{{getDateText(item.filterType)}}</span>
               </div>
               <span class="timestamp font-sm ml-auto mr-auto" *ngIf="item.dateFieldType === 'date'">
@@ -117,7 +117,7 @@
               class="date-picker d-flex align-items-center w-50 h-100 px-2 bg-white"
               (click)="item.toggleToDate = true; item.toggleFromDate = false; $event.stopPropagation();">
               <div class="d-flex align-items-center">
-                <span class="fa fa-calendar mr-2 text-primary"></span>
+                <span class="dsi dsi-calendar mr-2 text-primary"></span>
                 <span class="text-primary">To</span>
               </div>
               <span class="timestamp font-sm ml-auto mr-auto" *ngIf="item.dateFieldType === 'date'">
@@ -168,12 +168,12 @@
           <!-- <input type="text" class="w-100 p-2 filter-txt-disabled text-secondary font-sm" [value]="selectValue.value" disabled> -->
         </div>
 
-        <div class="fas fa-times text-danger hover mr-3" (click)="removeRow(i)"></div>
-        <div class="fas fa-plus text-primary new-row" (click)="addColForSearch()"></div>
+        <div class="dsi dsi-close text-danger hover mr-3" (click)="removeRow(i)"></div>
+        <div class="dsi dsi-plus text-primary new-row" (click)="addColForSearch()"></div>
       </div>
     </div>
     <button class="pl-0 text-primary font-sm btn btn-link" (click)="addColForSearch()">
-      <strong><span class="fas fa-lg fa-plus-circle mr-2"></span> Select Field</strong>
+      <strong><span class="dsi dsi-plus-circle mr-2"></span> Select Field</strong>
     </button>
   </div>
 </div>

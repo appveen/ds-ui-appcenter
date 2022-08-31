@@ -1,5 +1,5 @@
 <div class="respond align-items-center position-fixed" [@cardAction]="respondAnimation['card']?'collapse':'expand'"
-  odpClickOutside (outside)="closeRespondView()" [ignore]="['.fa-times']">
+  odpClickOutside (outside)="closeRespondView()" [ignore]="['.dsi-close']">
   <div class="respond-header d-flex p-2" (click)="expandWflist()"
     [ngClass]="{'respond-header-expand':!respondAnimation['card']}">
     <span class="text-white" *ngIf="canRespond && allCheckedRecords < 2"

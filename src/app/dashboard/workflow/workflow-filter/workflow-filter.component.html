@@ -59,7 +59,7 @@
                 <strong class="pr-2"
                   [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">{{ col.properties.label ? col.properties.label : col.properties.name }}</strong>
                 <div class="remove-col hover pr-2" (click)="removeItem(i)">
-                  <span class="fas fa-sm fa-lg fa-times"></span>
+                  <span class="dsi dsi-close"></span>
                 </div>
               </div>
             </div>
@@ -98,11 +98,11 @@
                 </option>
               </select>
             </div>
-            <div class="fas fa-times text-danger hover mr-3" (click)="removeSortCols(i1)"></div>
-            <div class="fas fa-plus text-primary new-row" (click)="addColForSort()"></div>
+            <div class="dsi dsi-close text-danger hover mr-3" (click)="removeSortCols(i1)"></div>
+            <div class="dsi dsi-plus text-primary new-row" (click)="addColForSort()"></div>
           </div>
           <button class="pl-0 text-primary font-sm btn btn-link d-flex justify-content-start" (click)="addColForSort()">
-            <strong><span class="fas fa-lg fa-plus-circle mr-2"></span> Select Field</strong>
+            <strong><span class="dsi dsi-plus-circle mr-2"></span> Select Field</strong>
           </button>
         </div>
       </div>

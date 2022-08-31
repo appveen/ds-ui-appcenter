@@ -13,13 +13,13 @@
                 <div class="filter-value d-flex flex-column w-100">
                     <div class="d-flex align-items-center">
                         <div class="native-date-control position-relative mr-3">
-                            <!-- <span class="fa fa-calendar text-primary position-absolute"></span> -->
+                            <!-- <span class="dsi dsi-calendar text-primary position-absolute"></span> -->
                             <input type="datetime-local" max="9999-12-31T23:59" name="fromDate" id="fromDate"
                                 class="date-picker border rounded" (ngModelChange)="calcFilters()"
                                 [(ngModel)]="filterData.fromDate">
                         </div>
                         <div class="native-date-control position-relative">
-                            <!-- <span class="fa fa-calendar text-primary position-absolute"></span> -->
+                            <!-- <span class="dsi dsi-calendar text-primary position-absolute"></span> -->
                             <input type="datetime-local" max="9999-12-31T23:59" name="toDate" id="toDate" class="date-picker border rounded"
                                 (ngModelChange)="calcFilters()" [(ngModel)]="filterData.toDate">
                         </div>

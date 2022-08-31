@@ -5,7 +5,7 @@
     <span class="text">Upload file</span>
   </div>
   <div *ngIf="control.value" (click)="removeFile()" class="text-primary-dark">
-    <span class="far fa-times-circle ml-4 mt-2" placement="right" ngbTooltip="Remove File"></span>
+    <span class="dsi dsi-close-circle ml-4 mt-2" placement="right" ngbTooltip="Remove File"></span>
   </div>
   <div *ngIf="progress && progress!=100" class="float-left">
     <odp-progress [progress]="progress" color="#aaa"></odp-progress>
@@ -40,7 +40,7 @@
   <div
     *ngIf="control.value && !arrayDefinition?.properties?.readonly && !definition?.properties?.readonly && !control.disabled"
     (click)="removeFile()" class="text-da">
-    <span class="far fa-times-circle high-zIndex" placement="right" ngbTooltip="Remove File"></span>
+    <span class="dsi dsi-close-circle high-zIndex" placement="right" ngbTooltip="Remove File"></span>
   </div>
   <!-- <button type="button" class="btn btn-link py-0" *ngIf="control.value" (click)="downloadFile($event)">
     <span class="fa fa-download"></span>

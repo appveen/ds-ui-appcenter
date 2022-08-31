@@ -1,6 +1,6 @@
 <div class="">
     <div class="input-group border form-control d-flex">
-        <span class="fas fa-calendar-alt mr-2 my-auto" id="selectDate" (click)="onClick($event)"></span>
+        <span class="dsi dsi-calendar mr-2 my-auto" id="selectDate" (click)="onClick($event)"></span>
         <input [attr.id]="definition.path" class="border-0" readonly
             [disabled]=" definition.properties.readonly || control.disabled" [value]="selectedDate"
             placeholder="Select Date" (click)="onClick($event)">
@@ -18,7 +18,7 @@
 
         <!-- <select id=" clearBtn{{definition.path}}" class="btext-muted p-0" *ngIf="control.value"
                 (click)="clearValue()" [disabled]="definition.properties.readonly || control.disabled">
-                <span class="fas fa-times-circle"></span>
+                <span class="dsi dsi-close-circle"></span>
                 <span class="text-muted p-2">
                     in the timezone
                 </span>
