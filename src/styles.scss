@@ -466,3 +466,25 @@ $weights: 400, 500, 600, 700, 800, 900;
 // .btn-primary {
 //   background-color: $primary  !important;
 // }
+
+
+
+odp-view-control,
+odp-manage-control {
+  .field-wrapper {
+    border: 1px solid $border-color;
+  }
+
+  &:nth-child(odd) {
+    .field-wrapper {
+      background-color: $light;
+
+      odp-view-control,
+      odp-manage-control {
+        .field-wrapper {
+          border: 1px solid transparent;
+        }
+      }
+    }
+  }
+}

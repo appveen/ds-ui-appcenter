@@ -736,6 +736,15 @@ export class ViewComponent implements OnInit, OnDestroy {
         };
     }
 
+    get showSubHeader() {
+        const self = this;
+        const action = self.wizard && self.wizard.length > 0 ? self.wizard[self.currentStep].actions : [];
+        if (action.length > 0 || self.showVersionHistory || self.stateModelAttr) {
+            return true;
+        }
+        return false;
+    }
+
     get requiredError() {
         const self = this;
         return self.respondControl.hasError('required') && self.respondControl.touched;

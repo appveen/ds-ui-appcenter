@@ -1,4 +1,4 @@
-<div class="d-flex flex-column w-100 bg-light position-relative vh-100">
+<div class="d-flex flex-column w-100 bg-light position-relative">
     <div class="d-flex flex-column w-100">
         <!-- <div class="header d-flex align-items-center justify-content-between bg-light"> -->
         <!-- <div class="title d-flex align-items-center ml-2">
@@ -118,30 +118,30 @@
         <div class="d-flex bg-dark blackout">
         </div>
     </div>
-    <div class="d-flex align-items-center px-4 bg-white mr-4 ml-4 mb-2 mt-2 rounded" style="min-height: 72px"
-        *ngIf="wizard.length > 0 || showVersionHistory || stateModelAttr">
-        <div class='state-model d-flex align-items-center ' *ngIf='!showLazyLoader && stateModelAttr'>
-            <span class='mr-2 font-13 fw-500 state-version hover m-auto' style="color: #484848"
+    <div class="d-flex align-items-center px-4 bg-white mx-4 my-2 rounded" style="min-height: 72px"
+        *ngIf="showSubHeader">
+        <div *ngIf="!showLazyLoader && stateModelAttr" class="state-model d-flex align-items-center">
+            <span class="mr-2 font-13 fw-500 state-version hover m-auto" style="color: #484848"
                 title="{{stateModelName}}">{{stateModelName}}</span>
 
-            <input class='btn-min-width border rounded font-12 ml-3 pl-2'
+            <input class="btn-min-width border rounded font-12 ml-3 pl-2"
                 *ngIf="(!showVersionHistory || (showVersionHistory && !stateModelCreated && !stateModelUpdated))"
                 [value]="stateModelAttrVal" disabled>
 
-            <div class='history-value p-2 font-sm' *ngIf="showVersionHistory && stateModelCreated">
-                <!-- <span class='text-secondary mr-2'>Created</span> -->
-                <span class='text-muted'>{{ activeAuditNewData[stateModelAttr] }}</span>
+            <div class="history-value p-2 font-sm" *ngIf="showVersionHistory && stateModelCreated">
+                <!-- <span class="text-secondary mr-2">Created</span> -->
+                <span class="text-muted">{{ activeAuditNewData[stateModelAttr] }}</span>
             </div>
-            <div class='d-flex' *ngIf="showVersionHistory && stateModelUpdated">
-                <div class='history-value p-2 font-sm mr-2 state-version'>
-                    <!-- <span class='text-secondary mr-2'>From</span> -->
-                    <span class='text-muted text-decoration-line-through hover'
+            <div class="d-flex" *ngIf="showVersionHistory && stateModelUpdated">
+                <div class="history-value p-2 font-sm mr-2 state-version">
+                    <!-- <span class="text-secondary mr-2">From</span> -->
+                    <span class="text-muted text-decoration-line-through hover"
                         title="{{stateModelVersionData(activeAuditOldData)}}">{{
                         stateModelVersionData(activeAuditOldData) }}</span>
                 </div>
-                <div class='history-value p-2 font-sm state-version'>
-                    <!-- <span class='text-secondary mr-2'>To</span> -->
-                    <span class='text-muted hover' title="{{stateModelVersionData(activeAuditNewData)}}">{{
+                <div class="history-value p-2 font-sm state-version">
+                    <!-- <span class="text-secondary mr-2">To</span> -->
+                    <span class="text-muted hover" title="{{stateModelVersionData(activeAuditNewData)}}">{{
                         stateModelVersionData(activeAuditNewData) }}</span>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div *ngIf="!showVersionHistory">
             <ng-container *ngFor="let step of wizard;let stepIndex = index">
                 <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
                     class="d-flex experience-hooks px-3 align-items-center ml-auto">
@@ -196,25 +196,23 @@
             </ng-container>
         </div>
     </div>
-    <div class="d-flex flex-column w-100 bg-light " *ngIf="!isSchemaFree" style="border-radius: 6px;">
-        <div class="row flex-column bg-white mx-4 rounded" style="height: 100vh">
+    <div class="d-flex flex-column w-100 bg-light" *ngIf="!isSchemaFree">
+        <div class="view-container d-flex align-items-stretch bg-white mx-4 rounded rounded-lg">
             <div *ngIf="wizard.length > 0" [ngClass]="{'history':showVersionHistory}"
-                class="col-3 border-right pr-0 pl-0 min-vh-100">
-                <div class="step-tabs d-flex flex-column ">
+                class="view-body steps-wrapper border-right" [ngClass]="{'no-action':showSubHeader}">
+                <div class="step-tabs d-flex flex-column">
                     <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
-
-                        <div (click)="showStep(i)" class="step-tab d-flex hover" style="min-height: 75px"
-                            [attr.id]="'step-'+i" [ngClass]="{'selected': active[i] }">
-                            <span *ngIf="active[i]" class="active-tab"></span>
+                        <div (click)="showStep(i)" class="step-tab hover d-flex" [attr.id]="'step-'+i"
+                            [ngClass]="{'selected': active[i] }">
+                            <span class="active-tab"></span>
                             <div class="d-flex flex-column p-3">
-                                <div [ngbTooltip]="" class="d-flex font-12 text-secondary">
+                                <div [ngbTooltip]="" class="d-flex font-12 fw-400 text-secondary text-uppercase">
                                     Step {{i +1}}
                                 </div>
                                 <div [ngbTooltip]="step.name" class="text-truncate fw-500">
                                     {{step.name}}</div>
                             </div>
                         </div>
-
                     </ng-container>
                 </div>
                 <!-- <div class="step-controls d-flex align-items-center position-relative">
@@ -245,12 +243,11 @@
             </div> -->
             </div>
 
-            <div [ngClass]="viewBodyClass" class="bg-white p-3 min-vh-100 w-100 rounded"
-                [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
+            <div class="view-body bg-white p-4 w-100 rounded" [ngClass]="{'no-action':showSubHeader}">
                 <ng-container *ngIf="wizard.length > 0">
                     <ng-container
                         *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
-                        <div [ngClass]="{'d-block':active[stepIndex]}" class="d-flex flex-column w-100  d-none">
+                        <div [ngClass]="{'d-block':active[stepIndex]}" class="d-flex flex-column w-100 d-none">
                             <div *ngIf="active[stepIndex]" class="container-fluid p-0">
                                 <ng-container *ngFor="let field of step.fields;let i=index">
                                     <odp-view-control *ngIf="getDefinition(field)" [definition]="getDefinition(field)"
@@ -263,7 +260,7 @@
                     </ng-container>
                 </ng-container>
                 <ng-container *ngIf="wizard.length == 0">
-                    <div class="d-flex flex-column w-100 px-3">
+                    <div class="d-flex flex-column w-100">
                         <ng-container *ngFor="let def of definition;let l=last">
                             <ng-container *ngIf="!checkStateModel(def)">
                                 <odp-view-control [definition]="def" [newValue]="activeAuditNewData"

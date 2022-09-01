@@ -1007,6 +1007,15 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     return true;
   }
 
+  get showSubHeader() {
+    const self = this;
+    const action = self.wizard && self.wizard.length > 0 ? self.wizard[self.currentStep].actions : [];
+    if (action.length > 0 || self.stateModelAttr) {
+        return true;
+    }
+    return false;
+}
+
   get stepFirst() {
     const self = this;
     return self.currentStep === 0;

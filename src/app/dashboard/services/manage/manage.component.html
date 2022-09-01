@@ -89,7 +89,7 @@
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center bg-white rounded-lg mb-3 p-3" *ngIf="wizard.length > 0 || stateModelAttr">
+  <div class="d-flex align-items-center bg-white rounded-lg mb-3 p-3" style="min-height: 72px" *ngIf="showSubHeader">
     <div class="d-flex align-items-center state-model" *ngIf="stateModelAttr">
       <span class="mr-2 font-13 fw-500 state-version hover text-uppercase">{{stateModelName}}</span>
       <select class="form-control btn-min-width font-12 fw-400" (change)="changeStatus($event)"
@@ -110,8 +110,7 @@
       </div> -->
     </div>
     <ng-container *ngFor="let step of wizard;let stepIndex = index">
-      <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
-        class="d-flex experience-hooks px-3 align-items-center ml-auto">
+      <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]" class="d-flex align-items-center ml-auto">
         <!-- <div class="text-secondary font-weight-bold experience-hooks-title">Available Actions</div> -->
         <!-- <div class="d-flex experience-hooks-buttons"> -->
         <button type="button" *ngFor="let ac of step.actions"
@@ -132,15 +131,15 @@
       </div>
     </ng-container>
   </div>
-  <div class="d-flex flex-column bg-white rounded-lg">
-    <div class="border-right" *ngIf="wizard.length > 0">
+  <div class="view-container d-flex align-items-stretch bg-white rounded rounded-lg">
+    <div *ngIf="wizard.length > 0" class="view-body steps-wrapper border-right" [ngClass]="{'no-action':showSubHeader}">
       <div class="step-tabs d-flex flex-column">
         <ng-container *ngFor="let step of wizard; let i=index;let last=last;">
-          <div class="step-tab d-flex hover" style="min-height: 75px" (click)="showCard(i)" [attr.id]="'step-'+i"
+          <div class="step-tab d-flex hover" (click)="showCard(i)" [attr.id]="'step-'+i"
             [ngClass]="{'selected': active[i] }">
-            <span *ngIf="active[i]" class="active-tab"></span>
+            <span class="active-tab"></span>
             <div class="d-flex flex-column p-3">
-              <div [ngbTooltip]="" class="d-flex font-12 text-secondary">
+              <div [ngbTooltip]="" class="d-flex font-12 text-secondary fw-400 text-uppercase">
                 Step {{i +1}}
               </div>
               <div [ngbTooltip]="step.name" class="text-truncate fw-500">
@@ -151,18 +150,21 @@
       </div>
     </div>
 
-    <div class="form-body p-3 min-vh-100" [ngClass]="{'col-9' : wizard.length > 0, 'col-12': wizard.length === 0}">
-      <div *ngIf="!showLazyLoader" class="position-relative" [class.restrict-overflow]="restrictOverflow"
-        [ngClass]="{'no-steps':wizard.length == 0,'has-actions':wizard[currentStep] && wizard[currentStep].actions && wizard[currentStep].actions.length>0}">
+    <div class="view-body p-4 w-100" [ngClass]="{'no-action':showSubHeader}">
+      <div *ngIf="!showLazyLoader" class="position-relative" [class.restrict-overflow]="restrictOverflow">
         <ng-container *ngIf="!isSchemaFree">
           <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
             <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
-              <div class="d-flex flex-column py-3" *ngIf="active[stepIndex]">
+              <div class="d-flex flex-column" *ngIf="active[stepIndex]">
                 <ng-container *ngFor="let field of step.fields;let fieldIndex = index;let first = first;">
-                  <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
+                  <!-- <div [attr.id]="stepIndex+'-'+fieldIndex" *ngIf="getDefinition(field)">
                     <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
                     </odp-manage-control>
-                  </div>
+                  </div> -->
+                  <ng-container *ngIf="getDefinition(field)">
+                    <odp-manage-control [form]="form" [definition]="getDefinition(field)" [first]="first">
+                    </odp-manage-control>
+                  </ng-container>
                 </ng-container>
               </div>
             </ng-container>
@@ -170,10 +172,10 @@
           <ng-container *ngIf="wizard.length == 0">
             <div class="d-flex flex-column">
               <ng-container *ngFor="let def of definition;let i = index; let first = first; let last = last;">
-                <div *ngIf="!checkStateModel(def)">
+                <ng-container *ngIf="!checkStateModel(def)">
                   <odp-manage-control [form]="form" [definition]="def" [first]="first" [last]="last">
                   </odp-manage-control>
-                </div>
+                </ng-container>
               </ng-container>
             </div>
           </ng-container>

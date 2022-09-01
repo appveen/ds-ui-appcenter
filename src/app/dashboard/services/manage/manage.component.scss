@@ -31,24 +31,6 @@
   }
 }
 
-.form-body {
-  // max-height: 100vh;
-  // height: calc(100vh - 186px);
-  // overflow-y: auto;
-  // overflow-x: auto;
-
-  &.no-steps {
-    min-height: calc(100vh - 128px);
-    max-height: calc(100vh - 128px);
-    height: calc(100vh - 128px);
-  }
-
-
-  &.restrict-overflow {
-    overflow: hidden;
-  }
-}
-
 .all-steps-dropdown {
   right: 15px;
   top: 42px;
@@ -77,39 +59,32 @@
   overflow: auto;
 }
 
-.p-0 {
-  padding-left: 0px;
-  padding-right: 0px;
+.view-container {
+  overflow: hidden;
+}
+
+.view-body {
+  height: calc(100vh - 180px);
+  overflow-y: auto;
+
+  &.no-action {
+    height: calc(100vh - 270px);
+  }
 }
 
 .steps-wrapper {
-  min-height: 42px;
-  max-height: 42px;
+  width: 260px;
 
   .step-tabs {
     overflow: hidden;
 
     .step-tab {
-      min-width: 150px;
-      max-width: 150px;
-      min-height: 42px;
-      max-height: 42px;
-      border-bottom: 4px solid transparent;
+      min-height: 74px;
+      max-height: 74px;
       transition: 0.25s;
 
-      &.active {
-        font-weight: bold;
-      }
-
-      .step-no {
-        min-width: 36px;
-        max-width: 36px;
-        min-height: 42px;
-        max-height: 42px;
-      }
-
       .step-name {
-        max-width: 114px;
+        max-width: 200px;
       }
     }
   }
@@ -117,6 +92,20 @@
   .step-controls {
     min-width: 134px;
     max-width: 134px;
+  }
+}
+
+.active-tab {
+  background: $white;
+  border-radius: 0px 8px 8px 0px;
+  width: 3px !important
+}
+
+.selected {
+  background: rgba($primary, 0.04);
+
+  .active-tab {
+    background: $primary  !important;
   }
 }
 
@@ -171,16 +160,6 @@
   &.show {
     transform: translate(-132px, 32px) !important;
   }
-}
-
-.selected {
-  background: rgba($primary, 0.04);
-}
-
-.active-tab {
-  background: $primary;
-  border-radius: 0px 8px 8px 0px;
-  width: 3px !important
 }
 
 .action-btn {

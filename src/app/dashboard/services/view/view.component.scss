@@ -41,28 +41,33 @@
 //   width: 256px;
 // }
 
+.view-container {
+  overflow: hidden;
+}
+
+.view-body {
+  height: calc(100vh - 180px);
+  overflow-y: auto;
+
+  &.no-action {
+    height: calc(100vh - 270px);
+  }
+}
+
 .steps-wrapper {
+  width: 260px;
+
   .step-tabs {
     overflow: hidden;
     z-index: 0;
 
     .step-tab {
-      min-width: 150px;
-      max-width: 150px;
-      min-height: 42px;
-      max-height: 42px;
-      border-bottom: 4px solid transparent;
+      min-height: 74px;
+      max-height: 74px;
       transition: 0.25s;
 
-      .step-no {
-        min-width: 36px;
-        max-width: 36px;
-        min-height: 42px;
-        max-height: 42px;
-      }
-
       .step-name {
-        max-width: 114px;
+        max-width: 200px;
       }
     }
 
@@ -77,14 +82,18 @@
   }
 }
 
-.selected {
-  background: rgba($primary, 0.04);
-}
-
 .active-tab {
-  background: $primary;
+  background: $white;
   border-radius: 0px 8px 8px 0px;
   width: 3px !important
+}
+
+.selected {
+  background: rgba($primary, 0.04);
+
+  .active-tab {
+    background: $primary  !important;
+  }
 }
 
 .all-steps-dropdown {
