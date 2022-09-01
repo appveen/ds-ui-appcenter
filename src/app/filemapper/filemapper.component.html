@@ -117,11 +117,11 @@
           odpDragAndDrop placement="top" (fileData)="dragAndUpload($event)" (dragover)="dragOver()"
           (dragleave)="dragOut()" for="logoFile">
         </label>
-        <!-- <label class="d-flex justify-content-between align-items-center small-drop-box p-2" odpDragAndDrop
+        <!-- <label class="d-flex justify-content-between align-items-center small-drop-box p-2 rounded" odpDragAndDrop
           *ngIf="uploadObj.showUploadTag">
           <div class="d-flex align-items-center ">
             <div class="fileTypeIcon">
-              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+              <div class="font-8 text-white pt-3 pl-1">{{fileData.type}}</div>
             </div>
             <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
             <span class="text-muted ml-2">{{fileData?.fileName}}</span>
@@ -165,7 +165,7 @@
           (dragover)="dragOver()" (dragleave)="dragOut()">
           <div class="d-flex align-items-center ">
             <div class="fileTypeIcon">
-              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+              <div class="font-8 text-white pt-3 pl-1">{{fileData.type}}</div>
             </div>
             <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
             <span class="text-muted ml-2">{{fileData?.fileName}}</span>
@@ -234,7 +234,7 @@
           (dragover)="dragOver()" (dragleave)="dragOut()">
           <div class="d-flex align-items-center ">
             <div class="fileTypeIcon">
-              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+              <div class="font-8 text-white pt-3 pl-1">{{fileData.type}}</div>
             </div>
             <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
             <span class="text-muted ml-2">{{fileData?.fileName}}</span>
@@ -277,12 +277,12 @@
             <span class="text-dark">Resolve Conflicts</span>
           </div>
         </div>
-        <label class="d-flex justify-content-between align-items-center small-drop-box p-2"
+        <label class="d-flex justify-content-between align-items-center small-drop-box p-2 rounded"
           [ngClass]="{'bg-light-green':ripple}" odpDragAndDrop (fileData)="dragAndUpload($event)"
           (dragover)="dragOver()" (dragleave)="dragOut()">
           <div class="d-flex align-items-center ">
             <div class="fileTypeIcon">
-              <div class="text-white pt-3 pl-1">{{fileData.type}}</div>
+              <div class="font-8 text-white pt-3 pl-1">{{fileData.type}}</div>
             </div>
             <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
             <span class="text-muted ml-2">{{fileData?.fileName}}</span>

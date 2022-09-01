@@ -55,8 +55,13 @@
                         <div class="notification-icon d-flex align-items-center justify-content-center hover text-secondary"
                             [class.border-primary]="!!newNotificationsCount"
                             (click)="toggleNotification=!toggleNotification">
-                            <span class="dsi" [class.dsi-notification]="!newNotificationsCount"
-                                [class.dsi-notification-active]="newNotificationsCount"></span>
+                            <span *ngIf="newNotificationsCount" class="font-20 dsi dsi-notification-active">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </span>
+                            <span *ngIf="!newNotificationsCount" class="font-20 dsi dsi-notification"></span>
                             <!-- <div class="notification-count bg-primary text-white" *ngIf="!!newNotificationsCount">
                                 {{ unreadNotificationsCount }}
                             </div> -->
@@ -66,8 +71,13 @@
                             <div
                                 class="notification-dropdown-header d-flex align-items-center justify-content-between px-3">
                                 <div class="d-flex align-items-center">
-                                    <span class="dsi mr-2" [class.dsi-notification]="!hasNotifications"
-                                        [class.dsi-notification-active]="hasNotifications"></span>
+                                    <span *ngIf="hasNotifications" class="dsi dsi-notification-active mr-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </span>
+                                    <span *ngIf="!hasNotifications" class="dsi dsi-notification mr-2"></span>
                                     <div class="fw-400">
                                         {{ hasNotifications ? 'Notifications' : 'No Notifications' }}
                                     </div>
