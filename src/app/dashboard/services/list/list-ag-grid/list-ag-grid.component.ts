@@ -647,8 +647,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   rowSelected(event) {
     const self = this;
     const selectedNodes = self.agGrid.api.getSelectedNodes();
-    const selectedData = selectedNodes.map(node => node.data);
-    self.selectedRecords.emit(selectedData);
+    if (selectedNodes) {
+      const selectedData = selectedNodes.map(node => node.data);
+      self.selectedRecords.emit(selectedData);
+    }
   }
 
   sortChanged(event) {

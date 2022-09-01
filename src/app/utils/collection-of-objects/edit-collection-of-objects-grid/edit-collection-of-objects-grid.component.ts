@@ -407,7 +407,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
           if (definition.properties.readonly) {
             return false
           }
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
             return true
           }
           else {
@@ -418,7 +418,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
           if (definition.properties.readonly) {
             return {}
           }
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number')) {
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
             return { component: 'textEditor' }
           }
           else {
@@ -431,7 +431,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         },
         onCellDoubleClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
-          if ((definition.type === 'String' || definition.type === 'Number')) {
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
             return ''
           }
 
@@ -493,7 +493,9 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   private onGridReady(event) {
     this.gridApi = event.api;
     this.columnApi = event.columnApi;
-    this.forceResizeColumns()
+    if (this.gridApi) {
+      this.forceResizeColumns()
+    }
   }
 
   private forceResizeColumns() {
@@ -612,7 +614,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   openNew() {
     this.definitionList.forEach(definition => {
-      if (definition.type === 'String' || definition.type === 'Number') {
+      if ((definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
         this.addRow = true;
       }
       else {
