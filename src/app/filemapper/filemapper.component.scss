@@ -39,7 +39,7 @@ $color: #65ff78;
   // border: 1px dashed #0082c9;
   // background-color: #cce6f4;
   border: 1px dashed $primary;
-  background-color: rgba($primary, 0.3);
+  background-color: rgba($primary, 0.1);
 
   &:hover {
     border-color: #666;
