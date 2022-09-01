@@ -1,14 +1,18 @@
-<div class="search-box position-relative d-flex justify-content-center align-items-center" [ngClass]="{'ignore-outside': ignoreOutside}">
+<div class="search-box position-relative d-flex justify-content-center align-items-center"
+    [ngClass]="{'ignore-outside': ignoreOutside}">
     <input type="text" name="searchTerm" id="searchTerm" maxlength="40" #searchInput [(ngModel)]="searchTerm"
-           (ngModelChange)="onChange($event)" (keyup.enter)="onEnterKey($event)" (keyup.backspace)="onBackspaceKey($event)"
-           (focus)="onFocus($event)" (blur)="onBlur($event)" class="form-control" [ngClass]="{'ignore-outside': ignoreOutside}">
-    <div *ngIf="!searchInput.value" [@slide]="slideState" class="position-absolute text-mid-grey" [ngClass]="{'ignore-outside': ignoreOutside}"
-        (click)="searchInput.focus()">
-        <span class="fas fa-search mr-2" [ngClass]="{'ignore-outside': ignoreOutside}" (click)="searchInput.focus()"></span>
+        (ngModelChange)="onChange($event)" (keyup.enter)="onEnterKey($event)" (keyup.backspace)="onBackspaceKey($event)"
+        (focus)="onFocus($event)" (blur)="onBlur($event)" class="form-control"
+        [ngClass]="{'ignore-outside': ignoreOutside}">
+    <div *ngIf="!searchInput.value" [@slide]="slideState" class="position-absolute text-mid-grey"
+        [ngClass]="{'ignore-outside': ignoreOutside}" (click)="searchInput.focus()">
+        <span class="fas fa-search mr-2" [ngClass]="{'ignore-outside': ignoreOutside}"
+            (click)="searchInput.focus()"></span>
         <span [ngClass]="{'ignore-outside': ignoreOutside}" (click)="searchInput.focus()">{{ placeholderText }}</span>
     </div>
-    <span #infoTooltip="ngbTooltip" *ngIf="!searchInput.value" class="info fa fa-info-circle text-mid-grey position-absolute high-zIndex"
-        [ngbTooltip]="info" container="body" [placement]="toolTipDirection">&nbsp;</span>
+    <span #infoTooltip="ngbTooltip" *ngIf="!searchInput.value"
+        class="info fa fa-info-circle text-mid-grey position-absolute high-zIndex" [ngbTooltip]="info" container="body"
+        [placement]="toolTipDirection">&nbsp;</span>
     <span *ngIf="searchInput.value" class="dsi dsi-close-circle text-danger position-absolute hover" (click)="clear()"
         ngbTooltip="Clear Search" container="body" [placement]="toolTipDirection"></span>
 </div>

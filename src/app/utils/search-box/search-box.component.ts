@@ -1,5 +1,5 @@
-import {Component, OnInit, AfterViewInit, ViewChild, Input, Output, ElementRef, EventEmitter} from '@angular/core';
-import {trigger, state, style, transition, animate} from '@angular/animations';
+import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, ElementRef, EventEmitter } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonService } from 'src/app/service/common.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
   @Input('onEnter') onEnter: boolean;
   @Output('reset') reset: EventEmitter<string>;
   @Input('placeholder') placeholder: string;
+  @Input('value') value: string;
 
   searchTerm: string;
   slideState: string;
@@ -39,6 +40,7 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     const self = this;
+    this.searchTerm = this.value
   }
 
   ngAfterViewInit() {
