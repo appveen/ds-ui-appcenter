@@ -17,16 +17,6 @@
       </div>
       <div class="app-name text-truncate" [autoClose]="false" [ngbTooltip]="app._id">{{app._id}}</div>
     </div>
-    <div class="app-card d-flex align-items-center justify-content-start rounded p-2 hover font-14"
-      *ngFor="let app of appList|filterApp: searchTerm;let appIndex = index;" (click)="selectApp(app)"
-      [ngClass]="{'text-dark fw-500':activeApp._id == app._id,'text-secondary fw-400':activeApp._id != app._id}">
-      <div class="app-thumbnail d-flex align-items-center justify-content-center hover mr-2"
-        [ngStyle]="{ 'background-color': app.bg }">
-        <img *ngIf="app.logo && app.logo.thumbnail" [src]="app.logo.thumbnail" alt="Logo">
-        <span class="text-dark" *ngIf="!app.logo || !app.logo.thumbnail">{{app.firstLetter}}</span>
-      </div>
-      <div class="app-name text-truncate" [autoClose]="false" [ngbTooltip]="app._id">{{app._id}}</div>
-    </div>
   </div>
 </div>
 <!-- <div class="app-switcher-window d-flex flex-column justify-content-start align-items-center rounded bg-light" odpClickOutside [ignore]="['.current-app']" (outside)="onCancel()"> -->
