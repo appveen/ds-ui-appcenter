@@ -7,6 +7,7 @@ import { FilterAppPipe } from 'src/app/pipes/filter-app.pipe';
 import { WfFilterPipe } from 'src/app/pipes/wf-filter.pipe';
 import { OrderByPipe } from './order-by.pipe';
 import { FilterIntegrationPipe } from './filter-integration.pipe';
+import { SearchFieldsPipe } from './search-fields.pipe';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { FilterIntegrationPipe } from './filter-integration.pipe';
     ServiceSearchPipe,
     WfFilterPipe,
     OrderByPipe,
-    FilterIntegrationPipe
+    FilterIntegrationPipe,
+    SearchFieldsPipe
   ],
   exports: [
     FilterAppPipe,
@@ -28,7 +30,8 @@ import { FilterIntegrationPipe } from './filter-integration.pipe';
     ServiceSearchPipe,
     WfFilterPipe,
     OrderByPipe,
-    FilterIntegrationPipe
+    FilterIntegrationPipe,
+    SearchFieldsPipe
   ],
   providers: [
     FilterAppPipe,

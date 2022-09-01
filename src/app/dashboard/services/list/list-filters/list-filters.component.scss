@@ -8,6 +8,21 @@
   left: 78px;
   z-index: 2;
   box-shadow: 0px 0px 3px rgb(0, 0, 0, 0.4);
+
+  .form-control {
+    height: 28px;
+  }
+}
+
+.selected-filter-list {
+  overflow-x: auto;
+  max-width: calc(100vw - 700px);
+  height: 40px;
+}
+
+.selected-filter-item {
+  white-space: nowrap;
+  height: 28px;
 }
 
 .custom-filter-container {

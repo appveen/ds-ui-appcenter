@@ -71,6 +71,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   showSeparateCreateBtn: boolean;
   hasOptions = true;
   showColumnsWindow: boolean;
+  searchTerm: string;
   constructor(private ts: ToastrService,
     private appService: AppService,
     private modalService: NgbModal,
@@ -151,11 +152,10 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     const index = self.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
     if (index === -1) {
       self.selectedColOrder.push(val);
-      self.applyFilter();
     } else {
-      self.selectedColOrder.splice(index, 1);
-      // self.ts.warning('Column already added');
+      this.removeItem(index);
     }
+    self.applyFilter();
     self.name = '';
   }
 
@@ -176,14 +176,13 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   removeItem(index) {
     const self = this;
-    self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
-    self.confirmDeleteModalRef.result.then(close => {
-      if (close) {
-        self.allColumns.push(self.selectedColOrder[index]);
-        self.selectedColOrder.splice(index, 1);
-        self.applyFilter()
-      }
-    }, dismiss => { });
+    // self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
+    // self.confirmDeleteModalRef.result.then(close => {
+    //   if (close) {
+    self.allColumns.push(self.selectedColOrder[index]);
+    self.selectedColOrder.splice(index, 1);
+    //   }
+    // }, dismiss => { });
   }
 
   addColForSort() {
@@ -413,5 +412,31 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     if (self.confirmDeleteModalRef) {
       self.confirmDeleteModalRef.close();
     }
+  }
+
+  get checkAllColumn() {
+    return this.selectedColOrder.length == this.allColumns.length;
+  }
+
+  set checkAllColumn(flag: boolean) {
+    this.allColumns.forEach(item => {
+      const index = this.selectedColOrder.findIndex(e => e.properties.name === item.properties.name);
+      if (flag) {
+        if (index === -1) {
+          this.selectedColOrder.push(item);
+        }
+      } else {
+        if (index > -1) {
+          this.removeItem(index);
+        }
+      }
+    });
+    this.applyFilter();
+  }
+
+  get filterList() {
+    console.log(this.queryObject.filter);
+    return this.queryObject.filter
+
   }
 }

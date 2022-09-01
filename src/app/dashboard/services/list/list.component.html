@@ -36,7 +36,7 @@
       </div>
     </div>
   </div>
-  <div class="bg-white border border-6" [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
+  <div class="bg-white border rounded" [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
     <div class="mt-1">
       <div class="input-group border-bottom">
         <div class="input-group-prepend p-3" *ngIf="!isCollapsed || !selectedSearch">
@@ -177,29 +177,6 @@
             </div>
           </div> -->
       </div>
-      <!-- <div ngbDropdown class="d-inline-block ">
-        <button class="btn btn-outline bg-white shadow-none p-0 search-button" ngbDropdownToggle>
-          <div class="d-inline-block text-truncate max-width-100 fw-500 mr-2"
-            title="{{selectedSearch? selectedSearch.name : 'Filter'}}">
-            {{selectedSearch? selectedSearch.name : "Filter"}}
-          </div>
-        </button>
-        <span class="mr-2">:</span>
-        <span class="text-truncate max-width-100 text-muted"> {{searchForm.get('filter').value || '{}'}}</span>
-        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button ngbDropdownItem class='search-views px-3'
-            (click)='selectSearch();isCollapsed?collapse.toggle():""'>New Search</button>
-          <button ngbDropdownItem *ngFor="let filter of savedViews" class="search-views px-3"
-            (click)='selectSearch(filter)'>
-            <div class="d-flex">
-              <div title="{{filter.name}}" class="hover d-inline-block text-truncate max-width-100 mr-2">{{filter.name}}
-              </div>
-              <div *ngIf="!filter.private" class='ml-auto font-italic text-success'>Public</div>
-              <div *ngIf="filter.private" class='ml-auto font-italic text-secondary'>Private</div>
-            </div>
-          </button>
-        </div>
-      </div> -->
     </div>
     <div class='row mr-4 mt-3 px-3 pb-3' *ngIf="selectedSearch && isCollapsed">
       <div class='col-md-4 d-flex align-items-center'>
@@ -228,41 +205,24 @@
           {{selectedSearch.value.sort}}
         </span>
       </div>
-      <!-- <div class='col-md-1 d-flex align-items-center'>
-        <span class='font-bold text-secondary'>
-          Count &nbsp;:&nbsp;
-        </span>
-        <span class="d-inline-block text-truncate  hover" title="{{selectedSearch.value.count}}">
-          {{selectedSearch.value.count}}
-        </span>
-      </div>
-      <div class='col-md-1 d-flex align-items-center'>
-        <span class='font-bold text-secondary mr-1'>
-          Page:
-        </span>
-        <span class="d-inline-block text-truncate hover" title="{{selectedSearch.value.page}}">
-          {{selectedSearch.value.page}}
-        </span>
-      </div> -->
     </div>
-    <!-- <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-
-    </div> -->
   </div>
-  <div *ngIf="totalRecords>0 &&  !isSchemaFree">
-    <div class="d-flex flex-column">
+  <div *ngIf="totalRecords>0 && !isSchemaFree">
+    <div class="d-flex align-items-center justify-content-between">
       <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
         (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
       </odp-list-filters>
-      <div class="d-flex align-items-center justify-content-end hover position-relative ignore-outside" *ngIf="!isSchemaFree">
+      <div class="d-flex align-items-center justify-content-end hover position-relative ignore-outside"
+        *ngIf="!isSchemaFree">
         <div class="d-flex p-2 border bg-white align-items-center ignore-outside rounded font-13" style="height:40px;"
           [ngClass]="{'disabled': apiCallsPending}" (click)="showSaveViewDropDown=!showSaveViewDropDown">
           <div class="ignore-outside d-flex align-items-center">
             <span class="dsi dsi-search text-secondary mr-2 ignore-outside" *ngIf="!selectedSavedView?.name"></span>
             <span class="dsi dsi-search text-primary mr-2 ignore-outside" *ngIf="selectedSavedView?.name"></span>
-            <span class="ignore-outside mr-3 "
-              [ngClass]="{'text-primary': selectedSavedView?.name, 'text-secondary': !selectedSavedView?.name}">{{
-              selectedSavedView?.name ? selectedSavedView?.name : 'All Saved Filters' }}</span>
+            <span class="filter-name ignore-outside mr-3"
+              [ngClass]="{'text-primary': selectedSavedView?.name, 'text-secondary': !selectedSavedView?.name}">
+              {{ selectedSavedView?.name ? selectedSavedView?.name : 'All Saved Filters' }}
+            </span>
           </div>
           <div class="ml-auto ignore-outside">
             <span class="dsi dsi-drop-down text-secondary ignore-outside"></span>
@@ -627,7 +587,7 @@
       <input type="radio" [value]=true formControlName="private" class="mr-2">
       <span class="font-14 text-dark">Private</span>
     </label>
-    <div class="border border-6 mt-4" style="background-color: #F5F5F8">
+    <div class="border rounded mt-4" style="background-color: #F5F5F8">
       <div class='d-flex border-bottom p-3'>
         <div class='text-secondary font-14 fw-500 mr-3'>
           Filter:
