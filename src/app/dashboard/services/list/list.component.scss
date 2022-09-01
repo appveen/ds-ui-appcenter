@@ -13,10 +13,10 @@
 }
 
 .list-page-wrapper {
-  min-height: calc(100vh - 240px);
+  min-height: calc(100vh - 200px);
 
   &.has-records {
-    min-height: calc(100vh - 280px);
+    min-height: calc(100vh - 240px);
   }
 }
 
