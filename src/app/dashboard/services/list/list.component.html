@@ -17,7 +17,7 @@
         </button>-->
       <div class="d-flex align-items-center justify-content-between">
         <button type="button" class="btn btn-link d-flex align-items-center text-dark"
-          *ngIf="!recordChecked && hasPermission()" (click)="exportData()">
+          *ngIf="!recordChecked && hasPermission() && totalRecords>0" (click)="exportData()">
           <span class="dsi dsi-download font-14 mr-2"></span>
           <span> Export All </span>
         </button>
@@ -51,7 +51,6 @@
           <i class="dsi dsi-drop-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
           <i class="dsi dsi-drop-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
         </div>
-
         <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch">
           <div class="my-auto">
             <span class='dsi dsi-undo hover mr-3 font-20' (click)='clearSearch()'></span>
@@ -70,7 +69,6 @@
             <span class="text-dark fw-500 font-14">Edit</span>
           </div>
         </div>
-
       </div>
       <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
         <div class="input-group border-bottom">
@@ -84,7 +82,6 @@
                 Format</small>
             </div>
           </div>
-
         </div>
         <div class="row">
           <div class="col-12">
@@ -92,7 +89,6 @@
               <div class="input-group-prepend p-3">
                 <div class="schema-free-filter-label pr-2 text-secondary my-auto">Sort : </div>
                 <div class="d-flex flex-column">
-
                   <input type="text" class="form-control" formControlName='sort'
                     class="sf-min-width schema-free-filters">
                   <small class='text-danger'
@@ -100,7 +96,6 @@
                     Format</small>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -132,7 +127,6 @@
                         <div *ngIf="!filter.private" class='ml-auto my-auto font-italic text-success'>Public</div>
                         <div *ngIf="filter.private" class='ml-auto my-auto font-italic text-secondary'>Private</div>
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -155,19 +149,15 @@
               Changes
             </div>
             <div class="d-flex mt-2" [ngClass]="{'pe-none': !selectedSearch}">
-
               <span class="font-12 fw-500 mr-2">{{selectedSearch?.private ? 'Private' : 'Public'}}</span>
-
               <odp-switch [checked]="!selectedSearch?.private" (onChange)="toggleVisibility($event)"></odp-switch>
             </div>
-
           </div>
           <!-- <button class="btn btn-outline-primary btn-min-width mr-2" (click)='saveSearchViewModal()'
                 *ngIf="saveAsNewSearch" [disabled]="!(searchForm.get('project').valid &&
               searchForm.get('filter').valid && searchForm.get('sort').valid)">Save
                 as New Search</button> -->
         </div>
-
         <!-- <div class="col-2">
             <div class="input-group mb-2">
               <div class="input-group-prepend">
@@ -186,13 +176,6 @@
               <small class='text-danger' *ngIf="!searchForm.get('page').valid">Please enter a positive page</small>
             </div>
           </div> -->
-
-
-
-
-
-
-
       </div>
       <!-- <div ngbDropdown class="d-inline-block ">
         <button class="btn btn-outline bg-white shadow-none p-0 search-button" ngbDropdownToggle>
@@ -214,11 +197,9 @@
               <div *ngIf="!filter.private" class='ml-auto font-italic text-success'>Public</div>
               <div *ngIf="filter.private" class='ml-auto font-italic text-secondary'>Private</div>
             </div>
-
           </button>
         </div>
       </div> -->
-
     </div>
     <div class='row mr-4 mt-3 px-3 pb-3' *ngIf="selectedSearch && isCollapsed">
       <div class='col-md-4 d-flex align-items-center'>
@@ -269,11 +250,11 @@
     </div> -->
   </div>
   <div *ngIf="totalRecords>0 &&  !isSchemaFree">
-    <div class="d-flex align-items-center justify-content-between">
+    <div class="d-flex flex-column">
       <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
         (filterCleared)="resetFilter(true)" (refine)="onRefine($event)">
       </odp-list-filters>
-      <div class="d-flex align-items-center hover position-relative ignore-outside" *ngIf="!isSchemaFree">
+      <div class="d-flex align-items-center justify-content-end hover position-relative ignore-outside" *ngIf="!isSchemaFree">
         <div class="d-flex p-2 border bg-white align-items-center ignore-outside rounded font-13" style="height:40px;"
           [ngClass]="{'disabled': apiCallsPending}" (click)="showSaveViewDropDown=!showSaveViewDropDown">
           <div class="ignore-outside d-flex align-items-center">
@@ -306,7 +287,7 @@
               <span class="dsi dsi-search text-mid-grey ignore-outside"></span>
             </div>
             <div class="filter-search position-relative ml-3 w-100 ignore-outside" *ngIf="showSearchSavedView">
-              <input type="text" class="form-control ignore-outside" [(ngModel)]="savedViewSearchTerm"
+              <input type="text" class="form-control form-control-sm ignore-outside" [(ngModel)]="savedViewSearchTerm"
                 placeholder="Search save view" (keyup.enter)="filterSavedViews()" odpAutoFocus>
               <span class="dsi dsi-search text-mid-grey position-absolute srch-icon-pos ignore-outside"></span>
             </div>

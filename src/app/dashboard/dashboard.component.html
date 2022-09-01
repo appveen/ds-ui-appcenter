@@ -92,18 +92,18 @@
                     </div>
                     <div class="current-app d-flex align-items-center hover rounded border mr-3 ignore-outside px-2"
                         (click)="toggleAppOptions()">
-                        <div class="current-app-thumbnail rounded d-flex align-items-center justify-content-center mr-2"
+                        <div class="current-app-thumbnail ignore-outside rounded d-flex align-items-center justify-content-center mr-2"
                             [ngStyle]="{background:selectedApp.bg}">
                             <img *ngIf="selectedApp.logo && selectedApp.logo.thumbnail"
                                 [src]="selectedApp.logo.thumbnail" alt="Logo">
                             <span
                                 *ngIf="!selectedApp.logo || !selectedApp.logo.thumbnail">{{selectedApp.firstLetter}}</span>
                         </div>
-                        <div class="current-app-name text-dark text-truncate" ngbTooltip="Current App"
+                        <div class="current-app-name ignore-outside text-dark text-truncate" ngbTooltip="Current App"
                             placement="bottom">
                             {{selectedApp._id}}
                         </div>
-                        <div *ngIf="multipleApps" class="ml-auto">
+                        <div *ngIf="multipleApps" class="ml-auto ignore-outside">
                             <span class="dsi dsi-drop-down text-primary"></span>
                         </div>
                     </div>

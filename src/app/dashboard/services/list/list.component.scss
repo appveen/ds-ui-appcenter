@@ -16,7 +16,7 @@
   min-height: calc(100vh - 240px);
 
   &.has-records {
-    min-height: calc(100vh - 240px);
+    min-height: calc(100vh - 280px);
   }
 }
 
@@ -63,6 +63,7 @@
   .filter-search {
     input {
       text-indent: 16px;
+      height: 30px;
     }
 
     .srch-icon-pos {

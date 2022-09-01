@@ -31,92 +31,7 @@ interface ColFilter {
 @Component({
   selector: 'odp-list-filters',
   templateUrl: './list-filters.component.html',
-  styleUrls: ['./list-filters.component.scss'],
-  animations: [
-    trigger('toggleApplyFilter', [
-      state('void', style({
-        display: 'block'
-      })),
-      transition('void => *', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: 0,
-            transform: 'translateY(-20px)'
-          }),
-          style({
-            opacity: 1,
-            transform: 'translateY(0px)'
-          })
-        ]))
-      ]),
-      transition('* => void', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: .7,
-            transform: 'translateY(-10px)'
-          }),
-          style({
-            opacity: .5,
-            transform: 'translateY(-15px)'
-          }),
-          style({
-            opacity: 0,
-            transform: 'translateY(-20px)'
-          })
-        ]))
-      ])
-    ]),
-    trigger('toggleSaveFilter', [
-      state('void', style({
-        display: 'block'
-      })),
-      transition('void => *', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: 0,
-            transform: 'translateY(20px)'
-          }),
-          style({
-            opacity: 1,
-            transform: 'translateY(0px)'
-          })
-        ]))
-      ]),
-      transition('* => void', [
-        animate('250ms ease-in', keyframes([
-          style({
-            opacity: .7,
-            transform: 'translateY(10px)'
-          }),
-          style({
-            opacity: .5,
-            transform: 'translateY(15px)'
-          }),
-          style({
-            opacity: 0,
-            transform: 'translateY(20px)'
-          })
-        ]))
-      ])
-    ]),
-    trigger('filterList', [
-      state('void', style({
-        transformOrigin: 'right top',
-        transform: 'scale(0)'
-      })),
-      transition('void => *', [
-        animate('250ms ease-in', style({
-          transform: 'scale(1)'
-        }))
-      ]),
-      transition('* => void', [
-        style({ transformOrigin: 'right top' }),
-        animate('250ms ease-out', style({
-          transform: 'scale(0)'
-        }))
-      ])
-    ])
-  ]
+  styleUrls: ['./list-filters.component.scss']
 })
 
 export class ListFiltersComponent implements OnInit, OnDestroy {
@@ -155,7 +70,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   filterApplied$: Subscription;
   showSeparateCreateBtn: boolean;
   hasOptions = true;
-
+  showColumnsWindow: boolean;
   constructor(private ts: ToastrService,
     private appService: AppService,
     private modalService: NgbModal,
@@ -228,19 +143,25 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     );
   }
 
-  formatter = (x) => x.properties.label ? x.properties.label : x.properties.name
+  formatter = (x: any) => x.properties.label ? x.properties.label : x.properties.name
 
-  selectItem(val) {
+  selectItem(val: any) {
     const self = this;
     // val.preventDefault();
-    const index1 = self.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
-    if (index1 === -1) {
+    const index = self.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
+    if (index === -1) {
       self.selectedColOrder.push(val);
       self.applyFilter();
     } else {
-      self.ts.warning('Column already added');
+      self.selectedColOrder.splice(index, 1);
+      // self.ts.warning('Column already added');
     }
     self.name = '';
+  }
+
+  isColumnSelected(val: any) {
+    const index = this.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
+    return index > -1;
   }
 
   showFilter() {
