@@ -90,7 +90,8 @@ export class ServiceListComponent implements OnInit {
 
           this.appService.fetchedServiceList = [...this.records];
           if (!this.activeId) {
-            this.loadDataService(this.pinnedDs?.length ? this.pinnedDs[0] : res[0]);
+            // this.loadDataService(this.pinnedDs?.length ? this.pinnedDs[0] : res[0]);
+            this.router.navigate(['/', this.commonService.app._id, 'services','overview']);
           } else {
             const activeService = res.find(e => e._id === this.activeId);
             if (!!activeService) {

@@ -19,66 +19,7 @@ import { DashboardService } from './dashboard.service';
 @Component({
     selector: 'odp-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
-    animations: [
-        trigger('routerTransition', [
-            transition('* <=> *', [
-                /* order */
-                /* 1 */ query(':enter, :leave', style({ position: 'fixed', width: '100%', 'z-index': '-2' })
-                , { optional: true }),
-                /* 2 */ group([  // block executes in parallel
-                    query(':enter', [
-                        style({ transform: 'translateX(2%)', opacity: '0' }),
-                        animate('0.25s ease-in', style({ transform: 'translateX(0%)', opacity: '1' }))
-                    ], { optional: true }),
-                    query(':leave', [
-                        style({ transform: 'translateX(2%)', opacity: '0' }),
-                        animate('0.25s ease-out', style({ transform: 'translateX(-2%)', opacity: '0' }))
-                    ], { optional: true }),
-                ])
-            ])
-        ]),
-        trigger('userProfile', [
-            transition('void=>*', [
-                query('.profile-data,.profile-thumbnail', style({ opacity: '0' })),
-                style({ height: '0px', position: 'fixed', opacity: '0.5' }),
-                group([
-                    query('.user-icon', animate('200ms cubic-bezier(0.23, 1, 0.32, 1)', keyframes([
-                        style({ position: 'fixed', top: '11.5px', right: '16px' }),
-                        style({ top: '33px', right: '16px' })
-                    ]))),
-                    animate('200ms cubic-bezier(0.23, 1, 0.32, 1)', keyframes([
-                        style({ height: '40px', opacity: '0.5' }),
-                        style({ height: '120px', opacity: '1' }),
-                    ])),
-                ]),
-                query('.profile-data,.profile-thumbnail', style({ opacity: '1' })),
-            ]),
-            transition('*=>void', [
-                group([
-                    query('.profile-data,.profile-thumbnail', animate('300ms cubic-bezier(0.23, 1, 0.32, 1)', keyframes([
-                        style({ opacity: '0.3' }),
-                        style({ opacity: '0' })
-                    ]))),
-                    query('.user-icon', animate('300ms cubic-bezier(0.23, 1, 0.32, 1)', keyframes([
-                        style({ position: 'fixed', top: '33px', right: '16px' }),
-                        style({ position: 'fixed', top: '11.5px', right: '16px' })
-                    ]))),
-                    animate('300ms cubic-bezier(0.23, 1, 0.32, 1)', keyframes([
-                        style({ height: '60px', border: '0' }),
-                        style({ height: '0px' })
-                    ]))
-                ]),
-            ])
-        ]),
-        trigger('userProfileIcon', [
-            state('true', style({ opacity: '0' })),
-            state('false', style({ opacity: '1' })),
-            transition('true=>false', [
-                animate('500ms cubic-bezier(0.23, 1, 0.32, 1)')
-            ])
-        ])
-    ]
+    styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
     showSideNav: boolean;
