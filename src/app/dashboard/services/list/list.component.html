@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="bg-white border rounded" [formGroup]="searchForm" *ngIf="isSchemaFree && totalRecords > 0">
-    <div class="mt-1">
+    <div class="">
       <div class="input-group border-bottom">
         <div class="input-group-prepend p-3" *ngIf="!isCollapsed || !selectedSearch">
           <div class="schema-free-filter-label pr-3 text-secondary my-auto">Filter : </div>
@@ -378,7 +378,7 @@
   </div>
 
   <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
-    [ngClass]="{'has-records':totalRecords>0}">
+    [ngClass]="{'has-records':totalRecords>0,'is-schema-free':isSchemaFree}">
     <div class="data-container p-0 w-100" #dataContainer *ngIf="totalRecords>0" odpClickOutside
       (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
       <odp-list-ag-grid #listGrid *ngIf="definition && definition.length >0" [schema]="schema" [columns]="definition"

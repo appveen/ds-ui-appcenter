@@ -151,7 +151,7 @@
     </div>
 
     <div class="view-body p-4 w-100" [ngClass]="{'no-action':showSubHeader}">
-      <div *ngIf="!showLazyLoader" class="position-relative" [class.restrict-overflow]="restrictOverflow">
+      <ng-container *ngIf="!showLazyLoader">
         <ng-container *ngIf="!isSchemaFree">
           <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
             <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
@@ -185,7 +185,7 @@
             [fontSize]="selectedFontSize" [(code)]="schemaFreeCode" (codeError)='schemaFreeCodeError($event)'>
           </odp-code-editor>
         </ng-container>
-      </div>
+      </ng-container>
       <div class="loading" *ngIf="showLazyLoader">
         <div class="rows d-flex align-items-center mt-4 ml-3" *ngFor="let row of dummyRows">
           <div class="mr-4">
