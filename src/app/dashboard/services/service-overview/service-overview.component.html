@@ -11,7 +11,9 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="font-22 fw-700">All Records - DS</div>
             <div>
-                <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();"></odp-search-box>
+                <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();" tooltipDir="left"
+                    [value]="searchTerm">
+                </odp-search-box>
             </div>
         </div>
         <div class="row no-gutters">
@@ -19,7 +21,8 @@
                 <div class="bg-white ds-item mr-3 rounded mt-3">
                     <div class="px-3 pt-3" (click)="loadDataService(srvc)">
                         <div class="ds-name font-11 fw-500 text-uppercase text-dark">{{srvc.name}}</div>
-                        <div class="last-updated font-11 fw-400 font-italic text-grey">Last Updated {{lastUpdated(srvc)}}</div>
+                        <div class="last-updated font-11 fw-400 font-italic text-grey">Last Updated
+                            {{lastUpdated(srvc)}}</div>
                         <div class="ds-info mb-3">
                             <div class="row no-gutters">
                                 <div class="col-6">

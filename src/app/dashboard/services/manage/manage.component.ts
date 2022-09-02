@@ -281,6 +281,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           self.active[0] = true;
           self.currentStep = 0;
         }
+        this.statusArray = this.stateModelNextStates() || [];
+        this.statusArray.unshift(self.stateModelAttrVal())
         if (self.isEdit || self.isClone) {
           self.subscriptions['getDetails'] = self.commonService.get('api', self.api + '/' + self.ID, { expand: true, decrypt: true }).subscribe(
             data => {
@@ -313,8 +315,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   }
                 }
               }
-              this.statusArray = this.stateModelNextStates() || [];
-              this.statusArray.unshift(self.stateModelAttrVal())
+
             },
             err => {
               if (err.status === 403) {
