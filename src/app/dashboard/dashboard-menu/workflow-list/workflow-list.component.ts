@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
@@ -18,6 +18,7 @@ export class WorkflowListComponent implements OnInit {
   activeId: string;
   searchText: string;
   serviceDocsCount: any;
+  @Output() toggleWorkflow: EventEmitter<any> = new EventEmitter();
 
   constructor(private appService: AppService,
     private commonService: CommonService,
@@ -85,6 +86,10 @@ export class WorkflowListComponent implements OnInit {
           if (!this.activeId) {
             this.loadWorkflow(res[0]);
           }
+          this.toggleWorkflow.emit(false)
+        }
+        else {
+          this.toggleWorkflow.emit(true)
         }
       }, err => {
         console.error(err);
@@ -117,6 +122,7 @@ export class WorkflowListComponent implements OnInit {
 
   loadWorkflowOverview() {
     this.router.navigate(['/', this.commonService.app._id, 'workflow', 'overview']);
+    this.getServices()
   }
 
   loadWorkflow(workflow: any, force?: boolean) {

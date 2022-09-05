@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="current-app d-flex align-items-center hover rounded border mr-3 ignore-outside px-2"
+                    <div class="current-app d-flex align-items-center hover rounded border mr-3 ignore-outside px-2 dark-border"
                         (click)="toggleAppOptions()">
                         <div class="current-app-thumbnail ignore-outside rounded d-flex align-items-center justify-content-center mr-2"
                             [ngStyle]="{background:selectedApp.bg}">
@@ -120,12 +120,13 @@
                     <div class="user-details d-flex align-items-center hover ignore-outside"
                         (click)="showProfileOptions=!showProfileOptions" [ngbTooltip]="name">
                         <div
-                            class="user-icon-holder border rounded-circle d-flex align-items-center justify-content-center mx-2">
-                            <span class="dsi dsi-user font-13 text-muted"></span>
+                            class="user-icon-holder border rounded-circle d-flex align-items-center justify-content-center mx-2 dark-border">
+                            <span class="dsi dsi-user font-14 text-muted"></span>
                         </div>
                         <!-- <div class="user-name text-truncate">{{name}}</div> -->
                     </div>
-                    <div *ngIf="showProfileOptions" class="user-details-dropdown position-absolute bg-white rounded p-4"
+                    <div *ngIf="showProfileOptions"
+                        class="user-details-dropdown position-absolute bg-white rounded p-4 dark-border"
                         [ignore]="['.user-details']" odpClickOutside (outside)="showProfileOptions=false">
                         <div
                             class="user-details-container position-relative d-flex align-items-center h-100 w-100 pb-4 border-bottom ng-tns-c110-3">

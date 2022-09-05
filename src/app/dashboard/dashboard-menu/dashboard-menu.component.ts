@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 
 @Component({
   selector: 'odp-dashboard-menu',
@@ -10,12 +11,14 @@ import { filter } from 'rxjs/operators';
 export class DashboardMenuComponent implements OnInit, OnDestroy {
 
   @Input() activeId: string;
+  @ViewChild(WorkflowListComponent) wfList: WorkflowListComponent
   activeMenuKey: string;
   openPanel: any = {
     'pinnedDs': true,
     'ds': true,
-    'workflow': false,
+    'workflow': true,
   };
+  hideWorkflows: boolean = false;
   constructor(private router: Router) {
 
   }
@@ -27,6 +30,8 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
     ).subscribe((event: NavigationEnd) => {
       this.setActiveMenu(event.url)
     });
+
+    // this.wfList.getServices()
   }
 
   ngOnDestroy() {
@@ -51,6 +56,9 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
     this.openPanel[panel] = !this.openPanel[panel];
   }
 
+  toggleWorkflow(value) {
+    this.hideWorkflows = value;
+  }
   onStarredAction(event) {
     this.togglePanel(event);
   }

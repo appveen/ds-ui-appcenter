@@ -32,7 +32,7 @@
 <ng-container *ngIf="dsType=='ds'">
     <div class="menu-list-item d-flex align-items-center text-secondary" *ngIf="records.length > 0"
         routerLinkActive="text-dark fw-600" [routerLink]="['/', app, 'services', 'overview']"
-        (click)="activeId=null;appService.serviceId=null">
+        (click)="activeId=null;appService.serviceId=null; getServices()">
         <span class="ml-4">All Records - DS</span>
     </div>
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"
