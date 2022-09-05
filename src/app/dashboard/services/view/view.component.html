@@ -62,8 +62,8 @@
                     class="btn btn-primary px-3 ignore-outside responseBtncls" type="button">
                     <span class="text ignore-outside">Respond</span>
                 </button>
-                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']" class="btn btn-link text-dark px-3"
-                    type="button">
+                <button [routerLink]="['/', currentAppId, 'services', schema._id, 'list']"
+                    class="btn btn-link text-dark px-3" type="button">
                     <span class="fa fa-angle-left mr-2"></span>
                     <span class="text">Back</span>
                 </button>
@@ -205,7 +205,7 @@
                         <div (click)="showStep(i)" class="step-tab hover d-flex" [attr.id]="'step-'+i"
                             [ngClass]="{'selected': active[i] }">
                             <span class="active-tab"></span>
-                            <div class="d-flex flex-column p-3">
+                            <div class="d-flex flex-column p-3" style="max-width: 210px">
                                 <div [ngbTooltip]="" class="d-flex font-12 fw-400 text-secondary text-uppercase">
                                     Step {{i +1}}
                                 </div>
@@ -310,7 +310,8 @@
             [fontSize]="selectedFontSize" [(code)]="schemaFreeCode">
         </odp-code-editor>
     </div>
-    <div class="view-body no-action" *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'code' && showVersionHistory">
+    <div class="view-body no-action"
+        *ngIf="isSchemaFree && !showLazyLoader && viewMode == 'code' && showVersionHistory">
         <odp-code-editor class="code-editor" [edit]="{status:false}" [theme]="selectedEditorTheme"
             [diff]='showVersionHistory' [fontSize]="selectedFontSize" [(code)]="schemaFreeCode"
             [oldVal]='activeAuditOldData' [newVal]='activeAuditNewData'>
