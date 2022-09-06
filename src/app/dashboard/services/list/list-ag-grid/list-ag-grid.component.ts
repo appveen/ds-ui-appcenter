@@ -397,6 +397,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   getRecords() {
     const self = this;
+    if (self.apiConfig.sort === null) {
+      delete self.apiConfig.sort
+    }
     return self.commonService.get('api', self.apiEndpoint, self.apiConfig);
   }
 
