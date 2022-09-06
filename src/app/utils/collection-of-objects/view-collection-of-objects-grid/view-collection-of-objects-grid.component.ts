@@ -140,8 +140,20 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
         refData: definition,
         minWidth: definition.type === 'Date' ? 162 : 80,
         width: definition.type === 'Date' ? 162 : 80,
+        onCellClicked: (params) => {
+          if (definition.properties.richText || definition.properties.longText) {
+            return this.onRowDoubleClick(params)
+
+          }
+
+          else {
+
+            return
+
+          }
+        },
         onCellDoubleClicked: (params) => {
-          if ((definition.type === 'Array' || definition.type === 'Object' || definition.type === 'Geojson')) {
+          if (definition.type === 'Array' || definition.type === 'Object' || definition.type === 'Geojson' || definition.properties.richText || definition.properties.longText) {
             return this.onRowDoubleClick(params)
 
           }

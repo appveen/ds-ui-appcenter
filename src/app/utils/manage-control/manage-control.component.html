@@ -1,4 +1,5 @@
-<div class="field-wrapper rounded p-3 mb-3" [formGroup]="form" *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
+<div class="field-wrapper rounded p-3 mb-3" [formGroup]="form"
+  *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
   <div class="mark-enable d-flex">
     <div *ngIf="markEnable && canEnable" class="custom-control custom-checkbox">
       <input type="checkbox" class="custom-control-input" [id]="checkboxKey" [(ngModel)]="toggleEnable"
@@ -9,7 +10,8 @@
   </div>
   <div class="label-wrapper w-100">
     <div class="d-flex align-items-start">
-      <label class="label-width d-flex font-12 fw-400" *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
+      <label class="label-width d-flex font-12 fw-400"
+        *ngIf="definition.type !== 'Object' && definition.type !== 'Array'">
         <span class="text text-secondary"
           [odpTruncated]="definition.properties.label ? definition.properties.label : definition.properties.name"
           [ngClass]="{'text-muted':!toggleEnable}">{{definition.properties.label ? definition.properties.label :
@@ -37,7 +39,8 @@
   </ng-container>
 </div>
 
-<div class="field-wrapper rounded p-3 d-flex align-items-start mb-3" [formGroup]="form" *ngIf="definition.type=='Object'">
+<div class="field-wrapper rounded p-3 d-flex align-items-start mb-3" [formGroup]="form"
+  *ngIf="definition.type=='Object'">
   <div class="d-flex flex-column w-100">
     <label [attr.for]="definition.path" class="label-width d-flex align-items-start mb-4 fw-700 font-20">
       <span class="text text-dark">{{definition.properties.label ? definition.properties.label :
