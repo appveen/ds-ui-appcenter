@@ -41,7 +41,7 @@
   </div>
 </div>
 <ng-template #values let-definition="definition" let-value="value" let-type="type">
-  <div [ngClass]="{'position-relative':isSecureText}">
+  <div [ngClass]="{'position-relative d-flex':isSecureText}">
     <div class="long-text-wrapper show-paragraph fw-500 ">
       <ng-container *ngIf="!isSecureText">
         <ng-container *ngIf="value">
@@ -68,7 +68,7 @@
         </ng-container>
       </div>
     </div>
-    <span class="fas text-right hover ml-2 text-primary mt-1 position-absolute eyeIcon" *ngIf="value && isSecureText"
+    <span class="dsi text-right hover text-primary eyeIcon" *ngIf="value && isSecureText"
       [ngClass]="{'dsi-view': !showPassword[type],'dsi-hide': showPassword[type]} "
       (click)="togglePassword(value,type)"></span>
   </div>
