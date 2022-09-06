@@ -36,6 +36,7 @@ import { RouterModule } from '@angular/router';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { TextEditor } from '../cell-editor/text-editor.component';
 import { SelectEditor } from '../cell-editor/select-editor.component';
+import { ViewControlModule } from '../view-control/view-control.module';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { SelectEditor } from '../cell-editor/select-editor.component';
     ViewCollectionOfObjectsGridModule,
     AgGridModule,
     RouterModule,
-    PipesModule
+    PipesModule,
+    ViewControlModule
   ],
   declarations: [
     ManageControlComponent,

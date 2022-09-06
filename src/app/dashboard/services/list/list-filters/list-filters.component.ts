@@ -435,7 +435,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   }
 
   get filterList() {
-    console.log(this.queryObject.filter);
+    // console.log(this.queryObject.filter);
     return this.queryObject.filter
 
   }

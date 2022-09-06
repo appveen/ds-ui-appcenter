@@ -72,9 +72,9 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
         const self = this;
         self.control.statusChanges.subscribe(eve => {
             if (self.control.enabled) {
-                tinymce.get(self.Id).show();
+                tinymce.get(self.Id)?.show();
             } else {
-                tinymce.get(self.Id).hide();
+                tinymce.get(self.Id)?.hide();
             }
 
         })
@@ -120,7 +120,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             tinymce.get(self.Id).hide();
         }
-       
+
 
     }
 
@@ -181,10 +181,10 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
         let retVal = self.definition.camelCase; // + 'rich';
         if (self.definition.id) {
             const id = self.definition.id.replace('.', '');
-            retVal = id ; // + 'rich';
+            retVal = id; // + 'rich';
         }
         retVal = retVal.replace('.', '');
-       
+
         return retVal;
     }
 

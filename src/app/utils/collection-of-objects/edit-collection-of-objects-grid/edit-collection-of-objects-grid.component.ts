@@ -270,9 +270,9 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     this.bulkEditModalRef.close();
   }
 
-  editItem(add?) {
+  editItem(add?, isEditable = true) {
     this.editBackup = this.formArray.value;
-    this.isEditable = true
+    this.isEditable = isEditable
     this.showModalBackdrop = true;
 
     this.editModalRef = this.ngbModal.open(this.editModal, { centered: true, backdrop: false, keyboard: false, windowClass: 'large-modal' })
@@ -298,6 +298,9 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   cancelEdit() {
 
     this.addAllowed = true;
+    if (!this.isEditable) {
+      this.showModalBackdrop = false;
+    }
     this.editModalRef.close();
     // this.showModalBackdrop = false;
   }
@@ -428,6 +431,20 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
         cellEditorParams: {
           type: definition.type,
+          formArray: this.formArray,
+          path: definition.controlPath
+        },
+        onCellClicked: (params) => {
+          if ((definition.properties.richText || definition.properties.longText)) {
+            return this.editItem(null, this.isEditable)
+
+          }
+
+          else {
+
+            return
+
+          }
         },
         onCellDoubleClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
