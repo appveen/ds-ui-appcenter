@@ -307,8 +307,7 @@
   </div>
 </div>
 <div>
-  <div class="d-flex align-items-center justify-content-between list-options bg-light"
-    [ngClass]="{'border-bottom': !advanceFilter}" *ngIf="totalRecords>0">
+  <div class="d-flex align-items-center justify-content-between list-options bg-light" *ngIf="currentTotalCount>0">
     <div class="d-flex align-items-center pl-3">
       <div class="d-flex align-items-cente hover" (click)="selectAllRecords()" *ngIf="!listGrid?.showLoading">
         <odp-round-check [checked]="checkAll" [white]="true" (checkedChange)="selectAllRecords()"></odp-round-check>
@@ -377,7 +376,8 @@
     </span>
   </div>
 
-  <div *ngIf="!apiCallsPending && totalRecords>0" class="list-page-wrapper row m-0 position-relative bg-white"
+  <div *ngIf="!apiCallsPending && totalRecords>0"
+    class="list-page-wrapper row m-0 position-relative bg-white border-top"
     [ngClass]="{'has-records':totalRecords>0,'is-schema-free':isSchemaFree}">
     <div class="data-container p-0 w-100" #dataContainer *ngIf="totalRecords>0" odpClickOutside
       (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
