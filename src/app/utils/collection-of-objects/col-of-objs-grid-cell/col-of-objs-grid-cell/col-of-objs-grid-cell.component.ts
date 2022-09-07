@@ -5,6 +5,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { Definition, Properties, Currency } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
+import { Md5 } from 'ts-md5';
 
 @Component({
   selector: 'odp-col-of-objs-grid-cell',
@@ -15,7 +16,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
   params: any;
   data: any;
   value: any;
-  definition: Definition;
+  definition: any;
   type: string;
   properties: Properties;
   currencyType: Currency;
@@ -28,6 +29,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
   showPassword: boolean;
   id: string;
   historyMode: boolean;
+  decryptedValue: string;
 
   get currentAppId() {
     return this.commonService?.getCurrentAppId();
@@ -133,6 +135,27 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
         editBtnRef.click();
       }
     }
+  }
+
+  showDecryptedValue() {
+    const self = this;
+    let value = this.definition.value
+    // self.showPassword = !self.showPassword;
+    if (self.showPassword && !self.decryptedValue) {
+      let cksm = Md5.hashStr(value.value);
+      if (value.checksum && value.checksum === cksm) {
+        self.decryptedValue = value.value;
+      }
+      else {
+        self.decryptedValue = "**********"
+        self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
+          self.decryptedValue = res.data;
+        }, err => {
+          self.decryptedValue = value.value
+        })
+      }
+    }
+
   }
 
 }

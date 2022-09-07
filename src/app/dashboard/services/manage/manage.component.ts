@@ -70,6 +70,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   schemaFreeCode: any;
   invalidSchemaFreeRecord: boolean;
   statusArray: any;
+  currentState: any;
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -223,6 +224,20 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     return [];
   }
 
+  getAllStates(data?) {
+    const self = this;
+    if (data?.[self.stateModelAttr]) {
+      self.currentState = data[self.stateModelAttr]
+    }
+    else {
+      self.currentState = self.initialState
+    }
+    const states = self.stateModelPath[self.currentState];
+    states.unshift(self.currentState)
+    self.statusArray = states
+
+  }
+
   // setStateAndSave(state) {
   //   const self = this;
   //   if (!self.hasWorkflow) {
@@ -235,7 +250,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   changeStatus(event) {
     const self = this;
-    console.log(event.target.value)
     self.form.get(self.stateModelAttr).patchValue(event.target.value);
     // if (!self.hasWorkflow) {
     //   self.form.get(self.stateModelAttr).patchValue(event);
@@ -281,12 +295,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           self.active[0] = true;
           self.currentStep = 0;
         }
-        this.statusArray = this.stateModelNextStates() || [];
-        this.statusArray.unshift(self.stateModelAttrVal())
         if (self.isEdit || self.isClone) {
           self.subscriptions['getDetails'] = self.commonService.get('api', self.api + '/' + self.ID, { expand: true, decrypt: true }).subscribe(
             data => {
               self.showLazyLoader = false;
+              self.getAllStates(data)
               if (self.appService.reSubmitData) {
                 self.value = self.appService.cloneObject(self.appService.reSubmitData);
                 self.buildForm(res, self.appService.cloneObject(self.appService.reSubmitData));
@@ -332,6 +345,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
           );
         } else {
           self.showLazyLoader = false;
+          self.getAllStates()
           if (self.appService.reSubmitData) {
             self.buildForm(res, self.appService.cloneObject(self.appService.reSubmitData));
             self.appService.reSubmitData = null;
@@ -353,6 +367,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         if (!self.ID && self.stateModelAttr) {
           self.form.get(self.stateModelAttr).patchValue(self.initialState);
         }
+
       },
       err => {
         self.showLazyLoader = false;
@@ -1012,10 +1027,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const self = this;
     const action = self.wizard && self.wizard.length > 0 ? self.wizard[self.currentStep].actions : [];
     if (action.length > 0 || self.stateModelAttr) {
-        return true;
+      return true;
     }
     return false;
-}
+  }
 
   get stepFirst() {
     const self = this;

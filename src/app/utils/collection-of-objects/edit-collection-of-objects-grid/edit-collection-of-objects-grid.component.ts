@@ -350,6 +350,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     }
   }
   private prepareTable() {
+    console.log(this.rowData)
     this.frameworkComponents = {
       customHeaderRenderer: ColOfObjsHeaderCellComponent,
       customCheckboxCellRenderer: GridCheckboxComponent,
@@ -410,7 +411,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
           if (definition.properties.readonly) {
             return false
           }
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
             return true
           }
           else {
@@ -421,7 +422,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
           if (definition.properties.readonly) {
             return {}
           }
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
             return { component: 'textEditor' }
           }
           else {
@@ -435,7 +436,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
           path: definition.controlPath
         },
         onCellClicked: (params) => {
-          if ((definition.properties.richText || definition.properties.longText)) {
+          if ((definition.properties.richText || definition.properties.longText || definition.properties.password)) {
             return this.editItem(null, this.isEditable)
 
           }
@@ -448,7 +449,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         },
         onCellDoubleClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
+          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
             return ''
           }
 
@@ -631,7 +632,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   openNew() {
     this.definitionList.forEach(definition => {
-      if ((definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText)) {
+      if ((definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
         this.addRow = true;
       }
       else {

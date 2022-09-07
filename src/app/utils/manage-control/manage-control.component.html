@@ -31,6 +31,7 @@
     </div>
     <div
       *ngIf="definition.properties.password || (definition.type=='Array' && definition.definition[0].properties?.password) ">
+      <span class="font-10 text-secondary">[Secure]</span>
     </div>
   </div>
   <ng-container *ngIf="definition.type!='Object' && definition.type!='Array'">

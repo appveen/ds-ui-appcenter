@@ -92,8 +92,7 @@
   <div class="d-flex align-items-center bg-white rounded-lg mb-3 p-3" style="min-height: 72px" *ngIf="showSubHeader">
     <div class="d-flex align-items-center state-model" *ngIf="stateModelAttr">
       <span class="mr-2 font-13 fw-500 state-version hover text-uppercase">{{stateModelName}}</span>
-      <select class="form-control btn-min-width font-12 fw-400" (change)="changeStatus($event)"
-        [value]="form.get(stateModelAttr)?.value">
+      <select class="form-control btn-min-width font-12 fw-400" (change)="changeStatus($event)" [value]="currentState">
         <option [value]="state" *ngFor="let state of statusArray" [value]="state">{{state}}</option>
       </select>
       <!-- <div *ngIf="(stateModelAttr && stateModelNextStates.length && ID && !isInitialStateOnEdit)"
