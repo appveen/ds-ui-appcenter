@@ -10,10 +10,10 @@
           placement="top" [ngbTooltip]="definition.properties._description"></small>
       </label>
     </div>
-    <!-- <div
+    <div
       *ngIf="definition.properties.password  || (definition.type=='Array' && definition.definition[0].properties?.password) ">
-      <small class="text-secondary">[Secure]</small>
-    </div> -->
+      <span class="font-10 text-muted">[Secure]</span>
+    </div>
   </div>
   <ng-container *ngIf="definition.type!='Object' && definition.type!='Array' ">
     <odp-view-separator [definition]="definition" [value]="value" [oldValue]="oldValue" [newValue]="newValue"
