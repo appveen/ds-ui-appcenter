@@ -3,6 +3,9 @@ import { FormControl, Validators } from '@angular/forms';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 import { FormService } from 'src/app/service/form.service';
+import { Md5 } from 'ts-md5';
+import { AppService } from '../../../service/app.service';
+import { CommonService } from '../../../service/common.service';
 
 @Component({
   selector: 'odp-secure-text-type',
@@ -17,8 +20,10 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
   @Output() keyupEvent: EventEmitter<KeyboardEvent>;
   @ViewChild('inputControl', { static: false }) inputControl: ElementRef;
   password: string;
-  showPassword:boolean;
-  constructor(private formService: FormService) {
+  showPassword: boolean;
+  decryptedValue: string;
+  constructor(private formService: FormService, private appService: AppService,
+    private commonService: CommonService) {
     const self = this;
     self.keyupEvent = new EventEmitter<KeyboardEvent>();
   }
@@ -95,6 +100,28 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
 
     }
     return retValue;
+  }
+
+  showDecryptedValue() {
+    const self = this;
+    let value = this.definition.value
+    // self.showPassword = !self.showPassword;
+    if (self.showPassword && !self.decryptedValue) {
+      let cksm = Md5.hashStr(value.value);
+      if (value.checksum && value.checksum === cksm) {
+        self.decryptedValue = value.value;
+      }
+      else {
+        self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
+          self.decryptedValue = res.data;
+          self.password = self.decryptedValue
+        }, err => {
+          self.decryptedValue = value.value
+          self.password = self.decryptedValue;
+        })
+      }
+    }
+
   }
 
   get minLengthError() {
