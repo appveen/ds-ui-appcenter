@@ -1,4 +1,5 @@
-<div class="picker-overlay" [ngClass]="{'floating': options.floating,'d-none':!togglePicker}" [ngStyle]="style" odpClickOutside (outside)="cancel()">
+<div class="picker-overlay" [ngClass]="{'floating': options.floating,'d-none':!togglePicker}" [ngStyle]="style"
+  odpClickOutside (outside)="cancel()">
   <ng-container *ngIf="options.quickSelect">
     <div class="quick-select p-2">
       <span class="btn btn-sm btn-link font-weight-bold p-0 mr-2">Today</span>
@@ -11,8 +12,10 @@
   <ng-container *ngIf="options.range">
     <div class="range mt-3 mx-3">
       <div class="btn-group w-100">
-        <button id="fromBtn" class="btn btn-outline-primary w-50" [ngClass]="{'active':selectedRange==0}" (click)="changeRange(0)">From</button>
-        <button id="toBtn" class="btn btn-outline-primary w-50" [ngClass]="{'active':selectedRange==1}" (click)="changeRange(1)">To</button>
+        <button id="fromBtn" class="btn btn-outline-primary w-50" [ngClass]="{'active':selectedRange==0}"
+          (click)="changeRange(0)">From</button>
+        <button id="toBtn" class="btn btn-outline-primary w-50" [ngClass]="{'active':selectedRange==1}"
+          (click)="changeRange(1)">To</button>
       </div>
     </div>
   </ng-container>
@@ -40,7 +43,8 @@
           </span>
         </div>
         <div class="d-flex flex-wrap pl-3" id="_datePicker">
-          <span class="date d-flex justify-content-center align-items-center" *ngFor="let day of dateList;let f=first;let l=last;let i=index"
+          <span class="date d-flex justify-content-center align-items-center"
+            *ngFor="let day of dateList;let f=first;let l=last;let i=index"
             [ngClass]="{'active text-white bg-success':day.today && day.show,'text-dark':!day.today,'disabled':!day.show}"
             (click)="$event.stopPropagation();selectDate(day)" id="_day">
             <small class="fw-400">{{day.label}}</small>
@@ -51,9 +55,10 @@
   </ng-container>
   <ng-container *ngIf="options.type=='date-time' || options.type=='time'">
     <hr class="m-0">
-    <div class="d-flex justify-content-between time clearfix px-3 py-2">
-      <span class="">
-        <select #hour class="text-primary time-select" (change)="changeHour(hour.value)" (click)="$event.stopPropagation();">
+    <div class="d-flex justify-content-between time clearfix px-2 py-2">
+      <span class="d-flex">
+        <select #hour class="text-primary time-select" (change)="changeHour(hour.value)"
+          (click)="$event.stopPropagation();">
           <option [value]="hr" *ngFor="let hr of hours">{{hr}}</option>
         </select>
         <span class="text-secondary">
@@ -62,7 +67,8 @@
         <span class="text-secondary px-1">
           <small>:</small>
         </span>
-        <select #minute class="text-primary time-select" (change)="changeMinute(minute.value)" (click)="$event.stopPropagation();">
+        <select #minute class="text-primary time-select" (change)="changeMinute(minute.value)"
+          (click)="$event.stopPropagation();">
           <option [value]="min" *ngFor="let min of minutes">{{min}}</option>
         </select>
         <span class="text-secondary">
@@ -71,7 +77,8 @@
         <span class="text-secondary px-1">
           <small>:</small>
         </span>
-        <select #second class="text-primary time-select" (change)="changeSecond(second.value)" (click)="$event.stopPropagation();">
+        <select #second class="text-primary time-select" (change)="changeSecond(second.value)"
+          (click)="$event.stopPropagation();">
           <option [value]="min" *ngFor="let min of minutes">{{min}}</option>
         </select>
         <span class="text-secondary">

@@ -15,11 +15,14 @@ export class FileSizePipe implements PipeTransform {
       return '0 Byte';
     }
     let index = 0;
-    while (temp > 1024) {
-      index++;
-      temp = parseFloat(temp.toPrecision(4)) / 1024;
+    if (temp) {
+      while (temp > 1024) {
+        index++;
+        temp = parseFloat(temp.toPrecision(4)) / 1024;
+      }
     }
-    return temp.toPrecision(4) + ' ' + sizes[index];
+
+    return temp ? temp.toPrecision(4) + ' ' + sizes[index] : '';
   }
 
 }
