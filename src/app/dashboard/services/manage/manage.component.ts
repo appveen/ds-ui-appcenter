@@ -226,16 +226,18 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   getAllStates(data?) {
     const self = this;
-    if (data?.[self.stateModelAttr]) {
-      self.currentState = data[self.stateModelAttr]
-    }
-    else {
-      self.currentState = self.initialState
-    }
-    const states = self.stateModelPath[self.currentState];
-    states.unshift(self.currentState)
-    self.statusArray = states
+    if (self.stateModelPath) {
+      if (data?.[self.stateModelAttr]) {
+        self.currentState = data[self.stateModelAttr]
+      }
+      else {
+        self.currentState = self.initialState
+      }
+      const states = self.stateModelPath?.[self.currentState];
+      states.unshift(self.currentState)
+      self.statusArray = states
 
+    }
   }
 
   // setStateAndSave(state) {

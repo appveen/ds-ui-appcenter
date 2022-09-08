@@ -3,7 +3,7 @@
 
 .picker-overlay {
     position: relative;
-    width: 230px;
+    width: 280px;
     overflow: hidden;
 
     &.floating {
@@ -22,11 +22,11 @@
 }
 
 .day {
-    width: 28px;
+    width: 35px;
 }
 
 .date {
-    width: 28px;
+    width: 35px;
     height: 28px;
     text-align: center;
     border-radius: 6px;
@@ -81,7 +81,7 @@
 }
 
 .calender {
-    width: 228px;
+    // width: 228px;
     height: 234px;
     overflow: hidden;
 

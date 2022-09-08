@@ -2,10 +2,10 @@
     <input class="form-control"
         [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
         [type]="showPassword ? 'text' : 'password'" (keyup)="onEnter($event)" (change)="onChange($event.target.value)"
-        #inputControl [attr.id]="definition.path" [ngModel]="decryptedValue" [disabled]="control.disabled"
-        autocomplete="off">
-    <span style="margin-left: -30px !important" class="dsi eye-icon hover m-auto"
-        [ngClass]="{'dsi-view': !showPassword,'dsi-show': showPassword }"
+        #inputControl [attr.id]="definition.path" [ngModel]="showPassword ? decryptedValue :'*********'"
+        [disabled]="control.disabled" autocomplete="off">
+    <span style="margin-left: -30px !important" class="dsi eye-icon eyeIcon hover m-auto"
+        [ngClass]="{'dsi-view': !showPassword,'dsi-hide': showPassword }"
         (click)="showPassword= !showPassword; showDecryptedValue()"></span>
 </div>
 <ng-container *ngIf="!definition.properties.errorMessage">
