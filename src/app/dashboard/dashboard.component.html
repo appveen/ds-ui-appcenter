@@ -71,16 +71,24 @@
                             <div
                                 class="notification-dropdown-header d-flex align-items-center justify-content-between px-3">
                                 <div class="d-flex align-items-center">
-                                    <span *ngIf="hasNotifications" class="dsi dsi-notification-active mr-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                    </span>
-                                    <span *ngIf="!hasNotifications" class="dsi dsi-notification mr-2"></span>
-                                    <div class="fw-400">
-                                        {{ hasNotifications ? 'Notifications' : 'No Notifications' }}
-                                    </div>
+                                    <ng-container *ngIf="!fetchingFileTransfers">
+                                        <span *ngIf="hasNotifications" class="dsi dsi-notification-active mr-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                        </span>
+                                        <span *ngIf="!hasNotifications" class="dsi dsi-notification mr-2"></span>
+                                        <div class="fw-400">
+                                            {{ hasNotifications ? 'Notifications' : 'No Notifications' }}
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="fetchingFileTransfers">
+                                        <div class="spinner-border text-dark notification-loader mr-2" role="status">
+                                            <span class="sr-only">Processing...</span>
+                                        </div>
+                                        <div class="fw-400">Loading...</div>
+                                    </ng-container>
                                 </div>
                                 <button *ngIf="hasNotifications" type="button"
                                     class="btn btn-link btn-sm p-0 text-secondary"
