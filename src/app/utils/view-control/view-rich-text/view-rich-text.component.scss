@@ -1,10 +1,16 @@
 .rich-text-wrapper {
-  min-width: 700px;
-  max-width: 700px;
+  min-width: 75vw;
+  max-width: 75vw;
   border-radius: 4px;
   overflow: auto;
-  resize: vertical !important ;
+  resize: vertical !important;
   height: 100px;
+}
+
+.wrap {
+  max-width: 75vw;
+  min-width: 75vw;
+  word-wrap: break-word;
 }
 
 .show-paragraph {

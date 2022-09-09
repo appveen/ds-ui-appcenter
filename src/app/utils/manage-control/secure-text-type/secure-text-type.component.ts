@@ -21,7 +21,7 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
   @ViewChild('inputControl', { static: false }) inputControl: ElementRef;
   password: string;
   showPassword: boolean;
-  decryptedValue: string;
+  decryptedValue: string = '';
   constructor(private formService: FormService, private appService: AppService,
     private commonService: CommonService) {
     const self = this;

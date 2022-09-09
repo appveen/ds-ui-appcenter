@@ -1,6 +1,6 @@
 <div class="d-flex" *ngIf="definition.value || oldValue || newValue">
   <div class="d-flex flex-column">
-    <div class="field-wrapper flex-column d-flex align-items-start px-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 border-0">
       <div class=" label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">Raw location</span>
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3 border-0">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">Geocoded location</span>
@@ -48,7 +48,7 @@
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3 border-0">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">Town</span>
@@ -72,7 +72,7 @@
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3 border-0">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">State</span>
@@ -96,7 +96,7 @@
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3 border-0">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">Country</span>
@@ -120,7 +120,7 @@
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3 border-0">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">Pin Code</span>
@@ -144,32 +144,33 @@
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3 border-0">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
-          <span class="text text-secondary">Latitude</span>
+          <span class="text text-secondary">Latitude, Latitude</span>
         </label>
       </div>
       <div class="d-flex flex-column  input-wrapper">
-        <ng-container *ngIf="latitude">
-          {{latitude}}
+        <ng-container *ngIf="latitude && longitude">
+          {{latitude}}, {{longitude}}
         </ng-container>
-        <span *ngIf="!latitude" class="text-muted">
-          N.A.
+        <span *ngIf="!latitude && !longitude" class="text-muted">
+          N.A. , N.A.
         </span>
-        <div *ngIf="getOldVal('geometry.coordinates.1')"
+        <div *ngIf="getOldVal('geometry.coordinates.1') && getOldVal('geometry.coordinates.0')"
           class="text-muted text-decoration-line-through mt-2 history-value">
           <!-- <span class="text-muted mr-2">From</span> -->
-          {{getOldVal('geometry.coordinates.1')}}
+          {{getOldVal('geometry.coordinates.1')}}, {{getOldVal('geometry.coordinates.0')}}
         </div>
-        <div *ngIf="getNewVal('geometry.coordinates.1')" class="text-muted mt-2 history-value">
+        <div *ngIf="getNewVal('geometry.coordinates.1') && getNewVal('geometry.coordinates.0')"
+          class="text-muted mt-2 history-value">
           <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('geometry.coordinates.1')">Created</span>
           <span class="text-muted mr-2" *ngIf="getOldVal('geometry.coordinates.1')">To</span> -->
-          {{getNewVal('geometry.coordinates.1')}}
+          {{getNewVal('geometry.coordinates.1')}}, {{getNewVal('geometry.coordinates.0')}}
         </div>
       </div>
     </div>
-    <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
+    <!-- <div class="field-wrapper flex-column d-flex align-items-start px-3 mt-3">
       <div class="label-wrapper d-flex align-items-start">
         <label class="label-width d-flex align-items-start mb-0 text-muted ">
           <span class="text text-secondary">Longitude</span>
@@ -184,18 +185,16 @@
         </span>
         <div *ngIf="getOldVal('geometry.coordinates.0')"
           class="text-muted text-decoration-line-through mt-2 history-value">
-          <!-- <span class="text-muted mr-2">From</span> -->
           {{getOldVal('geometry.coordinates.0')}}
         </div>
         <div *ngIf="getNewVal('geometry.coordinates.0')" class="text-muted mt-2 history-value">
-          <!-- <span class="text-muted mr-2" *ngIf="!getOldVal('geometry.coordinates.0')">Created</span>
-          <span class="text-muted mr-2" *ngIf="getOldVal('geometry.coordinates.0')">To</span> -->
+         
           {{getNewVal('geometry.coordinates.0')}}
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
-  <div class="" *ngIf="definition.value">
+  <div style="margin-left: 40%;" *ngIf="definition.value">
     <div *ngIf="noAPIKey" class="map border rounded d-flex align-items-center justify-content-center text-muted">Please
       ask your Administrator to configure Google API key</div>
     <div #mapEle *ngIf="!noAPIKey" class="map border rounded"></div>

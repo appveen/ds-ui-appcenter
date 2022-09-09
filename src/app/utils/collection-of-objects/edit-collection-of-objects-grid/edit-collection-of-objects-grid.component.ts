@@ -179,18 +179,18 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         this.addedIndex = index;
 
 
-        if (this.addRow) {
+        // if (this.addRow) {
 
-          this.rowData.push(this.formArray.at(this.selectedRowIndex).value)
-          this.gridApi.setRowData(this.rowData)
-          this.gridApi.startEditingCell({
-            rowIndex: this.selectedRowIndex,
-            colKey: (this.gridOptions.columnApi.getDisplayedCenterColumns()[0]).getColId()
-          })
-        }
-        else {
-          this.editItem(true);
-        }
+        //   this.rowData.push(this.formArray.at(this.selectedRowIndex).value)
+        //   this.gridApi.setRowData(this.rowData)
+        //   this.gridApi.startEditingCell({
+        //     rowIndex: this.selectedRowIndex,
+        //     colKey: (this.gridOptions.columnApi.getDisplayedCenterColumns()[0]).getColId()
+        //   })
+        // }
+        // else {
+        this.editItem(true);
+        // }
 
         const displayIndex = index + 1;
         let pageToGo = Math.floor(displayIndex / AG_GRID_PAGINATION_COUNT);
@@ -308,6 +308,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
     this.isEditable = false
     this.newModalRef.close();
+    this.prepareTable();
     this.showModalBackdrop = false;
   }
 
@@ -407,69 +408,83 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         minWidth: definition.type === 'Date' ? 162 : 80,
         width: definition.type === 'Date' ? 162 : 80,
         floatingFiltersHeight: 40,
-        editable: () => {
-          if (definition.properties.readonly) {
-            return false
-          }
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
-            return true
-          }
-          else {
-            return false
-          }
-        },
-        cellEditorSelector: () => {
-          if (definition.properties.readonly) {
-            return {}
-          }
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
-            return { component: 'textEditor' }
-          }
-          else {
-            return {}
-          }
-        },
+        // editable: () => {
+        //   if (definition.properties.readonly) {
+        //     return false
+        //   }
+        //   if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
+        //     return true
+        //   }
+        //   else {
+        //     return false
+        //   }
+        // },
+        // cellEditorSelector: () => {
+        //   if (definition.properties.readonly) {
+        //     return {}
+        //   }
+        //   if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
+        //     return { component: 'textEditor' }
+        //   }
+        //   else {
+        //     return {}
+        //   }
+        // },
 
-        cellEditorParams: {
-          type: definition.type,
-          formArray: this.formArray,
-          path: definition.controlPath
-        },
+        // cellEditorParams: {
+        //   type: definition.type,
+        //   formArray: this.formArray,
+        //   path: definition.controlPath
+        // },
         onCellClicked: (params) => {
-          if ((definition.properties.richText || definition.properties.longText || definition.properties.password)) {
-            return this.editItem(null, this.isEditable)
-
+          this.selectedRowIndex = params.rowIndex;
+          if (this.isEditable) {
+            return this.editItem()
           }
+          this.openModal()
+          return ''
+          // if ((definition.properties.richText || definition.properties.longText || definition.properties.password)) {
+          //   return this.editItem(null, this.isEditable)
 
-          else {
+          // }
 
-            return
+          // else {
 
-          }
+          //   return
+
+          // }
         },
         onCellDoubleClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
-          if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
-            return ''
+          if (this.isEditable) {
+            return this.editItem()
           }
+          this.openModal()
+          return ''
+          // if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
+          //   return ''
+          // }
 
-          else {
-            if (this.isEditable) {
-              return this.editItem()
-            }
-            return ''
-          }
+          // else {
+          //   if (this.isEditable) {
+          //     return this.editItem()
+          //   }
+          //   return ''
+          // }
         },
         ...this.getFilterConfiguration(definition),
       })),
-      // {
-      //   headerName: 'Action',
-      //   cellRenderer: 'actionColCellRenderer',
-      //   pinned: 'right',
-      //   minWidth: 140,
-      //   maxWidth: 140,
-      // }
     ]
+
+    if (!this.isEditable) {
+      columnDefs.push({
+        headerName: '',
+        cellRenderer: 'actionColCellRenderer',
+        pinned: 'right',
+        minWidth: 40,
+        maxWidth: 40,
+      })
+    }
     this.gridOptions = {
       context: {
         gridParent: this
@@ -579,13 +594,14 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   private refreshRowData() {
+    this.rowData = this.formArray.value
     // this.prepareTable();
-    if (!this.addRow) {
-      this.rowData = this.formArray.value
-    }
-    else {
-      this.formArray.patchValue(this.rowData)
-    }
+    // if (!this.addRow) {
+    //   this.rowData = this.formArray.value
+    // }
+    // else {
+    //   this.formArray.patchValue(this.rowData)
+    // }
     if (this.gridApi) {
       this.gridApi.refreshCells()
     }

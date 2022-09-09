@@ -71,7 +71,7 @@
         <button id="saveAndCreateBtn" type="button" class="btn btn-link d-flex align-items-center mr-3"
           [disabled]="!form.valid || showLazyLoader || reqInProgress || searchingRecord" (click)="save(true)"
           *ngIf="!isEdit && !isDraft">
-          <span *ngIf="!hasWorkflow" class="font-13 fw-600 text-dark">
+          <span *ngIf="!hasWorkflow" class="font-13 fw-600 text-dark text-decoration-underline">
             Save &amp; Create Another
           </span>
           <span *ngIf="hasWorkflow" class="font-13 fw-600 text-dark">
