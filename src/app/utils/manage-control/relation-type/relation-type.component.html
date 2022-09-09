@@ -27,16 +27,16 @@
             </div> -->
         </div>
         <div class="d-flex">
-            <button *ngIf="control?.value?._id" class="btn btn-white border"
-                [routerLink]="relationLink+control.value._id" target="_blank">
-                <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
-                <span class="fa fa-link"></span>
-            </button>
-            <button *ngIf="!control?.value?._id" class="btn btn-white border" [routerLink]="relationLinkList"
+            <a *ngIf="control?.value?._id" class="btn btn-white border" [routerLink]="relationLink+control.value._id"
                 target="_blank">
                 <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
                 <span class="fa fa-link"></span>
-            </button>
+            </a>
+            <a *ngIf="!control?.value?._id" class="btn btn-white border" [routerLink]="relationLinkList"
+                target="_blank">
+                <!-- {{formatter(relatedData)?formatter(relatedData):control.value._id}} -->
+                <span class="fa fa-link"></span>
+            </a>
         </div>
     </ng-container>
 

@@ -27,7 +27,7 @@
   <div [ngClass]="{'position-relative pr-4':isSecureText }">
     <div class="rich-text-wrapper p-2 border">
       <ng-container *ngIf="isSecureText">
-        <span [innerHTML]="getContentSecure(value, type)"
+        <span [innerHTML]="getContentSecure(value, type)" class="wrap"
           *ngIf="value && hasContentSecure(value,type) && showPassword[type] && decryptedValue[type]"></span>
         <span *ngIf="value && hasContentSecure(value,type) && !showPassword[type]"> ********* </span>
 
@@ -37,7 +37,7 @@
       </ng-container>
 
       <ng-container *ngIf="!isSecureText">
-        <span [innerHTML]="getContent(value, type)" *ngIf="value && hasContent(value,type)"></span>
+        <span class="wrap" [innerHTML]="getContent(value, type)" *ngIf="value && hasContent(value,type)"></span>
         <ng-container *ngIf="!value || !hasContent(value,type)">
           <span class="text-muted font-weight-bold">N.A.</span>
         </ng-container>

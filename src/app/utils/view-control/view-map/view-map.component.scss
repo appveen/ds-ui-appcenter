@@ -1,10 +1,12 @@
-.field-wrapper{
+.field-wrapper {
     min-height: 22px;
-    .label-wrapper{
-        .label-width{
+
+    .label-wrapper {
+        .label-width {
             min-width: 150px;
             max-width: 150px;
-            .text{
+
+            .text {
                 max-width: 170px;
                 display: inline-block;
                 overflow: hidden;
@@ -13,14 +15,16 @@
             }
         }
     }
-    .input-wrapper{
-            min-width: 300px;
-            max-width: 300px;
+
+    .input-wrapper {
+        min-width: 300px;
+        max-width: 300px;
     }
 }
-.map{
-    min-width: 400px;
-    max-width: 400px;
-    min-height: 280px;
-    max-height: 280px;
+
+.map {
+    min-width: 520px;
+    max-width: 520px;
+    min-height: 80%;
+    max-height: 80%;
 }
