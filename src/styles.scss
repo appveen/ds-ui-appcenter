@@ -125,7 +125,14 @@
   }
 }
 
-$weights: 200, 300, 400, 500, 600, 700, 800, 900;
+$weights: 200,
+300,
+400,
+500,
+600,
+700,
+800,
+900;
 
 @each $size in $weights {
   .fw-#{$size} {
@@ -472,12 +479,13 @@ $weights: 200, 300, 400, 500, 600, 700, 800, 900;
 odp-view-control,
 odp-manage-control {
   .field-wrapper {
-    border: 1px solid $border-color;
+    border-bottom: 1px dashed $border-color;
+    padding-bottom: 12px;
   }
 
   &:nth-child(odd) {
     .field-wrapper {
-      background-color: $light;
+      // background-color: $light;
 
       odp-view-control,
       odp-manage-control {
