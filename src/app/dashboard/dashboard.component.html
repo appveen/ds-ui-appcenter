@@ -44,9 +44,9 @@
                         (click)="showSideNav=!showSideNav">
                         <span class="fa fa-bars"></span>
                     </div> -->
-                    <div class="d-flex align-items-center ml-3">
-                        <span class="text-muted">{{selectedMenuItem.label}}&nbsp;/&nbsp;</span>
-                        <span class="text-dark">{{selectedMenuItem.name}}</span>
+                    <div class="d-flex align-items-center ml-4">
+                        <span class="text-secondary">{{selectedMenuItem.label}}&nbsp;/&nbsp;</span>
+                        <span class="text-dark">{{selectedMenuItem.name || 'All'}}</span>
                     </div>
                 </div>
                 <div class="right-side d-flex align-items-center">
@@ -129,9 +129,9 @@
                         (click)="showProfileOptions=!showProfileOptions" [ngbTooltip]="name">
                         <div
                             class="user-icon-holder border rounded-circle d-flex align-items-center justify-content-center mx-2 dark-border">
-                            <span class="dsi dsi-user font-14 text-muted"></span>
+                            <span class="dsi dsi-user font-18 text-dark"></span>
                         </div>
-                        <!-- <div class="user-name text-truncate">{{name}}</div> -->
+                        <div class="user-name text-truncate">{{name}}</div>
                     </div>
                     <div *ngIf="showProfileOptions"
                         class="user-details-dropdown position-absolute bg-white rounded p-4 dark-border"

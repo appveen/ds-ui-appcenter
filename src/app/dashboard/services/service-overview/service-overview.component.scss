@@ -4,7 +4,8 @@
   .ds-item {
     min-height: 164px;
     max-height: 164px;
-    min-width: none;
+    width: 266px !important;
+    margin: 16px 16px 0 0;
 
     .last-updated {
       margin-top: 6px;

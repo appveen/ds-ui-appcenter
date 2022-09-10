@@ -150,7 +150,7 @@
 .top-header {
   min-height: 64px;
   max-height: 64px;
-  font-size: 13px;
+  font-size: 14px;
 
   .sidenav-toggler {
     min-width: 64px;
@@ -211,7 +211,7 @@
 
         // background: $light;
         .dsi {
-          color: $primary  !important;
+          color: $primary !important;
         }
       }
     }
@@ -478,7 +478,7 @@
 }
 
 .dark-border {
-  border-color: $gray-400  !important;
+  border-color: $gray-400 !important;
 }
 
 .notification-loader {
