@@ -6,6 +6,12 @@
     max-height: 164px;
     width: 266px !important;
     margin: 16px 16px 0 0;
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid #ECECEC;
+      box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
 
     .last-updated {
       margin-top: 6px;
