@@ -73,7 +73,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.init();
         this.dashboardService.selectedService.subscribe(service => {
             this.selectedService = service;
-            this.fetchFileTransfers(this.selectedService._id);
+            this.selectedMenuItem.name = service.name;
+            if (service._id) this.fetchFileTransfers(this.selectedService._id);
         });
         this.commonService.connectSocket();
         this.commonService.notification.fileExport.subscribe(data => {
