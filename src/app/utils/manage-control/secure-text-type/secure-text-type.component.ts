@@ -66,6 +66,7 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
     } else {
       self.control.patchValue(null);
     }
+    self.password = self.control.value.value
     self.control.markAsTouched();
     self.control.markAsDirty();
   }
@@ -106,10 +107,11 @@ export class SecureTextTypeComponent implements OnInit, AfterViewInit {
     const self = this;
     let value = this.definition.value
     // self.showPassword = !self.showPassword;
-    if (self.showPassword && !self.decryptedValue) {
+    if (self.showPassword && !self.decryptedValue && value) {
       let cksm = Md5.hashStr(value.value);
       if (value.checksum && value.checksum === cksm) {
         self.decryptedValue = value.value;
+        self.password = value.value;
       }
       else {
         self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
