@@ -344,8 +344,7 @@
         <span class="text">View</span>
       </button>
       <button type="button" class="btn btn-link d-flex align-items-center"
-        *ngIf="recordChecked && recordChecked==1 && hasPermission('PUT') && canEdit"
-        (click)="editFilter(selectedSearch)" id="editButton">
+        *ngIf="recordChecked && recordChecked==1 && hasPermission('PUT') && canEdit" (click)="edit()" id="editButton">
         <span class="dsi dsi-edit mr-2"></span>
         <span class="text">Edit</span>
       </button>
