@@ -127,13 +127,13 @@
 }
 
 $weights: 200,
-300,
-400,
-500,
-600,
-700,
-800,
-900;
+  300,
+  400,
+  500,
+  600,
+  700,
+  800,
+  900;
 
 @each $size in $weights {
   .fw-#{$size} {
@@ -512,4 +512,8 @@ odp-manage-control {
 
 .overflow-y-hidden {
   overflow-y: hidden;
+}
+
+.btn-outline-primary:hover .text-primary {
+  color: #fff !important;
 }

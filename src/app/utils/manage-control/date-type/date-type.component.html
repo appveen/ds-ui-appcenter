@@ -3,16 +3,17 @@
         <span class="dsi dsi-calendar mr-2 my-auto" id="selectDate" (click)="onClick($event)"></span>
         <input [attr.id]="definition.path" class="border-0" readonly
             [disabled]=" definition.properties.readonly || control.disabled" [value]="selectedDate"
-            placeholder="Select Date" (click)="onClick($event)">
+            placeholder="Select Date" type="submit" style="flex-basis: 40%" (click)="onClick($event)">
         <!-- <span class=" text">{{selectedDate}}</span> -->
-        <select *ngIf="supportedTimezones.length>1 && !control.disabled" class="timezone-selector border-0 text-primary"
-            [(ngModel)]="selectedTimezone" (ngModelChange)="onTimezoneChange($event)">
+        <select *ngIf="supportedTimezones.length>1 && !control.disabled" style="flex: auto"
+            class="timezone-selector border-0 text-primary ml-auto" [(ngModel)]="selectedTimezone"
+            (ngModelChange)="onTimezoneChange($event)">
             <option *ngFor="let tz of supportedTimezones" [value]="tz">{{tz}}</option>
         </select>
         <div class="d-flex ml-auto">
             <span *ngIf="supportedTimezones.length<2 || control.disabled"
                 class="mr-2 text-primary align-self-center">{{selectedTimezone}}</span>
-            <span *ngIf="control.value" class="dsi dsi-close-circle" (click)="clearValue()"></span>
+            <span *ngIf="control.value" class="dsi dsi-close" (click)="clearValue()"></span>
         </div>
 
 
