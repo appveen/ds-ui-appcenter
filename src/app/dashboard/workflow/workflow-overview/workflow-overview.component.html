@@ -10,9 +10,11 @@
     <div class="d-flex align-items-center justify-content-between">
         <div class="font-22 fw-700">All Records - Workflow</div>
         <div>
-            <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();"></odp-search-box>
+            <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();" tooltipDir="left">
+            </odp-search-box>
         </div>
-    </div>    <div class="row no-gutters">
+    </div>
+    <div class="row no-gutters">
         <div class="col-3" *ngFor="let srvc of services">
             <div class="bg-white ds-item mr-3 rounded mt-3">
                 <div class="px-3 pt-3">
