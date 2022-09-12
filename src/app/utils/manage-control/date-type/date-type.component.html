@@ -3,7 +3,7 @@
         <span class="dsi dsi-calendar mr-2 my-auto" id="selectDate" (click)="onClick($event)"></span>
         <input [attr.id]="definition.path" class="border-0" readonly
             [disabled]=" definition.properties.readonly || control.disabled" [value]="selectedDate"
-            placeholder="Select Date" (click)="onClick($event)">
+            placeholder="Select Date" (click)="onClick($event)" type="submit">
         <!-- <span class=" text">{{selectedDate}}</span> -->
         <select *ngIf="supportedTimezones.length>1 && !control.disabled" class="timezone-selector border-0 text-primary"
             [(ngModel)]="selectedTimezone" (ngModelChange)="onTimezoneChange($event)">
