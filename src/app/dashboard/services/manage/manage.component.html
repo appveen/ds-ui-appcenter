@@ -28,6 +28,7 @@
       </div>
     </div>
   </div> -->
+
   <div class="sub-header d-flex align-items-center overflow-x-auto"
     [ngClass]='{"justify-content-between": stateModelAttr , "justify-content-end": !stateModelAttr}'>
     <div class="d-flex align-items-center justify-content-between w-100">
@@ -148,10 +149,16 @@
         </ng-container>
       </div>
     </div>
-
     <div class="view-body p-4 w-100" [ngClass]="{'no-action':showSubHeader}">
       <ng-container *ngIf="!showLazyLoader">
         <ng-container *ngIf="!isSchemaFree">
+          <div class="actions float-right">
+            <div class="text-warning align-self-end" *ngIf="hasWorkflow"
+              [ngStyle]="{display : !hasWorkflow ? 'none' : 'flex'}" id="workflowReview">
+              {{ isEdit ? 'Any changes to this record will require approval(s).' :
+              'Approval(s) will be required to publish this record.' }}
+            </div>
+          </div>
           <ng-container *ngIf="wizard.length > 0 && definition.length > 0">
             <ng-container *ngFor="let step of wizard;let stepIndex = index;let stepFirst = first;let stepLast = last">
               <div class="d-flex flex-column" *ngIf="active[stepIndex]">
