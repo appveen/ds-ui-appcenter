@@ -12,6 +12,7 @@ export class WorkflowOverviewComponent implements OnInit {
   showLazyLoader: boolean;
   searchTerm: string;
   services: any;
+  ogServices: any;
   constructor(
     private commonService: CommonService
   ) { }
@@ -20,21 +21,22 @@ export class WorkflowOverviewComponent implements OnInit {
   ngOnInit(): void {
     const self = this;
     self.services = [];
+    self.ogServices = [];
     self.showLazyLoader = true;
     self.getServices();
   }
 
   getServices() {
     const self = this;
-    const filter: any = { status: 'Active', app: self.commonService.app._id,'workflowConfig.enabled': true  };
+    const filter: any = { status: 'Active', app: self.commonService.app._id, 'workflowConfig.enabled': true };
     if (!self.commonService.userDetails.isSuperAdmin
       && self.commonService.servicesWithAccess.length > 0 && !self.commonService.isAppAdmin()) {
       filter._id = {
         $in: self.commonService.servicesWithAccess
       };
     }
-    if(self.searchTerm){
-      filter.name =  '/' + self.searchTerm + '/';
+    if (self.searchTerm) {
+      filter.name = '/' + self.searchTerm + '/';
     }
     const options: GetOptions = {
       count: -1,
@@ -49,6 +51,7 @@ export class WorkflowOverviewComponent implements OnInit {
       .subscribe(res => {
         {
           self.services = res;
+          self.ogServices = res;
           self.showLazyLoader = false;
         }
       });
@@ -57,19 +60,21 @@ export class WorkflowOverviewComponent implements OnInit {
   search(value) {
     const self = this;
     if (!value || !value.trim()) {
+      self.services = self.ogServices
       return;
     }
     this.searchTerm = value.trim();
     self.services = [];
-    self.showLazyLoader = true;
-    self.getServices();
+    // self.showLazyLoader = true;
+    self.services = self.ogServices.filter(ele => ele.name.toLowerCase().indexOf(this.searchTerm) > -1);
   }
 
   resetSearch() {
     const self = this;
     this.searchTerm = null;
     self.services = [];
-    self.showLazyLoader = true;
-    self.getServices();
+    // self.showLazyLoader = true;
+    self.services = self.ogServices
+    // self.getServices();
   }
 }
