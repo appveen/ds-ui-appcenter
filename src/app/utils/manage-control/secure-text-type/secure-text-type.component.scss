@@ -25,3 +25,9 @@
   right: 2% !important;
   top: 5px !important;
 }
+
+@keyframes redoRotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}

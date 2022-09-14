@@ -29,6 +29,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
   showPassword: boolean;
   id: string;
   historyMode: boolean;
+  isLoading: boolean = false;
   decryptedValue: string;
 
   get currentAppId() {
@@ -139,23 +140,40 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
 
   showDecryptedValue() {
     const self = this;
-    let value = this.definition.value
+    this.isLoading = true
+    let value = this.value || this.definition.value
     // self.showPassword = !self.showPassword;
-    if (self.showPassword && !self.decryptedValue) {
+    if (self.showPassword && !self.decryptedValue && value) {
       let cksm = Md5.hashStr(value.value);
       if (value.checksum && value.checksum === cksm) {
         self.decryptedValue = value.value;
+        this.isLoading = false
       }
       else {
-        self.decryptedValue = "**********"
-        self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value.value }).subscribe(res => {
-          self.decryptedValue = res.data;
-        }, err => {
-          self.decryptedValue = value.value
-        })
+        this.decryptApi(value.value)
       }
     }
+    else {
+      this.isLoading = false
+    }
 
+  }
+
+  decryptApi(value) {
+    const self = this
+    // self.decryptedValue = "**********"
+    self.commonService.post('api', self.appService.serviceAPI + '/utils/sec/decrypt', { data: value }).subscribe(res => {
+      if (res.data) {
+        self.decryptedValue = res.data;
+        self.decryptApi(self.decryptedValue)
+      }
+      else {
+        this.isLoading = false
+      }
+    }, err => {
+      self.decryptedValue = value
+      this.isLoading = false
+    })
   }
 
 }

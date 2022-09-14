@@ -13,3 +13,9 @@
 .wrapper {
     white-space: pre;
 }
+
+@keyframes redoRotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}

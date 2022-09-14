@@ -1,12 +1,12 @@
 <div class="rich-text-wrapper">
     <textarea #editorEle class="editor form-control" [attr.id]="Id" (keyup)="onKeyup($event)"
-        [ngClass]="{'display':control.enabled,'display-hide':!control.enabled}"></textarea>
+        [ngClass]="{'display':control?.enabled,'display-hide':!control?.enabled}"></textarea>
 
-    <div *ngIf="control.disabled && control.value" class="form-control"
-        [innerHTML]="getContent(control.value)"></div>
+    <div *ngIf="control?.disabled && control?.value" class="form-control" [innerHTML]="getContent(control?.value)">
+    </div>
 
-    <textarea #textarea class="form-control" *ngIf="control.disabled && !control.value" rows="7"
-        [attr.id]="definition.key" [disabled]="control.disabled"></textarea>
+    <textarea #textarea class="form-control" *ngIf="control?.disabled && !control?.value" rows="7"
+        [attr.id]="definition.key" [disabled]="control?.disabled"></textarea>
 
     <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary" *ngIf="requiredError"
         [ngClass]="{'bg-error':requiredError}">
@@ -21,7 +21,7 @@
     </div>
 </div>
 <div class="tokens" *ngIf="definition.properties.hasTokens && definition.properties.hasTokens.length>0">
-    <button type="button" [disabled]="control.disabled" [attr.id]="definition.path+ '.'+ token"
+    <button type="button" [disabled]="control?.disabled" [attr.id]="definition.path+ '.'+ token"
         class="btn btn-sm btn-min-width mr-2 mb-2 token"
         [ngClass]="{'btn-primary':usedTokens[token],'btn-outline-primary':!usedTokens[token]}"
         *ngFor="let token of definition.properties.hasTokens" (click)="putToken(token)">
