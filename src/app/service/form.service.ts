@@ -313,9 +313,9 @@ export class FormService {
           if (_def.properties.readonly) {
             _control = new FormControl({
               value:
-                _def.value !== null && _def.value !== undefined
+                _def.value
                   ? _def.value
-                  : _def.properties.default !== undefined
+                  : _def.properties.default
                     ? _def.properties.default
                     : null,
               disabled: true
@@ -344,6 +344,7 @@ export class FormService {
         }
       }
       _control.setValidators(self.createValidatorList(_def));
+      console.log(_control)
       _dynamicGroup[_def.key] = _control;
     });
     // Object.keys(_fields).forEach(key => {
