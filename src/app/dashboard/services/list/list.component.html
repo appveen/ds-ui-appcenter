@@ -53,7 +53,7 @@
         </div>
         <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch">
           <div class="my-auto">
-            <span class='dsi dsi-undo hover mr-3 font-20' (click)='clearSearch()'></span>
+            <span class='dsi dsi-undo hover mr-3 font-20' ngbTooltip="Clear Search" (click)='clearSearch()'></span>
           </div>
           <button class="btn btn-primary btn-min-width mr-3 my-auto" style="height:32px" (click)='run()' [disabled]="!(searchForm.get('project').valid &&
               searchForm.get('filter').valid && searchForm.get('sort').valid)">
@@ -150,8 +150,8 @@
             <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="selectedSearch" (click)="saveView()"> Save
               Changes
             </div>
-            <div class="d-flex mt-2" [ngClass]="{'pe-none': !selectedSearch}">
-              <span class="font-12 fw-500 mr-2">{{selectedSearch?.private ? 'Private' : 'Public'}}</span>
+            <div class="d-flex mt-2" [ngClass]="{'pe-none': !selectedSearch}" *ngIf="selectedSearch">
+              <span class=" font-12 fw-500 mr-2">{{selectedSearch?.private ? 'Private' : 'Public'}}</span>
               <odp-switch [checked]="!selectedSearch?.private" (onChange)="toggleVisibility($event)"></odp-switch>
             </div>
           </div>
