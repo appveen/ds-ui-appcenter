@@ -344,7 +344,6 @@ export class FormService {
         }
       }
       _control.setValidators(self.createValidatorList(_def));
-      console.log(_control)
       _dynamicGroup[_def.key] = _control;
     });
     // Object.keys(_fields).forEach(key => {
