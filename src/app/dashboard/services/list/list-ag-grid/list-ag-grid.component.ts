@@ -13,6 +13,7 @@ import { AgGridCellComponent } from './ag-grid-cell/ag-grid-cell.component';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { RelationTooltipComponent } from './ag-grid-cell/relation-tooltip/relation-tooltip.component';
 import { ListAgGridService } from './list-ag-grid.service';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'odp-list-ag-grid',
@@ -26,6 +27,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   @Input() columns: Array<any>;
   @Input() applySavedView: EventEmitter<any>;
   @Input() selectAll: EventEmitter<any>;
+  @Input() searchForm: FormGroup;
   @Output() removedSavedView: EventEmitter<any>;
   @Output() selectedRecords: EventEmitter<Array<any>>;
   @Output() viewRecord: EventEmitter<any>;
@@ -136,6 +138,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
               }
             }
           }
+
+
         }, 1000);
       }
       self.getRecordsCount(true);
@@ -348,6 +352,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   getRecordsCount(first?: boolean) {
     const self = this;
+    if (this.searchForm) {
+      this.apiConfig['filter'] = JSON.parse(this.searchForm.get('filter').value)
+      this.apiConfig['project'] = JSON.parse(this.searchForm.get('project').value)
+      this.apiConfig['sort'] = JSON.parse(this.searchForm.get('sort').value)
+    }
     const filter = self.apiConfig.filter;
 
     self.currentRecordsCountPromise = self.commonService

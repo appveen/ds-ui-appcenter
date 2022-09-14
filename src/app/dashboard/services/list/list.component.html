@@ -382,7 +382,7 @@
       (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
       <odp-list-ag-grid #listGrid *ngIf="definition && definition.length >0" [schema]="schema" [columns]="definition"
         [selectAll]="selectAll" [applySavedView]="applySavedView" (removedSavedView)="removedSavedView($event)"
-        (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)"
+        (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)" [searchForm]="searchForm"
         (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
         (rightClick)="onRightClick($event)" (scroll)="showContextMenu = false"></odp-list-ag-grid>
       <div class="d-flex flex-column  position-absolute  context-menu" *ngIf="showContextMenu"
