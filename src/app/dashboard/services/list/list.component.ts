@@ -544,6 +544,7 @@ export class ListComponent implements OnInit, OnDestroy {
       });
     }
     self.filterSavedViews();
+    this.run()
   }
 
   fetchSchema(serviceId: string) {
@@ -1265,10 +1266,10 @@ export class ListComponent implements OnInit, OnDestroy {
     const currentUser = self.sessionService.getUser(true);
     if (!filter.private && (currentUser.isSuperAdmin || currentUser._id === filter.createdBy)) {
       self.filterDeleteApiCall(filter);
-      self.resetFilter();
+      // self.resetFilter();
     } else if (filter.private && currentUser._id === filter.createdBy) {
       self.filterDeleteApiCall(filter);
-      self.resetFilter();
+      // self.resetFilter();
     } else {
       self.ts.warning('Either this is a Private filter or You don\'t have enough permission');
     }
@@ -1285,6 +1286,7 @@ export class ListComponent implements OnInit, OnDestroy {
           self.subscriptions['deleteFilter'] = self.commonService.delete('user', `/data/filter/${filter._id}`).subscribe(
             res => {
               self.ts.success('Filter Deleted.');
+              self.resetFilter()
               self.savedViews = [];
               self.getSavedViews();
               self.selectedSearch = null;
@@ -1292,6 +1294,7 @@ export class ListComponent implements OnInit, OnDestroy {
             },
             err => {
               self.commonService.errorToast(err, 'Unable to delete, please try again later');
+              self.resetFilter()
             }
           );
         }
