@@ -41,8 +41,8 @@
                         <div class="col-6">
                             <div class="d-flex align-items-center">
                                 <div class="mb-1 mr-2">
-                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.workflowConfig.enabled ,
-                                        'text-light-grey': !srvc.workflowConfig.enabled }"></i>
+                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.workflowConfig?.enabled ,
+                                        'text-light-grey': !srvc.workflowConfig?.enabled }"></i>
                                 </div>
                                 <div class="font-12 fw-400 text-secondary">Workflow</div>
                             </div>
@@ -50,8 +50,8 @@
                         <div class="col-6">
                             <div class="d-flex align-items-center">
                                 <div class="mb-1 mr-2">
-                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.stateModel.enabled ,
-                                        'text-light-grey': !srvc.stateModel.enabled }"></i>
+                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.stateModel?.enabled ,
+                                        'text-light-grey': !srvc.stateModel?.enabled }"></i>
                                 </div>
                                 <div class="font-12 fw-400 text-secondary">State Model</div>
                             </div>
