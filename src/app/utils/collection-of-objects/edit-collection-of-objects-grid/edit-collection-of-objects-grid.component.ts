@@ -22,6 +22,7 @@ import { AppService } from 'src/app/service/app.service';
 import { ColOfObjsHeaderCellComponent } from '../col-of-objs-header-cell/col-of-objs-header-cell/col-of-objs-header-cell.component';
 import { TextEditor } from '../../cell-editor/text-editor.component';
 import * as _ from 'lodash'
+import { CommonService } from '../../../service/common.service';
 
 @Component({
   selector: 'odp-edit-collection-of-objects-grid',
@@ -94,12 +95,13 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     return !!this.gridApi && this.gridApi.isAnyFilterPresent()
   }
 
-  constructor(private ngbModal: NgbModal, private fb: FormBuilder, private formService: FormService, private appService: AppService) { }
+  constructor(private ngbModal: NgbModal, private fb: FormBuilder, private formService: FormService, private appService: AppService, private commonService: CommonService) { }
 
   ngOnInit() {
     this.flattenDefinition(this.definitionList, this.definition.definition);
     this.prepareTable();
-    this.openNew()
+    this.openNew();
+    this.handleSecure()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -351,7 +353,6 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     }
   }
   private prepareTable() {
-    console.log(this.rowData)
     this.frameworkComponents = {
       customHeaderRenderer: ColOfObjsHeaderCellComponent,
       customCheckboxCellRenderer: GridCheckboxComponent,
@@ -656,4 +657,44 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       }
     })
   }
+
+
+  handleSecure() {
+    const secureKeys = this.definitionList.filter(ele => ele.properties.password).map(ele => ele.key);
+    if (secureKeys.length > 0) {
+      this.formArray.controls.forEach(ele => {
+        secureKeys.forEach(key => {
+          const value = ele.get(key).value;
+          if (value.value) {
+            this.decryptValue(value.value, ele, key);
+          }
+        })
+      })
+    }
+
+  }
+
+  decryptValue(value, ele, key) {
+    let final = value;
+    this.commonService.post('api', this.appService.serviceAPI + '/utils/sec/decrypt', { data: value }).subscribe(res => {
+      if (res.data) {
+        final = res.data;
+        this.decryptValue(final, ele, key)
+      }
+    }, err => {
+      if (_.isEmpty(err.error)) {
+        final = value;
+        const val = ele.get(key).value;
+        console.log(val)
+        if (val.value) {
+          val['value'] = final;
+        }
+        ele.get(key).setValue(val);
+        ele.value['key'] = val
+      }
+    })
+
+  }
+
+
 }

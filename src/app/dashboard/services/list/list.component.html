@@ -53,7 +53,7 @@
         </div>
         <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch">
           <div class="my-auto">
-            <span class='dsi dsi-undo hover mr-3 font-20' (click)='clearSearch()'></span>
+            <span class='dsi dsi-undo hover mr-3 font-20' ngbTooltip="Clear Search" (click)='clearSearch()'></span>
           </div>
           <button class="btn btn-primary btn-min-width mr-3 my-auto" style="height:32px" (click)='run()' [disabled]="!(searchForm.get('project').valid &&
               searchForm.get('filter').valid && searchForm.get('sort').valid)">
@@ -110,10 +110,10 @@
                     <span class="fw-500 font-12 hover" *ngIf="selectedSearch">{{selectedSearch?.name}}</span>
                   </div>
                 </div>
-                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 300px; height: 250px">
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 300px">
                   <div ngbDropdownItem class='search-views p-3 hover border-bottom font-14'
                     (click)='selectSearch();isCollapsed?collapse.toggle():""'>New Search View</div>
-                  <div class="mt-2">
+                  <div class=" mt-2">
                     <span class="font-11 fw-500 text-secondary m-3" *ngIf="savedViews.length > 0">Saved
                       Searches</span>
                     <div ngbDropdownItem *ngFor="let filter of savedViews" class="search-views p-3 hover"
@@ -140,16 +140,18 @@
             Save
           </div>
           <div class="d-flex ml-auto my-auto mr-3">
-            <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="saveAsNewSearch" [ngClass]="{'pe-none fw-400': !(searchForm.get('project').valid &&
-              searchForm.get('filter').valid && searchForm.get('sort').valid)}"> Save as New Filter</div>
+            <div class="font-12 fw-500 mr-3 hover text-primary" (click)='saveSearchViewModal()' *ngIf="saveAsNewSearch"
+              [ngClass]="{' pe-none fw-400':
+              !(searchForm.get('project').valid && searchForm.get('filter').valid && searchForm.get('sort').valid)}">
+              Save as New Filter</div>
 
             <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="selectedSearch && !saveAsNewSearch"
               (click)="deleteFilter(selectedSearch)"> Delete filter</div>
             <div class="font-12 fw-500 mr-3 hover text-primary" *ngIf="selectedSearch" (click)="saveView()"> Save
               Changes
             </div>
-            <div class="d-flex mt-2" [ngClass]="{'pe-none': !selectedSearch}">
-              <span class="font-12 fw-500 mr-2">{{selectedSearch?.private ? 'Private' : 'Public'}}</span>
+            <div class="d-flex mt-2" [ngClass]="{'pe-none': !selectedSearch}" *ngIf="selectedSearch">
+              <span class=" font-12 fw-500 mr-2">{{selectedSearch?.private ? 'Private' : 'Public'}}</span>
               <odp-switch [checked]="!selectedSearch?.private" (onChange)="toggleVisibility($event)"></odp-switch>
             </div>
           </div>
@@ -382,7 +384,7 @@
       (outside)="showContextMenu = false" (click)="closeContextMenu();" (contextmenu)="false">
       <odp-list-ag-grid #listGrid *ngIf="definition && definition.length >0" [schema]="schema" [columns]="definition"
         [selectAll]="selectAll" [applySavedView]="applySavedView" (removedSavedView)="removedSavedView($event)"
-        (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)"
+        (selectedRecords)="selectedRecords($event)" (viewRecord)="view($event._id)" [searchForm]="searchForm"
         (recordsInfo)="currentTotalCount=$event.total;loadedRecordsCount=$event.loaded"
         (rightClick)="onRightClick($event)" (scroll)="showContextMenu = false"></odp-list-ag-grid>
       <div class="d-flex flex-column  position-absolute  context-menu" *ngIf="showContextMenu"

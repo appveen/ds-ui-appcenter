@@ -1,9 +1,12 @@
 <div class="value-width position-relative w-100 d-flex">
-    <input class="form-control"
+    <input class="form-control" *ngIf="!isLoading"
         [ngClass]="{'is-invalid':requiredError || patternError || minLengthError || maxLengthError}"
         [type]="showPassword ? 'text' : 'password'" (keyup)="onEnter($event)" (change)="onChange($event.target.value)"
         #inputControl [attr.id]="definition.path" [ngModel]="showPassword ? password : password ? '**********' : ''"
-        [disabled]="control.disabled" autocomplete="disabled">
+        [disabled]="control?.disabled" autocomplete="disabled">
+    <span class="form-control" *ngIf="isLoading">
+        <span class="dsi dsi-redo" style="animation: redoRotate 2s infinite;"></span>
+    </span>
     <span style="margin-left: -30px !important" class="dsi eye-icon eyeIcon hover m-auto"
         [ngClass]="{'dsi-view': !showPassword,'dsi-hide': showPassword }"
         (click)="showPassword= !showPassword; showDecryptedValue()"></span>

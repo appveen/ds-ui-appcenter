@@ -457,11 +457,11 @@ $weights: 200,
   text-decoration: underline !important
 }
 
-.btn-outline-danger {
-  &:hover {
-    background-color: transparent !important;
-  }
-}
+// .btn-outline-danger {
+//   &:hover {
+//     background-color: transparent !important;
+//   }
+// }
 
 .vh-100 {
   height: 100vh
@@ -516,4 +516,8 @@ odp-manage-control {
 
 .btn-outline-primary:hover .text-primary {
   color: #fff !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: $danger  !important;
 }

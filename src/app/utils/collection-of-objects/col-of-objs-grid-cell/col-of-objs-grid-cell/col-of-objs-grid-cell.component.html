@@ -33,8 +33,11 @@
                 <ng-container *ngIf="!showPassword">
                     **********
                 </ng-container>
-                <ng-container *ngIf="showPassword">
+                <ng-container *ngIf="showPassword && !isLoading">
                     {{decryptedValue}}
+                </ng-container>
+                <ng-container *ngIf="showPassword && isLoading">
+                    <span class="dsi dsi-redo" style="animation: redoRotate 2s infinite;"></span>
                 </ng-container>
                 <button type="button" class="btn btn-sm btn-link p-0 ml-2"
                     (click)="showPassword=!showPassword;showDecryptedValue();$event.stopPropagation();">

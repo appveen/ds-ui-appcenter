@@ -70,8 +70,8 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit() {
         const self = this;
-        self.control.statusChanges.subscribe(eve => {
-            if (self.control.enabled) {
+        self.control?.statusChanges.subscribe(eve => {
+            if (self.control?.enabled) {
                 tinymce.get(self.Id)?.show();
             } else {
                 tinymce.get(self.Id)?.hide();
@@ -111,11 +111,11 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
             }
         });
-        if (self.control && self.control.value && self.editor) {
-            self.editor.setContent(self.control.value);
+        if (self.control && self.control?.value && self.editor) {
+            self.editor.setContent(self.control?.value);
 
         }
-        if (self.control.enabled) {
+        if (self.control?.enabled) {
             tinymce.get(self.Id).show();
         } else {
             tinymce.get(self.Id).hide();
@@ -142,8 +142,8 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
         }
-        self.control.patchValue(val);
-        self.control.markAsDirty();
+        self.control?.patchValue(val);
+        self.control?.markAsDirty();
     }
 
     putToken(token) {
@@ -190,6 +190,6 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
 
     get requiredError() {
         const self = this;
-        return self.control.hasError('required') && self.control.touched;
+        return self.control?.hasError('required') && self.control?.touched;
     }
 }

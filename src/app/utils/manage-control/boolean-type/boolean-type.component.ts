@@ -18,9 +18,12 @@ export class BooleanTypeComponent implements OnInit {
 
   ngOnInit() {
     const self = this;
-    if (self.control && self.control.value === null) {
+    if (self.control && self.control.value) {
+      self.control.setValue(true);
+    }
+    else {
       self.control.setValue(false);
     }
-    self.controlId= self.definition.path;
+    self.controlId = self.definition.path;
   }
 }
