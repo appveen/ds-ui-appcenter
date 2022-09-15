@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import * as _ from 'lodash';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class ListAgGridService {
   inlineFilterActive: any;
   private lastFilterSearchText: Record<string, string>;
   private currentServiceId: string;
-
+  filter: any;
+  filterSubject: Subject<any> = new Subject()
   constructor() {
     const self = this;
     self.selectAll = new EventEmitter();
@@ -42,7 +44,7 @@ export class ListAgGridService {
         tempArr = tempArr.concat(self.getSelect(e2.definition));
       } else if (e2.type === 'Array' && e2.definition && e2.definition.length > 0) {
         const def = e2.definition;
-        def.forEach((element,index) => {
+        def.forEach((element, index) => {
           def[index].key = element.dataKey.replace('._self', '');
         });
         tempArr = tempArr.concat(self.getSelect(def));
@@ -56,19 +58,25 @@ export class ListAgGridService {
   }
 
   initializeLastFilterSearchText(serviceId: string) {
-    if(this.currentServiceId !== serviceId) {
+    if (this.currentServiceId !== serviceId) {
       this.lastFilterSearchText = {};
       this.currentServiceId = serviceId;
     }
   }
 
   setLastFilterSearchText(columnHeader: string, searchText: string) {
-    if(!!columnHeader) {
+    if (!!columnHeader) {
       this.lastFilterSearchText[columnHeader] = searchText;
     }
   }
 
   getLastFilterSearchText(columnHeader: string): string {
     return this.lastFilterSearchText[columnHeader];
+  }
+
+  onFloatingFilterChange(filter) {
+    this.filter = filter;
+    this.filterSubject.next(this.filter)
+
   }
 }

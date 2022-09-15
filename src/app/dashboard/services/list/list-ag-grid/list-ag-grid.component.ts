@@ -14,6 +14,8 @@ import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { RelationTooltipComponent } from './ag-grid-cell/relation-tooltip/relation-tooltip.component';
 import { ListAgGridService } from './list-ag-grid.service';
 import { FormGroup } from '@angular/forms';
+import { AppService } from '../../../../service/app.service';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'odp-list-ag-grid',
@@ -50,7 +52,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   showLoading: boolean;
   private subscription: any;
   searchView: any;
-
+  context: any = this;
   constructor(
     private elementRef: ElementRef,
     private commonService: CommonService,
@@ -58,7 +60,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private location: Location,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private appService: AppService
   ) {
     const self = this;
     self.columnDefs = [];
@@ -143,144 +146,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         }, 1000);
       }
       self.getRecordsCount(true);
-      self.dataSource = {
-        getRows: (params: IGetRowsParams) => {
-          if (!environment.production) {
-            console.log('getRows', params);
-          }
-          let definitionList = self.agGrid.columnApi
-            .getAllColumns()
-            .filter(e => e.isVisible())
-            .map(e => e.getColDef().refData);
-          const cols = self.agGrid.columnApi.getAllGridColumns();
-          const colToNameFunc = function (col, index) {
-            return {
-              index,
-              colId: col.getId()
-            };
-          };
-          const colNames = cols.map(colToNameFunc);
-          const filteredColms = [];
-          definitionList.forEach(element => {
-            const obj = colNames.find(ele => ele.colId === element.dataKey);
-            if (obj) {
-              filteredColms.push(obj);
-            }
-          });
-          const sc = [];
-          filteredColms.sort((a, b) => a.index - b.index);
-          filteredColms.forEach(ele => {
-            const obj = definitionList.find(element => ele.colId === element.dataKey);
-            if (obj) {
-              sc.push(obj);
-            }
-          });
-          definitionList = sc;
-          if (!self.schema.schemaFree) {
-            self.apiConfig.select = self.gridService.getSelect(definitionList);
-          }
-          self.agGrid.api.showLoadingOverlay();
-          self.showLoading = true;
-          self.selectedRecords.emit([]);
-          self.currentRecordsCountPromise.then(count => {
-            if (params.endRow - 30 < self.currentRecordsCount) {
-              // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
-              self.apiConfig.page = Math.ceil(params.endRow / 30);
-              //}
-              if (self.subscription['getRecords_' + self.apiConfig.page]) {
-                self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
-              }
-              self.subscription['getRecords_' + self.apiConfig.page] = self.getRecords().subscribe(
-                (records: any) => {
-                  let loaded = params.endRow;
-                  if (loaded > self.currentRecordsCount) {
-                    loaded = self.currentRecordsCount;
-                  }
-                  if (self.schema.schemaFree) {
-                    let data = JSON.parse(JSON.stringify(records))
-                    data.forEach((element, index) => {
-                      delete element['_metadata'];
-                      delete element['_workflow'];
-                      delete element['__v'];
-                      records[index].data = element;
-                    });
-                  }
-                  self.agGrid.api.hideOverlay();
-                  self.showLoading = false;
-                  // self.agGrid.api.deselectAll();
-                  self.recordsInfo.emit({
-                    loaded,
-                    total: self.currentRecordsCount
-                  });
-                  if (loaded === self.currentRecordsCount) {
-                    params.successCallback(records, self.currentRecordsCount);
-                  } else {
-                    params.successCallback(records);
-                  }
-                  self.rowSelected(null);
-                },
-                err => {
-                  self.commonService.errorToast(err);
-                  self.showLoading = false;
-                  self.agGrid.api.hideOverlay();
-                  self.currentRecordsCount = 0;
-                  self.totalRecordsCount = 0;
-                  self.recordsInfo.emit({
-                    loaded: 0,
-                    total: 0
-                  });
-                  self.agGrid.api.showNoRowsOverlay();
-                })
-            } else {
-              self.agGrid.api.hideOverlay();
-              if (self.currentRecordsCount == 0) {
-                self.agGrid.api.showNoRowsOverlay();
-              }
-              params.successCallback([], self.currentRecordsCount);
-            }
-            if (!!this.apiConfig.filter || !!this.apiConfig.sort || !!this.apiConfig.select) {
-              this.location.go(this.router.url.split('?')[0], this.getFilterUrlParams(this.apiConfig));
-            } else {
-              this.location.go(this.router.url.split('?')[0]);
-            }
-          });
-        }
-      };
     });
     self.widthChange.pipe(debounceTime(500)).subscribe(ev => {
       self.setPrefrences(ev);
     });
-    self.subscription['applySaviedView'] = self.applySavedView.pipe(distinctUntilChanged()).subscribe(data => {
-      try {
-        if (data.value) {
-          if (typeof data.value === 'string') {
-            data.value = JSON.parse(data.value);
-          }
-          const viewModel = data.value;
-          if (self.schema.schemaFree) {
-            self.searchView = data.value.value;
-          }
-          const temp = self.agGrid.api.getFilterModel();
-          if (temp && Object.keys(temp).length > 0) {
-            self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
-            self.clearFilterModalRef.result.then(
-              close => {
-                if (close) {
-                  self.gridService.selectedSavedView = viewModel;
-                  self.configureView(viewModel || {});
-                }
-              },
-              dismiss => { }
-            );
-          } else {
-            self.gridService.selectedSavedView = viewModel;
-            self.configureView(viewModel || {});
-          }
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
+
     self.selectAll.subscribe(flag => {
       self.agGrid.api.forEachNode((rowNode, index) => {
         rowNode.setSelected(flag);
@@ -293,6 +163,12 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         }
       });
     });
+
+    this.gridService.filterSubject.subscribe(data => {
+      this.clearFilter();
+      this.apiConfig.filter = data;
+      this.filterModified(null)
+    })
   }
 
   ngOnDestroy() {
@@ -340,9 +216,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     return urlParams;
   }
 
-  initRows(nocount?: boolean) {
+  initRows(emptyFilter?: boolean) {
     const self = this;
-    if (!nocount) {
+    if (!emptyFilter) {
       self.getRecordsCount();
     }
     // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
@@ -712,9 +588,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (!environment.production) {
       console.log('Filter Modified', filterModel);
     }
-    self.removedSavedView.emit(true);
+    // self.removedSavedView.emit(true);
     self.filterModel = self.apiConfig.filter;
-    self.initRows();
+
+    this.initRows()
   }
 
   clearFilter() {
@@ -802,5 +679,147 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   scrollEvent() {
     const self = this;
     self.scroll.emit(true);
+  }
+
+  onGridReady(event) {
+    const self = this;
+    self.dataSource = {
+      getRows: (params: IGetRowsParams) => {
+        if (!environment.production) {
+          console.log('getRows', params);
+        }
+        let definitionList = self.agGrid.columnApi
+          .getAllColumns()
+          .filter(e => e.isVisible())
+          .map(e => e.getColDef().refData);
+        const cols = self.agGrid.columnApi.getAllGridColumns();
+        const colToNameFunc = function (col, index) {
+          return {
+            index,
+            colId: col.getId()
+          };
+        };
+        const colNames = cols.map(colToNameFunc);
+        const filteredColms = [];
+        definitionList.forEach(element => {
+          const obj = colNames.find(ele => ele.colId === element.dataKey);
+          if (obj) {
+            filteredColms.push(obj);
+          }
+        });
+        const sc = [];
+        filteredColms.sort((a, b) => a.index - b.index);
+        filteredColms.forEach(ele => {
+          const obj = definitionList.find(element => ele.colId === element.dataKey);
+          if (obj) {
+            sc.push(obj);
+          }
+        });
+        definitionList = sc;
+        if (!self.schema.schemaFree) {
+          self.apiConfig.select = self.gridService.getSelect(definitionList);
+        }
+        self.agGrid.api.showLoadingOverlay();
+        self.showLoading = true;
+        self.selectedRecords.emit([]);
+        self.currentRecordsCountPromise.then(count => {
+          if (params.endRow - 30 < self.currentRecordsCount) {
+            // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
+            self.apiConfig.page = Math.ceil(params.endRow / 30);
+            //}
+            if (self.subscription['getRecords_' + self.apiConfig.page]) {
+              self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
+            }
+            self.subscription['getRecords_' + self.apiConfig.page] = self.getRecords().subscribe(
+              (records: any) => {
+                let loaded = params.endRow;
+                if (loaded > self.currentRecordsCount) {
+                  loaded = self.currentRecordsCount;
+                }
+                if (self.schema.schemaFree) {
+                  let data = JSON.parse(JSON.stringify(records))
+                  data.forEach((element, index) => {
+                    delete element['_metadata'];
+                    delete element['_workflow'];
+                    delete element['__v'];
+                    records[index].data = element;
+                  });
+                }
+                self.agGrid.api.hideOverlay();
+                self.showLoading = false;
+                // self.agGrid.api.deselectAll();
+                self.recordsInfo.emit({
+                  loaded,
+                  total: self.currentRecordsCount
+                });
+                if (loaded === self.currentRecordsCount) {
+                  params.successCallback(records, self.currentRecordsCount);
+                } else {
+                  params.successCallback(records);
+                }
+                self.rowSelected(null);
+              },
+              err => {
+                self.commonService.errorToast(err);
+                self.showLoading = false;
+                self.agGrid.api.hideOverlay();
+                self.currentRecordsCount = 0;
+                self.totalRecordsCount = 0;
+                self.recordsInfo.emit({
+                  loaded: 0,
+                  total: 0
+                });
+                self.agGrid.api.showNoRowsOverlay();
+              })
+          } else {
+            self.agGrid.api.hideOverlay();
+            if (self.currentRecordsCount == 0) {
+              self.agGrid.api.showNoRowsOverlay();
+            }
+            params.successCallback([], self.currentRecordsCount);
+          }
+          if (!!this.apiConfig.filter || !!this.apiConfig.sort || !!this.apiConfig.select) {
+            this.location.go(this.router.url.split('?')[0], this.getFilterUrlParams(this.apiConfig));
+          } else {
+            this.location.go(this.router.url.split('?')[0]);
+          }
+        });
+      }
+    };
+  }
+
+
+  applyView(data) {
+    const self = this
+    try {
+      if (data.value) {
+        if (typeof data.value === 'string') {
+          data.value = JSON.parse(data.value);
+        }
+        const viewModel = data.value;
+        if (self.schema.schemaFree) {
+          self.searchView = data.value.value;
+        }
+        const temp = self.agGrid.api.getFilterModel();
+        if (temp && Object.keys(temp).length > 0) {
+          self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
+          self.clearFilterModalRef.result.then(
+            close => {
+              if (close) {
+                self.gridService.selectedSavedView = viewModel;
+                self.configureView(viewModel || {});
+              }
+            },
+            dismiss => { }
+          );
+        } else {
+          self.gridService.selectedSavedView = viewModel;
+          self.configureView(viewModel || {});
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
   }
 }

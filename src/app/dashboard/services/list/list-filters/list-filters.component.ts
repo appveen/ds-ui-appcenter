@@ -46,7 +46,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   name: string;
   confirmDeleteModalRef: NgbModalRef;
-  filtereModalRef: NgbModalRef;
+  filterModalRef: NgbModalRef;
   queryObject: any;
   selectedColOrder: Array<any>;
   sortingColumns: Array<any>;
@@ -166,10 +166,18 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   showFilter() {
     const self = this;
-    self.filtereModalRef = self.modalService.open(self.filtereModal, { centered: true, size: 'lg' });
-    self.filtereModalRef.result.then(close => {
+    self.filterModalRef = self.modalService.open(self.filtereModal, { centered: true, size: 'lg' });
+    self.filterModalRef.result.then(close => {
       if (close) {
         self.applyFilter();
+      }
+      else {
+        // if (self.appService.existingFilter) {
+        //   this.selectFilter(self.appService.existingFilter)
+        // }
+        // else {
+        //   this.clearFilter()
+        // }
       }
     }, dismiss => { });
   }
@@ -237,7 +245,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.queryObject.sort = self.sortingColumns;
   }
 
-  clearFilter() {
+  clearFilter(fromParent = false) {
     const self = this;
     self.selectedColOrder = [];
     self.sortingColumns = [];
@@ -252,10 +260,12 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.appService.existingFilter = null;
     self.appService.dataKeyForSelectedCols = [];
     self.hasOptions = true;
-    self.filterCleared.emit(true);
+    if (!parent) {
+      self.filterCleared.emit(true);
+    }
   }
 
-  applyFilter(close?: boolean) {
+  applyFilter(close?: boolean, fromParent = false) {
     const self = this;
     self.createQueryString();
     if ((self.queryObject.sort && self.queryObject.sort.length > 0)
@@ -267,7 +277,9 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       self.appService.existingFilter = null;
     }
     self.appService.filterName = self.filterPayload.name;
-    self.refine.emit({ query: self.queryObject, close, refresh: false });
+    if (!fromParent) {
+      self.refine.emit({ query: self.queryObject, close, refresh: false });
+    }
   }
 
   checkFilterName() {
@@ -275,76 +287,78 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.invalidFilterName = !(self.filterPayload.name && self.filterPayload.name.length > 0);
   }
 
-  selectFilter(filterValue: FilterData) {
+  selectFilter(filterValue: any, fromParent = false) {
     const self = this;
     let filterVal;
     self.appService.existingFilter = filterValue;
-    self.hasOptions = filterValue.hasOptions;
-    if (filterValue.value) {
-      self.filterId = filterValue._id;
-      self.filterCreatedBy = filterValue.createdBy;
-      self.saveOrEditText = '+Edit View';
-      self.showSeparateCreateBtn = true;
-      if (filterValue.name) {
-        self.placeHolderText = filterValue.name;
-      }
-      self.filterPayload.name = filterValue.name;
-      self.appService.filterName = filterValue.name;
-      self.filterPayload.private = filterValue.private;
-      self.filterPayload.value = filterValue.value;
-      if (typeof filterValue.value === 'string') {
-        filterVal = JSON.parse(filterValue.value);
-      } else {
-        filterVal = (filterValue.value);
-      }
-    } else {
-      self.filterId = '';
-      self.saveOrEditText = '+Save As New View';
-      self.showSeparateCreateBtn = false;
-      self.placeHolderText = 'Select Filter';
-      self.filterPayload.name = '';
-      self.appService.filterName = '';
-      self.filterPayload.private = true;
-      filterVal = filterValue;
-    }
-    self.filterModel = self.appService.cloneObject(filterVal.filter) || [];
-    self.filterModel.forEach((item, i) => {
-      // if (!item.filterObject.hasOwnProperty('$or') && !Array.isArray(item.filterObject)) {
-      //   item.dataKey = Object.keys(item.filterObject)[0];
-      // } else
-      if (item.filterObject.hasOwnProperty('$or') && Array.isArray(item.filterObject['$or'])) {
-        const dk = Object.keys(item.filterObject['$or'][0])[0].split('.');
-        item.dataKey = dk[0];
-      } else if (Array.isArray(item.filterObject)) {
-        const temp = new Date(item.filterValue);
-        if (temp.toString() !== 'Invalid Date') {
-          item.dataKey = Object.keys(item.filterObject[0])[0];
+    if (filterValue) {
+      self.hasOptions = filterValue?.hasOptions;
+      if (filterValue?.value) {
+        self.filterId = filterValue?._id;
+        self.filterCreatedBy = filterValue?.createdBy;
+        self.saveOrEditText = '+Edit View';
+        self.showSeparateCreateBtn = true;
+        if (filterValue?.name) {
+          self.placeHolderText = filterValue?.name;
         }
+        self.filterPayload.name = filterValue?.name;
+        self.appService.filterName = filterValue?.name;
+        self.filterPayload.private = filterValue?.private;
+        self.filterPayload.value = filterValue?.value;
+        if (typeof filterValue?.value === 'string') {
+          filterVal = JSON.parse(filterValue?.value);
+        } else {
+          filterVal = (filterValue?.value);
+        }
+      } else {
+        self.filterId = '';
+        self.saveOrEditText = '+Save As New View';
+        self.showSeparateCreateBtn = false;
+        self.placeHolderText = 'Select Filter';
+        self.filterPayload.name = '';
+        self.appService.filterName = '';
+        self.filterPayload.private = true;
+        filterVal = filterValue;
       }
-    });
-    self.queryObject = {
-      filter: self.filterModel
-    };
-    self.createQueryString();
-    if (self.filterModel && self.filterModel.length > 0) {
-      self.noFilterObject = !self.filterModel.every(e => e.filterObject);
-    }
-    // self.commonService.filterQueryUpdated.next(filterVal.filter);
-    const selectItems = filterVal.select ? filterVal.select.split(',') : [];
-    self.selectedColOrder = [];
-    selectItems.forEach(e => {
-      const index = self.allColumns.findIndex(col => col.key === e);
-      if (index > -1) {
-        self.selectedColOrder.push(self.allColumns[index]);
+      self.filterModel = self.appService.cloneObject(filterVal.filter) || [];
+      self.filterModel.forEach((item, i) => {
+        // if (!item.filterObject.hasOwnProperty('$or') && !Array.isArray(item.filterObject)) {
+        //   item.dataKey = Object.keys(item.filterObject)[0];
+        // } else
+        if (item.filterObject.hasOwnProperty('$or') && Array.isArray(item.filterObject['$or'])) {
+          const dk = Object.keys(item.filterObject['$or'][0])[0].split('.');
+          item.dataKey = dk[0];
+        } else if (Array.isArray(item.filterObject)) {
+          const temp = new Date(item.filterValue);
+          if (temp.toString() !== 'Invalid Date') {
+            item.dataKey = Object.keys(item.filterObject[0])[0];
+          }
+        }
+      });
+      self.queryObject = {
+        filter: self.filterModel
+      };
+      self.createQueryString();
+      if (self.filterModel && self.filterModel.length > 0) {
+        self.noFilterObject = !self.filterModel.every(e => e.filterObject);
       }
-    });
-    self.sortingColumns = [];
-    self.sortingColumns = filterVal.sort;
-    self.showFilterList = false;
-    if (self.filterApplied$) {
-      self.filterApplied$.unsubscribe();
+      // self.commonService.filterQueryUpdated.next(filterVal.filter);
+      const selectItems = filterVal.select ? filterVal.select.split(',') : [];
+      self.selectedColOrder = [];
+      selectItems.forEach(e => {
+        const index = self.allColumns.findIndex(col => col.key === e);
+        if (index > -1) {
+          self.selectedColOrder.push(self.allColumns[index]);
+        }
+      });
+      self.sortingColumns = [];
+      self.sortingColumns = filterVal.sort;
+      self.showFilterList = false;
+      if (self.filterApplied$) {
+        self.filterApplied$.unsubscribe();
+      }
+      self.applyFilter(null, fromParent);
     }
-    self.applyFilter();
   }
 
   saveFilter() {
@@ -437,6 +451,11 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   get filterList() {
     // console.log(this.queryObject.filter);
     return this.queryObject.filter
+
+  }
+  set filterList(val) {
+    // console.log(this.queryObject.filter);
+    this.queryObject.filter = val
 
   }
 }

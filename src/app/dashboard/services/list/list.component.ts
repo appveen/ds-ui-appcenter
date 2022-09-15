@@ -544,7 +544,8 @@ export class ListComponent implements OnInit, OnDestroy {
       });
     }
     self.filterSavedViews();
-    this.run()
+    this.listFilters?.clearFilter(true)
+    // this.run()
   }
 
   fetchSchema(serviceId: string) {
@@ -1003,7 +1004,7 @@ export class ListComponent implements OnInit, OnDestroy {
               self.selectSearch(view);
             }
             else {
-              self.applySavedView.emit(view);
+              self.selectSavedView(view);
             }
           }
         } catch (e) {
@@ -1186,19 +1187,22 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   selectSavedView(evnt) {
-    const view = evnt.query;
+    const view = evnt.query || evnt;
     const self = this;
     if (!environment.production) {
       console.log('selectSavedView', view);
     }
+
     if (view._id) {
       self.setLastFilterApplied(view);
       self.selectedSavedView = view;
-      self.applySavedView.emit(view);
+      self.listGrid.applyView(view);
+      self.listFilters.selectFilter(view, true);
       self.appService.existingFilter = view;
     } else {
       self.selectedSavedView = { value: view };
-      self.applySavedView.emit({ value: view });
+      self.listGrid.applyView({ value: view });
+      self.listFilters.selectFilter({ value: view }, true);
       self.appService.existingFilter = { value: view };
     }
     if (evnt.close) {
@@ -1210,6 +1214,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const self = this;
     self.selectedSavedView = null;
     self.appService.existingFilter = null;
+    // this.resetFilter()
     // if (self.listGrid) {
     //   self.listGrid.clearSavedView();
     // }
@@ -1256,7 +1261,7 @@ export class ListComponent implements OnInit, OnDestroy {
     });
     setTimeout(() => {
       if (!!this.listFilters) {
-        this.listFilters.showSaveDiv = true;
+        this.listFilters.showFilter();
       }
     }, 100);
   }
@@ -1595,7 +1600,7 @@ export class ListComponent implements OnInit, OnDestroy {
         page: filterValue.value.page,
         private: filterValue.private
       });
-      self.applySavedView.emit({ value: filterValue });
+      self.listGrid.applyView({ value: filterValue });
     }
 
   }
@@ -1615,7 +1620,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const self = this;
     let searchVal = {};
     searchVal['value'] = self.searchForm.getRawValue();
-    self.applySavedView.emit({ value: searchVal });
+    self.listGrid.applyView({ value: searchVal });
   }
 
   clearSearch() {
@@ -1677,7 +1682,7 @@ export class ListComponent implements OnInit, OnDestroy {
       self.selectedSearch = res;
       self.filterId = res._id;
       self.filterCreatedBy = res.createdBy;
-      self.applySavedView.emit({ value: res });
+      self.listGrid.applyView({ value: res });
     }, err => self.commonService.errorToast(err));
   }
 
