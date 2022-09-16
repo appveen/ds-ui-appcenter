@@ -51,8 +51,8 @@
           <i class="dsi dsi-drop-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
           <i class="dsi dsi-drop-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
         </div>
-        <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch">
-          <div class="my-auto">
+        <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch || hasFilterFromUrl">
+          <div class=" my-auto">
             <span class='dsi dsi-undo hover mr-3 font-20' ngbTooltip="Reset Filter" (click)='resetFilter()'></span>
           </div>
           <button class="btn btn-primary btn-min-width mr-3 my-auto" style="height:32px" (click)='run()' [disabled]="!(searchForm.get('project').valid &&
@@ -214,7 +214,8 @@
       </odp-list-filters>
       <div class="d-flex align-items-center justify-content-end hover position-relative ignore-outside"
         *ngIf="!isSchemaFree">
-        <span class="dsi dsi-undo hover mr-2" *ngIf="selectedSavedView" (click)="resetFilter(true)"></span>
+        <span class="dsi dsi-undo hover mr-2" *ngIf="selectedSavedView ||  hasFilterFromUrl" (click)="
+          resetFilter(true)"></span>
         <div class="d-flex p-2 border bg-white align-items-center ignore-outside rounded font-13" style="height:40px;"
           [ngClass]="{'disabled': apiCallsPending}" (click)="showSaveViewDropDown=!showSaveViewDropDown">
           <div class="ignore-outside d-flex align-items-center">

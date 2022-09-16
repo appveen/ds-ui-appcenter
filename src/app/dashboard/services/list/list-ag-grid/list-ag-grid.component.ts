@@ -166,9 +166,30 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     });
 
     this.gridService.filterSubject.subscribe(data => {
-      this.clearFilter();
-      this.apiConfig.filter = data;
-      this.filterModified(null)
+      this.clearFilter(false);
+      let final = {};
+      const filter = self.apiConfig.filter;
+      const temp = filter?.['$and'] || [];
+      if (data) {
+        if (temp && temp.length > 0) {
+          if (temp.find(ele => Object.keys(ele)[0] === Object.keys(data)[0])) {
+            temp.forEach(ele => {
+              if (Object.keys(ele)[0] === Object.keys(data)[0]) {
+                ele = data
+              }
+            })
+          }
+          else {
+            temp.push(data);
+            final['$and'] = temp
+          }
+        }
+        else {
+          temp.push(data)
+          final['$and'] = temp
+        }
+      }
+      this.filterModified(null, final)
     })
   }
 
@@ -575,10 +596,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     // self.initRows(true);
   }
 
-  filterModified(event) {
+  filterModified(event, modFilter?) {
     const self = this;
     const filter = [];
-    const filterModel = self.agGrid.api.getFilterModel();
+    const filterModel = self.agGrid && self.agGrid.api && self.agGrid.api.getFilterModel();
     if (filterModel) {
       Object.keys(filterModel).forEach(key => {
         try {
@@ -595,22 +616,24 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       self.gridService.inlineFilterActive = true;
     } else {
       self.gridService.inlineFilterActive = false;
-      self.apiConfig.filter = null;
+      self.apiConfig.filter = modFilter;
     }
     if (!environment.production) {
       console.log('Filter Modified', filterModel);
     }
     // self.removedSavedView.emit(true);
-    self.filterModel = self.apiConfig.filter;
+    self.filterModel = self.apiConfig.filter || modFilter;
 
     this.initRows()
   }
 
-  clearFilter() {
+  clearFilter(clearGridModel = true) {
     const self = this;
     self.apiConfig.filter = null;
     self.filterModel = null;
-    self.agGrid.api.setFilterModel(null);
+    if (clearGridModel) {
+      self.agGrid.api.setFilterModel(null);
+    }
     self.initRows();
   }
 

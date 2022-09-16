@@ -140,7 +140,7 @@ export class ListComponent implements OnInit, OnDestroy {
   loadFilter: boolean;
 
   constructor(
-    private appService: AppService,
+    public appService: AppService,
     private route: ActivatedRoute,
     private commonService: CommonService,
     private sessionService: SessionService,
@@ -200,6 +200,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
+    this.appService.setFilterModel(null)
     self.appCenterStyle = self.commonService.app.appCenterStyle;
     self.ngbToolTipConfig.container = 'body';
     self.subscriptions['serviceChange'] = self.appService.serviceChange.subscribe(data => {
@@ -1212,10 +1213,12 @@ export class ListComponent implements OnInit, OnDestroy {
       self.listFilters.selectFilter(view, true);
       self.appService.existingFilter = view;
     } else {
-      self.selectedSavedView = { value: view };
-      self.listGrid.applyView({ value: view });
-      self.listFilters.selectFilter({ value: view }, true);
-      self.appService.existingFilter = { value: view };
+      if (view.filter || view.sort || view.select) {
+        self.selectedSavedView = { value: view };
+        self.listGrid.applyView({ value: view });
+        self.listFilters.selectFilter({ value: view }, true);
+        self.appService.existingFilter = { value: view };
+      }
     }
     if (evnt.close) {
       self.advanceFilter = false;
