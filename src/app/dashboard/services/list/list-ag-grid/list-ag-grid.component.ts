@@ -535,7 +535,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   rowDoubleClicked(event) {
     const self = this;
-    self.viewRecord.emit(event.data);
+    if (event) {
+      self.viewRecord.emit(event.data);
+    }
+    this.showLoading = false
   }
 
   rowSelected(event) {

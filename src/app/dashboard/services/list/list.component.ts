@@ -428,11 +428,11 @@ export class ListComponent implements OnInit, OnDestroy {
       label: 'Close Record',
       keys: ['Esc']
     });
-    self.subscriptions['openRecord'] = self.shortcutService.key.pipe(filter(event => event.key.toUpperCase() === 'ENTER')).subscribe(() => {
-      const gridApi = this.listGrid?.agGrid?.api;
-      const row = gridApi?.getDisplayedRowAtIndex(gridApi?.getFocusedCell()?.rowIndex);
-      this.listGrid?.rowDoubleClicked(row);
-    });
+    // self.subscriptions['openRecord'] = self.shortcutService.key.pipe(filter(event => event.key.toUpperCase() === 'ENTER')).subscribe(() => {
+    //   const gridApi = this.listGrid?.agGrid?.api;
+    //   const row = gridApi?.getDisplayedRowAtIndex(gridApi?.getFocusedCell()?.rowIndex);
+    //   this.listGrid?.rowDoubleClicked(row);
+    // });
 
     this.shortcutService.registerShortcut({
       section: 'Filters',
