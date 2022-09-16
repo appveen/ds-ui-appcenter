@@ -495,18 +495,21 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   }
 
   createColumnDefs() {
-    this.columns.unshift({
-      show: true,
-      key: '_checkbox',
-      dataKey: '_checkbox',
-      type: 'Checkbox',
-      width: 20,
-      definition: [],
-      properties: {
-        name: ''
-      },
-      checkbox: true
-    })
+    if (!this.columns.find(ele => ele.key === '_checkbox')) {
+      this.columns.unshift({
+        show: true,
+        key: '_checkbox',
+        dataKey: '_checkbox',
+        type: 'Checkbox',
+        width: 20,
+        definition: [],
+        properties: {
+          name: ''
+        },
+        checkbox: true
+      })
+    }
+
     this.columns.forEach((e, i) => {
       const temp: any = {};
       if (e.properties) {
