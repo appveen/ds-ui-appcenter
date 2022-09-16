@@ -253,44 +253,47 @@
               <span class="dsi dsi-search text-mid-grey position-absolute srch-icon-pos ignore-outside"></span>
             </div>
           </div>
-          <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
-            <div *ngFor="let filter of savedViews"
-              class="filter-name px-3 py-2 d-flex align-items-center justify-content-between position-relative ignore-outside"
-              (mouseenter)="filter.hasOptions && filter.showOptions = true"
-              (mouseleave)="filter.hasOptions && filter.showOptions = false">
-              <div class="d-flex align-items-center mr-2">
-                <!-- <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted mr-3"></span>
-                <span *ngIf="!filter.private" class="fas fa-globe text-muted mr-3"></span> -->
-                <span class="hover text-truncate filterNameWidth"
-                  (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
-                  [ngbTooltip]="filter.name">{{ filter.name }}</span>
-              </div>
-              <span *ngIf="!filter.showOptions" class="text-secondary">
-                {{ filter.user }}
-              </span>
-              <!-- <span *ngIf="filter.hasOptions && !filter.showOptions"
-                class="dsi dsi-more-vertical text-muted hover position-absolute ellipses-pos"></span> -->
-              <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
-                [@slideIn]>
-                <span class="dsi dsi-edit icon-color mr-3" (click)="editFilter(filter)"></span>
-                <span class="dsi dsi-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
-                <div class="left-radius position-relative hover"
-                  [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
-                  (click)="changeFilterType(filter, 'private')">
-                  <span class="fas fa-unlock-alt position-absolute icon-pos"
-                    [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
+          <div *ngIf="!loadFilter">
+            <div *ngIf="savedViews.length > 0; else noFilters" class="h-100 sub-container">
+              <div *ngFor="let filter of savedViews"
+                class="filter-name px-3 py-2 d-flex align-items-center justify-content-between position-relative ignore-outside"
+                (mouseenter)="filter.hasOptions && filter.showOptions = true"
+                (mouseleave)="filter.hasOptions && filter.showOptions = false">
+                <div class="d-flex align-items-center mr-2">
+                  <!-- <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted mr-3"></span>
+        <span *ngIf="!filter.private" class="fas fa-globe text-muted mr-3"></span> -->
+                  <span class="hover text-truncate filterNameWidth"
+                    (click)="advanceFilter = false; selectSavedView({'query':filter});showSaveViewDropDown=false"
+                    [ngbTooltip]="filter.name">{{ filter.name }}</span>
                 </div>
-                <div class="right-radius bg-white position-relative hover mr-2"
-                  [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
-                  (click)="changeFilterType(filter, 'public')">
-                  <span class="fas fa-globe position-absolute icon-pos"
-                    [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
+                <span *ngIf="!filter.showOptions" class="text-secondary">
+                  {{ filter.user }}
+                </span>
+                <!-- <span *ngIf="filter.hasOptions && !filter.showOptions"
+        class="dsi dsi-more-vertical text-muted hover position-absolute ellipses-pos"></span> -->
+                <div *ngIf="filter.hasOptions && filter.showOptions" class="ml-auto d-flex align-items-center hover"
+                  [@slideIn]>
+                  <span class="dsi dsi-edit icon-color mr-3" (click)="editFilter(filter)"></span>
+                  <span class="dsi dsi-trash icon-color mr-3" (click)="deleteFilter(filter)"></span>
+                  <div class="left-radius position-relative hover"
+                    [ngClass]="{'bg-white': !filter.private, 'bg-primary': filter.private}"
+                    (click)="changeFilterType(filter, 'private')">
+                    <span class="fas fa-unlock-alt position-absolute icon-pos"
+                      [ngClass]="{'text-secondary': !filter.private, 'text-white': filter.private}"></span>
+                  </div>
+                  <div class="right-radius bg-white position-relative hover mr-2"
+                    [ngClass]="{'bg-white': filter.private, 'bg-primary': !filter.private}"
+                    (click)="changeFilterType(filter, 'public')">
+                    <span class="fas fa-globe position-absolute icon-pos"
+                      [ngClass]="{'text-secondary': filter.private, 'text-white': !filter.private}"></span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <span *ngIf="loadFilter" class="fa fa-spinner fa-pulse mt-2" style="width:20px;"></span>
           <ng-template #noFilters>
-            <div class="text-secondary p-3">No filters are defined for this service yet</div>
+            <div *ngIf="!loadFilter" class="text-secondary p-3">No filters are defined for this service yet</div>
           </ng-template>
         </div>
       </div>

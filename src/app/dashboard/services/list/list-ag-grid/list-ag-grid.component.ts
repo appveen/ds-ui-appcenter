@@ -116,6 +116,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                 sortModel.push({ colId, sort });
               });
               this.agGrid.api.setSortModel(sortModel);
+              this.gridService.setSortModel(sortModel)
             }
 
           }
@@ -426,19 +427,24 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       }
       if (sort.length > 0 && !self.schema.schemaFree) {
         self.apiConfig.sort = sort.join(',');
+        this.gridService.setSortModel(self.apiConfig.sort)
         if (!environment.production) {
           console.log('Setting Sort Model');
         }
         reload = true;
         self.agGrid.api.setSortModel(sortModel);
+        self.gridService.setSortModel(sortModel)
       }
       else if (self.schema.schemaFree && viewModel.value.sort) {
         self.apiConfig.sort = JSON.parse(viewModel.value.sort);
+        this.gridService.setSortModel(self.apiConfig.sort)
         reload = true;
       }
       else {
         self.apiConfig.sort = null;
+        this.gridService.setSortModel(self.apiConfig.sort)
         self.agGrid.api.setSortModel(null);
+        self.gridService.setSortModel(sortModel)
       }
       if (self.schema.schemaFree && viewModel.value.project) {
         self.apiConfig.project = JSON.parse(viewModel.value.project);
@@ -550,6 +556,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     }
     self.apiConfig.sort = sort;
     self.sortModel = sort;
+    this.gridService.setSortModel(sort)
     if (!environment.production) {
       console.log('Sort Modified', sortModel);
     }
@@ -559,7 +566,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     const self = this;
     self.sortModel = null;
     self.apiConfig.sort = null;
+    this.gridService.setSortModel(self.apiConfig.sort)
     self.agGrid.api.setSortModel(null);
+    self.gridService.setSortModel(null)
     // self.initRows(true);
   }
 
@@ -610,6 +619,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.gridService.selectedSavedView = null;
     self.apiConfig.filter = null;
     self.apiConfig.sort = null;
+    this.gridService.setSortModel(self.apiConfig.sort)
     self.apiConfig.project = null;
     self.apiConfig.select = null;
     if (self.schema.schemaFree) {
@@ -619,6 +629,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.searchView = null;
     self.agGrid.api.setFilterModel(null);
     self.agGrid.api.setSortModel(null);
+    self.gridService.setSortModel(null)
     const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
     if (self.schema.schemaFree && columnIds[2] == '0') {
       columnIds[2] = 'Data';

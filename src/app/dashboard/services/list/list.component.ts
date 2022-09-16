@@ -137,6 +137,7 @@ export class ListComponent implements OnInit, OnDestroy {
   selectedSearch: any;
   secureFileId: any;
   fileEncryptionKey: string;
+  loadFilter: boolean;
 
   constructor(
     private appService: AppService,
@@ -588,6 +589,13 @@ export class ListComponent implements OnInit, OnDestroy {
           self.getRecordsCount();
           this.activatedRoute.queryParams.pipe(take(1)).subscribe(queryParams => {
             this.hasFilterFromUrl = !!queryParams && (!!queryParams.filter || !!queryParams.sort || !!queryParams.select);
+            if (this.hasFilterFromUrl) {
+              const obj = {}
+              obj['filter'] = queryParams.filter && JSON.parse(queryParams.filter)
+              obj['select'] = queryParams.select && JSON.parse(queryParams.select)
+              obj['sort'] = queryParams.sort && JSON.parse(queryParams.sort)
+              this.appService.setFilterModel(obj)
+            }
           });
         }
       },
@@ -626,7 +634,7 @@ export class ListComponent implements OnInit, OnDestroy {
       app: self.commonService.app._id,
       type: { $ne: 'workflow' }
     };
-
+    this.loadFilter = true;
     if (!self.schema.schemaFree) {
       if (!getAll) {
         if (self.showPrivateViews) {
@@ -667,6 +675,8 @@ export class ListComponent implements OnInit, OnDestroy {
             const privateViews = self.allFilters.filter(f => f.private);
             self.allFilters = [...privateViews, ...self.savedViews];
           }
+          this.loadFilter = false;
+
         });
       } else {
         for (let i = 0; i < 2; i++) {
@@ -705,6 +715,7 @@ export class ListComponent implements OnInit, OnDestroy {
             });
           });
         }
+        this.loadFilter = false;
       }
     }
     else {
@@ -744,6 +755,7 @@ export class ListComponent implements OnInit, OnDestroy {
         });
 
       })
+      this.loadFilter = false;
     }
 
   }

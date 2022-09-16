@@ -14,6 +14,7 @@ export class ListAgGridService {
   private currentServiceId: string;
   filter: any;
   filterSubject: Subject<any> = new Subject()
+  sortModel: any
   constructor() {
     const self = this;
     self.selectAll = new EventEmitter();
@@ -77,6 +78,10 @@ export class ListAgGridService {
   onFloatingFilterChange(filter) {
     this.filter = filter;
     this.filterSubject.next(this.filter)
+  }
 
+  setSortModel(model) {
+    this.sortModel == model
+    console.log(model)
   }
 }

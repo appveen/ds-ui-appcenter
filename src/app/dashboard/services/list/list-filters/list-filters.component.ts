@@ -9,6 +9,7 @@ import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { FilterModel } from './search-for/search-for-field/search-for-field.component';
 import { SessionService } from 'src/app/service/session.service';
+import { ListAgGridService } from '../list-ag-grid/list-ag-grid.service';
 
 interface FilterData {
   _id?: string;
@@ -76,7 +77,8 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     private appService: AppService,
     private modalService: NgbModal,
     private commonService: CommonService,
-    private sessionService: SessionService) {
+    private sessionService: SessionService,
+    private gridService: ListAgGridService) {
     const self = this;
     self.allColumns = [];
     self.allFilters = [];
@@ -115,6 +117,37 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
+    if (self.appService.completeFilterModel) {
+      const model = self.appService.completeFilterModel
+      this.queryObject['filter'] = model.filter && model.filter['$and']?.map(ele => {
+        const obj = {}
+        obj['filterObject'] = ele;
+        obj['dataKey'] = Object.keys(ele)[0]
+        obj['filterValue'] = Object.values(ele)[0]
+        if (typeof obj['filterValue'] === 'string') {
+          if (obj['filterValue'].charAt(0) === '/') {
+            obj['filterType'] = 'contains';
+          }
+          else {
+            obj['filterType'] = 'equals';
+          }
+        }
+        else {
+          if (obj['filterValue']['$not']) {
+            const value = obj['filterValue']['$not'];
+            if (obj['filterValue']['$not'].charAt(0) === '/') {
+              obj['filterType'] = 'notContains';
+            }
+            else {
+              obj['filterType'] = 'notEqual';
+            }
+          }
+        }
+        return obj
+      })
+      this.queryObject['select'] = model.select
+      this.queryObject['sort'] = model.sort
+    }
     if (self.appService.existingFilter) {
       setTimeout(() => {
         self.selectFilter(self.appService.existingFilter);
@@ -241,8 +274,8 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
 
   createQueryString() {
     const self = this;
-    self.queryObject.select = self.selectedColOrder.map(e => e.key).join(',');
-    self.queryObject.sort = self.sortingColumns;
+    self.queryObject.select = self.selectedColOrder.map(e => e.key).join(',') || self.appliedFilter?.value?.select;
+    self.queryObject.sort = self.gridService.sortModel;
   }
 
   clearFilter(fromParent = false) {
@@ -260,6 +293,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.appService.existingFilter = null;
     self.appService.dataKeyForSelectedCols = [];
     self.hasOptions = true;
+    this.filterCleared.emit(true)
     if (!parent) {
       self.filterCleared.emit(true);
     }
