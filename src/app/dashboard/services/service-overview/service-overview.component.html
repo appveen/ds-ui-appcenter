@@ -20,7 +20,7 @@
             <!-- <div class="col-3" > -->
             <div class="bg-white ds-item mr-3 rounded" *ngFor="let srvc of services" (click)="loadDataService(srvc)">
                 <div class="px-3 pt-3">
-                    <div class="ds-name font-11 fw-500 text-uppercase text-dark">{{srvc.name}}</div>
+                    <div class="ds-name font-11 fw-500 text-uppercase text-dark">{{srvc?.name}}</div>
                     <div class="last-updated font-11 fw-400 font-italic text-grey">Last Updated
                         {{lastUpdated(srvc)}}</div>
                     <div class="ds-info mb-3">
@@ -41,8 +41,8 @@
                         <div class="col-6">
                             <div class="d-flex align-items-center">
                                 <div class="mb-1 mr-2">
-                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.workflowConfig?.enabled ,
-                                        'text-light-grey': !srvc.workflowConfig?.enabled }"></i>
+                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc?.workflowConfig?.enabled ,
+                                        'text-light-grey': !srvc?.workflowConfig?.enabled }"></i>
                                 </div>
                                 <div class="font-12 fw-400 text-secondary">Workflow</div>
                             </div>
@@ -50,8 +50,8 @@
                         <div class="col-6">
                             <div class="d-flex align-items-center">
                                 <div class="mb-1 mr-2">
-                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc.stateModel?.enabled ,
-                                        'text-light-grey': !srvc.stateModel?.enabled }"></i>
+                                    <i class="fa fa-circle font-8" [ngClass]="{'text-success': srvc?.stateModel?.enabled ,
+                                        'text-light-grey': !srvc?.stateModel?.enabled }"></i>
                                 </div>
                                 <div class="font-12 fw-400 text-secondary">State Model</div>
                             </div>
