@@ -155,8 +155,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   getUserForAudit(audit) {
     const self = this;
     self.commonService.getUserByFilter(audit.user).then((res) => {
-      if (res && res.length > 0 && res[0].basicDetails && res[0].basicDetails.name) {
-        audit.name = res[0].basicDetails.name;
+      let user = res.find(ele => ele._id === audit.user)
+      if (res && user && user.basicDetails && user.basicDetails.name) {
+        audit.name = user.basicDetails.name;
       } else {
         audit.name = audit.user;
       }
@@ -169,8 +170,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   getUserForWFAudit(wfAudit) {
     const self = this;
     self.commonService.getUserByFilter(wfAudit.id).then((res) => {
-      if (res && res.length > 0 && res[0].basicDetails && res[0].basicDetails.name) {
-        wfAudit.name = res[0].basicDetails.name;
+      let user = res.find(ele => ele._id === wfAudit.user)
+      if (res && user && user.basicDetails && user.basicDetails.name) {
+        wfAudit.name = user.basicDetails.name;
       } else {
         wfAudit.name = wfAudit.id;
       }
