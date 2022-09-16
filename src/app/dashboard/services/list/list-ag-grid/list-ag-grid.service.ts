@@ -82,6 +82,5 @@ export class ListAgGridService {
 
   setSortModel(model) {
     this.sortModel == model
-    console.log(model)
   }
 }

@@ -220,7 +220,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     // self.confirmDeleteModalRef = self.modalService.open(self.confirmDeleteModal, { centered: true });
     // self.confirmDeleteModalRef.result.then(close => {
     //   if (close) {
-    self.allColumns.push(self.selectedColOrder[index]);
+    // self.allColumns.push(self.selectedColOrder[index]);
     self.selectedColOrder.splice(index, 1);
     //   }
     // }, dismiss => { });
