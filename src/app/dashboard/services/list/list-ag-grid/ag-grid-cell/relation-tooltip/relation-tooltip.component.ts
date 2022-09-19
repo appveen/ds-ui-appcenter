@@ -25,7 +25,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
     self.values = [];
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   agInit(params: ITooltipParams): void {
     try {
@@ -50,7 +50,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
           const temp = [];
           properties.relatedViewFields.forEach(element => {
             if (!!element.properties.dataPath) {
-              const val = self.appService.getValue(element.properties.dataPath, self.params.value);
+              const val = self.appService.getValue(element.properties.dataPath, self.params.data[self.params.column.colId]);
               const retVal = self.getValue(val, element.key);
               temp.push(retVal);
             } else {
@@ -63,7 +63,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
           self.values = [...temp];
         }
       },
-      err => {}
+      err => { }
     );
   }
 
@@ -76,7 +76,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
     let retValue;
     const relsrvcDef = self.relatedServiceDefinition.definition.find(e => e.properties.dataPath === key);
 
-    if(!relsrvcDef && typeof value !== 'object') {
+    if (!relsrvcDef && typeof value !== 'object') {
       retValue = {
         name: key,
         value
@@ -128,7 +128,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
         name: relsrvcDef.properties.name,
         value: value?._id ? value._id : value
       };
-    } else if (relsrvcDef){
+    } else if (relsrvcDef) {
       retValue = {
         name: relsrvcDef?.properties?.name,
         value: value

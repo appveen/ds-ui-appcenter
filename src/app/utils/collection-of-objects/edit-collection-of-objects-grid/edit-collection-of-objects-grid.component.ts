@@ -665,7 +665,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       this.formArray.controls.forEach(ele => {
         secureKeys.forEach(key => {
           const value = ele.get(key).value;
-          if (value.value) {
+          if (value?.value) {
             this.decryptValue(value.value, ele, key);
           }
         })
