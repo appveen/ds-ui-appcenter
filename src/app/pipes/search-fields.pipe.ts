@@ -17,10 +17,10 @@ export class SearchFieldsPipe implements PipeTransform {
     return value.filter((e: any) => {
       let flag = false;
       if (e.properties.name) {
-        flag = _.lowerCase(e.properties.name).indexOf(searchTerm) > -1;
+        flag = _.lowerCase(e.properties.name).indexOf(searchTerm.toLowerCase()) > -1;
       }
       if (e.properties.label && !flag) {
-        flag = _.lowerCase(e.properties.label).indexOf(searchTerm) > -1;
+        flag = _.lowerCase(e.properties.label).indexOf(searchTerm.toLowerCase()) > -1;
       }
       return flag;
     });

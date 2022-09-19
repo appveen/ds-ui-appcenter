@@ -70,8 +70,8 @@ export class ServiceOverviewComponent implements OnInit {
     if (self.searchTerm) {
       filter.name = '/' + self.searchTerm + '/';
     }
-    if (!self.commonService.userDetails.isSuperAdmin
-      && self.commonService.servicesWithAccess.length > 0 && !self.commonService.isAppAdmin()) {
+    if (!self.commonService.userDetails?.isSuperAdmin
+      && self.commonService.servicesWithAccess?.length > 0 && !self.commonService.isAppAdmin()) {
       filter._id = {
         $in: self.commonService.servicesWithAccess
       };
@@ -122,7 +122,7 @@ export class ServiceOverviewComponent implements OnInit {
 
   totalAttributes(service) {
     const self = this;
-    if (service.definition) {
+    if (service?.definition) {
       return service.definition.length - 1;
     } else {
       return service.attributeCount;
@@ -131,9 +131,9 @@ export class ServiceOverviewComponent implements OnInit {
 
   totalRecords(service) {
     const self = this;
-    let serviceIndex = self.serviceRecordCounts.findIndex(srvc => srvc._id == service._id)
+    let serviceIndex = self.serviceRecordCounts?.findIndex(srvc => srvc._id == service._id)
     if (serviceIndex > -1) {
-      return self.serviceRecordCounts[serviceIndex].count
+      return self.serviceRecordCounts?.[serviceIndex]?.count
     }
     else {
       return 0;

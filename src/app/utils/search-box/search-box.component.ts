@@ -96,6 +96,9 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
       self.commonService.searchChar = '';
       self.reset.emit();
     }
+    if (!self.commonService.searchChar && !element.value) {
+      self.reset.emit();
+    }
   }
 
   onFocus(event: Event) {

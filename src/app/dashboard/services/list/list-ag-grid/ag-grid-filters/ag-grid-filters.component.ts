@@ -228,6 +228,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
             self.params.parentFilterInstance(function (instance: IFilterComp) {
               (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
             });
+            self.gridService?.onFloatingFilterChange(temp)
           }
         },
         dismiss => { }
@@ -235,6 +236,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     } else {
       self.params.parentFilterInstance(function (instance: IFilterComp) {
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
+        self.gridService?.onFloatingFilterChange(temp)
       });
     }
     // self.filterQueryChange.emit(self.filterQuery);

@@ -120,7 +120,32 @@
     </div>
     <div class="d-flex align-items-center px-4 bg-white mx-4 my-2 rounded" style="min-height: 72px"
         *ngIf="showSubHeader">
-        <div *ngIf="!showLazyLoader && stateModelAttr" class="state-model d-flex align-items-center">
+
+        <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between mr-2">
+            <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center justify-content-between">
+                    <button (click)="toggleVerHistory($event)"
+                        class="btn btn-white mr-3 history-version-button border border-grey" type="button">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="font-14 fw-500 mr-2 text-primary">
+                                {{selectedAudit?.data._version}}
+                            </span>
+                            <span [ngbTooltip]="selectedAudit?.name" class="text-dark fw-500 text-truncate"
+                                placement="top">{{selectedAudit?.name}}</span>
+                            <span class="text-primary dsi dsi-drop-down ml-3"></span>
+                        </div>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="dsi dsi-calendar text-muted"></span>
+                    <i class="ml-2 mb-0 text-dark">
+                        {{selectedAudit?.timeStamp|date:'dd-MMM-yyyy hh:mm:ssa'}}
+                    </i>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!showLazyLoader && stateModelAttr" class="state-model d-flex align-items-center mr-2"
+            [ngClass]="{'border-left pl-2' : showVersionHistory}">
             <span class="mr-2 font-13 fw-500 state-version hover m-auto" style="color: #484848"
                 title="{{stateModelName}}">{{stateModelName}}</span>
 
@@ -146,29 +171,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="showVersionHistory" class="d-flex align-items-center justify-content-between mr-2">
-            <div class="d-flex align-items-center">
-                <div class="d-flex align-items-center justify-content-between">
-                    <button (click)="toggleVerHistory($event)"
-                        class="btn btn-white mr-3 history-version-button border border-grey" type="button">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="font-14 fw-500 mr-2 text-primary">
-                                {{selectedAudit?.data._version}}
-                            </span>
-                            <span [ngbTooltip]="selectedAudit?.name" class="text-dark fw-500 text-truncate"
-                                placement="top">{{selectedAudit?.name}}</span>
-                            <span class="text-primary dsi dsi-drop-down ml-3"></span>
-                        </div>
-                    </button>
-                </div>
-                <div class="d-flex align-items-center">
-                    <span class="dsi dsi-calendar text-muted"></span>
-                    <i class="ml-2 mb-0 text-dark">
-                        {{selectedAudit?.timeStamp|date:'dd-MMM-yyyy hh:mm:ssa'}}
-                    </i>
-                </div>
-            </div>
-        </div>
+
         <div *ngIf="!showVersionHistory">
             <ng-container *ngFor="let step of wizard;let stepIndex = index">
                 <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"

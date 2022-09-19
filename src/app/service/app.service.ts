@@ -65,6 +65,8 @@ export class AppService {
     fileMapperComponnets: any;
     searchingRecord: boolean;
     updateCodeEditorState: EventEmitter<any>;
+    currentFilter: any;
+    completeFilterModel: any;
     constructor() {
         const self = this;
         self.serviceChange = new EventEmitter();
@@ -881,5 +883,9 @@ export class AppService {
                 }
             }
         });
+    }
+
+    setFilterModel(data) {
+        this.completeFilterModel = data;
     }
 }

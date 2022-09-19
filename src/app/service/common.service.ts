@@ -1590,21 +1590,21 @@ export class CommonService {
 
   getUserByFilter(userId: string): Promise<Array<UserDetails>> {
     const self = this;
-    if (!self.userMapFilter[userId]) {
-      const filter = {};
-      filter['$or'] = [{ _id: userId }, { '_metadata.oldUserId': userId }];
-      let path = `/${this.app._id}/user`;
-      if (this.userDetails.isSuperAdmin) {
-        path = `/admin/user`
-      }
-      self.userMapFilter[userId] = self
-        .get('user', path, {
-          select: '_id,isSuperAdmin,username,basicDetails,lastLogin,attributes',
-          filter,
-          count: 2
-        })
-        .toPromise();
+    // if (!self.userMapFilter[userId]) {
+    const filter = {};
+    filter['$or'] = [{ _id: userId }, { '_metadata.oldUserId': userId }];
+    let path = `/${this.app._id}/user`;
+    if (this.userDetails.isSuperAdmin) {
+      path = `/admin/user`
     }
+    self.userMapFilter[userId] = self
+      .get('user', path, {
+        select: '_id,isSuperAdmin,username,basicDetails,lastLogin,attributes',
+        filter,
+        count: 2
+      })
+      .toPromise();
+    // }
     return self.userMapFilter[userId];
   }
 
