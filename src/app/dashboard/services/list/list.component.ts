@@ -576,7 +576,7 @@ export class ListComponent implements OnInit, OnDestroy {
   resetAll(showAdvancedFilter = false) {
     const self = this
     this.resetFilter(showAdvancedFilter);
-    this.listFilters.removeAllItems()
+    this.listFilters.removeAllItems();
     this.listGrid.agGrid.api.refreshInfiniteCache();
 
     // if (self.isSchemaFree) { this.run() }
