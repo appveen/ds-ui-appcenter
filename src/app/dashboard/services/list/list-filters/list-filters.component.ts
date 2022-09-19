@@ -171,6 +171,10 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.name = '';
   }
 
+  removeAllItems() {
+    this.selectedColOrder = []
+  }
+
   isColumnSelected(val: any) {
     const index = this.selectedColOrder.findIndex(e => e.properties.name === val.properties.name);
     return index > -1;
@@ -272,10 +276,11 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.appService.existingFilter = null;
     self.appService.dataKeyForSelectedCols = [];
     self.hasOptions = true;
+    this.appService.setFilterModel({})
     // this.selectFilter(null)
-    if (!fromParent) {
-      this.filterCleared.emit(true)
-    }
+
+    this.filterCleared.emit(true)
+
 
   }
 

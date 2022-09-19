@@ -51,9 +51,9 @@
           <i class="dsi dsi-drop-down fa-sm hover my-auto" *ngIf="isCollapsed" (click)="collapse.toggle()"></i>
           <i class="dsi dsi-drop-up fa-sm hover my-auto" *ngIf="!isCollapsed" (click)="collapse.toggle()"></i>
         </div>
-        <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch || hasFilterFromUrl">
+        <div class="d-flex ml-auto mr-3" *ngIf="!isCollapsed || !selectedSearch">
           <div class=" my-auto">
-            <span class='dsi dsi-undo hover mr-3 font-20' ngbTooltip="Reset Filter" (click)='resetFilter()'></span>
+            <span class='dsi dsi-undo hover mr-3 font-20' ngbTooltip="Clear Filter" (click)='clearFilter()'></span>
           </div>
           <button class="btn btn-primary btn-min-width mr-3 my-auto" style="height:32px" (click)='run()' [disabled]="!(searchForm.get('project').valid &&
               searchForm.get('filter').valid && searchForm.get('sort').valid)">
@@ -209,13 +209,13 @@
   </div>
   <div *ngIf="totalRecords>0 && !isSchemaFree">
     <div class="d-flex align-items-center justify-content-between">
-      <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters"
-        (filterCleared)="resetFilter(true)" (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
+      <odp-list-filters #listFilters [allColumns]="definition" [allFilters]="allFilters" (filterCleared)="resetFilter()"
+        (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
       </odp-list-filters>
       <div class="d-flex align-items-center justify-content-end hover position-relative ignore-outside"
         *ngIf="!isSchemaFree">
-        <span class="dsi dsi-undo hover mr-2" *ngIf="selectedSavedView ||  hasFilterFromUrl" (click)="
-          resetFilter(true)"></span>
+        <!-- <span class="dsi dsi-undo hover mr-2" *ngIf="selectedSavedView ||  hasFilterFromUrl" (click)="
+          resetAll(true)"></span> -->
         <div class="d-flex p-2 border bg-white align-items-center ignore-outside rounded font-13" style="height:40px;"
           [ngClass]="{'disabled': apiCallsPending}" (click)="showSaveViewDropDown=!showSaveViewDropDown">
           <div class="ignore-outside d-flex align-items-center">
@@ -318,8 +318,8 @@
         <odp-round-check [checked]="checkAll" [white]="true" (checkedChange)="selectAllRecords()"></odp-round-check>
         <span class="text-primary ml-2">Select All</span>
       </div>
-      <button id="clearFiltersBtn" type="button" class="btn btn-link d-flex align-items-center" *ngIf="hasFilters"
-        (click)="clearFilters()">
+      <button id="clearFiltersBtn" type="button" class="btn btn-link d-flex align-items-center"
+        *ngIf="gridService.filter" (click)="clearGridFilters()">
         <span class="dsi dsi-close mr-2"></span>
         <span class="text">Clear filters</span>
       </button>
@@ -361,11 +361,11 @@
       </button>
     </div>
     <div class="d-flex align-items-center">
-      <!-- <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
-        *ngIf="selectedSavedView || hasFilterFromUrl || selectedSearch" (click)="resetFilter();">
-        <span class="fas fa-redo fa-flip-horizontal"></span>
-        <span class="pl-2">Reset Filter</span>
-      </div> -->
+      <div class="text-danger mr-3 hover font-sm d-flex align-items-center font-weight-bold"
+        *ngIf="selectedSavedView || hasFilterFromUrl || selectedSearch" (click)="resetAll();">
+        <span class="dsi dsi-undo hover mr-2 text-primary"></span>
+        <span class="text-primary font-14 mr-3">Reset Filter</span>
+      </div>
       <div class="text-secondary mr-3" *ngIf="loadedRecordsCount">
         <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
       </div>
