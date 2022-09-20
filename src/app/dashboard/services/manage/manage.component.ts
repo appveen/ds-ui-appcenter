@@ -314,10 +314,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
               self.getAllStates(data)
               if (self.appService.reSubmitData) {
                 self.value = self.appService.cloneObject(self.appService.reSubmitData);
-                if (this.breadcrumb) {
-                  this.breadcrumb.push(data._id)
-                  this.commonService.breadcrumbPush(this.breadcrumb)
-                }
                 self.buildForm(res, self.appService.cloneObject(self.appService.reSubmitData));
                 self.appService.reSubmitData = null;
               } else {
@@ -344,7 +340,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   }
                 }
               }
-
             },
             err => {
               if (err.status === 403) {
@@ -383,6 +378,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         if (!self.ID && self.stateModelAttr) {
           self.form.get(self.stateModelAttr).patchValue(self.initialState);
         }
+        if (this.breadcrumb) {
+          if (self.ID) {
+            this.breadcrumb.push(self.ID)
+          }
+          else {
+            this.breadcrumb.push('New')
+          }
+          this.commonService.breadcrumbPush(this.breadcrumb)
+        }
+
 
       },
       err => {
