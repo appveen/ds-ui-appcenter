@@ -452,18 +452,26 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   }
 
   set checkAllColumn(flag: boolean) {
-    this.allColumns.forEach(item => {
-      const index = this.selectedColOrder.findIndex(e => e.properties.name === item.properties.name);
-      if (flag) {
-        if (index === -1) {
-          this.selectedColOrder.push(item);
-        }
-      } else {
-        if (index > -1) {
-          this.removeItem(index);
-        }
-      }
-    });
+    if (flag) {
+      this.selectedColOrder = _.cloneDeep(this.allColumns)
+    }
+    else {
+      this.queryObject['select'] = '';
+      this.appliedFilter.value['select'] = ''
+      this.removeAllItems()
+    }
+    // this.allColumns.forEach(item => {
+    //   const index = this.selectedColOrder.findIndex(e => e.properties.name === item.properties.name);
+    //   if (flag) {
+    //     if (index === -1) {
+    //       this.selectedColOrder.push(item);
+    //     }
+    //   } else {
+    //     if (index > -1) {
+    //       this.removeItem(index);
+    //     }
+    //   }
+    // });
     this.applyFilter();
   }
 
