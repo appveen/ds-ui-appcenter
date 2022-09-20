@@ -537,12 +537,21 @@ export class ListComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkSearchForm() {
+    if (this.searchForm.get('filter').value == '{}' && this.searchForm.get('project').value == '{}' && this.searchForm.get('sort').value == '{}') {
+      return false
+    }
+    return true
+  }
   resetFilter(showAdvancedFilter = false) {
     const self = this;
-    // this.hasFilterFromUrl = false;
+    this.clearFilter()
+
+    this.hasFilterFromUrl = false;
     if (self.listGrid) {
       self.listGrid.clearSavedView();
     }
+
     self.savedViews = [];
     self.advanceFilter = showAdvancedFilter;
     self.selectedSavedView = null;
@@ -551,42 +560,34 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
     }
-    this.clearFilter()
     self.filterSavedViews();
 
-    // this.run()
   }
 
-  // filterCleared() {
-  //   const self = this;
-  //   this.clearFilter();
-  //   if (self.listGrid) {
-  //     self.listGrid.clearSavedView();
-  //   }
-  //   self.savedViews = [];
-  //   self.advanceFilter = true;
-  //   self.selectedSavedView = null;
-  //   self.appService.existingFilter = null;
-  //   if (self.lastFilterAppliedPrefId) {
-  //     self.deleteLastFilterApplied();
-  //   }
-
-  // }
 
   resetAll(showAdvancedFilter = false) {
     const self = this
     if (this.isSchemaFree) {
       this.resetFilter();
-      this.run()
+      this.listGrid.searchForm.patchValue({
+        name: '',
+        filter: '{}',
+        project: '{}',
+        sort: '{}',
+        count: '',
+        page: '',
+        private: false
+      });
+      this.listGrid.agGrid.api.refreshInfiniteCache();
     }
     else {
       this.resetFilter(showAdvancedFilter);
+      this.listFilters.clearFilter();
       this.listFilters.removeAllItems();
       this.listGrid.agGrid.api.refreshInfiniteCache();
 
     }
-    // if (self.isSchemaFree) { this.run() }
-    // else { this.listFilters?.clearFilter(true) }
+
   }
 
   fetchSchema(serviceId: string) {
