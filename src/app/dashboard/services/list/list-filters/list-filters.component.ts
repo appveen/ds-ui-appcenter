@@ -459,6 +459,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   set checkAllColumn(flag: boolean) {
     if (flag) {
       this.selectedColOrder = _.cloneDeep(this.allColumns)
+      this.selectedColOrder = this.selectedColOrder.filter(ele => ele.key !== '_checkbox')
     }
     else {
       this.queryObject['select'] = '';
