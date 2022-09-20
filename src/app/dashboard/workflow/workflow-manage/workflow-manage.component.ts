@@ -72,6 +72,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   stateModelPath: any;
   editMode: boolean;
   oldValue: any;
+  breadcrumb: Array<any> = [];
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -107,9 +108,18 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const self = this;
+    this.route.data.subscribe(data => {
+
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+      }
+
+    })
+
     self.subscriptions['routeParams'] = self.route.params.subscribe(params => {
       self.serviceId = params.serviceId;
       self.workflowId = params.recordId;
+
       self.fetchSchema(self.serviceId);
       // self.getWfRecord();
     });
@@ -171,7 +181,9 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
           self.active[0] = true;
         }
         const parsedDef = self.schema.definition;
-
+        if (!this.breadcrumb.find(ele => ele === res.name)) {
+          this.breadcrumb.push(res.name)
+        }
         self.recordIdName = parsedDef[0].properties.name;
         self.formService.patchType(parsedDef);
         self.formService.fixReadonly(parsedDef);
@@ -197,6 +209,8 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
       .get('api', this.workflowApi + '/' + self.workflowId + '?expand=true').subscribe(wfRecord => {
         self.showLazyLoader = false;
         self.selectedData = self.appService.cloneObject(wfRecord);
+        this.breadcrumb.push(wfRecord._id);
+        this.commonService.breadcrumbPush(this.breadcrumb)
         self.commonService
           .getUser(self.selectedData.requestedBy)
           .then(res => {

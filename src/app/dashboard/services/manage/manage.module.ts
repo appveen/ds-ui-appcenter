@@ -15,7 +15,11 @@ import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/load
 import { CodeEditorModule } from 'src/app/utils/code-editor/code-editor.module'
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: ManageComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard] },
+  {
+    path: '', pathMatch: 'full', component: ManageComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard], data: {
+      breadcrumb: ['Data Service']
+    }
+  },
 ];
 
 @NgModule({

@@ -18,6 +18,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
   noServices: boolean;
   private subscriptions: any;
   private serviceToRedirect: string;
+  breadcrumb: any;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -27,6 +28,12 @@ export class ServicesComponent implements OnInit, OnDestroy {
     private shortcutsService: ShortcutService) {
     const self = this;
     self.subscriptions = {};
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+        this.commonService.breadcrumbPush(this.breadcrumb)
+      }
+    })
   }
 
   ngOnInit() {

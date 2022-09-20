@@ -14,7 +14,11 @@ import { RouteGuard } from 'src/app/guard/route.guard';
 import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/loading-placeholder.module';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: BulkUpdateComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard] },
+  {
+    path: '', pathMatch: 'full', component: BulkUpdateComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard], data: {
+      breadcrumb: ['Data Service']
+    }
+  },
 ];
 
 @NgModule({

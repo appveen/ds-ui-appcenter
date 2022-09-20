@@ -82,6 +82,8 @@ export class CommonService {
   stallRequests: boolean;
   private stallTime: number;
   private stallCount = 0;
+  breadcrumb: Array<any> = [];
+  breadcrumbSubject: Subject<any> = new Subject();
 
   constructor(
     private http: HttpClient,
@@ -1675,6 +1677,11 @@ export class CommonService {
       '#E6EE9C',
     ];
     return _.sample(colorArray);
+  }
+
+  breadcrumbPush(data: Array<any>) {
+    this.breadcrumb = data;
+    this.breadcrumbSubject.next(this.breadcrumb)
   }
 }
 

@@ -18,9 +18,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   activeId: string;
   workflowApi: string;
+  breadcrumb: any;
   constructor(private commonService: CommonService,
     private appService: AppService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
     const self = this;
     self.subscriptions = {};
@@ -33,6 +35,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     ).subscribe((event: NavigationEnd) => {
       this.setActiveId(event.url)
     });
+
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+        this.commonService.breadcrumbPush(this.breadcrumb)
+      }
+    })
   }
 
   ngOnDestroy() {

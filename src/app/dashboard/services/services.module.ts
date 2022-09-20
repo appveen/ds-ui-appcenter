@@ -15,27 +15,58 @@ const routes: Routes = [
     path: 'overview',
     component: ServiceOverviewComponent,
     canActivateChild: [BeforeGuard],
-    canActivate: [BeforeGuard]
+    canActivate: [BeforeGuard],
+    data: {
+      breadcrumb: ['Data Services']
+    }
   },
   {
     path: ':serviceId',
     component: ServicesComponent,
     canActivateChild: [BeforeGuard],
     canActivate: [BeforeGuard],
+    data: { breadcrumb: ['Data Service'] },
     children: [
-      { path: 'list', loadChildren: () => import('src/app/dashboard/services/list/list.module').then(m => m.ListModule) },
-      { path: 'view/:recordId', loadChildren: () => import('src/app/dashboard/services/view/view.module').then(m => m.ViewModule) },
-      { path: 'manage', loadChildren: () => import('src/app/dashboard/services/manage/manage.module').then(m => m.ManageModule), canDeactivate: [RouteGuard] },
-      { path: 'bulk-update', loadChildren: () => import('src/app/dashboard/services/bulk-update/bulk-update.module').then(m => m.BulkUpdateModule), canDeactivate: [RouteGuard] },
-      { path: 'manage/:recordId', loadChildren: () => import('src/app/dashboard/services/manage/manage.module').then(m => m.ManageModule), canDeactivate: [RouteGuard] },
-      { path: 'filemapper', loadChildren: () => import('src/app/filemapper/filemapper.module').then(m => m.FilemapperModule) },
+      {
+        path: 'list', loadChildren: () => import('src/app/dashboard/services/list/list.module').then(m => m.ListModule), data: {
+          breadcrumb: ['Data Service']
+        }
+      },
+      {
+        path: 'view/:recordId', loadChildren: () => import('src/app/dashboard/services/view/view.module').then(m => m.ViewModule), data: {
+          breadcrumb: ['Data Service']
+        }
+      },
+      {
+        path: 'manage', loadChildren: () => import('src/app/dashboard/services/manage/manage.module').then(m => m.ManageModule), canDeactivate: [RouteGuard], data: {
+          breadcrumb: ['Data Service']
+        }
+      },
+      {
+        path: 'bulk-update', loadChildren: () => import('src/app/dashboard/services/bulk-update/bulk-update.module').then(m => m.BulkUpdateModule), canDeactivate: [RouteGuard], data: {
+          breadcrumb: ['Data Service']
+        }
+      },
+      {
+        path: 'manage/:recordId', loadChildren: () => import('src/app/dashboard/services/manage/manage.module').then(m => m.ManageModule), canDeactivate: [RouteGuard], data: {
+          breadcrumb: ['Data Service']
+        }
+      },
+      {
+        path: 'filemapper', loadChildren: () => import('src/app/filemapper/filemapper.module').then(m => m.FilemapperModule), data: {
+          breadcrumb: ['Data Service']
+        }
+      },
     ]
   },
   {
     path: '',
     component: ServicesComponent,
     canActivateChild: [BeforeGuard],
-    canActivate: [BeforeGuard]
+    canActivate: [BeforeGuard],
+    data: {
+      breadcrumb: ['Data Service']
+    }
   }
 ];
 

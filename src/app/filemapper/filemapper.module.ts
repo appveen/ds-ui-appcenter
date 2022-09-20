@@ -21,7 +21,11 @@ import { ResolveCellComponent } from './resolve-cell/resolve-cell.component';
 import { ValidRecordsComponent } from './valid-records/valid-records.component';
 import { FieldTypeModule } from '../utils/field-type/field-type.module';
 const routes: Routes = [
-  { path: '', component: FilemapperComponent },
+  {
+    path: '', component: FilemapperComponent, data: {
+      breadcrumb: ['Data Service']
+    }
+  },
 ];
 
 @NgModule({

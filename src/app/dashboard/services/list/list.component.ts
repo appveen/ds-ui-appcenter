@@ -139,6 +139,7 @@ export class ListComponent implements OnInit, OnDestroy {
   secureFileId: any;
   fileEncryptionKey: string;
   loadFilter: boolean;
+  breadcrumb: Array<any> = [];
 
   constructor(
     public appService: AppService,
@@ -202,6 +203,11 @@ export class ListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+      }
+    })
     this.appService.setFilterModel(null)
     self.appCenterStyle = self.commonService.app.appCenterStyle;
     self.ngbToolTipConfig.container = 'body';
@@ -604,6 +610,10 @@ export class ListComponent implements OnInit, OnDestroy {
     self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, options).subscribe(
       res => {
         self.apiCalls.fetchingSchema = false;
+        if (this.breadcrumb) {
+          this.breadcrumb.push(res.name)
+          this.commonService.breadcrumbPush(this.breadcrumb)
+        }
         if (!res.definition) {
           self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
             state: {
