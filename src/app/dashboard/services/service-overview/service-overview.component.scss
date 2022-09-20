@@ -1,6 +1,12 @@
 .service-overview-page {
   min-height: calc(100vh - 40px);
 
+  .ds-name {
+    max-width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .ds-item {
     min-height: 164px;
     max-height: 164px;
