@@ -41,7 +41,7 @@ export class WorkflowOverviewComponent implements OnInit {
     const options: GetOptions = {
       count: -1,
       filter,
-      select: 'name',
+      // select: 'name',
       sort: 'name'
     };
 
