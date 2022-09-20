@@ -96,7 +96,7 @@
       <button class="mr-2 btn btn-link text-primary" type="button" *ngIf="showSeparateCreateBtn"
         (click)="duplicateView()">+Duplicate View</button>
       <button class="mr-2 btn btn-link text-primary" type="button" (click)="showSaveDiv = true"
-        *ngIf="hasOptions && (!showSeparateCreateBtn || !!filterId)">{{ saveOrEditText }}</button>
+        *ngIf="!showSeparateCreateBtn">{{ saveOrEditText }}</button>
       <div class="ml-auto">
         <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary mr-3 btn-min-width"
           (click)="filterModalRef.close(false)">Cancel</button>
