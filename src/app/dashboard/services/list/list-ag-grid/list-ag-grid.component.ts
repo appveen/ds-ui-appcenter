@@ -255,7 +255,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       this.apiConfig['project'] = JSON.parse(this.searchForm.get('project').value)
       this.apiConfig['sort'] = JSON.parse(this.searchForm.get('sort').value)
     }
-    const filter = self.apiConfig.filter;
+    const filter = self.apiConfig.filter || self.gridService.filter;
 
     self.currentRecordsCountPromise = self.commonService
       .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })

@@ -498,7 +498,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
-      onGridSizeChanged: this.forceResizeColumns.bind(this),
+      // onGridSizeChanged: this.forceResizeColumns.bind(this),
       onSelectionChanged: this.onSelectionChanged.bind(this),
       suppressRowClickSelection: true,
       rowSelection: 'multiple',
@@ -518,7 +518,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       // },
       headerHeight: 46,
       suppressPaginationPanel: true,
-      suppressHorizontalScroll: true,
+      suppressHorizontalScroll: false,
       // onRowDoubleClicked: this.onRowDoubleClick.bind(this)
     };
 
@@ -533,7 +533,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   private forceResizeColumns() {
-    this.gridApi.sizeColumnsToFit();
+    // this.gridApi.sizeColumnsToFit();
     this.autoSizeAllColumns();
   }
 
@@ -665,7 +665,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       this.formArray.controls.forEach(ele => {
         secureKeys.forEach(key => {
           const value = ele.get(key).value;
-          if (value.value) {
+          if (value?.value) {
             this.decryptValue(value.value, ele, key);
           }
         })

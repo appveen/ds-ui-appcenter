@@ -184,7 +184,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       onGridReady: this.onGridReady.bind(this),
       onRowDataChanged: this.autoSizeAllColumns.bind(this),
       // onRowDoubleClicked: this.onRowDoubleClick.bind(this),
-      onGridSizeChanged: this.forceResizeColumns.bind(this),
+      // onGridSizeChanged: this.forceResizeColumns.bind(this),
       rowHeight: 46,
       headerHeight: this.historyMode ? 0 : 46,
       defaultColDef: {
@@ -193,7 +193,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       },
       suppressColumnVirtualisation: true,
       suppressPaginationPanel: true,
-      suppressHorizontalScroll: true,
+      suppressHorizontalScroll: false,
       floatingFiltersHeight: this.historyMode ? 0 : 40
     };
   }

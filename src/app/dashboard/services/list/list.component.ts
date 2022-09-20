@@ -18,6 +18,7 @@ import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { SecureFileService } from './secure-file.service'
 import { ListFiltersComponent } from './list-filters/list-filters.component';
 import { forkJoin, Observable } from 'rxjs';
+import { ListAgGridService } from './list-ag-grid/list-ag-grid.service';
 
 @Component({
   selector: 'odp-list',
@@ -152,6 +153,7 @@ export class ListComponent implements OnInit, OnDestroy {
     private ngbToolTipConfig: NgbTooltipConfig,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
+    public gridService: ListAgGridService,
   ) {
     const self = this;
     self.workflowModalOptions = {};
@@ -474,7 +476,7 @@ export class ListComponent implements OnInit, OnDestroy {
       .pipe(filter(() => document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'))
       .subscribe(() => {
         if (this.hasFilters) {
-          this.clearFilters();
+          this.clearGridFilters();
         } else if (this.selectedSavedView) {
           this.resetFilter();
         }
@@ -520,20 +522,8 @@ export class ListComponent implements OnInit, OnDestroy {
       });
   }
 
-  resetFilter(showAdvancedFilter = false) {
+  clearFilter() {
     const self = this;
-    this.hasFilterFromUrl = false;
-    if (self.listGrid) {
-      self.listGrid.clearSavedView();
-    }
-    self.savedViews = [];
-    self.advanceFilter = showAdvancedFilter;
-    self.selectedSavedView = null;
-    self.selectedSearch = null;
-    self.appService.existingFilter = null;
-    if (self.lastFilterAppliedPrefId) {
-      self.deleteLastFilterApplied();
-    }
     if (self.schema.schemaFree) {
       self.searchForm.patchValue({
         name: '',
@@ -545,9 +535,52 @@ export class ListComponent implements OnInit, OnDestroy {
         private: false
       });
     }
+  }
+
+  resetFilter(showAdvancedFilter = false) {
+    const self = this;
+    // this.hasFilterFromUrl = false;
+    if (self.listGrid) {
+      self.listGrid.clearSavedView();
+    }
+    self.savedViews = [];
+    self.advanceFilter = showAdvancedFilter;
+    self.selectedSavedView = null;
+    self.selectedSearch = null;
+    self.appService.existingFilter = null;
+    if (self.lastFilterAppliedPrefId) {
+      self.deleteLastFilterApplied();
+    }
+    this.clearFilter()
     self.filterSavedViews();
-    this.listFilters?.clearFilter(true)
+
     // this.run()
+  }
+
+  // filterCleared() {
+  //   const self = this;
+  //   this.clearFilter();
+  //   if (self.listGrid) {
+  //     self.listGrid.clearSavedView();
+  //   }
+  //   self.savedViews = [];
+  //   self.advanceFilter = true;
+  //   self.selectedSavedView = null;
+  //   self.appService.existingFilter = null;
+  //   if (self.lastFilterAppliedPrefId) {
+  //     self.deleteLastFilterApplied();
+  //   }
+
+  // }
+
+  resetAll(showAdvancedFilter = false) {
+    const self = this
+    this.resetFilter(showAdvancedFilter);
+    this.listFilters.removeAllItems();
+    this.listGrid.agGrid.api.refreshInfiniteCache();
+
+    // if (self.isSchemaFree) { this.run() }
+    // else { this.listFilters?.clearFilter(true) }
   }
 
   fetchSchema(serviceId: string) {
@@ -622,7 +655,13 @@ export class ListComponent implements OnInit, OnDestroy {
     if (event.refresh) {
       this.getSavedViews(true);
     }
+    if (!event.query.filter) {
+      this.hasFilterFromUrl = false;
+
+    }
+    this.listGrid.agGrid.api.refreshInfiniteCache();
     this.selectSavedView(event);
+
   }
 
   getSavedViews(getAll?: boolean) {
@@ -1075,11 +1114,13 @@ export class ListComponent implements OnInit, OnDestroy {
     // self.appService.selectAll.emit(self.checkAll);
   }
 
-  clearFilters() {
+  clearGridFilters() {
     const self = this;
     if (self.listGrid) {
       self.listGrid.clearFilter();
     }
+    this.gridService.onFloatingFilterChange(null);
+    this.listGrid.agGrid.api.refreshInfiniteCache()
   }
 
   clearSort() {
@@ -1557,7 +1598,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   get hasFilters() {
     const self = this;
-    if (!self.selectedSavedView && self.listGrid && self.listGrid.filterModel) {
+    if (!self.selectedSavedView && self.listGrid && !_.isEmpty(self.listGrid.filterModel && this.hasFilterFromUrl)) {
       return true;
     }
     return false;

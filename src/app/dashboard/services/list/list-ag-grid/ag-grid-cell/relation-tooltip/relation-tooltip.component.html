@@ -1,8 +1,8 @@
 <div class="custom-tooltip border bg-light p-2">
     <ng-container *ngIf="values.length">
         <ng-container *ngFor="let item of values">
-            <div class="list-item" >
-                <span class="label">{{item.name}}</span>
+            <div class="list-item">
+                <span class="label">{{item.name}} :</span>
                 <span class="value" *ngIf="!item.isSecuredField">{{item.value || '-'}}</span>
                 <span class="value" *ngIf="item.isSecuredField">**********</span>
             </div>
