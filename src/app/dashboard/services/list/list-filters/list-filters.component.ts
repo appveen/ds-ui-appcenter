@@ -205,6 +205,11 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     //   if (close) {
     // self.allColumns.push(self.selectedColOrder[index]);
     self.selectedColOrder.splice(index, 1);
+    if (self.selectedColOrder.length === 0) {
+      this.queryObject['select'] = '';
+      this.appliedFilter.value['select'] = ''
+      this.applyFilter();
+    }
     //   }
     // }, dismiss => { });
   }
