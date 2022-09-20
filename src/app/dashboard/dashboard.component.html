@@ -111,7 +111,7 @@
                     <div class="current-app d-flex align-items-center hover rounded border mr-3 ignore-outside px-2 border-light"
                         (click)="toggleAppOptions()">
                         <div class="current-app-thumbnail ignore-outside rounded d-flex align-items-center justify-content-center mr-2"
-                            [ngStyle]="{background:selectedApp.bg}">
+                            [ngStyle]="{background:selectedApp?.bg}">
                             <img *ngIf="selectedApp.logo && selectedApp.logo.thumbnail"
                                 [src]="selectedApp.logo.thumbnail" alt="Logo">
                             <span
