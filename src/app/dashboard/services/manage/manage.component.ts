@@ -72,8 +72,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   schemaFreeCode: any;
   invalidSchemaFreeRecord: boolean;
   statusArray: any;
+  ogStatusArray: any;
   currentState: any;
   breadcrumb: Array<any>
+  toggleDropdown: boolean;
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -244,8 +246,17 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       const states = self.stateModelPath?.[self.currentState];
       states.unshift(self.currentState)
       self.statusArray = states
+      self.ogStatusArray = states
 
     }
+  }
+
+  searchState(event) {
+    this.statusArray = this.ogStatusArray.filter(ele => ele.toLowerCase().includes(event.toLowerCase()))
+  }
+
+  resetSearch() {
+    this.statusArray = _.cloneDeep(this.ogStatusArray)
   }
 
   // setStateAndSave(state) {
@@ -258,9 +269,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   //   self.save();
   // }
 
-  changeStatus(event) {
+  changeStatus(state) {
     const self = this;
-    self.form.get(self.stateModelAttr).patchValue(event.target.value);
+    self.form.get(self.stateModelAttr).patchValue(state);
+    this.currentState = state;
+    this.toggleDropdown = false
     // if (!self.hasWorkflow) {
     //   self.form.get(self.stateModelAttr).patchValue(event);
     // } else {

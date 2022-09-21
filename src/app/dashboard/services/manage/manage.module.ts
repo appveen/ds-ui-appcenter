@@ -13,6 +13,7 @@ import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outsid
 import { RouteGuard } from 'src/app/guard/route.guard';
 import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/loading-placeholder.module';
 import { CodeEditorModule } from 'src/app/utils/code-editor/code-editor.module'
+import { SearchBoxModule } from '../../../utils/search-box/search-box.module';
 
 const routes: Routes = [
   {
@@ -35,7 +36,8 @@ const routes: Routes = [
     PipesModule,
     ClickOutsideModule,
     LoadingPlaceholderModule,
-    CodeEditorModule
+    CodeEditorModule,
+    SearchBoxModule
   ],
   declarations: [
     ManageComponent,
