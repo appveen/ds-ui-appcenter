@@ -1,22 +1,21 @@
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, TemplateRef, ElementRef } from '@angular/core';
-import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Router, ActivatedRoute } from '@angular/router';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 
+import { FormControl } from '@angular/forms';
+import { Definition } from 'src/app/interfaces/definition';
+import { AppService } from 'src/app/service/app.service';
+import { CommonService, GetOptions } from 'src/app/service/common.service';
+import { FormService } from 'src/app/service/form.service';
+import { SessionService } from 'src/app/service/session.service';
+import { ShortcutService } from 'src/app/shortcut/shortcut.service';
+import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-view/workflow-respond-view.component';
+import { environment } from 'src/environments/environment';
+import { WorkflowService } from '../workflow.service';
 import { WorkflowAgGridComponent } from './workflow-ag-grid/workflow-ag-grid.component';
 import { WorkflowAgGridService } from './workflow-ag-grid/workflow-ag-grid.service';
-import { CommonService, GetOptions } from 'src/app/service/common.service';
-import { SessionService } from 'src/app/service/session.service';
-import { environment } from 'src/environments/environment';
-import { Definition } from 'src/app/interfaces/definition';
-import { FormService } from 'src/app/service/form.service';
-import { AppService } from 'src/app/service/app.service';
-import { WorkflowService } from '../workflow.service';
-import { FormControl } from '@angular/forms';
-import { ShortcutService } from 'src/app/shortcut/shortcut.service';
-import { filter } from 'rxjs/operators';
-import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-view/workflow-respond-view.component';
 
 @Component({
   selector: 'odp-workflow-list',
@@ -131,6 +130,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   workflowApi: string;
   activeId: string;
   workflowList: Array<any>;
+  breadcrumb: Array<any>;
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -171,9 +171,17 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
     this.respondControl = new FormControl();
     this.workflowList = [];
+
   }
 
   ngOnInit() {
+
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+      }
+
+    })
     this.subscriptions['routeParams'] = this.route.params.subscribe(params => {
       this.appService.serviceId = params.serviceId;
       this.config.serviceId = params.serviceId;
@@ -187,6 +195,8 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       this.appService.workflowFilter = null;
       this.wfService.showFilterIcon = true;
     });
+
+
     if (this.appService.workflowTab) {
       this.activeTab = this.appService.workflowTab;
     }
@@ -201,7 +211,6 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       // this.viewWF(this.selectedRows.filter(e => e._checked)[0]);
       this.showRespondPannel = true;
     });
-
     // this.setupShortcuts();
     // this.setActiveId(this.router.url);
     // this.router.events.pipe(
@@ -614,6 +623,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.subscriptions['getSchema_' + serviceId] = this.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, { filter: { app: this.commonService.app._id } }).subscribe(
       res => {
         this.schema = res;
+        if (this.breadcrumb) {
+          this.breadcrumb.push(res.name)
+          this.commonService.breadcrumbPush(this.breadcrumb)
+        }
         this.appService.serviceAPI = '/' + this.commonService.app._id + res.api;
         this.workflowApi = `/${this.commonService.app._id}${res.api}/utils/workflow`;
         const parsedDef = this.schema.definition;

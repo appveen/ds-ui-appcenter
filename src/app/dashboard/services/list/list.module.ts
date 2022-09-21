@@ -34,7 +34,7 @@ import { ListAgGridModule } from './list-ag-grid/list-ag-grid.module';
 import { SwitchModule } from '../../../utils/switch/switch.module';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: ListComponent, canActivate: [ListGuard] },
+  { path: '', pathMatch: 'full', component: ListComponent, canActivate: [ListGuard], data: { breadcrumb: ['Data Service'] } },
 ];
 
 @NgModule({

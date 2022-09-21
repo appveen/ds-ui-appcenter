@@ -71,6 +71,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   invalidSchemaFreeRecord: boolean;
   statusArray: any;
   currentState: any;
+  breadcrumb: Array<any>
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -116,6 +117,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   ngOnInit() {
     const self = this;
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+      }
+    })
     self.cancelUrl = '/' + this.commonService.app._id + '/services/' + self.appService.serviceId + '/list';
     self.showLazyLoader = true;
     self.ngbToolTipConfig.container = 'body';
@@ -283,6 +289,10 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
             self.stateModelName = customLabel ? customLabel : res.definition[stateModelDefIndex].properties.name;
           }
         }
+
+        if (!this.breadcrumb.find(ele => ele === res.name)) {
+          this.breadcrumb.push(res.name)
+        }
         //self.isSchemaFree = true;
         if (res.schemaFree) {
           self.isSchemaFree = res.schemaFree;
@@ -330,7 +340,6 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   }
                 }
               }
-
             },
             err => {
               if (err.status === 403) {
@@ -369,6 +378,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         if (!self.ID && self.stateModelAttr) {
           self.form.get(self.stateModelAttr).patchValue(self.initialState);
         }
+        if (this.breadcrumb) {
+          if (self.ID) {
+            this.breadcrumb.push(self.ID)
+          }
+          else {
+            this.breadcrumb.push('New')
+          }
+          this.commonService.breadcrumbPush(this.breadcrumb)
+        }
+
 
       },
       err => {

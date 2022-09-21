@@ -205,6 +205,11 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     //   if (close) {
     // self.allColumns.push(self.selectedColOrder[index]);
     self.selectedColOrder.splice(index, 1);
+    if (self.selectedColOrder.length === 0) {
+      this.queryObject['select'] = '';
+      this.appliedFilter.value['select'] = ''
+      this.applyFilter();
+    }
     //   }
     // }, dismiss => { });
   }
@@ -315,13 +320,13 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       if (filterValue?.value) {
         self.filterId = filterValue?._id;
         self.filterCreatedBy = filterValue?.createdBy;
-        self.saveOrEditText = '+Edit View';
-        self.showSeparateCreateBtn = true;
+        self.saveOrEditText = this.filterId ? '+Edit View' : '+Save As New View';
+        self.showSeparateCreateBtn = this.filterId ? true : false;
         if (filterValue?.name) {
-          self.placeHolderText = filterValue?.name;
+          self.placeHolderText = filterValue?.name || 'Select Filter';
         }
-        self.filterPayload.name = filterValue?.name;
-        self.appService.filterName = filterValue?.name;
+        self.filterPayload.name = filterValue?.name || '';
+        self.appService.filterName = filterValue?.name || '';
         self.filterPayload.private = filterValue?.private;
         self.filterPayload.value = filterValue?.value;
         if (typeof filterValue?.value === 'string') {
@@ -454,6 +459,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   set checkAllColumn(flag: boolean) {
     if (flag) {
       this.selectedColOrder = _.cloneDeep(this.allColumns)
+      this.selectedColOrder = this.selectedColOrder.filter(ele => ele.key !== '_checkbox')
     }
     else {
       this.queryObject['select'] = '';

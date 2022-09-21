@@ -73,6 +73,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     selectedFontSize: any;
     schemaFreeCode: any;
     viewMode: string;
+    breadcrumb: Array<any>
     get currentAppId() {
         return this.commonService?.getCurrentAppId();
     }
@@ -112,6 +113,11 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         const self = this;
+        this.route.data.subscribe(data => {
+            if (data.breadcrumb) {
+                this.breadcrumb = data.breadcrumb
+            }
+        })
         self.ngbToolTipConfig.container = 'body';
         self.showLazyLoader = true;
         self.subscriptions['routeParams'] = self.route.params.subscribe(params => {
@@ -205,6 +211,9 @@ export class ViewComponent implements OnInit, OnDestroy {
                 const parsedDef = res.definition;
                 self.updateSchema(parsedDef);
                 //self.isSchemaFree = true;
+                if (!this.breadcrumb.find(ele => ele === res.name)) {
+                    this.breadcrumb.push(res.name)
+                }
                 if (res.schemaFree) {
                     self.isSchemaFree = res.schemaFree;
                 }
@@ -341,6 +350,10 @@ export class ViewComponent implements OnInit, OnDestroy {
             data => {
                 self.showLazyLoader = false;
                 self.value = data;
+                if (this.breadcrumb) {
+                    this.breadcrumb.push(data._id)
+                    this.commonService.breadcrumbPush(this.breadcrumb)
+                }
                 if (self.isSchemaFree) {
                     self.schemaFreeCode = JSON.parse(JSON.stringify(data));
                     delete self.schemaFreeCode["_metadata"]

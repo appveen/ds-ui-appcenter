@@ -42,7 +42,7 @@ export class DateTypeComponent implements OnInit, OnDestroy {
       this.showDatePicker = _clicked;
     });
     this.supportedTimezones = this.definition.properties.supportedTimezones || [];
-    this.supportedTimezones.unshift(this.definition.properties.defaultTimezone);
+    // this.supportedTimezones.unshift(this.definition.properties.defaultTimezone);
     this.selectedTimezone = this.definition.properties.defaultTimezone;
     if (!this.selectedTimezone) {
       this.selectedTimezone = this.commonService.userDetails.defaultTimezone;

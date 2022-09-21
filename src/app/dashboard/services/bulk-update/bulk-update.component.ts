@@ -61,6 +61,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   bulkEditIds: Array<string>;
   result: Array<any>;
   stateModelAttr: string;
+  breadcrumb: Array<any>
   @HostListener('window:beforeunload', ['$event'])
   public beforeunloadHandler($event) {
     if (this.form.dirty) {
@@ -100,6 +101,11 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
   ngOnInit() {
     const self = this;
     self.isEdit = true;
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+      }
+    })
     self.cancelUrl = '/' + this.commonService.app._id + '/services/' + self.appService.serviceId + '/list';
     if (!self.appService.bulkEditIds || self.appService.bulkEditIds.length === 0) {
       return self.router.navigate([self.cancelUrl]);
@@ -175,6 +181,11 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
         res.definition = JSON.parse(JSON.stringify(parsedDef));
         if (res.stateModel && res.stateModel.enabled == true) {
           self.stateModelAttr = res.stateModel.attribute;
+        }
+        if (this.breadcrumb) {
+          this.breadcrumb.push(res.name)
+          this.breadcrumb.push('Bulk Update');
+          this.commonService.breadcrumbPush(this.breadcrumb)
         }
         self.title = res.name;
         self.api = '/' + self.commonService.app._id + res.api;

@@ -33,10 +33,16 @@ import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview
 const routes: Routes = [
   {
     path: '', component: WorkflowComponent, children: [
-     { path: 'overview', component: WorkflowOverviewComponent },
-     { path: ':serviceId', component: WorkflowListComponent },
-     { path: ':serviceId/:recordId', component: WorkflowManageComponent }
-    ]
+      {
+        path: 'overview', component: WorkflowOverviewComponent, data: {
+          breadcrumb: ['Workflows']
+        }
+      },
+      { path: ':serviceId', component: WorkflowListComponent, data: { breadcrumb: ['Workflows'] } },
+      { path: ':serviceId/:recordId', component: WorkflowManageComponent, data: { breadcrumb: ['Workflows'] } }
+    ], data: {
+      breadcrumb: ['Workflows']
+    }
   }
 ];
 
@@ -74,7 +80,7 @@ const routes: Routes = [
     WorkflowListComponent,
     WorkflowManageComponent,
     WorkflowOverviewComponent,
-    
+
   ],
   exports: [
     RouterModule

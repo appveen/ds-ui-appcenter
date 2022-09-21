@@ -82,6 +82,8 @@ export class CommonService {
   stallRequests: boolean;
   private stallTime: number;
   private stallCount = 0;
+  breadcrumb: Array<any> = [];
+  breadcrumbSubject: Subject<any> = new Subject();
 
   constructor(
     private http: HttpClient,
@@ -433,7 +435,7 @@ export class CommonService {
           }).subscribe(
             (res: Array<any>) => {
               let resList = res.map(e => {
-                return e.role.roles.map(r => {
+                return e.role?.roles?.map(r => {
                   r.fields = e.role.fields;
                   r.app = app;
                   r.entity = e._id;
@@ -442,7 +444,7 @@ export class CommonService {
               });
               resList = [].concat.apply([], resList);
               roleList.forEach(role => {
-                const temp = resList.find(r => r.id === role.id && r.entity === role.entity && r.app === role.app);
+                const temp = resList.find(r => r?.id === role.id && r?.entity === role.entity && r?.app === role.app);
                 if (temp) {
                   role.operations = temp.operations;
                   if (typeof temp.fields === 'string') {
@@ -1675,6 +1677,11 @@ export class CommonService {
       '#E6EE9C',
     ];
     return _.sample(colorArray);
+  }
+
+  breadcrumbPush(data: Array<any>) {
+    this.breadcrumb = data;
+    this.breadcrumbSubject.next(this.breadcrumb)
   }
 }
 

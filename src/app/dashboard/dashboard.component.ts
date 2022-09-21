@@ -37,6 +37,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     fetchingFileTransfers: boolean;
     selectedService: any;
     selectedMenuItem: any;
+    breadcrumbs: any;
+    current: any;
     constructor(
         private appService: AppService,
         private commonService: CommonService,
@@ -93,6 +95,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
             this.fetchFileTransfers(this.selectedService._id);
         });
+
+        this.commonService.breadcrumbSubject.subscribe(data => {
+            if (data) {
+                this.current = data.pop();
+                this.breadcrumbs = data.length > 0 ? data.join(' / ') : null;
+            }
+        })
     }
 
     ngOnDestroy() {

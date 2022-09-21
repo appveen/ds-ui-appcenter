@@ -139,6 +139,7 @@ export class ListComponent implements OnInit, OnDestroy {
   secureFileId: any;
   fileEncryptionKey: string;
   loadFilter: boolean;
+  breadcrumb: Array<any> = [];
 
   constructor(
     public appService: AppService,
@@ -202,6 +203,11 @@ export class ListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+      }
+    })
     this.appService.setFilterModel(null)
     self.appCenterStyle = self.commonService.app.appCenterStyle;
     self.ngbToolTipConfig.container = 'body';
@@ -537,12 +543,21 @@ export class ListComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkSearchForm() {
+    if (this.searchForm.get('filter').value == '{}' && this.searchForm.get('project').value == '{}' && this.searchForm.get('sort').value == '{}') {
+      return false
+    }
+    return true
+  }
   resetFilter(showAdvancedFilter = false) {
     const self = this;
-    // this.hasFilterFromUrl = false;
+    this.clearFilter()
+
+    this.hasFilterFromUrl = false;
     if (self.listGrid) {
       self.listGrid.clearSavedView();
     }
+
     self.savedViews = [];
     self.advanceFilter = showAdvancedFilter;
     self.selectedSavedView = null;
@@ -551,36 +566,34 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.lastFilterAppliedPrefId) {
       self.deleteLastFilterApplied();
     }
-    this.clearFilter()
     self.filterSavedViews();
 
-    // this.run()
   }
 
-  // filterCleared() {
-  //   const self = this;
-  //   this.clearFilter();
-  //   if (self.listGrid) {
-  //     self.listGrid.clearSavedView();
-  //   }
-  //   self.savedViews = [];
-  //   self.advanceFilter = true;
-  //   self.selectedSavedView = null;
-  //   self.appService.existingFilter = null;
-  //   if (self.lastFilterAppliedPrefId) {
-  //     self.deleteLastFilterApplied();
-  //   }
-
-  // }
 
   resetAll(showAdvancedFilter = false) {
     const self = this
-    this.resetFilter(showAdvancedFilter);
-    this.listFilters.removeAllItems();
-    this.listGrid.agGrid.api.refreshInfiniteCache();
+    if (this.isSchemaFree) {
+      this.resetFilter();
+      this.listGrid.searchForm.patchValue({
+        name: '',
+        filter: '{}',
+        project: '{}',
+        sort: '{}',
+        count: '',
+        page: '',
+        private: false
+      });
+      this.listGrid.agGrid.api.refreshInfiniteCache();
+    }
+    else {
+      this.resetFilter(showAdvancedFilter);
+      this.listFilters.clearFilter();
+      this.listFilters.removeAllItems();
+      this.listGrid.agGrid.api.refreshInfiniteCache();
 
-    // if (self.isSchemaFree) { this.run() }
-    // else { this.listFilters?.clearFilter(true) }
+    }
+
   }
 
   fetchSchema(serviceId: string) {
@@ -597,6 +610,10 @@ export class ListComponent implements OnInit, OnDestroy {
     self.subscriptions['getSchema_' + serviceId] = self.commonService.get('sm', `/${this.commonService.app._id}/service/` + serviceId, options).subscribe(
       res => {
         self.apiCalls.fetchingSchema = false;
+        if (this.breadcrumb) {
+          this.breadcrumb.push(res.name)
+          this.commonService.breadcrumbPush(this.breadcrumb)
+        }
         if (!res.definition) {
           self.router.navigate(['/', this.commonService.app._id, 'no-access'], {
             state: {

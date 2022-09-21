@@ -18,7 +18,11 @@ import { HistoryComponent } from './history/history.component';
 import { CodeEditorModule } from 'src/app/utils/code-editor/code-editor.module'
 import { TreeViewModule } from 'src/app/utils/tree-view/tree-view.module'
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: ViewComponent, canActivate: [ViewGuard] },
+  {
+    path: '', pathMatch: 'full', component: ViewComponent, canActivate: [ViewGuard], data: {
+      breadcrumb: ['Data Service']
+    }
+  },
 ];
 
 @NgModule({

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import * as moment from 'moment';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../../../service/app.service';
 import { DashboardService } from '../../dashboard.service';
 
@@ -17,18 +17,27 @@ export class ServiceOverviewComponent implements OnInit {
   showLazyLoader: boolean;
   searchTerm: string;
   filter: any;
+  breadcrumb: any;
 
   constructor(
     private commonService: CommonService,
     public appService: AppService,
     private dashboardService: DashboardService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
   }
 
   ngOnInit(): void {
     const self = this;
     self.services = [];
+    this.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+        this.breadcrumb.push('All Data Services')
+        this.commonService.breadcrumbPush(this.breadcrumb)
+      }
+    })
     self.serviceRecordCounts = null;
     self.showLazyLoader = true;
     self.getServices();

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'odp-workflow-overview',
@@ -13,8 +14,10 @@ export class WorkflowOverviewComponent implements OnInit {
   searchTerm: string;
   services: any;
   ogServices: any;
+  breadcrumb: any;
   constructor(
-    private commonService: CommonService
+    private commonService: CommonService,
+    private route: ActivatedRoute
   ) { }
 
 
@@ -23,6 +26,13 @@ export class WorkflowOverviewComponent implements OnInit {
     self.services = [];
     self.ogServices = [];
     self.showLazyLoader = true;
+    self.route.data.subscribe(data => {
+      if (data.breadcrumb) {
+        this.breadcrumb = data.breadcrumb
+        this.breadcrumb.push('All Workfkows')
+        this.commonService.breadcrumbPush(this.breadcrumb)
+      }
+    })
     self.getServices();
   }
 
@@ -41,7 +51,7 @@ export class WorkflowOverviewComponent implements OnInit {
     const options: GetOptions = {
       count: -1,
       filter,
-      select: 'name',
+      // select: 'name',
       sort: 'name'
     };
 
