@@ -25,36 +25,36 @@ const routes: Routes = [
     component: ServicesComponent,
     canActivateChild: [BeforeGuard],
     canActivate: [BeforeGuard],
-    data: { breadcrumb: ['Data Service'] },
+    data: { breadcrumb: ['Data Services'] },
     children: [
       {
         path: 'list', loadChildren: () => import('src/app/dashboard/services/list/list.module').then(m => m.ListModule), data: {
-          breadcrumb: ['Data Service']
+          breadcrumb: ['Data Services']
         }
       },
       {
         path: 'view/:recordId', loadChildren: () => import('src/app/dashboard/services/view/view.module').then(m => m.ViewModule), data: {
-          breadcrumb: ['Data Service']
+          breadcrumb: ['Data Services']
         }
       },
       {
         path: 'manage', loadChildren: () => import('src/app/dashboard/services/manage/manage.module').then(m => m.ManageModule), canDeactivate: [RouteGuard], data: {
-          breadcrumb: ['Data Service']
+          breadcrumb: ['Data Services']
         }
       },
       {
         path: 'bulk-update', loadChildren: () => import('src/app/dashboard/services/bulk-update/bulk-update.module').then(m => m.BulkUpdateModule), canDeactivate: [RouteGuard], data: {
-          breadcrumb: ['Data Service']
+          breadcrumb: ['Data Services']
         }
       },
       {
         path: 'manage/:recordId', loadChildren: () => import('src/app/dashboard/services/manage/manage.module').then(m => m.ManageModule), canDeactivate: [RouteGuard], data: {
-          breadcrumb: ['Data Service']
+          breadcrumb: ['Data Services']
         }
       },
       {
         path: 'filemapper', loadChildren: () => import('src/app/filemapper/filemapper.module').then(m => m.FilemapperModule), data: {
-          breadcrumb: ['Data Service']
+          breadcrumb: ['Data Services']
         }
       },
     ]
@@ -65,7 +65,7 @@ const routes: Routes = [
     canActivateChild: [BeforeGuard],
     canActivate: [BeforeGuard],
     data: {
-      breadcrumb: ['Data Service']
+      breadcrumb: ['Data Services']
     }
   }
 ];

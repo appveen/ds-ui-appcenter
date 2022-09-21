@@ -11,6 +11,8 @@ import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { HttpEventType } from '@angular/common/http';
 import { CanComponentDeactivate } from 'src/app/guard/route.guard';
 import { DashboardService } from '../../dashboard.service';
+import * as _ from 'lodash'
+
 
 @Component({
   selector: 'odp-manage',
@@ -119,7 +121,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const self = this;
     this.route.data.subscribe(data => {
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
     })
     self.cancelUrl = '/' + this.commonService.app._id + '/services/' + self.appService.serviceId + '/list';

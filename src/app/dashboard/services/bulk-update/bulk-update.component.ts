@@ -10,6 +10,8 @@ import { AppService } from 'src/app/service/app.service';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { HttpEventType } from '@angular/common/http';
 import { CanComponentDeactivate } from 'src/app/guard/route.guard';
+import * as _ from 'lodash'
+
 
 @Component({
   selector: 'odp-bulk-update',
@@ -103,7 +105,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     self.isEdit = true;
     this.route.data.subscribe(data => {
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
     })
     self.cancelUrl = '/' + this.commonService.app._id + '/services/' + self.appService.serviceId + '/list';
