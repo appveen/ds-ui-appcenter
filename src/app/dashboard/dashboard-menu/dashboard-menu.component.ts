@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, Input, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { CommonService, GetOptions } from '../../service/common.service';
 import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 
 @Component({
@@ -11,6 +12,7 @@ import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 export class DashboardMenuComponent implements OnInit, OnDestroy {
 
   @Input() activeId: string;
+  subscriptions: any;
   @ViewChild(WorkflowListComponent) wfList: WorkflowListComponent
   activeMenuKey: string;
   openPanel: any = {
@@ -19,8 +21,8 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
     'workflow': false,
   };
   hideWorkflows: boolean = false;
-  constructor(private router: Router) {
-
+  constructor(private router: Router, private commonService: CommonService) {
+    this.subscriptions = {};
   }
 
   ngOnInit() {
@@ -30,12 +32,44 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
     ).subscribe((event: NavigationEnd) => {
       this.setActiveMenu(event.url)
     });
-
+    this.getWorflowItemsCount()
     // this.wfList.getServices()
   }
 
   ngOnDestroy() {
 
+  }
+
+  getWorflowItemsCount() {
+    const filter: any = { app: this.commonService.app._id, 'workflowConfig.enabled': true };
+    if (!this.commonService.userDetails.isSuperAdmin
+      && this.commonService.servicesWithAccess.length > 0) {
+      filter._id = {
+        $in: this.commonService.servicesWithAccess
+      };
+    }
+    const options: GetOptions = {
+      count: -1,
+      filter,
+      select: 'name,app,api',
+      sort: 'name'
+    };
+    if (this.subscriptions.getServices) {
+      this.subscriptions.getServices.unsubscribe();
+    }
+    this.subscriptions.getServices = this.commonService
+      .get('sm', `/${this.commonService.app._id}/service`, options)
+      .pipe(distinctUntilChanged())
+      .subscribe(res => {
+        if (res.length > 0) {
+          this.toggleWorkflow(false)
+        }
+        else {
+          this.toggleWorkflow(true)
+        }
+      }, err => {
+        console.error(err);
+      });
   }
 
   setActiveMenu(url: string) {

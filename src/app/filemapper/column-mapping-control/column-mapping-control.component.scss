@@ -1,107 +1,128 @@
 @import "src/assets/scss/bootstrap/_functions.scss";
 @import "src/assets/scss/bootstrap/_variables.scss";
 
-.column-container{
+.column-container {
     min-width: 550px;
     max-width: 590px;
-    min-height: 56px;   
+    min-height: 56px;
     display: block;
+
     // max-height: 56px;
     .propName {
         min-width: 180px;
         max-width: 180px;
         float: left;
     }
-    .colDiv{
+
+    .colDiv {
         min-width: 296px;
         max-width: 296px;
         // min-height: 32px;
         // max-height: 32px;
-        color:  #B5B8BC;
+        color: #B5B8BC;
         padding-right: 20px !important;
+
         &:focus {
             color: $black;
             font-weight: bold;
         }
     }
-   &:hover{
-    background: #F4F5F5 0% 0% no-repeat padding-box;
+
+    &:hover {
+        background: #F4F5F5 0% 0% no-repeat padding-box;
     }
-    .colDivArray{
+
+    .colDivArray {
         min-width: 240px;
         max-width: 240px;
         min-height: 32px;
         max-height: 32px;
-        color:  #B5B8BC;
+        color: #B5B8BC;
         padding-right: 20px !important;
+
         &:focus {
             color: $black;
             font-weight: bold;
         }
     }
-    .colDivSmall{
+
+    .colDivSmall {
         min-width: 112px;
         max-width: 112px;
         min-height: 32px;
         max-height: 32px;
-        color:  #B5B8BC ;
+        color: #B5B8BC;
 
     }
-    .dotted{
+
+    .dotted {
         border: 1px dashed #B5B8BC;
     }
-    input{
+
+    input {
         border: 1px dashed #B5B8BC;
         background-color: #F4F5F5;
 
     }
 }
-.column-modal{
-    top: 225px;
+
+.column-modal {
+    top: 210px;
     background-color: white;
-    height: calc(100vh - 233px);
+    height: 800px;
+    min-height: 400px;
     z-index: 1;
-    width: calc(100vw - 740px);
-}
-.text-light{
-    color:  #B5B8BC
+    max-width: 600px;
+    min-width: 600px;
+    border-radius: 6px;
+    overflow: auto;
 }
 
-.bg-light{
+.text-light {
+    color: #B5B8BC
+}
+
+.bg-light {
     background-color: #F4F5F5;
 }
 
-.tilte{
+.tilte {
     min-width: 20px;
     max-width: 20px;
 }
-.objIcon{
+
+.objIcon {
     min-width: 14px;
     max-width: 14px;
     min-height: 14px;
     max-height: 14px;
 }
-.objIcon1{
+
+.objIcon1 {
     min-width: 14px;
     max-width: 14px;
     min-height: 14px;
     max-height: 14px;
 }
-.bg-blue{
+
+.bg-blue {
     background-color: #6D67FF
 }
-.bg-light1{
+
+.bg-light1 {
     background-color: #F4F5F5;
 
 }
-.times-Clear{
+
+.times-Clear {
     float: right;
     margin: 8px;
 }
 
-.ClearArray{
+.ClearArray {
     float: right;
 }
-.index-value{
+
+.index-value {
     margin-left: -25px;
 }
