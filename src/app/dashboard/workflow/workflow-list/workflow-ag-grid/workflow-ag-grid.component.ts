@@ -213,7 +213,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
                   });
               });
               records.forEach(record => {
-                if (
+                if (record.audit && record.audit &&
                   record.audit[record.audit.length - 1] &&
                   record.audit[record.audit.length - 1].action !== 'Draft' &&
                   record.audit[record.audit.length - 1].action !== 'Edit' &&
@@ -327,7 +327,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   arrangeFilter() {
     const self = this;
-    self.apiConfig.filter.$and.splice(0, 1);
+    self.apiConfig?.filter?.$and?.splice(0, 1);
     if (self.appService.workflowTab === 0) {
       self.apiConfig.filter.$and.unshift({
         operation: 'POST',
@@ -616,7 +616,9 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     // self.sortModel = null;
     self.gridService.inlineFilterActive = null;
     self.gridService.selectedSavedView = null;
-    self.apiConfig.filter.$and = [self.apiConfig.filter.$and[0]];
+    if (self.apiConfig?.filter?.$and?.[0]) {
+      self.apiConfig.filter.$and = [self.apiConfig.filter.$and[0]];
+    }
     self.arrangeFilter();
     self.apiConfig.sort = null;
     self.agGrid.api.setFilterModel(null);

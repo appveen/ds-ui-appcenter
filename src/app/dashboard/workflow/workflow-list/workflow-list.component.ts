@@ -852,7 +852,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.listGrid.toggleClear();
     this.clearFilters();
     this.listGrid.apiConfig['filter'] = null
+    this.listGrid.apiConfig['columns'] = null
+    this.listGrid.apiConfig['select'] = ''
     this.wfFilter.clearFilter(true)
+    this.listGrid.gridApi.refreshInfiniteCache()
     // this.filterSavedViews();
   }
 
