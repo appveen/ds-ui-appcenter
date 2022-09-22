@@ -7,6 +7,7 @@ import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowService } from 'src/app/dashboard/workflow/workflow.service';
 import { WorkflowAgGridService } from '../../workflow-list/workflow-ag-grid/workflow-ag-grid.service';
+import { filter } from '@amcharts/amcharts4/.internal/core/utils/Iterator';
 
 @Component({
   selector: 'odp-search-for',
@@ -201,6 +202,9 @@ export class SearchForComponent implements OnInit {
     //   });
     self.subscriptions['qsSubscription'] = self.commonService.workflowfilterQuery.subscribe(filter => {
       // self.searchForColumn = [];
+      if (!filter) {
+        filter = this.appService.workflowFilter
+      }
       self.setSearchFor(filter);
     });
     // if (self.appService.workflowFilter) {
@@ -249,9 +253,9 @@ export class SearchForComponent implements OnInit {
             filterValue: '',
             serviceCol: true
           };
-        
-        } 
-        
+
+        }
+
         else {
           obj = {
             headerName: 'Record Id',
@@ -335,8 +339,16 @@ export class SearchForComponent implements OnInit {
 
     self.searchForColumn = [];
     let searchForFltr = [];
-    if (filterVal && filterVal.filter && filterVal.filter.$and && filterVal.filter.$and.length) {
-      const tempArray = filterVal.filter.$and;
+    let filterModel;
+    const filterStuff = filterVal?.filter || filterVal?.value;
+    if (typeof filterStuff === 'string') {
+      filterModel = JSON.parse(filterStuff)?.filter
+    }
+    else {
+      filterModel = filterStuff.filter
+    }
+    if (filterModel && filterModel.$and && filterModel.$and.length) {
+      const tempArray = filterModel.$and;
       searchForFltr = tempArray
     }
     searchForFltr.forEach(element => {
@@ -491,6 +503,11 @@ export class SearchForComponent implements OnInit {
         obj.filterType = 'lessThan';
       }
       self.searchForColumn.push(obj);
+    } else {
+      const finalObj = _.cloneDeep(colObj);
+      finalObj['filterType'] = filterType;
+      finalObj['filterValue'] = value;
+      self.searchForColumn.push(finalObj);
     }
   }
 

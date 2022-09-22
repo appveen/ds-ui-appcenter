@@ -884,7 +884,7 @@ export class CommonService {
     if (options.sort && typeof options.sort !== 'object') {
       urlParams = urlParams.set('sort', options.sort);
     }
-    else if (typeof options.sort === 'object' && Object.keys(options.sort).length !== 0) {
+    else if (options?.sort && typeof options?.sort === 'object' && Object.keys(options?.sort)?.length !== 0) {
       urlParams = urlParams.set('sort', JSON.stringify(options.sort));
     }
     if (options.page) {

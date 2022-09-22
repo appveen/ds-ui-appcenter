@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, TemplateRef, ElementRef, AfterViewInit } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
 import { map, distinctUntilChanged, tap } from 'rxjs/operators';
 
@@ -23,7 +23,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
   @Input() schema: any;
   @Input() columns: Array<any>;
-  @Input() applySavedView: EventEmitter<any>;
+  // @Input() applySavedView: EventEmitter<any>;
   @Input() srvcId: string;
   @Input() selectAll: EventEmitter<any>;
   @Output() removedSavedView: EventEmitter<any>;
@@ -45,6 +45,8 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   filterModel: any;
   noRowsTemplate;
   workflowApi: string;
+  gridApi: GridApi;
+  gridColumnApi: ColumnApi;
   constructor(
     private gridService: WorkflowAgGridService,
     private commonService: CommonService,
@@ -54,7 +56,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   ) {
     const self = this;
     self.selectAll = new EventEmitter();
-    self.applySavedView = new EventEmitter();
+    // self.applySavedView = new EventEmitter();
     self.removedSavedView = new EventEmitter();
     self.selectedRecords = new EventEmitter();
     self.viewRecord = new EventEmitter();
@@ -83,6 +85,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       count: 30,
       page: 1,
       expand: true,
+      select: self.gridService?.selectedSavedView?.select || '',
       filter: {
         serviceId: self.srvcId,
         $and: [{ operation: 'POST', status: { $ne: 'Draft' } }]
@@ -91,7 +94,58 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     };
     self.createColumnDefs();
     self.getRecordsCount(true);
+
+    self.appService.workflowTabChange.pipe(distinctUntilChanged()).subscribe(data => {
+      self.setOldOrNew();
+    });
+
+    self.selectAll.subscribe(flag => {
+      self.agGrid.api.forEachNode((rowNode, index) => {
+        if (rowNode.data.status === 'Pending' && self.canRespond(rowNode.data)) {
+          rowNode.setSelected(flag);
+          rowNode.data._checked = flag;
+        }
+      });
+    });
+  }
+
+  onReady(event) {
+    this.gridApi = event.api;
+    this.gridColumnApi = event.columnApi
+  }
+
+
+  toggleColumns(view, dataColumns) {
+    const selectedColumns = view.columns;
+    const allColumns = this.gridColumnApi.getAllColumns().filter(ele => dataColumns.findIndex(col => col['dataKey'] === ele['colId']) > -1);
+    // const staticValues = allColumns.filter(ar => !toRemove.find(rm => (rm.name === ar.name && ar.place === rm.place) ))
+
+    dataColumns.forEach(ele => {
+      this.gridColumnApi?.hideColumn(ele['dataKey'], true)
+    })
+
+    console.log(this.gridColumnApi.getAllColumns())
+    if (selectedColumns.length > 0) {
+      this.gridColumnApi?.setColumnVisible('_checkbox', true);
+      allColumns.forEach(column => {
+        if (column && column['colId']) {
+          console.log(column['colId']);
+          const boolVal = selectedColumns.findIndex(ele => ele.dataKey === column['colId']) > -1
+          this.gridColumnApi?.setColumnVisible(column['colId'], boolVal);
+        }
+      })
+    }
+  }
+
+  toggleClear() {
+    const allColumns = this.gridColumnApi.getAllColumns().map(ele => ele.getColId())
+    this.gridColumnApi.setColumnsVisible(allColumns, true)
+  }
+
+  getDatasource() {
+    const self = this;
     self.dataSource = {
+      rowCount: null,
       getRows: (params: IGetRowsParams) => {
         if (!environment.production) {
           console.log('getRows', params);
@@ -125,117 +179,110 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         });
         definitionList = sc;
         // self.apiConfig.select = self.gridService.getSelect(definitionList);
-        self.agGrid.api.showLoadingOverlay();
         self.selectedRecords.emit([]);
-        self.currentRecordsCountPromise.then(count => {
-          // self. arrangeFilter()
-          if (params.endRow - 30 < self.currentRecordsCount) {
-            self.apiConfig.page = Math.ceil(params.endRow / 30);
-            if (self.subscription['getRecords_' + self.apiConfig.page]) {
-              self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
-            }
-            self.subscription['getRecords_' + self.apiConfig.page] = self.getRecords().subscribe(
-              (records: any) => {
-                let loaded = params.endRow;
-                if (loaded > self.currentRecordsCount) {
-                  loaded = self.currentRecordsCount;
-                }
-                self.agGrid.api.hideOverlay();
-                // self.agGrid.api.deselectAll();
-                if (loaded === 0 && self.currentRecordsCount == 0) {
-                  self.agGrid.api.showNoRowsOverlay();
-                }
-                self.recordsInfo.emit({
-                  loaded,
-                  total: self.currentRecordsCount
-                });
-                records.forEach(user => {
+        // self. arrangeFilter()
+        if (params.endRow - 30 < self.currentRecordsCount) {
+          self.apiConfig.page = Math.ceil(params.endRow / 30);
+          if (self.subscription['getRecords_' + self.apiConfig.page]) {
+            self.subscription['getRecords_' + self.apiConfig.page].unsubscribe();
+          }
+          const recordObservable = self.getRecords();
+          self.agGrid.api.showLoadingOverlay();
+          (self.subscription['getRecords_' + self.apiConfig.page]) = recordObservable.subscribe(
+            (records: any) => {
+              let loaded = params.endRow;
+              if (loaded > self.currentRecordsCount) {
+                loaded = self.currentRecordsCount;
+              }
+              self.agGrid.api.hideOverlay();
+              // self.agGrid.api.deselectAll();
+              if (loaded === 0 && self.currentRecordsCount == 0) {
+                self.agGrid.api.showNoRowsOverlay();
+              }
+              self.recordsInfo.emit({
+                loaded,
+                total: self.currentRecordsCount
+              });
+              records.forEach(user => {
+                self.commonService
+                  .getUser(user.requestedBy)
+                  .then(res => {
+                    user.username = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
+                  })
+                  .catch(err => {
+                    user.username = user.requestedBy;
+                  });
+              });
+              records.forEach(record => {
+                if (
+                  record.audit[record.audit.length - 1] &&
+                  record.audit[record.audit.length - 1].action !== 'Draft' &&
+                  record.audit[record.audit.length - 1].action !== 'Edit' &&
+                  record.audit[record.audit.length - 1].action !== 'Submit'
+                ) {
                   self.commonService
-                    .getUser(user.requestedBy)
+                    .getUser(record.audit[record.audit.length - 1].id)
                     .then(res => {
-                      user.username = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
+                      record.respondedBy = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
                     })
                     .catch(err => {
-                      user.username = user.requestedBy;
+                      record.respondedBy = record.audit[record.audit.length - 1].id;
                     });
-                });
-                records.forEach(record => {
-                  if (
-                    record.audit[record.audit.length - 1] &&
-                    record.audit[record.audit.length - 1].action !== 'Draft' &&
-                    record.audit[record.audit.length - 1].action !== 'Edit' &&
-                    record.audit[record.audit.length - 1].action !== 'Submit'
-                  ) {
-                    self.commonService
-                      .getUser(record.audit[record.audit.length - 1].id)
-                      .then(res => {
-                        record.respondedBy = res.basicDetails && res.basicDetails.name ? res.basicDetails.name : res.username;
-                      })
-                      .catch(err => {
-                        record.respondedBy = record.audit[record.audit.length - 1].id;
-                      });
-                  } else {
-                    record.respondedBy = 'N.A';
-                  }
-                });
-                if (loaded === self.currentRecordsCount) {
-                  params.successCallback(records, self.currentRecordsCount);
                 } else {
-                  params.successCallback(records);
+                  record.respondedBy = 'N.A';
                 }
-                self.rowSelected(null);
-              },
-              err => { }
-            );
-          } else {
-            self.agGrid.api.hideOverlay();
-            if (self.currentRecordsCount == 0) {
-              self.agGrid.api.showNoRowsOverlay();
+              });
+              if (loaded === self.currentRecordsCount) {
+                params.successCallback(records, self.currentRecordsCount);
+              } else {
+                params.successCallback(records);
+              }
+              self.rowSelected(null);
+            },
+            err => {
+              self.agGrid.api.hideOverlay();
+              console.log(err)
             }
-            params.successCallback([], self.currentRecordsCount);
+          );
+        } else {
+          if (self.currentRecordsCount == 0) {
+            self.agGrid.api.showNoRowsOverlay();
           }
-        });
-      }
-    };
-    self.appService.workflowTabChange.pipe(distinctUntilChanged()).subscribe(data => {
-      self.setOldOrNew();
-    });
-    self.applySavedView.subscribe(data => {
-      try {
-        if (data.value) {
-          if (typeof data.value === 'string') {
-            data.value = JSON.parse(data.value);
-          }
-          const viewModel = data.value;
-          const temp = self.agGrid.api.getFilterModel();
-          if (temp && Object.keys(temp).length > 0) {
-            self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
-            self.clearFilterModalRef.result.then(
-              close => {
-                if (close) {
-                  self.gridService.selectedSavedView = viewModel;
-                  self.configureView(viewModel || {});
-                }
-              },
-              dismiss => { }
-            );
-          } else {
-            self.gridService.selectedSavedView = viewModel;
-            self.configureView(viewModel || {});
-          }
+          params.successCallback([], self.currentRecordsCount);
         }
-      } catch (e) {
-        console.error(e);
+
       }
-    });
-    self.selectAll.subscribe(flag => {
-      self.agGrid.api.forEachNode((rowNode, index) => {
-        if (rowNode.data.status === 'Pending' && self.canRespond(rowNode.data)) {
-          rowNode.setSelected(flag);
-          rowNode.data._checked = flag;
-        }
-      });
-    });
+    }
+  }
+
+
+  applySavedView(data) {
+    const self = this;
+
+
+    if (data.value) {
+      if (typeof data.value === 'string') {
+        data.value = JSON.parse(data.value);
+      }
+      const viewModel = data.value;
+      const temp = self.agGrid.api.getFilterModel();
+      if (temp && Object.keys(temp).length > 0) {
+        self.clearFilterModalRef = self.modalService.open(self.clearFilterModal, { centered: true });
+        self.clearFilterModalRef.result.then(
+          close => {
+            if (close) {
+              self.gridService.selectedSavedView = viewModel;
+              self.configureView(viewModel || {});
+            }
+          },
+          dismiss => { }
+        );
+      } else {
+        self.gridService.selectedSavedView = viewModel;
+        self.configureView(viewModel || {});
+      }
+    }
+
   }
 
   ngAfterViewInit() {
@@ -254,10 +301,12 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   getRecordsCount(first?: boolean) {
     const self = this;
     self.arrangeFilter();
+    self.agGrid?.api?.showLoadingOverlay();
     self.currentRecordsCountPromise = self.commonService
       .get('api', this.workflowApi + '/count', {
         filter: self.apiConfig.filter,
-        serviceId: self.srvcId
+        serviceId: self.srvcId,
+        select: self.apiConfig.select
       })
       .pipe(
         map(count => {
@@ -265,6 +314,8 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
             self.totalRecordsCount = count;
           }
           self.currentRecordsCount = count;
+          this.getDatasource()
+          this.agGrid?.api?.hideOverlay()
           self.recordsInfo.emit({
             loaded: 0,
             total: count
@@ -328,6 +379,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         temp.resizable = true;
         // temp.pinned = 'right';
         temp.floatingFilterComponentFramework = AgGridFiltersComponent;
+        temp.colId = e.dataKey
         temp.filterParams = {
           caseSensitive: true,
           suppressAndOrCondition: true,
@@ -527,7 +579,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         reload = true;
         self.agGrid.api.setSortModel(sortModel);
       } else {
-        self.apiConfig.sort = null;
+        self.apiConfig.sort = '';
         self.agGrid.api.setSortModel(null);
       }
       if (reload) {

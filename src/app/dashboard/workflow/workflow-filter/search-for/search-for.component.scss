@@ -13,15 +13,17 @@
 }
 
 .col-filter {
-  min-width: 530px;
+  min-width: 500px;
   min-height: 33px;
   max-height: 33px;
   border: 1px solid $border;
   border-radius: 6px;
   overflow: hidden;
+
   .filter-txt {
     font-family: inherit;
     border: none !important;
+
     &-disabled {
       border: none;
       background-color: #f6f6f6;
@@ -35,6 +37,7 @@
   .new-row {
     opacity: 0;
   }
+
   &:hover .new-row {
     opacity: 1;
     cursor: pointer;
@@ -46,6 +49,7 @@
     left: 88%;
     pointer-events: none;
   }
+
   select {
     -webkit-appearance: button;
     outline: none;
@@ -55,6 +59,7 @@
     color: $capiot-blue;
     border: none;
     font-weight: bold;
+
     option {
       font-weight: bold;
     }
@@ -66,6 +71,7 @@
     border-right: 1px solid $border;
   }
 }
-.custom-select{
+
+.custom-select {
   min-height: 32px;
 }

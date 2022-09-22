@@ -1,12 +1,12 @@
 <div class="d-flex align-self-center"
   [ngClass]="{'mt-2': searchForColumn.length === 0, 'mt-4': searchForColumn.length > 0}">
-  <div class="text-gray-medium label-text ">
+  <!-- <div class="text-gray-medium label-text ">
     <strong>Search for </strong>
-  </div>
+  </div> -->
   <div class="d-flex flex-column align-items-start">
     <div *ngIf="searchForColumn.length > 0" [sortablejs]="searchForColumn">
-      <div class="d-flex align-items-center row-content mb-2" *ngFor="let item of searchForColumn; let i = index">
-        <div class="fas fa-bars text-muted mr-2 hover"></div>
+      <div class="d-flex align-items-center mb-2" *ngFor="let item of searchForColumn; let i = index">
+        <!-- <div class="fas fa-bars text-muted mr-2 hover"></div> -->
         <div class="input-group col-name-dd mr-2">
           <select class="custom-select" [(ngModel)]="item.fieldName" (change)="updateType($event, i)">
             <optgroup label="Workflow Columns">
@@ -110,7 +110,8 @@
               <span class="fas fa-angle-down text-primary"></span>
               <odp-date-picker *ngIf="item.toggleFromDate" [togglePicker]="item.toggleFromDate"
                 (togglePickerChange)="item.toggleFromDate = $event" [from]="startDate"
-                (fromChange)="setStartDate($event, item)" [options]="{floating:true,buttons:true,type:item.dateFieldType}">
+                (fromChange)="setStartDate($event, item)"
+                [options]="{floating:true,buttons:true,type:item.dateFieldType}">
               </odp-date-picker>
             </div>
             <div *ngIf="item.filterType === 'inRange'"
@@ -129,7 +130,8 @@
               <span class="fas fa-angle-down text-primary"></span>
               <odp-date-picker *ngIf="item.toggleToDate" [togglePicker]="item.toggleToDate"
                 (togglePickerChange)="item.toggleToDate = $event" [from]="endDate"
-                (fromChange)="setEndDate($event, item)" [options]="{floating:true,buttons:true,type:item.dateFieldType}">
+                (fromChange)="setEndDate($event, item)"
+                [options]="{floating:true,buttons:true,type:item.dateFieldType}">
               </odp-date-picker>
             </div>
           </div>
@@ -168,12 +170,12 @@
           <!-- <input type="text" class="w-100 p-2 filter-txt-disabled text-secondary font-sm" [value]="selectValue.value" disabled> -->
         </div>
 
-        <div class="dsi dsi-close text-danger hover mr-3" (click)="removeRow(i)"></div>
-        <div class="dsi dsi-plus text-primary new-row" (click)="addColForSearch()"></div>
+        <div class="dsi dsi-minus-circle text-danger hover mr-2" (click)="removeRow(i)"></div>
+        <div class="dsi dsi-plus-circle text-primary new-row" (click)="addColForSearch()"></div>
       </div>
     </div>
     <button class="pl-0 text-primary font-sm btn btn-link" (click)="addColForSearch()">
-      <strong><span class="dsi dsi-plus-circle mr-2"></span> Select Field</strong>
+      <strong><span class="dsi dsi-plus-circle mr-2"></span>Add Condition</strong>
     </button>
   </div>
 </div>
