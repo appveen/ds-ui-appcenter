@@ -205,7 +205,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const self = this;
     this.route.data.subscribe(data => {
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
     })
     this.appService.setFilterModel(null)

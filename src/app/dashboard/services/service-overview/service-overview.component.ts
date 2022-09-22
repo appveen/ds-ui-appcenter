@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../../../service/app.service';
 import { DashboardService } from '../../dashboard.service';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'odp-service-overview',
@@ -17,7 +18,7 @@ export class ServiceOverviewComponent implements OnInit {
   showLazyLoader: boolean;
   searchTerm: string;
   filter: any;
-  breadcrumb: any;
+  breadcrumb: Array<any> = [];
 
   constructor(
     private commonService: CommonService,
@@ -32,11 +33,14 @@ export class ServiceOverviewComponent implements OnInit {
     const self = this;
     self.services = [];
     this.route.data.subscribe(data => {
-      if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
-        this.breadcrumb.push('All Data Services')
-        this.commonService.breadcrumbPush(this.breadcrumb)
+      if (data.breadcrumb.length > 0) {
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
+      else {
+        this.breadcrumb.push('Data Service')
+      }
+      this.breadcrumb.push('All Data Services')
+      this.commonService.breadcrumbPush(this.breadcrumb)
     })
     self.serviceRecordCounts = null;
     self.showLazyLoader = true;

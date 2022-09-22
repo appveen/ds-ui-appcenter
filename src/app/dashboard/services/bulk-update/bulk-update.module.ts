@@ -16,7 +16,7 @@ import { LoadingPlaceholderModule } from 'src/app/utils/loading-placeholder/load
 const routes: Routes = [
   {
     path: '', pathMatch: 'full', component: BulkUpdateComponent, canActivate: [ManageGuard], canDeactivate: [RouteGuard], data: {
-      breadcrumb: ['Data Service']
+      breadcrumb: ['Data Services']
     }
   },
 ];

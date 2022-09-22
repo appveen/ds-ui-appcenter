@@ -16,6 +16,8 @@ import { environment } from 'src/environments/environment';
 import { WorkflowService } from '../workflow.service';
 import { WorkflowAgGridComponent } from './workflow-ag-grid/workflow-ag-grid.component';
 import { WorkflowAgGridService } from './workflow-ag-grid/workflow-ag-grid.service';
+import * as _ from 'lodash'
+
 
 @Component({
   selector: 'odp-workflow-list',
@@ -178,7 +180,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
     this.route.data.subscribe(data => {
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
 
     })

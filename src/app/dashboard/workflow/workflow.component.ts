@@ -5,6 +5,8 @@ import { CommonService } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { WorkflowService } from 'src/app/dashboard/workflow/workflow.service';
 import { filter } from 'rxjs/operators';
+import * as _ from 'lodash'
+
 
 @Component({
   selector: 'odp-workflow',
@@ -38,7 +40,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     this.route.data.subscribe(data => {
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
         this.commonService.breadcrumbPush(this.breadcrumb)
       }
     })

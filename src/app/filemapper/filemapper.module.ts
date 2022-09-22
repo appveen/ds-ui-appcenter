@@ -23,7 +23,7 @@ import { FieldTypeModule } from '../utils/field-type/field-type.module';
 const routes: Routes = [
   {
     path: '', component: FilemapperComponent, data: {
-      breadcrumb: ['Data Service']
+      breadcrumb: ['Data Services']
     }
   },
 ];

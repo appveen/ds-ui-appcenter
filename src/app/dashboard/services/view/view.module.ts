@@ -20,7 +20,7 @@ import { TreeViewModule } from 'src/app/utils/tree-view/tree-view.module'
 const routes: Routes = [
   {
     path: '', pathMatch: 'full', component: ViewComponent, canActivate: [ViewGuard], data: {
-      breadcrumb: ['Data Service']
+      breadcrumb: ['Data Services']
     }
   },
 ];

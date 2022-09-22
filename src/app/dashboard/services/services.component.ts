@@ -5,6 +5,8 @@ import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
 import { OrderByPipe } from 'src/app/pipes/order-by.pipe';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
+import * as _ from 'lodash'
+
 
 @Component({
   selector: 'odp-services',
@@ -30,7 +32,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
     self.subscriptions = {};
     this.route.data.subscribe(data => {
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
         this.commonService.breadcrumbPush(this.breadcrumb)
       }
     })

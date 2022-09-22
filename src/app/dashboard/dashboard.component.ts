@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 import { AppService } from 'src/app/service/app.service';
 import { App } from 'src/app/interfaces/app';
 import { DashboardService } from './dashboard.service';
+import * as _ from 'lodash'
 
 @Component({
     selector: 'odp-dashboard',
@@ -97,9 +98,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
 
         this.commonService.breadcrumbSubject.subscribe(data => {
-            if (data) {
-                this.current = data.pop();
-                this.breadcrumbs = data.length > 0 ? data.join(' / ') : null;
+            if (data.length > 1) {
+                const crumbData = _.cloneDeep(data)
+                this.current = crumbData.pop();
+                this.breadcrumbs = crumbData.join(' / ');
             }
         })
     }

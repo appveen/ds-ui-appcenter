@@ -12,6 +12,8 @@ import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { filter } from 'rxjs/operators';
 import { WorkflowRemarksViewComponent } from 'src/app/utils/workflow-remarks-view/workflow-remarks-view.component';
 import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-view/workflow-respond-view.component';
+import * as _ from 'lodash'
+
 
 @Component({
   selector: 'odp-workflow-manage',
@@ -111,7 +113,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     this.route.data.subscribe(data => {
 
       if (data.breadcrumb) {
-        this.breadcrumb = data.breadcrumb
+        this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
 
     })

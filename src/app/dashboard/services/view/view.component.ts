@@ -115,7 +115,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         const self = this;
         this.route.data.subscribe(data => {
             if (data.breadcrumb) {
-                this.breadcrumb = data.breadcrumb
+                this.breadcrumb = _.cloneDeep(data.breadcrumb)
             }
         })
         self.ngbToolTipConfig.container = 'body';
