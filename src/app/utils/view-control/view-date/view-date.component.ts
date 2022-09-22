@@ -56,7 +56,7 @@ export class ViewDateComponent implements OnInit {
   }
 
   formatDate(value) {
-    return moment(value).format('DD/MM/YYYY')
+    return moment(value).format('dddd, LL')
   }
 
 }

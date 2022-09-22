@@ -21,7 +21,7 @@
 <ng-template #values let-definition="definition" let-value="value" let-timezone="timezone">
     <ng-container *ngIf="value">
         <ng-container *ngIf="definition.properties.dateType=='date'">
-            {{formatDate(value)}}
+            {{formatDate(value)}} ({{timezone}})
         </ng-container>
         <ng-container *ngIf="definition.properties.dateType!='date'">
             {{value|date:'EEEE, MMMM d, y, h:mm:ss a'}} ({{timezone}})
