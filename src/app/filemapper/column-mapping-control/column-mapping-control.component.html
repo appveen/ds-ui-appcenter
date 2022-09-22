@@ -1,5 +1,4 @@
-<div class="column-container py-3 px-2 align-items-center w-100 hover rounded"
-    (dragover)="dragOverEvent($event)">
+<div class="column-container py-3 px-2 align-items-center w-100 hover rounded" (dragover)="dragOverEvent($event)">
     <div class="propName pr-3 d-flex align-items-center">
         <odp-field-type [definition]="definition"></odp-field-type>
         <div class="text-truncate ml-2"
@@ -157,7 +156,7 @@
         ngbTooltip="Remove mapping"></span>
 </div>
 
-<div class="column-modal child-Mapping position-fixed" *ngIf="showObjectMapping">
+<div class="column-modal child-Mapping position-fixed border p-3" *ngIf="showObjectMapping">
     <odp-column-mapping [defnitionArray]="definition?.definition" [parentDef]="definition"
         *ngIf="definition?.type!=='Array'" (emitData)="closeColumnMapping()" [form]="form" [mappingData]="mappingData"
         [schemaName]="schemaName"></odp-column-mapping>
