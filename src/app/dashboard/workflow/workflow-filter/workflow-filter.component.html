@@ -46,7 +46,7 @@
     <!-- <div class="selected-filter-list d-flex mx-3">
       <ng-container *ngFor="let item of filterList">
         <span class="selected-filter-item px-2 py-1 rounded border bg-white mr-2 font-12" (click)="showFilter()">
-          <span class="fw-500">{{item.dataKey}}</span>
+          <span class="fw-500">{{item.fieldName}}</span>
           <span class="fw-500 text-grey mx-2">{{item.filterType}}</span>
           <span class="fw-400">{{item.filterValue}}</span>
         </span>
@@ -99,7 +99,7 @@
         }}</button>
       <div class="ml-auto">
         <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary mr-3 btn-min-width"
-          (click)="filterModalRef.close(false); showSaveDiv=false">Cancel</button>
+          (click)="filterModalRef.close(false); showSaveDiv=false; searchForColumn=[]">Cancel</button>
         <button id="addFilterApplyBtn" type="button" class="btn btn-primary btn-min-width"
           (click)="filterModalRef.close(true)">Apply</button>
       </div>
@@ -128,7 +128,7 @@
         <span *ngIf="filterData.private !== true">Public (Anyone)</span>
       </div>
       <div class="ml-auto">
-        <button class="btn btn-outline-primary mr-2" (click)="showSaveDiv = false">Cancel</button>
+        <button class="btn btn-outline-primary mr-2" (click)="showSaveDiv = false;">Cancel</button>
         <button class="btn btn-primary" (click)="saveFilter();filterModalRef.close(true)">Save View</button>
       </div>
     </div>

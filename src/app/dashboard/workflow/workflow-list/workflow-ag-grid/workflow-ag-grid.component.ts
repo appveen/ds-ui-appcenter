@@ -116,7 +116,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
 
   toggleColumns(view, dataColumns) {
-    const selectedColumns = view.columns;
+    const selectedColumns = view.columns || [];
     const allColumns = this.gridColumnApi.getAllColumns().filter(ele => dataColumns.findIndex(col => col['dataKey'] === ele['colId']) > -1);
     // const staticValues = allColumns.filter(ar => !toRemove.find(rm => (rm.name === ar.name && ar.place === rm.place) ))
 
@@ -124,7 +124,6 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       this.gridColumnApi?.hideColumn(ele['dataKey'], true)
     })
 
-    console.log(this.gridColumnApi.getAllColumns())
     if (selectedColumns.length > 0) {
       this.gridColumnApi?.setColumnVisible('_checkbox', true);
       allColumns.forEach(column => {

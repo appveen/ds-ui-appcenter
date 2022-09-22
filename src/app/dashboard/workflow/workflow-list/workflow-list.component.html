@@ -54,7 +54,7 @@
     </div>
 
     <div class="d-flex flex-column">
-        <div class="d-flex">
+        <div class="d-flex p-3">
             <div class="d-flex align-items-center justify-content-between">
                 <odp-workflow-filter #wfFilter (filterString)="selectSavedView($event)" [serviceId]="srvcId"
                     [allFilters]="allFilters" [dataColumns]="dataColumns" [definition]="schema?.definition"
@@ -145,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex align-items-center justify-content-between pr-3 list-options bg-white"
+        <div class="d-flex align-items-center justify-content-between pr-3 list-options"
             [ngClass]="{'border-bottom': !showfilterOptions}">
             <ng-container *ngIf="totalRecords>0">
                 <div class="d-flex align-items-center ml-2">

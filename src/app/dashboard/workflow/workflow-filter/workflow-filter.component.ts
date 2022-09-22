@@ -1345,4 +1345,8 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     // });
     this.applyFilter();
   }
+
+  get filterList() {
+    return this.searchForColumn;
+  }
 }
