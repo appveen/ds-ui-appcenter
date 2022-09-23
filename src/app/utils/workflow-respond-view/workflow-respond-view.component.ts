@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
+import { WorkflowAgGridService } from '../../dashboard/workflow/workflow-list/workflow-ag-grid/workflow-ag-grid.service';
 
 @Component({
   selector: 'odp-workflow-respond-view',
@@ -25,7 +26,8 @@ export class WorkflowRespondViewComponent implements OnInit {
   totalStepsInPage: any;
   constructor(public activeModal: NgbActiveModal,
     public commonService: CommonService,
-    public ts: ToastrService) {
+    public ts: ToastrService,
+    private gridService: WorkflowAgGridService) {
     this.workflowFilesList = [];
     this.workflowUploadedFiles = [];
     this.fileProgress = {};
@@ -130,6 +132,7 @@ export class WorkflowRespondViewComponent implements OnInit {
         } else {
           this.ts.warning(temp.message);
         }
+        this.gridService.onRespond()
         this.activeModal.close({ status: 200, data: temp });
       }, err => {
         this.showLazyLoader = false;

@@ -47,8 +47,11 @@ export class WorkflowListComponent implements OnInit {
       if (status) {
         this.updateWorflowCount();
       }
-    }
-    );
+    });
+
+    this.appService.countRefresh.subscribe(service => {
+      this.updateWorflowCount(service)
+    })
   }
 
   setActiveId(url: string) {

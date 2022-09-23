@@ -158,11 +158,11 @@
                         <span class="dsi dsi-close mr-2"></span>
                         <span class="text font-bold ignore-outside">Clear Filter</span>
                     </button>
-
+                    <!-- 
                     <button id="respond" type="button" class="btn btn-link ignore-outside" *ngIf="allCheckedRecords>0"
                         (click)="respondToMultipleWorkflow()">
                         <span class="text font-bold ignore-outside">Respond</span>
-                    </button>
+                    </button> -->
                 </div>
                 <div class="d-flex align-items-center">
                     <p class="text-muted mt-2" *ngIf="allCheckedRecords>0">
@@ -204,11 +204,11 @@
             </div>
 
         </div>
-        <!-- <odp-workflow-respond-view #respondView *ngIf="showRespondPannel" [schema]="schema" [selectedData]="selectedData"
-        (actionResponse)=" onAction($event);" [ids]="allCheckedRecordIds"
-        [requestedByList]="requestedByList" [serviceStatus]="schema.status"
-        [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
-        [respondControl]="respondControl" [workflowApi]="workflowApi"></odp-workflow-respond-view> -->
+        <!-- <odp-workflow-respond-view #respondView *ngIf="showRespondPannel" [schema]="schema"
+            [selectedData]="selectedData" (actionResponse)=" onAction($event);" [ids]="allCheckedRecordIds"
+            [requestedByList]="requestedByList" [serviceStatus]="schema.status"
+            [workflowUploadedFiles]="workflowUploadedFiles" [workflowFilesList]="workflowFilesList"
+            [respondControl]="respondControl" [workflowApi]="workflowApi"></odp-workflow-respond-view> -->
     </div>
 
     <ng-template #confirmDeleteModal>
