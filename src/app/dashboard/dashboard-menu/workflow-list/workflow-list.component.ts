@@ -62,7 +62,7 @@ export class WorkflowListComponent implements OnInit {
   }
 
   getServices() {
-    const filter: any = { app: this.commonService.app._id, 'workflowConfig.enabled': true };
+    const filter: any = { app: this.commonService.app._id, 'workflowConfig.enabled': true, status: "Active" };
     if (!this.commonService.userDetails.isSuperAdmin
       && this.commonService.servicesWithAccess.length > 0) {
       filter._id = {
