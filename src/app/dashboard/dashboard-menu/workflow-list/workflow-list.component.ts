@@ -83,6 +83,9 @@ export class WorkflowListComponent implements OnInit {
         this.showLazyLoader = false;
         if (res.length > 0) {
           this.records = res;
+          res.forEach(ele => {
+            this.updateWorflowCount(ele)
+          })
           if (!this.activeId) {
             this.loadWorkflow(res[0]);
           }
@@ -137,18 +140,19 @@ export class WorkflowListComponent implements OnInit {
   }
 
 
-  updateWorflowCount() {
-    const serviceApi = this.records.filter(record => record._id == this.activeId).map(record => record.api)[0]
+  updateWorflowCount(service?) {
+    const serviceApi = service?.api || this.records.filter(record => record._id == this.activeId).map(record => record.api)[0]
     const workflowApi = `/${this.commonService.getCurrentAppId()}${serviceApi}/utils/workflow`;
+    const id = service?._id || this.activeId;
     const filter = {
-      serviceId: this.activeId,
+      serviceId: id,
       operation: { $in: ['POST', 'PUT', 'DELETE'] },
       status: 'Pending'
     };
     this.subscriptions['getNewRecordsCount'] = this.commonService
-      .get('api', workflowApi + '/count', { filter, serviceId: this.activeId })
+      .get('api', workflowApi + '/count', { filter, serviceId: id })
       .subscribe(count => {
-        this.serviceDocsCount[this.activeId] = count;
+        this.serviceDocsCount[id] = count;
       });
   }
 }
