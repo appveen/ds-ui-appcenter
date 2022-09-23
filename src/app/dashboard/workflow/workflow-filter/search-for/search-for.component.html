@@ -8,15 +8,15 @@
       <div class="d-flex align-items-center mb-2" *ngFor="let item of searchForColumn; let i = index">
         <!-- <div class="fas fa-bars text-muted mr-2 hover"></div> -->
         <div class="input-group col-name-dd mr-2">
-          <select class="custom-select" [(ngModel)]="item.fieldName" (change)="updateType($event, i)">
+          <select class="custom-select" [(ngModel)]="item.headerName" (change)="updateType($event, i)">
             <optgroup label="Workflow Columns">
               <ng-container *ngFor="let col of combinedColumns;">
-                <option *ngIf="!col.serviceCol" [value]="col.fieldName">{{ col.headerName }}</option>
+                <option *ngIf="!col.serviceCol" [value]="col.headerName">{{ col.headerName }}</option>
               </ng-container>
             </optgroup>
             <optgroup label="Data Columns">
               <ng-container *ngFor="let col of combinedColumns;">
-                <option *ngIf="col.serviceCol" [value]="col.fieldName">{{ col.headerName }}</option>
+                <option *ngIf="col.serviceCol" [value]="col.headerName">{{ col.headerName }}</option>
               </ng-container>
             </optgroup>
           </select>

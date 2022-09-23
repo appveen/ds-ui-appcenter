@@ -292,10 +292,10 @@ export class SearchForComponent implements OnInit {
     const relIndex = e.target.value.indexOf(',');
     let tempCol;
     if (relIndex === -1) {
-      tempCol = self.combinedColumns.find(col => col.fieldName === e.target.value);
+      tempCol = self.combinedColumns.find(col => col.headerName === e.target.value);
     } else if (relIndex > -1) {
       const relVal = e.target.value.split(',');
-      tempCol = self.combinedColumns.find(col => _.isEqual(col.fieldName, relVal));
+      tempCol = self.combinedColumns.find(col => _.isEqual(col.headerName, relVal));
     }
     if (!!tempCol) {
       self.searchForColumn.splice(index, 1, self.appService.cloneObject(tempCol));
