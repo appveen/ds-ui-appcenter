@@ -5,12 +5,11 @@
         </ng-container>
         <ng-container *ngIf="type === 'Checkbox'">
             <div class="d-flex align-items-center mt-1">
-                <div class="round-check d-flex align-items-center justify-content-center border hover"
+                <!-- <div class="round-check d-flex align-items-center justify-content-center border hover"
                     [ngClass]="{'bg-primary border-primary':checked,'bg-light':!checked}">
                     <span *ngIf="checked" class="fa fa-check text-white"></span>
-                </div>
-                <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"
-                    [ngClass]="{'ml-2': data._metadata.workflow}"></div>
+                </div> -->
+                <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"></div>
             </div>
         </ng-container>
         <ng-container *ngIf="type === 'Array'">

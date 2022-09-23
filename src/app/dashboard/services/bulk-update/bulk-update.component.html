@@ -54,7 +54,7 @@
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save as draft</span>
         </button>
-        <button id="saveBtn" type="button" class="btn btn-link mr-3 btn-primary"
+        <button id="saveBtn" type="button" class="btn mr-3 btn-primary"
           [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader" (click)="save()" *ngIf="!isDraft">
           <span *ngIf="!hasWorkflow" class="text action-button">Save</span>
           <span *ngIf="hasWorkflow" class="text action-button">Proceed</span>
