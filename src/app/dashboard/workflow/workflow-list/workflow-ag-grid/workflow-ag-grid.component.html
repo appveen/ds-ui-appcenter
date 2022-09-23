@@ -6,7 +6,7 @@
     rowSelection="multiple" rowMultiSelectWithClick="true" rowDeselection="true" rowModelType="infinite"
     [datasource]="dataSource" [floatingFilter]="true" cacheBlockSize="30" (rowDoubleClicked)="rowDoubleClicked($event)"
     (rowSelected)="rowSelected($event)" (sortChanged)="sortChanged($event)" (filterModified)="filterModified($event)"
-    (columnResized)="columnResized($event)" (columnMoved)="columnMoved()"  
+    (columnResized)="columnResized($event)" (columnMoved)="columnMoved()" (gridReady)="onReady($event)"
     (bodyScroll)="scrollEvent()" [overlayNoRowsTemplate]="noRowsTemplate">
 </ag-grid-angular>
 

@@ -1,153 +1,139 @@
-<div class="bg-light h-100">
-  <div class="mx-3 mb-2 custom-filter-container bg-white ">
-    <div class="d-flex flex-column w-100">
-      <div class="d-flex align-items-start options p-3">
-        <div class="text-gray-medium label-text">
-          <strong>Filter</strong>
-        </div>
-        <div class="d-flex flex-column justify-content-center filter-options position-relative">
-          <div class="d-flex align-items-center ignore-outside hover ignore-outside"
-            [ngClass]="{'text-primary': placeHolderText !== 'Select Filter', 'text-secondary': placeHolderText === 'Select Filter'}"
-            (click)="showFilterList = !showFilterList">
-            <span class="ignore-outside">{{ placeHolderText }}</span>
-            <span class="fas fa-angle-down ignore-outside ml-auto"></span>
-          </div>
-          <div *ngIf="showFilterList && allFilters?.length > 0; else noFilterTemp">
-            <div class="filter-container mb-2 bg-white position-absolute w-100 ignore-outside" [@filterList]
-              *ngIf="showFilterList" odpClickOutside [ignore]="['.ignore-outside']" (outside)="showFilterList = false">
-              <div *ngFor="let filter of allFilters" class="p-2 hover filter-name text-secondary ignore-outside"
-                (click)="selectFilter(filter)">
-                <span *ngIf="filter.private" class="fas fa-unlock-alt text-muted ml-2 mr-4"></span>
-                <span *ngIf="!filter.private" class="fas fa-globe text-muted ml-2 mr-4"></span>
-                <span class="mr-2">{{ filter.name }}</span>
-                <small> - {{ filter.user }}</small>
-              </div>
-            </div>
-          </div>
-          <ng-template #noFilterTemp>
-            <div *ngIf="showFilterList"
-              class="filter-container mb-2 bg-white position-absolute ignore-outside w-100 ignore-outside font-sm p-2 text-secondary"
-              odpClickOutside (outside)="showFilterList = false" [ignore]="['.ignore-outside']">
-              No filters are defined for this service yet
-            </div>
-          </ng-template>
-        </div>
+<div class="advanced-filter-section">
+  <div class="d-flex align-items-center">
+    <button class="btn btn-white border d-flex align-items-center font-12 mr-3" (click)="showFilter()">
+      <span class="dsi dsi-filter-alt"></span>
+    </button>
+    <button type="button" class="btn btn-white border d-flex align-items-center font-12 ignore-outside"
+      (click)="showColumnsWindow=!showColumnsWindow">
+      <span class="text ignore-outside">View Columns</span>
+      <span class="dsi ml-3 ignore-outside" [class.dsi-drop-down]="!showColumnsWindow"
+        [class.dsi-drop-up]="showColumnsWindow"></span>
+    </button>
+    <div *ngIf="showColumnsWindow" class="columns-wrapper position-absolute bg-white rounded" odpClickOutside
+      (outside)="showColumnsWindow=false">
+      <div class="px-3 py-2 d-flex align-items-center bg-light">
+        <odp-round-check class="mr-3 ml-1" [(checked)]="checkAllColumn"></odp-round-check>
+        <input class="form-control" type="text" [(ngModel)]="searchTerm" odpAutoFocus>
       </div>
-      <div class="d-flex align-items-center px-3 pt-3">
-        <div class="text-gray-medium label-text">
-          <label for="columns">
-            <strong>Columns</strong>
-          </label>
-        </div>
-        <div class="col-2 p-0 position-relative mr-2">
-          <input id="columns" type="text" class="form-control" [(ngModel)]="name" [ngbTypeahead]="search"
-            (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)"
-            [resultFormatter]="formatter" (selectItem)="selectItem($event)" placeholder="Choose from list"
-            #inputInstance="ngbTypeahead" />
-          <span class="fas fa-lg fa-plus-circle text-primary position-absolute" id="addColumn"></span>
-        </div>
-        <div class="helper-text text-muted" *ngIf="selectedColOrder?.length > 1">
-          Click and drag the column names to re-arrange the order.
-        </div>
+      <div class="list-group list-group-flush">
+        <ng-container *ngFor="let col of allColumns | searchFields:searchTerm">
+          <div *ngIf="col && col.properties && col.properties.name"
+            class="list-group-item list-group-item-action d-flex align-items-center font-12 text-dark"
+            (click)="selectItem(col)">
+            <odp-round-check [checked]="isColumnSelected(col)" (checkedChange)="selectItem(col)"></odp-round-check>
+            <span class="ml-2">{{ col.properties.label ? col.properties.label : col.properties.name }}</span>
+          </div>
+        </ng-container>
       </div>
-      <div class="d-flex m-2 align-items-start pl-2">
-        <div class="text-gray-medium label-text"></div>
-        <div class="d-flex flex-wrap">
-          <div class="d-flex drag-boundary  flex-wrap" [sortablejs]="selectedColOrder">
-            <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex">
-              <div class="col-name d-flex justify-content-center align-items-center mb-2" [ngClass]="{'mr-2': !last}">
-                <strong class="pr-2"
-                  [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">{{ col.properties.label ? col.properties.label : col.properties.name }}</strong>
-                <div class="remove-col hover pr-2" (click)="removeItem(i)">
-                  <span class="dsi dsi-close"></span>
-                </div>
-              </div>
+    </div>
+    <!-- <div class="d-flex align-items-start ml-3">
+      <div class="text-gray-medium label-text"></div>
+      <div class="d-flex drag-boundary flex-wrap">
+        <div *ngFor="let col of selectedColOrder; let i = index; let last = last;" class="d-flex ">
+          <div class="col-name d-flex justify-content-between align-items-center py-1 px-2 rounded bg-white"
+            [ngClass]="{'mr-2': !last}">
+            <div class="pr-2 font-12"
+              [odpTruncated]="col.properties.label ? col.properties.label : col.properties.name">
+              {{ col.properties.label ? col.properties.label : col.properties.name }}
+            </div>
+            <div class="remove-col hover" (click)="removeItem(i)">
+              <span class="dsi dsi-close"></span>
             </div>
           </div>
         </div>
       </div>
-      <!-- Column -->
-
-      <odp-search-for class="mb-3 pt-3 px-3" [serviceId]="serviceId" (searchForUpdate)="createFilter($event)"
-        [searchForColumn]='searchForColumn'></odp-search-for>
-
-      <div class="d-flex options p-3" *ngIf="selectedColOrder.length">
-        <div class="text-gray-medium label-text">
-          <strong>Sort by</strong>
-        </div>
-        <div class="d-flex flex-column" [sortablejs]="sortingColumns">
-          <div class="d-flex align-items-center row-content mb-2" *ngFor="let col of sortingColumns; let i1 = index">
-            <div class="fas fa-bars text-muted mr-2 hover"></div>
-            <div class="input-group col-name-dd mr-2">
-              <select class="custom-select" [(ngModel)]="col.name">
-                <option value="" class="d-none" selected>Select column</option>
-                <option *ngFor="let selCol of selectedColOrder;" [value]="selCol.dataKey">
-                  {{ selCol?.properties?.label ? selCol.properties.label : selCol?.properties?.name }}
-                </option>
-              </select>
-            </div>
-            <div class="options-dd d-flex align-items-center position-relative mr-2 hover">
-              <span class="fas fa-lg fa-sort-amount-down ml-2 text-muted position-absolute"
-                *ngIf="sortValue.value === '-1'"></span>
-              <span class="fas fa-lg fa-sort-amount-up ml-2 text-muted position-absolute"
-                *ngIf="sortValue.value === '1'"></span>
-              <!-- <span class="fas fa-lg fa-angle-down text-primary position-absolute angle-pos"></span> -->
-              <select [(ngModel)]="col.selectedOption" #sortValue>
-                <option *ngFor="let option of sortingOptions;" [value]="option.value">
-                  {{option.name}}
-                </option>
-              </select>
-            </div>
-            <div class="dsi dsi-close text-danger hover mr-3" (click)="removeSortCols(i1)"></div>
-            <div class="dsi dsi-plus text-primary new-row" (click)="addColForSort()"></div>
-          </div>
-          <button class="pl-0 text-primary font-sm btn btn-link d-flex justify-content-start" (click)="addColForSort()">
-            <strong><span class="dsi dsi-plus-circle mr-2"></span> Select Field</strong>
-          </button>
-        </div>
-      </div>
-      <div *ngIf="!showSaveDiv" class="d-flex justify-content-end p-3">
-        <button class="mr-2 btn btn-link" (click)="clearFilter()">Clear
-          <span *ngIf="showSeparateCreateBtn">&nbsp;/&nbsp;Create New View</span>
+    </div> -->
+    <!-- <div class="selected-filter-list d-flex mx-3">
+      <ng-container *ngFor="let item of filterList">
+        <span class="selected-filter-item px-2 py-1 rounded border bg-white mr-2 font-12" (click)="showFilter()">
+          <span class="fw-500">{{item.fieldName}}</span>
+          <span class="fw-500 text-grey mx-2">{{item.filterType}}</span>
+          <span class="fw-400">{{item.filterValue}}</span>
+        </span>
+      </ng-container>
+    </div> -->
+  </div>
+</div>
+<ng-template #confirmDeleteModal>
+  <div class="modal-body d-flex flex-column p-4">
+    <div class="d-flex align-items-center justify-content-between">
+      <span class="font-22 fw-500 text-danger">{{ deleteModal.title }}</span>
+      <button id="deleteModalCloseBtn" type="button" class="close" aria-label="Close"
+        (click)="confirmDeleteModalRef.close(false)">
+        <span class="dsi dsi-close"></span>
+      </button>
+    </div>
+    <p class="text-center my-4">{{ deleteModal.message }}</p>
+    <div class="d-flex align-items-center justify-content-end mt-auto">
+      <button id="deleteModalCancelBtn" type="button" class="btn btn-secondary mr-3"
+        (click)="confirmDeleteModalRef.close(false)">No</button>
+      <button id="deleteModalYesBtn" type="button" class="btn btn-danger"
+        (click)="confirmDeleteModalRef.close(true)">Yes</button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #filterModal>
+  <div class="modal-body p-4">
+    <div class="d-flex align-items-center justify-content-between">
+      <h4 class="text-dark fw-500 font-22">Filter All Records</h4>
+      <div class="d-flex ml-auto">
+        <span class="fw-500 font-13 text-dark text-decoration-underline hover mr-4" (click)="clearFilter()">
+          Clear All</span>
+        <button id="deleteModalCloseBtn" type="button" class="close"
+          (click)="filterModalRef.close(false);showSaveDiv=false">
+          <span class="dsi dsi-close"></span>
         </button>
-        <button class="mr-2 btn btn-link text-success" type="button" *ngIf="showSeparateCreateBtn"
-          (click)="duplicateView()">+Duplicate View</button>
-        <button class="mr-2 btn btn-link text-success" (click)="showSaveDiv = true"
-          *ngIf="hasOptions && (!showSeparateCreateBtn || !!filterId)">{{ saveOrEditText }}</button>
-        <button class="btn btn-primary mr-2 " type="button" (click)="applyFilter()">Apply</button>
-        <button class="btn btn-primary" type="button" (click)="applyFilter(true)">Apply & Close</button>
       </div>
-      <div *ngIf="showSaveDiv" class="d-flex justify-content-between align-items-center p-3 w-100 save-filter"
-        [@toggleSaveFilter]>
-        <div class="mr-2">Name your View</div>
-        <input type="text" id="viewName" class="form-control w-25 mr-4"
-          placeholder="Give a name (max 40 chars alphanumeric)" maxlength="40" (blur)="checkFilterName()"
-          [(ngModel)]="filterData.name" [ngClass]="{'is-invalid': invalidFilterName}" pattern="/^[a-z\d\s]+$/i">
-        <div class="mr-2">Share:</div>
-        <div class="left-radius position-relative hover"
-          [ngClass]="{'bg-white': !filterData.private, 'bg-primary': filterData.private}"
-          (click)="filterData.private = true">
-          <span class="fas fa-unlock-alt position-absolute icon-pos"
-            [ngClass]="{'text-secondary': !filterData.private, 'text-white': filterData.private}"></span>
-        </div>
-        <div class="right-radius bg-white position-relative hover mr-2"
-          [ngClass]="{'bg-white': filterData.private, 'bg-primary': !filterData.private}"
-          (click)="filterData.private = false">
-          <span class="fas fa-globe position-absolute icon-pos"
-            [ngClass]="{'text-secondary': filterData.private, 'text-white': !filterData.private}"></span>
-        </div>
-        <div class="filter-text font-sm">
-          <span *ngIf="filterData.private === true">Private (Only Me)</span>
-          <span *ngIf="filterData.private !== true">Public (Anyone)</span>
-        </div>
-        <div class="ml-auto">
-          <button class="btn btn-link" (click)="showSaveDiv = false">Cancel</button>
-          <button class="btn btn-primary" (click)="saveFilter()">Save view</button>
-        </div>
+    </div>
+    <div class="filter-body my-3 px-3">
+      <odp-search-for class="my-3" [serviceId]="serviceId" (searchForUpdate)="createFilter($event)"
+        [searchForColumn]='searchForColumn'></odp-search-for>
+    </div>
+    <div class="d-flex align-items-center mt-auto" *ngIf="!showSaveDiv">
+      <button class="mr-2 btn btn-link" type="button" (click)="clearFilter()" *ngIf="showSeparateCreateBtn">
+        <span>Create New View</span>
+      </button>
+      <button class="mr-2 btn btn-link text-primary" type="button" *ngIf="showSeparateCreateBtn"
+        (click)="duplicateView()">+Duplicate View</button>
+      <button class="mr-2 btn btn-link text-primary" type="button" (click)="showSaveDiv = true">{{ saveOrEditText
+        }}</button>
+      <div class="ml-auto">
+        <button id="addFilterCancelBtn" type="button" class="btn btn-outline-primary mr-3 btn-min-width"
+          (click)="filterModalRef.close(false); showSaveDiv=false; searchForColumn=[]">Cancel</button>
+        <button id="addFilterApplyBtn" type="button" class="btn btn-primary btn-min-width"
+          (click)="filterModalRef.close(true)">Apply</button>
+      </div>
+    </div>
+    <div *ngIf="showSaveDiv" class="d-flex justify-content-between align-items-center w-100 save-filter"
+      [@toggleSaveFilter]>
+      <div class="mr-2">Name your View</div>
+      <input type="text" id="viewName" class="form-control w-25 mr-4"
+        placeholder="Give a name (max 40 chars alphanumeric)" maxlength="40" (blur)="checkFilterName()"
+        [(ngModel)]="filterData.name" [ngClass]="{'is-invalid': invalidFilterName}" pattern="/^[a-z\d\s]+$/i">
+      <div class="mr-2">Share:</div>
+      <div class="left-radius position-relative hover"
+        [ngClass]="{'bg-white': !filterData.private, 'bg-primary': filterData.private}"
+        (click)="filterData.private = true">
+        <span class="fas fa-unlock-alt position-absolute icon-pos"
+          [ngClass]="{'text-secondary': !filterData.private, 'text-white': filterData.private}"></span>
+      </div>
+      <div class="right-radius bg-white position-relative hover mr-2"
+        [ngClass]="{'bg-white': filterData.private, 'bg-primary': !filterData.private}"
+        (click)="filterData.private = false">
+        <span class="fas fa-globe position-absolute icon-pos"
+          [ngClass]="{'text-secondary': filterData.private, 'text-white': !filterData.private}"></span>
+      </div>
+      <div class="filter-text font-sm">
+        <span *ngIf="filterData.private === true">Private (Only Me)</span>
+        <span *ngIf="filterData.private !== true">Public (Anyone)</span>
+      </div>
+      <div class="ml-auto">
+        <button class="btn btn-outline-primary mr-2" (click)="showSaveDiv = false;">Cancel</button>
+        <button class="btn btn-primary" (click)="saveFilter();filterModalRef.close(true)">Save View</button>
       </div>
     </div>
   </div>
-</div>
+</ng-template>
 
 <ng-template #confirmDeleteModal>
   <div class="modal-header alert">

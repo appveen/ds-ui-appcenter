@@ -17,6 +17,7 @@ import { WorkflowService } from '../workflow.service';
 import { WorkflowAgGridComponent } from './workflow-ag-grid/workflow-ag-grid.component';
 import { WorkflowAgGridService } from './workflow-ag-grid/workflow-ag-grid.service';
 import * as _ from 'lodash'
+import { WorkflowFilterComponent } from '../workflow-filter/workflow-filter.component';
 
 
 @Component({
@@ -79,9 +80,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDeleteModal', { static: false })
   confirmDeleteModal: TemplateRef<HTMLElement>;
   @ViewChild('dataContainer', { static: false }) dataContainer: ElementRef;
+  @ViewChild('wfFilter') wfFilter: WorkflowFilterComponent;
   confirmDeleteModalRef: NgbModalRef;
   clearFilterModalRef: NgbModalRef;
-  applySavedView: EventEmitter<any>;
+  // applySavedView: EventEmitter<any>;
   subscriptions: any;
   config: GetOptions;
   srvcId: string;
@@ -156,7 +158,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.expandList = [];
     this.columnDefs = [];
     this.allFilters = [];
-    this.applySavedView = new EventEmitter();
+    // this.applySavedView = new EventEmitter();
     this.selectAll = new EventEmitter();
     this.filterConfig = {
       filter: {}
@@ -847,6 +849,13 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     if (this.lastFilterAppliedPrefId) {
       this.deleteLastFilterApplied();
     }
+    this.listGrid.toggleClear();
+    this.clearFilters();
+    this.listGrid.apiConfig['filter'] = null
+    this.listGrid.apiConfig['columns'] = null
+    this.listGrid.apiConfig['select'] = ''
+    this.wfFilter.clearFilter(true)
+    this.listGrid.gridApi.refreshInfiniteCache()
     // this.filterSavedViews();
   }
 
@@ -939,20 +948,32 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   }
 
   selectSavedView(evnt) {
-    const view = evnt.view;
+    const view = evnt.view || evnt;
     if (!environment.production) {
       console.log('selectSavedView', view);
     }
     if (view._id) {
       this.setLastFilterApplied(view);
       this.selectedSavedView = view;
-      this.applySavedView.emit(view);
+      this.listGrid.applySavedView(view);
+      this.wfFilter.selectFilter(view);
       this.appService.workflowFilter = view;
     } else {
       this.selectedSavedView = { value: view };
-      this.applySavedView.emit({ value: view });
+      this.listGrid.applySavedView({ value: view });
       this.appService.workflowFilter = { value: view };
+      this.wfFilter.selectFilter({ value: view });
     }
+
+
+    const cols = view.columns || view.value?.columns
+    if (cols && cols.length > 0) {
+      this.listGrid.toggleColumns(view, this.dataColumns)
+    }
+    else {
+      this.listGrid.toggleClear()
+    }
+    this.listGrid.agGrid.api.refreshCells({ force: true })
 
     if (evnt.close) {
       this.showfilterOptions = false;
@@ -1075,10 +1096,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
             const view = prefRes[0].value;
             this.appService.workflowFilter = view;
             this.selectedSavedView = view;
-            this.applySavedView.emit(view);
+            this.listGrid.applySavedView(view);
           } else if (!!this.appService.workflowFilter) {
             this.selectedSavedView = this.appService.workflowFilter;
-            this.applySavedView.emit(this.appService.workflowFilter);
+            this.listGrid.applySavedView(this.appService.workflowFilter);
           } else {
             this.selectedSavedView = null;
           }
@@ -1127,8 +1148,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   }
   editFilter(filter) {
     this.showfilterOptions = true;
-    // this.showFilterList = false;
+    this.showFilterList = false;
     this.appService.workflowFilter = filter;
+    this.wfFilter.selectFilter(filter)
+    this.wfFilter.showFilter()
   }
   changeFilterType(filter, type) {
     if (filter.private && type === 'private') {
@@ -1141,12 +1164,14 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         filter.private = type === 'private';
         this.subscriptions['filterType'] = this.commonService.put('user', `/data/filter/${filter._id}`, filter).subscribe(() => {
           this.ts.success('Filter type Updated');
+          this.showFilterList = false;
           this.getAllFilters();
         });
       } else if (filter.private && currentUser._id === filter.createdBy) {
         filter.private = type === 'private';
         this.subscriptions['filterType'] = this.commonService.put('user', `/data/filter/${filter._id}`, filter).subscribe(() => {
           this.ts.success('Filter type Updated');
+          this.showFilterList = false;
           this.getAllFilters();
         });
       } else {
