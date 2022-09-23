@@ -1106,6 +1106,7 @@ export class CommonService {
     self.stallRequests = false;
     self.stallCount = 0;
     self.stallTime = null;
+    self.appService.serviceId=null;
     if (self.subscriptions.logout) {
       self.subscriptions.logout.unsubscribe();
     }
