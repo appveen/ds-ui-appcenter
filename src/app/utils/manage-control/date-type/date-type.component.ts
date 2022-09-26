@@ -47,16 +47,18 @@ export class DateTypeComponent implements OnInit, OnDestroy {
     if (!this.selectedTimezone) {
       this.selectedTimezone = this.commonService.userDetails.defaultTimezone;
     }
-    if (this.control && this.control.value && this.control.value.rawData) {
-      this.initialDateStr = this.appService.getUTCString(this.control.value.rawData, this.control.value.tzInfo);
-      this.selectedTimezone = this.control.value.tzInfo;
-      // const temp = this.control.value;
-      // if (this.definition.properties.dateType === 'date') {
-      //   this.control.patchValue(this.datePipe.transform(temp, 'yyyy-MM-dd'));
-      // } else {
-      //   this.control.patchValue(new Date(temp).toISOString());
-      // }
-      // this.dateHolder = this.control.value;
+    if (this.control && this.control.value) {
+      if (this.control.value.rawData) {
+        this.initialDateStr = this.appService.getUTCString(this.control.value.rawData, this.control.value.tzInfo);
+        this.selectedTimezone = this.control.value.tzInfo;
+      } else {
+        this.initialDateStr = this.appService.getUTCString(this.control.value, this.selectedTimezone);
+        this.control.patchValue({
+          rawData: this.initialDateStr,
+          tzInfo: this.selectedTimezone
+        })
+        // this.selectedTimezone = this.control.value.tzInfo;
+      }
     }
   }
 

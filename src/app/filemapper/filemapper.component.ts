@@ -91,6 +91,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
     this.route.data.subscribe(data => {
+      this.commonService.breadcrumbPush([])
       if (data.breadcrumb) {
         this.breadcrumb = _.cloneDeep(data.breadcrumb)
       }
