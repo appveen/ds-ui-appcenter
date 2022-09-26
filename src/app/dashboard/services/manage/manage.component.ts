@@ -71,7 +71,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   selectedFontSize: any;
   schemaFreeCode: any;
   invalidSchemaFreeRecord: boolean;
-  statusArray: any;
+  statusArray: any = [];
   ogStatusArray: any;
   currentState: any;
   breadcrumb: Array<any>
@@ -1095,6 +1095,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   get hasWorkflow() {
     if (this.schema) {
       return this.commonService.hasWorkflow(this.schema)
+    }
+    return false;
+  }
+
+  disableState(statusArray) {
+    if (!this.ID) {
+      return true
+    }
+    if (statusArray?.length === 1 && this.currentState === statusArray[0]) {
+      return true
     }
     return false;
   }

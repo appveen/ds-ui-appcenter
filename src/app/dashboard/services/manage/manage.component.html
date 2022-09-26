@@ -95,7 +95,7 @@
       <span class="mr-3 font-13 fw-500 state-version hover text-uppercase">{{stateModelName}}</span>
       <div class="d-flex flex-column">
         <div class="form-control btn-min-width font-12 fw-400 d-flex"
-          [ngClass]="{'bg-white': ID, 'bg-light pe-none' : !ID, 'ignore-outside': toggleDropdown}"
+          [ngClass]="{'bg-white': ID, 'bg-light pe-none' : disableState(statusArray), 'ignore-outside': toggleDropdown}"
           (click)="toggleDropdown = !toggleDropdown" readonly style="width: 200px;">
           <span class="fw-400 font-12 text-dark my-auto">{{currentState}}</span>
           <span class="my-auto ml-auto dsi" (click)="toggleDropdown = !toggleDropdown"
