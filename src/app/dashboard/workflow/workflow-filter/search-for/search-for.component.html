@@ -140,7 +140,8 @@
         <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'requestSelect'">
           <div class="options-dd d-flex align-items-center text-primary position-relative">
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
-            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue"
+              style="width: 500px">
               <option *ngFor="let option of requestedByList" [value]="option._id">
                 {{option.name || option._id}}
               </option>
@@ -150,7 +151,8 @@
         <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'respondSelect'">
           <div class="options-dd d-flex align-items-center text-primary position-relative">
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
-            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue"
+              style="width: 500px">
               <option *ngFor="let option of respondedByList" [value]="option._id">
                 {{option.name || option._id}}
               </option>
