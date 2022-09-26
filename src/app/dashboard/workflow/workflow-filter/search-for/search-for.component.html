@@ -24,7 +24,7 @@
 
         <!-- For data type text  -->
         <div class="col-filter mr-2 d-flex"
-          *ngIf="item.fieldType === 'String' || item.fieldType === 'Identifier'  || item.fieldType === 'Relation' || item.fieldType === 'User'">
+          *ngIf="item.fieldType === 'String' || item.fieldType === 'Identifier'  || item.fieldType === 'Relation' || item.fieldType === 'User' ||  item.fieldType === 'Geojson'">
           <div class="options-dd d-flex align-items-center text-primary position-relative">
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
             <select [(ngModel)]="item.filterType" (change)="searchDataUpdated()">

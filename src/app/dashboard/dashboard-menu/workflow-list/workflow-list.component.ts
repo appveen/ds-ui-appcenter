@@ -4,6 +4,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { DashboardService } from '../../dashboard.service';
+import { WorkflowService } from '../../workflow/workflow.service';
 
 @Component({
   selector: 'odp-workflow-list',
@@ -23,7 +24,9 @@ export class WorkflowListComponent implements OnInit {
   constructor(private appService: AppService,
     private commonService: CommonService,
     private dashboardService: DashboardService,
-    private router: Router) {
+    private router: Router,
+    private wfSercice: WorkflowService,
+  ) {
     this.subscriptions = {};
     this.records = [];
     this.serviceDocsCount = {};
@@ -133,6 +136,7 @@ export class WorkflowListComponent implements OnInit {
 
   loadWorkflow(workflow: any, force?: boolean) {
     if (force) {
+      this.wfSercice.currentFilter = {};
       this.updateWorflowCount();
       this.router.navigateByUrl(['', this.commonService.app._id, 'workflow'].join('/')).then(() => {
         this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);

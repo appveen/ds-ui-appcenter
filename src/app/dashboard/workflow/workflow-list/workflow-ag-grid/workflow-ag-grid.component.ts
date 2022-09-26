@@ -12,6 +12,7 @@ import { FormService } from 'src/app/service/form.service';
 import { environment } from 'src/environments/environment';
 import { AppService } from 'src/app/service/app.service';
 import * as _ from 'lodash';
+import { WorkflowService } from '../../workflow.service';
 
 @Component({
   selector: 'odp-workflow-ag-grid',
@@ -53,7 +54,8 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     private commonService: CommonService,
     private appService: AppService,
     private formService: FormService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private wfService: WorkflowService
   ) {
     const self = this;
     self.selectAll = new EventEmitter();
@@ -82,7 +84,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.formService.patchType(parsedDef);
     self.formService.fixReadonly(parsedDef);
     self.getExpandList(parsedDef);
-    self.apiConfig = {
+    self.apiConfig = this.wfService?.currentFilter || {
       count: 30,
       page: 1,
       expand: true,
@@ -190,6 +192,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
           self.agGrid.api.showLoadingOverlay();
           (self.subscription['getRecords_' + self.apiConfig.page]) = recordObservable.subscribe(
             (records: any) => {
+              this.wfService.currentFilter = self.apiConfig
               let loaded = params.endRow;
               if (loaded > self.currentRecordsCount) {
                 loaded = self.currentRecordsCount;
