@@ -889,6 +889,7 @@ export class ListComponent implements OnInit, OnDestroy {
       count => {
         self.apiCalls.fetchingCount = false;
         self.totalRecords = count;
+        self.currentTotalCount = count;
         self.getLastFilterApplied();
       },
       err => {
