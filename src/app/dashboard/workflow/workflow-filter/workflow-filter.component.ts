@@ -149,7 +149,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
 
   @Input() serviceId: string;
   @Input() definition: any;
-  @Input('dataColumns') allColumns: Array<any>;
+  @Input() allColumns: Array<any> = [];
   confirmDeleteModalRef: NgbModalRef;
   deleteModal: {
     title: string;
@@ -275,6 +275,13 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         self.clearFilter();
       }
     });
+
+    if (self.allColumns && self.allColumns.length > 0) {
+      const index = self.allColumns.findIndex(e => e.key === '_checkbox');
+      if (index > -1) {
+        self.allColumns.splice(index, 1);
+      }
+    }
   }
 
   applyFilter(close?: boolean, saveFilterResponse?) {

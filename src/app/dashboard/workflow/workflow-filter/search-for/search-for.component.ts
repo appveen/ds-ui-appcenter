@@ -18,6 +18,7 @@ export class SearchForComponent implements OnInit {
   @Output() searchForUpdate: EventEmitter<any>;
   @Input() searchForColumn: Array<any>;
   @Input() serviceId: string;
+  @Input() allColumns: any;
   tempSearchForColumn: Array<any>;
   allColumnsOfService: any;
   textOptions: Array<{ name: string, value: string }>;
@@ -212,7 +213,7 @@ export class SearchForComponent implements OnInit {
     // }
     if (self.wfService.serviceColumns && self.wfService.serviceColumns.length > 0) {
       self.allColumnsOfService = self.wfService.serviceColumns;
-      self.allColumnsOfService.forEach((col) => {
+      self.allFields.forEach((col) => {
         let obj;
 
         if (col.type !== 'Relation' && col.type !== 'User') {
@@ -564,5 +565,19 @@ export class SearchForComponent implements OnInit {
     const self = this;
     return self.gridService.respondedByList;
 
+  }
+
+  get allFields() {
+    const self = this;
+    if (self.allColumns) {
+      const colPlaceholderArr = [];
+      self.allColumns.forEach(col => {
+        if (col.type !== 'Array') {
+          colPlaceholderArr.push(col);
+        }
+      });
+      return colPlaceholderArr;
+    }
+    return [];
   }
 }

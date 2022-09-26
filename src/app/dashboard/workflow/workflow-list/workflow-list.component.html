@@ -53,11 +53,11 @@
         </div>
     </div>
 
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column" *ngIf="totalRecords > 0">
         <div class="d-flex p-3">
             <div class="d-flex align-items-center justify-content-between">
                 <odp-workflow-filter #wfFilter (filterString)="selectSavedView($event)" [serviceId]="srvcId"
-                    [allFilters]="allFilters" [dataColumns]="dataColumns" [definition]="schema?.definition"
+                    [allFilters]="allFilters" [allColumns]="dataColumns" [definition]="schema?.definition"
                     (getAllfilters)="getAllFilters()" (clearFilters)="resetFilter()">
                     <!-- <odp-workflow-filter *ngIf="showfilterOptions" [config]="config" (filterString)="getWFData() ;showfilterOptions = !showfilterOptions" -->
                 </odp-workflow-filter>
