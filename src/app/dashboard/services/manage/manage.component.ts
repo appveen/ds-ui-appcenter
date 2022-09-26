@@ -237,7 +237,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getAllStates(data?) {
     const self = this;
     if (self.stateModelPath) {
-      if (data?.[self.stateModelAttr]) {
+      if (data?.[self.stateModelAttr] && self.ID) {
         self.currentState = data[self.stateModelAttr]
       }
       else {
@@ -245,8 +245,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       }
       const states = self.stateModelPath?.[self.currentState];
       states.unshift(self.currentState)
-      self.statusArray = states
-      self.ogStatusArray = states
+      self.statusArray = self.ID ? states : self.initialState
+      self.ogStatusArray = self.statusArray
 
     }
   }
@@ -336,6 +336,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   delete data._id;
                   if (self.stateModelAttr && data[self.stateModelAttr] && self.initialState) {
                     data[self.stateModelAttr] = self.initialState;
+                    self.currentState = self.initialState;
                   }
                   self.ID = null;
                 }
