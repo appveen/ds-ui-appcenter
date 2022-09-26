@@ -111,7 +111,7 @@
               <odp-date-picker *ngIf="item.toggleFromDate" [togglePicker]="item.toggleFromDate"
                 (togglePickerChange)="item.toggleFromDate = $event" [from]="startDate"
                 (fromChange)="setStartDate($event, item)"
-                [options]="{floating:true,buttons:true,type:item.dateFieldType}">
+                [options]="{floating:true,buttons:true,type:item.dateFieldType}" style="position: absolute; top: 100px">
               </odp-date-picker>
             </div>
             <div *ngIf="item.filterType === 'inRange'"
@@ -130,8 +130,8 @@
               <span class="fas fa-angle-down text-primary"></span>
               <odp-date-picker *ngIf="item.toggleToDate" [togglePicker]="item.toggleToDate"
                 (togglePickerChange)="item.toggleToDate = $event" [from]="endDate"
-                (fromChange)="setEndDate($event, item)"
-                [options]="{floating:true,buttons:true,type:item.dateFieldType}">
+                (fromChange)="setEndDate($event, item)" [options]="{floating:true,buttons:true,type:item.dateFieldType}"
+                style="position: absolute; top: 100px">
               </odp-date-picker>
             </div>
           </div>
