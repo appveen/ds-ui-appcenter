@@ -52,7 +52,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   dsKeys: Array<any>;
   hasBulkInvalidRecords: boolean;
   sentForValidation: boolean;
-  breadcrumb: Array<any>
+  breadcrumb: Array<any> = [];
   constructor(
     private route: ActivatedRoute,
     private commonService: CommonService,
@@ -90,12 +90,12 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     const self = this;
-    this.route.data.subscribe(data => {
-      this.commonService.breadcrumbPush([])
-      if (data.breadcrumb) {
-        this.breadcrumb = _.cloneDeep(data.breadcrumb)
-      }
-    })
+    // this.route.data.subscribe(data => {
+    //   this.commonService.breadcrumbPush([])
+    //   if (data.breadcrumb) {
+    //     this.breadcrumb = _.cloneDeep(data.breadcrumb)
+    //   }
+    // })
     self.title = self.appService.serviceName;
     self.ripple = false;
     if (
@@ -134,11 +134,12 @@ export class FilemapperComponent implements OnInit, OnDestroy {
         self.updateSchema(parsedDef);
         res.definition = JSON.parse(JSON.stringify(parsedDef));
         self.schema = res;
-        if (this.breadcrumb) {
-          this.breadcrumb.push(res.name)
-          this.breadcrumb.push('Upload');
-          this.commonService.breadcrumbPush(this.breadcrumb)
-        }
+        this.breadcrumb = []
+        this.breadcrumb.push('Data Services')
+        this.breadcrumb.push(res.name)
+        this.breadcrumb.push('Upload');
+        this.commonService.breadcrumbPush(this.breadcrumb)
+
         if (!this.commonService.hasPermission(self.appService.serviceId, self.schema.role.roles, 'PUT') && !this.commonService.hasPermission(self.appService.serviceId, self.schema.role.roles, 'POST')) {
           return self.router.navigate(['../list'], { relativeTo: self.route });
         }
