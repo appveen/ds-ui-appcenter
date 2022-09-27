@@ -71,7 +71,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   selectedFontSize: any;
   schemaFreeCode: any;
   invalidSchemaFreeRecord: boolean;
-  statusArray: any;
+  statusArray: any = [];
   ogStatusArray: any;
   currentState: any;
   breadcrumb: Array<any>
@@ -237,7 +237,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   getAllStates(data?) {
     const self = this;
     if (self.stateModelPath) {
-      if (data?.[self.stateModelAttr]) {
+      if (data?.[self.stateModelAttr] && self.ID) {
         self.currentState = data[self.stateModelAttr]
       }
       else {
@@ -245,8 +245,8 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       }
       const states = self.stateModelPath?.[self.currentState];
       states.unshift(self.currentState)
-      self.statusArray = states
-      self.ogStatusArray = states
+      self.statusArray = self.ID ? states : self.initialState
+      self.ogStatusArray = self.statusArray
 
     }
   }
@@ -336,6 +336,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
                   delete data._id;
                   if (self.stateModelAttr && data[self.stateModelAttr] && self.initialState) {
                     data[self.stateModelAttr] = self.initialState;
+                    self.currentState = self.initialState;
                   }
                   self.ID = null;
                 }
@@ -1095,6 +1096,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   get hasWorkflow() {
     if (this.schema) {
       return this.commonService.hasWorkflow(this.schema)
+    }
+    return false;
+  }
+
+  disableState(statusArray) {
+    if (!this.ID) {
+      return true
+    }
+    if (statusArray?.length === 1 && this.currentState === statusArray[0]) {
+      return true
     }
     return false;
   }

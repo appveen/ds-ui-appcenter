@@ -39,6 +39,9 @@
         <div class="fw-600 font-24 id-wrap" *ngIf="value?._id">
           {{value._id}}
         </div>
+        <div class="fa fa-info-circle text-warning font-16"
+          ngbTooltip="Multiple Documents will be updated with the same new value entered in the form">
+        </div>
       </div>
       <!-- <div class="title d-flex align-items-center">
         &nbsp;
@@ -54,7 +57,7 @@
           <span class="fa fa-file mr-2"></span>
           <span class="text">Save as draft</span>
         </button>
-        <button id="saveBtn" type="button" class="btn btn-link mr-3 btn-primary"
+        <button id="saveBtn" type="button" class="btn mr-3 btn-primary"
           [disabled]="!form.valid || !form.dirty || reqInProgress || showLazyLoader" (click)="save()" *ngIf="!isDraft">
           <span *ngIf="!hasWorkflow" class="text action-button">Save</span>
           <span *ngIf="hasWorkflow" class="text action-button">Proceed</span>

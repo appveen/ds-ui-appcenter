@@ -186,7 +186,8 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
         }
         if (this.breadcrumb) {
           this.breadcrumb.push(res.name)
-          this.breadcrumb.push('Bulk Update');
+          const length = this.bulkEditIds.length;
+          this.breadcrumb.push('Bulk Update' + '(' + length + ')');
           this.commonService.breadcrumbPush(this.breadcrumb)
         }
         self.title = res.name;

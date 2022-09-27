@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
 
 import { Definition } from 'src/app/interfaces/definition';
@@ -67,6 +67,7 @@ export class AppService {
     updateCodeEditorState: EventEmitter<any>;
     currentFilter: any;
     completeFilterModel: any;
+    countRefresh: Subject<any> = new Subject();
     constructor() {
         const self = this;
         self.serviceChange = new EventEmitter();
@@ -887,5 +888,9 @@ export class AppService {
 
     setFilterModel(data) {
         this.completeFilterModel = data;
+    }
+
+    refreshCount(service) {
+        this.countRefresh.next(service)
     }
 }

@@ -521,7 +521,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       }
       (temp as AgGridColumn).field = e.dataKey;
       if (e.type === 'Checkbox') {
-        (temp as AgGridColumn).width = 40;
+        (temp as AgGridColumn).maxWidth = 60;
+        (temp as AgGridColumn).minWidth = 40;
         (temp as AgGridColumn).pinned = 'left';
         (temp as AgGridColumn).headerCheckboxSelection = true;
         (temp as AgGridColumn).checkboxSelection = true;

@@ -204,6 +204,11 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     if (this.appService.workflowTab) {
       this.activeTab = this.appService.workflowTab;
     }
+
+    this.gridService.responded.subscribe(_ => {
+      this.getCounts();
+      this.appService.refreshCount(this.schema)
+    })
     this.appService.workflowTab = this.activeTab;
     this.subscriptions['routeParams'] = this.gridService.respond.subscribe(data => {
       const wfData = data;

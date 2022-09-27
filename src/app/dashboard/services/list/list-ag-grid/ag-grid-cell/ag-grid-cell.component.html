@@ -5,12 +5,11 @@
         </ng-container>
         <ng-container *ngIf="type === 'Checkbox'">
             <div class="d-flex align-items-center mt-1">
-                <div class="round-check d-flex align-items-center justify-content-center border hover"
+                <!-- <div class="round-check d-flex align-items-center justify-content-center border hover"
                     [ngClass]="{'bg-primary border-primary':checked,'bg-light':!checked}">
                     <span *ngIf="checked" class="fa fa-check text-white"></span>
-                </div>
-                <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"
-                    [ngClass]="{'ml-2': data._metadata.workflow}"></div>
+                </div> -->
+                <div *ngIf="data._metadata && data._metadata.workflow" class="fas fa-sm fa-lock text-warning"></div>
             </div>
         </ng-container>
         <ng-container *ngIf="type === 'Array'">
@@ -106,10 +105,13 @@
     <ng-container *ngIf="type==='Number' && (value==undefined || value == null)">
         <span class="text-muted">N.A</span>
     </ng-container>
+    <ng-container *ngIf="type==='String' && (value==undefined || value == null)">
+        <span class="text-muted">N.A</span>
+    </ng-container>
     <ng-container *ngIf="type==='Number' && value===0">
         <span>{{value}}</span>
     </ng-container>
 </div>
-<ng-container *ngIf="!data || !data._id">
-    <span class="fa fa-pulse fa-spinner"></span>
+<ng-container *ngIf="(!id || !value) && definition.key === '_id'">
+    <span class="text-muted">N.A</span>
 </ng-container>

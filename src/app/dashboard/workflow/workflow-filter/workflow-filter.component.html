@@ -87,7 +87,7 @@
     </div>
     <div class="filter-body my-3 px-3">
       <odp-search-for class="my-3" [serviceId]="serviceId" (searchForUpdate)="createFilter($event)"
-        [searchForColumn]='searchForColumn'></odp-search-for>
+        [searchForColumn]='searchForColumn' [allColumns]="allColumns"></odp-search-for>
     </div>
     <div class="d-flex align-items-center mt-auto" *ngIf="!showSaveDiv">
       <button class="mr-2 btn btn-link" type="button" (click)="clearFilter()" *ngIf="showSeparateCreateBtn">

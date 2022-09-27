@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash'
 
 @Component({
@@ -15,10 +15,12 @@ export class WorkflowOverviewComponent implements OnInit {
   searchTerm: string;
   services: any;
   ogServices: any;
+  serviceData: Array<any> = [];
   breadcrumb: Array<any> = [];
   constructor(
     private commonService: CommonService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
 
@@ -65,12 +67,44 @@ export class WorkflowOverviewComponent implements OnInit {
       .subscribe(res => {
         {
           self.services = res;
+          if (res.length > 1) {
+            res.forEach(ele => {
+              this.getServiceDetails(ele)
+            })
+          }
           self.ogServices = res;
           self.showLazyLoader = false;
         }
       });
   }
 
+  getServiceDetails(service) {
+    const api = service.api;
+    this.commonService
+      .get('api', `/${this.commonService.app._id}${api}/utils/workflow`, { select: '_id,operation,status', count: 100000000 })
+      .subscribe(res => {
+        const post = (res.filter(ele => ele.operation === 'POST' && ele.status === 'Pending') || []).length;
+        const put = (res.filter(ele => ele.operation === 'PUT' && ele.status === 'Pending') || []).length;
+        const del = (res.filter(ele => ele.operation === 'DELETE' && ele.status === 'Pending') || []).length;
+        const draft = (res.filter(ele => ele.status === 'Draft') || []).length;
+        // this.serviceData.push({
+        //   _id: id,
+        //   count: {
+        //     new: post,
+        //     update: put,
+        //     delete: del,
+        //     draft: draft
+        //   }
+        // })
+        service['count'] = {
+          new: post,
+          update: put,
+          delete: del,
+          draft: draft
+        }
+        console.log(this.services)
+      });
+  }
   search(value) {
     const self = this;
     if (!value || !value.trim()) {
@@ -90,5 +124,9 @@ export class WorkflowOverviewComponent implements OnInit {
     // self.showLazyLoader = true;
     self.services = self.ogServices
     // self.getServices();
+  }
+
+  navigate(service) {
+    this.router.navigate(['/', this.commonService.app._id, 'workflow', service._id]);
   }
 }

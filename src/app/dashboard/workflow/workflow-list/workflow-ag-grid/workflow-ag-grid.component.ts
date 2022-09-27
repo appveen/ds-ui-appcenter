@@ -11,6 +11,8 @@ import { WorkflowAgGridService } from './workflow-ag-grid.service';
 import { FormService } from 'src/app/service/form.service';
 import { environment } from 'src/environments/environment';
 import { AppService } from 'src/app/service/app.service';
+import * as _ from 'lodash';
+import { WorkflowService } from '../../workflow.service';
 
 @Component({
   selector: 'odp-workflow-ag-grid',
@@ -52,7 +54,8 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     private commonService: CommonService,
     private appService: AppService,
     private formService: FormService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private wfService: WorkflowService
   ) {
     const self = this;
     self.selectAll = new EventEmitter();
@@ -81,7 +84,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.formService.patchType(parsedDef);
     self.formService.fixReadonly(parsedDef);
     self.getExpandList(parsedDef);
-    self.apiConfig = {
+    self.apiConfig = this.wfService?.currentFilter || {
       count: 30,
       page: 1,
       expand: true,
@@ -189,6 +192,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
           self.agGrid.api.showLoadingOverlay();
           (self.subscription['getRecords_' + self.apiConfig.page]) = recordObservable.subscribe(
             (records: any) => {
+              this.wfService.currentFilter = self.apiConfig
               let loaded = params.endRow;
               if (loaded > self.currentRecordsCount) {
                 loaded = self.currentRecordsCount;
@@ -327,22 +331,24 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   arrangeFilter() {
     const self = this;
-    self.apiConfig?.filter?.$and?.splice(0, 1);
+    if (self.apiConfig?.filter?.$and?.length > 1) {
+      self.apiConfig?.filter?.$and?.splice(0, 1);
+    }
     if (self.appService.workflowTab === 0) {
-      self.apiConfig.filter.$and.unshift({
+      self.apiConfig?.filter?.$and.unshift({
         operation: 'POST',
         status: { $ne: 'Draft' }
       });
     } else if (self.appService.workflowTab === 1) {
-      self.apiConfig.filter.$and.unshift({ operation: 'PUT' });
+      self.apiConfig?.filter?.$and.unshift({ operation: 'PUT' });
     } else if (self.appService.workflowTab === 2) {
-      self.apiConfig.filter.$and.unshift({ operation: 'DELETE' });
+      self.apiConfig?.filter?.$and.unshift({ operation: 'DELETE' });
     } else if (self.appService.workflowTab === 3) {
-      self.apiConfig.filter.$and.unshift({ status: 'Draft' });
+      self.apiConfig?.filter?.$and.unshift({ status: 'Draft' });
     }
     let keys = [...new Set(self.expandList)];
     self.apiConfig.expandKeys = keys.join();
-    self.apiConfig.serviceId = self.apiConfig.filter.serviceId;
+    self.apiConfig.serviceId = self.srvcId;
   }
   getRecords() {
     const self = this;
@@ -461,7 +467,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       };
 
       filter.forEach(element => {
-        self.apiConfig.filter.$and.push(element);
+        self.apiConfig?.filter?.$and.push(element);
       });
 
       self.gridService.inlineFilterActive = true;
@@ -485,7 +491,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     if (self.appService.workflowTab === 1 || self.appService.workflowTab === 2) {
       prefix = 'data.old';
     }
-    self.apiConfig.filter.$and.forEach(element => {
+    self.apiConfig?.filter?.$and.forEach(element => {
       self.renameKey(element, Object.keys(element)[0], Object.keys(element)[0].replace('data.new', prefix));
       self.renameKey(element, Object.keys(element)[0], Object.keys(element)[0].replace('data.old', prefix));
     });
@@ -544,12 +550,25 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       }
 
       if (viewModel.filter && viewModel.filter.$and) {
-        self.apiConfig.filter.$and = [self.apiConfig.filter.$and[0]];
-        viewModel.filter.$and.forEach(element => {
-          if (!!Object.keys(element).length) {
-            self.apiConfig.filter.$and.push(element);
-          }
-        });
+
+        const current = _.cloneDeep(self.apiConfig?.filter?.$and) || [];
+        let arrayObj = [];
+        if (current.length > 0) {
+          arrayObj = [...arrayObj, ...current];
+        }
+        const viewModelFilter = _.cloneDeep(viewModel.filter?.$and) || [];
+        if (viewModelFilter.length > 0) {
+          arrayObj = [...arrayObj, ...viewModelFilter]
+        }
+
+        // self.apiConfig.filter.$and = [self.apiConfig?.filter?.$and[0]];
+        // viewModel.filter.$and.forEach(element => {
+        //   if (!!Object.keys(element).length) {
+        //     self.apiConfig?.filter?.$and.push(element);
+        //   }
+        // });
+
+        self.apiConfig.filter = { $and: arrayObj }
         reload = true;
         if (!environment.production) {
           console.log('Setting Filter Model');
@@ -565,7 +584,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         // self.apiConfig.filter = null;
         reload = true;
 
-        self.apiConfig.filter.$and = [self.apiConfig.filter.$and[0]];
+        // self.apiConfig.filter.$and = [self.apiConfig?.filter?.$and[0]];
         self.arrangeFilter();
         self.agGrid.api.setFilterModel(null);
       }
@@ -617,7 +636,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.gridService.inlineFilterActive = null;
     self.gridService.selectedSavedView = null;
     if (self.apiConfig?.filter?.$and?.[0]) {
-      self.apiConfig.filter.$and = [self.apiConfig.filter.$and[0]];
+      self.apiConfig.filter.$and = [self.apiConfig?.filter?.$and[0]];
     }
     self.arrangeFilter();
     self.apiConfig.sort = null;

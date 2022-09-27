@@ -71,7 +71,7 @@ const routes: Routes = [
     WorkflowRespondViewModule,
     PdfViewerModule,
     WorkflowAgGridModule,
-    WorkflowRemarksViewModule
+    WorkflowRemarksViewModule,
   ],
   declarations: [
     WorkflowComponent,

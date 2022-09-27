@@ -8,15 +8,15 @@
       <div class="d-flex align-items-center mb-2" *ngFor="let item of searchForColumn; let i = index">
         <!-- <div class="fas fa-bars text-muted mr-2 hover"></div> -->
         <div class="input-group col-name-dd mr-2">
-          <select class="custom-select" [(ngModel)]="item.fieldName" (change)="updateType($event, i)">
+          <select class="custom-select" [(ngModel)]="item.headerName" (change)="updateType($event, i)">
             <optgroup label="Workflow Columns">
               <ng-container *ngFor="let col of combinedColumns;">
-                <option *ngIf="!col.serviceCol" [value]="col.fieldName">{{ col.headerName }}</option>
+                <option *ngIf="!col.serviceCol" [value]="col.headerName">{{ col.headerName }}</option>
               </ng-container>
             </optgroup>
             <optgroup label="Data Columns">
               <ng-container *ngFor="let col of combinedColumns;">
-                <option *ngIf="col.serviceCol" [value]="col.fieldName">{{ col.headerName }}</option>
+                <option *ngIf="col.serviceCol" [value]="col.headerName">{{ col.headerName }}</option>
               </ng-container>
             </optgroup>
           </select>
@@ -24,7 +24,7 @@
 
         <!-- For data type text  -->
         <div class="col-filter mr-2 d-flex"
-          *ngIf="item.fieldType === 'String' || item.fieldType === 'Identifier'  || item.fieldType === 'Relation' || item.fieldType === 'User'">
+          *ngIf="item.fieldType === 'String' || item.fieldType === 'Identifier'  || item.fieldType === 'Relation' || item.fieldType === 'User' ||  item.fieldType === 'Geojson'">
           <div class="options-dd d-flex align-items-center text-primary position-relative">
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
             <select [(ngModel)]="item.filterType" (change)="searchDataUpdated()">
@@ -111,7 +111,7 @@
               <odp-date-picker *ngIf="item.toggleFromDate" [togglePicker]="item.toggleFromDate"
                 (togglePickerChange)="item.toggleFromDate = $event" [from]="startDate"
                 (fromChange)="setStartDate($event, item)"
-                [options]="{floating:true,buttons:true,type:item.dateFieldType}">
+                [options]="{floating:true,buttons:true,type:item.dateFieldType}" style="position: absolute; top: 100px">
               </odp-date-picker>
             </div>
             <div *ngIf="item.filterType === 'inRange'"
@@ -130,8 +130,8 @@
               <span class="fas fa-angle-down text-primary"></span>
               <odp-date-picker *ngIf="item.toggleToDate" [togglePicker]="item.toggleToDate"
                 (togglePickerChange)="item.toggleToDate = $event" [from]="endDate"
-                (fromChange)="setEndDate($event, item)"
-                [options]="{floating:true,buttons:true,type:item.dateFieldType}">
+                (fromChange)="setEndDate($event, item)" [options]="{floating:true,buttons:true,type:item.dateFieldType}"
+                style="position: absolute; top: 100px">
               </odp-date-picker>
             </div>
           </div>
@@ -140,7 +140,8 @@
         <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'requestSelect'">
           <div class="options-dd d-flex align-items-center text-primary position-relative">
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
-            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue"
+              style="width: 500px">
               <option *ngFor="let option of requestedByList" [value]="option._id">
                 {{option.name || option._id}}
               </option>
@@ -150,7 +151,8 @@
         <div class="col-filter mr-2 d-flex" *ngIf="item.fieldType === 'respondSelect'">
           <div class="options-dd d-flex align-items-center text-primary position-relative">
             <!-- <span class="fas fa-angle-down text-primary position-absolute angle-pos"></span> -->
-            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue">
+            <select (change)="setSelectValue(item, selectValue.value)" #selectValue [(ngModel)]="item.filterValue"
+              style="width: 500px">
               <option *ngFor="let option of respondedByList" [value]="option._id">
                 {{option.name || option._id}}
               </option>
