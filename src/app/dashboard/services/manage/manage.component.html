@@ -93,13 +93,13 @@
   <div class="d-flex align-items-center bg-white rounded-lg mb-3 p-3" style="min-height: 72px" *ngIf="showSubHeader">
     <div class="d-flex align-items-center state-model" *ngIf="stateModelAttr">
       <span class="mr-3 font-13 fw-500 state-version hover text-uppercase">{{stateModelName}}</span>
-      <div class="d-flex flex-column">
+      <div class="d-flex flex-column" (click)="toggleDropdown = !toggleDropdown">
         <div class="form-control btn-min-width font-12 fw-400 d-flex"
           [ngClass]="{'bg-white': ID, 'bg-light pe-none' : disableState(statusArray), 'ignore-outside': toggleDropdown}"
-          (click)="toggleDropdown = !toggleDropdown" readonly style="width: 200px;">
-          <span class="fw-400 font-12 text-dark my-auto">{{currentState}}</span>
-          <span class="my-auto ml-auto dsi" (click)="toggleDropdown = !toggleDropdown"
-            [ngClass]="{'dsi-drop-up': toggleDropdown, 'dsi-drop-down': !toggleDropdown}"></span>
+          readonly style="width: 200px;">
+          <div class="fw-400 font-12 text-dark my-auto">{{currentState}}</div>
+          <div class="my-auto ml-auto dsi pe-none"
+            [ngClass]="{'dsi-drop-up': toggleDropdown, 'dsi-drop-down': !toggleDropdown}"></div>
         </div>
         <div *ngIf="toggleDropdown" class="state-model-dropdown border bg-white" odpClickOutside
           (outside)="toggleDropdown = false">
