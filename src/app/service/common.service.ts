@@ -84,6 +84,8 @@ export class CommonService {
   private stallCount = 0;
   breadcrumb: Array<any> = [];
   breadcrumbSubject: Subject<any> = new Subject();
+  showBulkTooltip: boolean;
+  showBulkTooltipSubject: Subject<any> = new Subject();
 
   constructor(
     private http: HttpClient,
@@ -1106,7 +1108,7 @@ export class CommonService {
     self.stallRequests = false;
     self.stallCount = 0;
     self.stallTime = null;
-    self.appService.serviceId=null;
+    self.appService.serviceId = null;
     if (self.subscriptions.logout) {
       self.subscriptions.logout.unsubscribe();
     }
@@ -1683,6 +1685,10 @@ export class CommonService {
   breadcrumbPush(data: Array<any>) {
     this.breadcrumb = data;
     this.breadcrumbSubject.next(this.breadcrumb)
+  }
+  toggleBulkInfo(val) {
+    this.showBulkTooltip = val;
+    this.showBulkTooltipSubject.next(this.showBulkTooltip)
   }
 }
 
