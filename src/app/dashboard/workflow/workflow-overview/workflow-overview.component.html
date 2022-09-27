@@ -15,14 +15,14 @@
         </div>
     </div>
     <div class="row no-gutters">
-        <div class="col-2" *ngFor="let srvc of services">
+        <div class="col-3" *ngFor="let srvc of services">
             <div class="bg-white ds-item mr-3 rounded mt-3 hover" (click)="navigate(srvc)">
                 <div class="px-3 pt-3">
                     <div class="ds-name font-12 fw-500">{{srvc.name}}</div>
                 </div>
                 <div class="d-flex flex-column p-3">
                     <div class="d-flex">
-                        <div class="d-flex flex-column">
+                        <div class="d-flex flex-column mr-4">
                             <span class="text-secondary font-11 fw-400">In Create</span>
                             <span class="text-dark font-14 fw-700">{{srvc.count?.new || 0}}</span>
                         </div>
@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <div class="d-flex mt-2">
-                        <div class="d-flex flex-column">
+                        <div class="d-flex flex-column mr-4">
                             <span class="text-secondary font-11 fw-400">To Delete</span>
                             <span class="text-dark font-14 fw-700">{{srvc.count?.delete || 0}}</span>
                         </div>
