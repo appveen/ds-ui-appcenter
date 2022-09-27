@@ -868,7 +868,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.activeTab = activateTab;
     this.appService.workflowTab = activateTab;
     this.appService.workflowTabChange.emit(activateTab);
-    this.createColumnDefs();
+    // this.createColumnDefs();
     this.getTotalRecords();
   }
 
