@@ -1187,7 +1187,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   get allCheckedRecords() {
     let rowData = [];
     if (this.listGrid) {
-      this.listGrid.agGrid.api.forEachNode(node => rowData.push(node.data));
+      this.listGrid?.agGrid?.api?.forEachNode(node => rowData.push(node.data));
     }
     return rowData.filter(e => e && e._checked).length;
     // return this.selectedRows.filter(e => e._checked).length;
@@ -1199,14 +1199,14 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   get pendingRecords() {
     let rowData = [];
     if (this.listGrid) {
-      this.listGrid.agGrid.api.forEachNode(node => rowData.push(node.data));
+      this.listGrid?.agGrid?.api?.forEachNode(node => rowData.push(node.data));
     }
     return rowData.filter(e => e && e.status === 'Pending' && this.canRespond(e)).length;
   }
   get checkAll() {
     let rowData = [];
     if (this.listGrid) {
-      this.listGrid.agGrid.api.forEachNode(node => rowData.push(node.data));
+      this.listGrid?.agGrid?.api?.forEachNode(node => rowData.push(node.data));
 
       if (rowData.length > 0) {
         return rowData.filter(e => e && e.status === 'Pending' && this.canRespond(e)).every(e => e._checked);
@@ -1217,7 +1217,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
   set checkAll(val) {
     if (this.listGrid) {
-      this.listGrid.agGrid.api.forEachNode(node => {
+      this.listGrid?.agGrid?.api?.forEachNode(node => {
         if (!!node.data && node.data.status === 'Pending' && this.canRespond(node.data)) {
           node.setSelected(val);
         }
@@ -1326,7 +1326,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   }
 
   get hasFilters() {
-    if (!this.selectedSavedView && this.listGrid && this.listGrid.filterModel) {
+    if (this.listGrid && !_.isEmpty(this.listGrid.filterModel)) {
       return true;
     }
     return false;

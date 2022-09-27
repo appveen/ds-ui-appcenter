@@ -384,11 +384,11 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   get requestedByList() {
     const self = this;
-    return self.gridService.requestedByList;
+    return self.gridService.requestedByList?.filter(ele => ele._id);
   }
   get respondedByList() {
     const self = this;
-    return self.gridService.respondedByList;
+    return self.gridService.respondedByList?.filter(ele => ele._id);
   }
 
   get workflowtab() {
