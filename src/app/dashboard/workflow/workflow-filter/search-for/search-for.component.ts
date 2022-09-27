@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import * as _ from 'lodash';
@@ -387,7 +387,7 @@ export class SearchForComponent implements OnInit {
   addSearchFor(tempObj, key, colObj, serviceCol) {
     const self = this;
     let value = '';
-    let filterType = 'contains';
+    let filterType = tempObj?.filterType || 'contains';
     if (typeof (tempObj[key]) === 'string') {
       if ((tempObj[key]) !== 'requestedBy') {
         if (tempObj[key].charAt(0) === '/'
@@ -477,13 +477,13 @@ export class SearchForComponent implements OnInit {
           : {})
       };
       if (tempObj[key].$lte && tempObj[key].$gte) {
-        const foreignTime = this.appService.getMoment(tempObj[key].$lte).tz(obj.timezone).format();
+        const foreignTime = this.appService.getMoment(tempObj[key].$gte).tz(obj.timezone).format();
         const tmp = this.appService.getMomentInTimezone(new Date(foreignTime.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
         this.startDate = new Date(tmp);
         obj.fromDate = this.startDate.toISOString();
-        if (new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0) {
+        if (new Date(tempObj[key].$lte).getDate() - new Date(tempObj[key].$gte).getDate() > 0 && (tempObj.filterType === 'inRange' || !tempObj.filterType)) {
           obj.filterType = 'inRange';
-          const foreignTime1 = this.appService.getMoment(tempObj[key].$gte).tz(obj.timezone).format();
+          const foreignTime1 = this.appService.getMoment(tempObj[key].$lte).tz(obj.timezone).format();
           const tmp1 = this.appService.getMomentInTimezone(new Date(foreignTime1.slice(0, obj.dateFieldType === 'date' ? 10 : 19)), localTimezone).format();
           this.endDate = new Date(tmp1);
           obj.toDate = this.endDate.toISOString();

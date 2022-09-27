@@ -792,7 +792,8 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
             [prefix + _relCol + '.utc']: {
               $gte: startD.toISOString(),
               $lte: endD.toISOString()
-            }
+            },
+            filterType: item.filterType
           };
           self.insertDataInHelperArr(queryObj);
         });
@@ -897,7 +898,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         };
         item.fieldName.forEach(_relCol => {
           const tempObj1 = {
-            [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lt: endD.toISOString() }
+            [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lte: endD.toISOString() }
           };
           queryObj['$or'].push(tempObj1);
           self.insertDataInHelperArr(queryObj);
@@ -905,7 +906,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       } else {
         item.fieldName.forEach(_relCol => {
           const queryObj = {
-            [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lt: endD.toISOString() }
+            [prefix + _relCol + '.utc']: { $gte: startD.toISOString(), $lte: endD.toISOString() }
           };
           self.insertDataInHelperArr(queryObj);
         });
@@ -917,6 +918,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     const self = this;
     const placeHolderArr = [];
     self.filterHelperArr = [];
+    const type = tempObj.filterType
     if (self.filterHelperArr.length > 0) {
       if (dateData) {
         const dateTypeFilter = tempObj[Object.keys(tempObj)[0]];
@@ -933,7 +935,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
             }
           }
           if (sameKeys && _.isEqual(dateObj, dateTypeFilter)) {
-            self.filterHelperArr[index] = tempObj;
+            self.filterHelperArr[index] = { ...tempObj, type: tempObj.filterType };
           } else if (sameKeys && !_.isEqual(dateObj, dateTypeFilter)) {
             const obj = {
               index: index,
@@ -952,7 +954,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         self.filterHelperArr.forEach((_obj, index) => {
           Object.keys(_obj).forEach(_key => {
             if (_key === Object.keys(tempObj)[0]) {
-              self.filterHelperArr[index] = tempObj;
+              self.filterHelperArr[index] = { ...tempObj, type: tempObj.filterType };
             } else {
               const obj = {
                 index: self.filterHelperArr.length,
@@ -982,6 +984,9 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         temp[key] = element[key];
         const index = self.config.filter.$and.findIndex(ele => ele[key] === temp[key]);
         if (index < 0) {
+          if (element.filterType) {
+            temp['filterType'] = element.filterType
+          }
           self.config.filter.$and.push(temp);
         }
         // self.config.filter[key] = element[key];
