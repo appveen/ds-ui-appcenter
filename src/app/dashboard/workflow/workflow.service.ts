@@ -10,6 +10,7 @@ export class WorkflowService {
   showFilterIcon: boolean;
   refreshCall: Subject<boolean>;
   currentFilter: any;
+  gridFilterModel: any;
 
   constructor() {
     const self = this;
@@ -18,6 +19,7 @@ export class WorkflowService {
     self.showFilterIcon = true;
     self.refreshCall = new Subject<false>();
     self.currentFilter = {};
+    self.gridFilterModel = {};
   }
 
 }

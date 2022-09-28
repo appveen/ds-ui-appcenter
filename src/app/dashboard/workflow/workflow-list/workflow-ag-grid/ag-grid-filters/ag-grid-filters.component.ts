@@ -7,6 +7,8 @@ import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
 import { WorkflowAgGridService } from '../workflow-ag-grid.service';
 import { FormService } from 'src/app/service/form.service';
+import { WorkflowService } from '../../../workflow.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'odp-ag-grid-filters',
@@ -25,7 +27,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   filterQueryChange: EventEmitter<any>;
   value: any;
   clearFilterModalRef: NgbModalRef;
-  workflowFilter: string;
+  workflowFilter: any;
   private relatedDefinition: any;
   private searchOnlyId: boolean;
   col: any;
@@ -33,8 +35,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   paths: Array<any>;
   config: any;
   dateFilterType: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: any;
+  toDate: any;
   dateFilterSet: boolean;
 
   constructor(
@@ -43,7 +45,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     private gridService: WorkflowAgGridService,
     private element: ElementRef,
     private modalService: NgbModal,
-    private formService: FormService
+    private formService: FormService,
+    private wfService: WorkflowService
   ) {
     const self = this;
     self.subscriptions = {};
@@ -64,12 +67,44 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     self.definition = self.column.getColDef().refData;
     self.workflowFilter = self.definition.value;
     self.col = self.definition;
-    if (this.type === 'Date' && !!this.workflowFilter && this.workflowFilter.indexOf('{') === 0) {
-      const obj = JSON.parse(this.workflowFilter);
-      this.dateFilterType = obj?.dateFilterType;
-      this.fromDate = obj?.fromDate;
-      this.toDate = obj?.toDate;
-      this.dateFilterSet = true;
+    if (this.wfService.gridFilterModel && self.col?.dataKey && this.wfService.gridFilterModel[self.col.dataKey] && !(this.type === 'Date' || this.type === 'date')) {
+      const filterString = this.wfService.gridFilterModel[self.col.dataKey].filter;
+      const filter = JSON.parse(filterString);
+      let value: string = Object.values(filter)[0].toString();
+      const reg = /\//g
+      value = value.replace(reg, '')
+      self.workflowFilter = value || ''
+    }
+    if ((this.type === 'Date' || this.type === 'date')) {
+      if (!!this.workflowFilter) {
+        const obj = JSON.parse(this.workflowFilter);
+        this.dateFilterType = obj?.dateFilterType;
+        this.fromDate = obj?.fromDate;
+        this.toDate = obj?.toDate;
+        this.dateFilterSet = true;
+      }
+      else {
+        if (this.wfService.gridFilterModel[self.col.dataKey] && this.wfService.gridFilterModel[self.col.dataKey].filter && self.col.dataKey) {
+          const obj = JSON.parse(this.wfService.gridFilterModel[self.col.dataKey].filter)
+          let innerObj = obj[self.col.dataKey + '.utc']
+          if (innerObj) {
+            this.dateFilterType = innerObj?.filterType;
+            this.fromDate = moment(innerObj?.$gte || innerObj?.$gt || innerObj?.$lt).format('YYYY-MM-DD');
+            this.toDate = moment(innerObj?.$lte).format('YYYY-MM-DD');
+            this.dateFilterSet = true;
+          }
+          else {
+            if (obj[self.col.dataKey]) {
+              let innerObj = obj[self.col.dataKey]
+              this.dateFilterType = innerObj?.filterType;
+              this.fromDate = moment.utc(innerObj?.$gte || innerObj?.$gt || innerObj?.$lt).format('YYYY-MM-DDTHH:mm');
+              this.toDate = moment.utc(innerObj?.$lte).format('YYYY-MM-DDTHH:mm');
+              this.dateFilterSet = true;
+            }
+          }
+        }
+      }
+
     }
     if (self.definition.properties.relatedTo) {
       self.fetchRelatedSchema();
@@ -147,6 +182,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
           }
           obj['$gte'] = fromDate.toISOString();
           obj['$lte'] = toDate.toISOString();
+          obj['filterType'] = this.dateFilterType;
         };
           break;
         case 'inRange': {
@@ -159,6 +195,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
           }
           obj['$gte'] = fromDate.toISOString();
           obj['$lte'] = toDate.toISOString();
+          obj['filterType'] = this.dateFilterType;
         };
           break;
         case 'lessThan': {
@@ -168,6 +205,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
             fromDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':00'), this.timezone || 'Zulu', 'ms:start');
           }
           obj['$lt'] = fromDate.toISOString();
+          obj['filterType'] = this.dateFilterType;
         };
           break;
         case 'greaterThan': {
@@ -177,6 +215,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
             toDate = this.appService.getMomentInTimezone(new Date(this.fromDate + ':59'), this.timezone || 'Zulu', 'ms:end');
           }
           obj['$gt'] = toDate.toISOString();
+          obj['filterType'] = this.dateFilterType;
         };
           break;
       }
@@ -311,6 +350,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
       });
     }
+
   }
 
   cleanFilterQuery() {
