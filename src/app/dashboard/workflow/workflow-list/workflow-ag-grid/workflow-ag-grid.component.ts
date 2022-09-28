@@ -337,7 +337,20 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   arrangeFilter() {
     const self = this;
-    if (self.apiConfig?.filter?.$and?.length > 1) {
+    if (!self.apiConfig.filter) {
+      self.apiConfig = {
+        count: 30,
+        page: 1,
+        expand: true,
+        select: self.gridService?.selectedSavedView?.select || '',
+        filter: {
+          serviceId: self.srvcId,
+          $and: [{ operation: 'POST', status: { $ne: 'Draft' } }]
+        },
+        serviceId: self.srvcId
+      }
+    }
+    if (self.apiConfig?.filter?.$and?.length > 0) {
       const arr = self.apiConfig?.filter?.$and.map(ele => {
         if (!ele.operation) {
           return ele
