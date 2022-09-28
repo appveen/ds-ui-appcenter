@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     selectedMenuItem: any;
     breadcrumbs: any;
     current: any;
+    showBulkUpdateInfo: boolean = false
     @ViewChild('dashMenu') dashMenu: DashboardMenuComponent
     constructor(
         private appService: AppService,
@@ -105,6 +106,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.current = crumbData.pop();
                 this.breadcrumbs = crumbData.join(' / ');
             }
+        })
+        this.commonService.showBulkTooltipSubject.subscribe(data => {
+            this.showBulkUpdateInfo = data
         })
     }
 

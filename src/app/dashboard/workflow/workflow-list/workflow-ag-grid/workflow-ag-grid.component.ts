@@ -303,6 +303,9 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   getRecordsCount(first?: boolean) {
     const self = this;
+    self.apiConfig['filter'] = self.appService.workflowFilter?.['filter'];
+    self.apiConfig['select'] = self.appService.workflowFilter?.['select'];
+    self.apiConfig['columns'] = self.appService.workflowFilter?.['columns'];
     self.arrangeFilter();
     self.agGrid?.api?.showLoadingOverlay();
     self.currentRecordsCountPromise = self.commonService
@@ -332,7 +335,13 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   arrangeFilter() {
     const self = this;
     if (self.apiConfig?.filter?.$and?.length > 1) {
-      self.apiConfig?.filter?.$and?.splice(0, 1);
+      const arr = self.apiConfig?.filter?.$and.map(ele => {
+        if (!ele.operation) {
+          return ele
+        }
+        return
+      }).filter(ele => ele);
+      self.apiConfig.filter.$and = arr
     }
     if (self.appService.workflowTab === 0) {
       self.apiConfig?.filter?.$and.unshift({

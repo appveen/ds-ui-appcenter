@@ -1109,6 +1109,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     }
     return false;
   }
+
 }
 
 export interface ExpHook {

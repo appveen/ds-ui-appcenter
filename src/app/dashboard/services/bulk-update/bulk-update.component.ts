@@ -138,9 +138,11 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
     self.subscriptions['appChange'] = self.appService.appChange.subscribe(app => {
       self.router.navigate(['/', this.commonService.app._id]);
     });
+    this.commonService.toggleBulkInfo(true)
   }
   ngOnDestroy() {
     const self = this;
+    this.commonService.toggleBulkInfo(false)
     if (self.workflowModalRef) {
       self.workflowModalRef.close();
     }

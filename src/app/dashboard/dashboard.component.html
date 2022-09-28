@@ -48,6 +48,9 @@
                         <span class="text-secondary fw-400 font-14" *ngIf="breadcrumbs">{{breadcrumbs}} /&nbsp;</span>
                         <span class="text-dark fw-400 font-14">{{current}}</span>
                     </div>
+                    <div class="fa fa-info-circle text-warning font-16 ml-3" *ngIf="showBulkUpdateInfo"
+                        ngbTooltip=" Multiple Documents will be updated with the same new value entered in the form">
+                    </div>
                 </div>
                 <div class="right-side d-flex align-items-center">
                     <div class="notification mr-3 position-relative" odpClickOutside
