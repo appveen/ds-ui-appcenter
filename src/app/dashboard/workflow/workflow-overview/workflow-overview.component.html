@@ -18,7 +18,7 @@
         <div class="col-3" *ngFor="let srvc of services">
             <div class="bg-white ds-item mr-3 rounded mt-3 hover" (click)="navigate(srvc)">
                 <div class="px-3 pt-3">
-                    <div class="ds-name font-12 fw-500">{{srvc.name}}</div>
+                    <div class="ds-name font-12 fw-500">{{srvc.name.toUpperCase()}}</div>
                 </div>
                 <div class="d-flex flex-column p-3">
                     <div class="d-flex">
