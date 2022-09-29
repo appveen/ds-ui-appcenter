@@ -352,7 +352,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     }
     if (self.apiConfig?.filter?.$and?.length > 0) {
       const arr = self.apiConfig?.filter?.$and.map(ele => {
-        if (!ele.operation) {
+        if (!ele.operation && ele.status !== 'Draft') {
           return ele
         }
         return
