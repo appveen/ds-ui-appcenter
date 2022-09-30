@@ -282,6 +282,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
         self.allColumns.splice(index, 1);
       }
     }
+    this.selectedColOrder = _.cloneDeep(this.allColumns);
   }
 
   applyFilter(close?: boolean, saveFilterResponse?) {
