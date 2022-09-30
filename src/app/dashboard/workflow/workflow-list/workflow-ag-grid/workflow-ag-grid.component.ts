@@ -490,7 +490,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
               delete jsObj.filterType
               // data[key + '.utc'] = JSON.stringify(jsObj)
             }
-            else {
+            else {              
               if (data[key]) {
                 const jsObj = data[key]
                 delete jsObj.filterType
