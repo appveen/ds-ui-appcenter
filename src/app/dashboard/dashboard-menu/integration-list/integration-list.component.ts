@@ -23,6 +23,7 @@ export class IntegrationListComponent implements OnInit {
     private router: Router) {
     this.subscriptions = {};
     this.records = [];
+    this.activeId = 'all';
   }
 
   ngOnInit(): void {
@@ -32,9 +33,9 @@ export class IntegrationListComponent implements OnInit {
     ).subscribe((event: NavigationEnd) => {
       this.setActiveId(event.url)
     });
-    this.getPartners();
+    this.getFlows();
     this.dashboardService.appChanged.subscribe(app => {
-      this.getPartners();
+      this.getFlows();
     });
   }
 
@@ -45,52 +46,32 @@ export class IntegrationListComponent implements OnInit {
     }
   }
 
-  getPartners() {
+  getFlows() {
     const options: GetOptions = {
       count: -1,
-      select: 'name,app',
-      sort: 'name',
-      filter: {
-        app: this.commonService.app._id
-      }
+      select: 'name app',
+      sort: 'name'
     };
     this.showLazyLoader = true;
-    if (this.subscriptions.getPartners) {
-      this.subscriptions.getPartners.unsubscribe();
+    if (this.subscriptions.getFlows) {
+      this.subscriptions.getFlows.unsubscribe();
     }
-    this.subscriptions.getPartners = this.commonService.get('pm', '/partner', options).subscribe(res => {
+    this.subscriptions.getFlows = this.commonService.get('pm', `/${this.commonService.app._id}/flow`, options).subscribe(res => {
       this.showLazyLoader = false;
       this.records = res;
-      if (!this.activeId) {
-        this.loadPartnerInteractions(null);
-      }
+      // if (!this.activeId) {
+      //   this.loadFlowInteractions(null);
+      // }
     }, err => {
       console.error(err);
       this.showLazyLoader = false;
     });
   }
 
-  loadPartnerInteractions(interactionItem?: any, force?: boolean) {
-    if(force) {
-      if (interactionItem && interactionItem._id) {
-        this.appService.partnerId = interactionItem._id;
-        this.router.navigateByUrl(['', this.commonService.app._id, 'interactions'].join('/')).then(() => {
-          this.router.navigate(['/', this.commonService.app._id, 'interactions',interactionItem._id]);
-        });
-      } else {
-        this.appService.partnerId = null;
-        this.router.navigateByUrl(['', this.commonService.app._id].join('/')).then(() => {
-          this.router.navigate(['/', this.commonService.app._id, 'interactions','all']);
-        });
-      }
-    } else {
-      if (interactionItem && interactionItem._id) {
-        this.appService.partnerId = interactionItem._id;
-        this.router.navigate(['/', this.commonService.app._id, 'interactions',interactionItem._id]);
-      } else {
-        this.appService.partnerId = null;
-        this.router.navigate(['/', this.commonService.app._id, 'interactions','all']);
-      }
+  loadFlowInteractions(interactionItem?: any, force?: boolean) {
+    if (interactionItem && interactionItem._id) {
+      this.appService.partnerId = interactionItem._id;
+      this.router.navigate(['/', this.commonService.app._id, 'flow', interactionItem._id]);
     }
   }
 

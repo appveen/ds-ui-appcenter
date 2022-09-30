@@ -43,6 +43,22 @@
         <odp-workflow-list #wfList (toggleWorkflow)="toggleWorkflow($event)"></odp-workflow-list>
     </div>
 
+
+    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
+        (click)="togglePanel('interaction')" *ngIf="!hideInteraction">
+        <div class="d-flex align-items-center">
+            <span class="dsi dsi-wf text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['interaction'],'text-secondary': 
+            !openPanel['interaction']}"></span>
+            <span class="font-12 fw-500 text-uppercase" [ngClass]="{'text-dark': openPanel['interaction'],'text-secondary': 
+            !openPanel['interaction']}">Interactions</span>
+        </div>
+        <span class="dsi"
+            [ngClass]="{'dsi-drop-up text-secondary': openPanel['interaction'],'dsi-drop-down text-muted': !openPanel['interaction']}"></span>
+    </div>
+    <div class="border-top" *ngIf="openPanel['interaction'] && !hideInteraction">
+        <odp-integration-list></odp-integration-list>
+    </div>
+
     <!-- <ng-container *ngIf="activeMenuKey=='services'">
         <odp-service-list></odp-service-list>
     </ng-container>

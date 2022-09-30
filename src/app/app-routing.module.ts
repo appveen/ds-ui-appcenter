@@ -23,9 +23,13 @@ const routes: Routes = [
       { path: 'services', loadChildren: () => import('src/app/dashboard/services/services.module').then(m => m.ServicesModule) },
       { path: 'workflow', loadChildren: () => import('src/app/dashboard/workflow/workflow.module').then(m => m.WorkflowModule) },
       {
-        path: 'interactions', loadChildren: () => import('src/app/dashboard/interactions/interactions.module')
-          .then(m => m.InteractionsModule)
+        path: 'flow', loadChildren: () => import('src/app/dashboard/flows-interaction/flows-interaction.module')
+          .then(m => m.FlowsInteractionModule)
       },
+      // {
+      //   path: 'interactions', loadChildren: () => import('src/app/dashboard/interactions/interactions.module')
+      //     .then(m => m.InteractionsModule)
+      // },
       {
         path: 'bookmark', loadChildren: () => import('src/app/dashboard/bookmark-frame/bookmark-frame.module')
           .then(m => m.BookmarkFrameModule)

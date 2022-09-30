@@ -11,16 +11,18 @@ import { WorkflowListComponent } from './workflow-list/workflow-list.component';
 })
 export class DashboardMenuComponent implements OnInit, OnDestroy {
 
+  @ViewChild(WorkflowListComponent) wfList: WorkflowListComponent
   @Input() activeId: string;
   subscriptions: any;
-  @ViewChild(WorkflowListComponent) wfList: WorkflowListComponent
   activeMenuKey: string;
   openPanel: any = {
     'pinnedDs': true,
     'ds': true,
     'workflow': false,
+    'interaction': false,
   };
-  hideWorkflows: boolean = false;
+  hideWorkflows: boolean;
+  hideInteraction: boolean;
   constructor(private router: Router, private commonService: CommonService) {
     this.subscriptions = {};
   }
