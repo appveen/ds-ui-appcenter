@@ -352,7 +352,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     }
     if (self.apiConfig?.filter?.$and?.length > 0) {
       const arr = self.apiConfig?.filter?.$and.map(ele => {
-        if (!ele.operation) {
+        if (!ele.operation || ele.status !== 'Draft') {
           return ele
         }
         return
@@ -490,9 +490,11 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
               delete jsObj.filterType
               // data[key + '.utc'] = JSON.stringify(jsObj)
             }
-            else {
-              const jsObj = data[key]
-              delete jsObj.filterType
+            else {              
+              if (data[key]) {
+                const jsObj = data[key]
+                delete jsObj.filterType
+              }
             }
             filter.push(data);
           }
