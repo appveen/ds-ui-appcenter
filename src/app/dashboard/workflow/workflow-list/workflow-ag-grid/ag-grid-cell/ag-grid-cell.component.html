@@ -1,20 +1,19 @@
 <ng-container *ngIf="definition?.dataType !=='others'">
   <ng-container *ngIf="type === 'workflowId'">
-    <a class="text-primary hover" [ngClass]="{'font-bold':status=='Pending'}"
-      (click)="view()">{{wfId}}</a>
+    <a class="text-primary hover" [ngClass]="{'fw-600':status=='Pending'}" (click)="view()">{{wfId}}</a>
   </ng-container>
   <ng-container *ngIf="type === 'docId'">
-    <span class="hover text-muted" [ngClass]="{'font-bold text-dark':status=='Pending'}">{{docId}}</span>
+    <span class="hover text-secondary" [ngClass]="{'fw-600 text-dark':status=='Pending'}">{{docId}}</span>
   </ng-container>
   <ng-container *ngIf="type === 'req'">
-    <span class="text-muted" [ngClass]="{'font-bold text-dark':status=='Pending'}">{{user}}</span>
+    <span class="text-secondary" [ngClass]="{'fw-600 text-dark':status=='Pending'}">{{user}}</span>
   </ng-container>
   <ng-container *ngIf="type === 'res'">
-    <span class="text-muted">{{lastRespondedBy}}</span>
+    <span class="text-secondary">{{lastRespondedBy}}</span>
   </ng-container>
   <ng-container *ngIf="type === 'date'">
-    <span class="text-muted" *ngIf="createdOn"
-      [ngClass]="{'font-bold text-dark':status=='Pending'}">{{(createdOn |date:'MMM dd, y, HH:mm:ss':'UTC') + ' (Zulu)'}}</span>
+    <span class="text-muted" *ngIf="createdOn" [ngClass]="{'fw-600 text-dark':status=='Pending'}">{{(createdOn
+      |date:'MMM dd, y, HH:mm:ss':'UTC') + ' (Zulu)'}}</span>
   </ng-container>
   <ng-container *ngIf="type === 'status'">
     <div class="d-flex align-items-center">
@@ -24,13 +23,13 @@
       <span *ngIf="status == 'Draft'" class="dsi dsi-file text-dark font-12"></span>
       <span *ngIf="status == 'Rework'" class="dsi dsi-refresh text-warning font-12"></span>
       <span *ngIf="status == 'Discarded'" class="dsi dsi-ban text-secondary font-12"></span>
-      <span class="font-bold text-dark ml-2" *ngIf="status=='Pending'">Pending Review</span>
+      <span class="fw-600 text-dark ml-2" *ngIf="status=='Pending'">Pending Review</span>
       <span class="text-muted ml-2" *ngIf="status!='Pending'">{{status}}</span>
     </div>
   </ng-container>
   <ng-container *ngIf="type === 'checkerStep'">
     <div class="d-flex align-items-center">
-      <span class="font-bold text-dark ml-2">{{checkerStep}}</span>
+      <span class="fw-600 text-dark ml-2">{{checkerStep}}</span>
     </div>
   </ng-container>
 
@@ -61,7 +60,8 @@
   </ng-container>
   <ng-container *ngIf="type === 'String' && !properties.longText && !properties.richText && !properties.password">
     <span *ngIf="value && isenrichTextWithLinkRequired" [innerHTML]="textWithLink"></span>
-    <span class="wrapper" *ngIf="value && !isenrichTextWithLinkRequired">{{value}}</span>
+    <span class="wrapper" [ngClass]="{'fw-600 text-dark':status=='Pending'}"
+      *ngIf="value && !isenrichTextWithLinkRequired">{{value}}</span>
     <span *ngIf="!value" class="text-muted">N.A.</span>
   </ng-container>
   <div *ngIf="type === 'String' && properties.password" class="d-flex align-items-center">
@@ -80,11 +80,13 @@
     <span class="text-muted" *ngIf="!value">N.A</span>
   </div>
   <ng-container *ngIf="type === 'String' && properties.longText && !properties.richText">
-    <span *ngIf="value" class="text-primary hover" (click)="view()">View</span>
+    <span *ngIf="value" class="text-primary hover" [ngClass]="{'fw-600 text-dark':status=='Pending'}"
+      (click)="view()">View</span>
     <span *ngIf="!value " class="text-muted">N.A.</span>
   </ng-container>
   <ng-container *ngIf="type === 'String' && !properties.longText && properties.richText">
-    <span *ngIf="value" class="text-primary hover" (click)="view()">View</span>
+    <span *ngIf="value" class="text-primary hover" [ngClass]="{'fw-600 text-dark':status=='Pending'}"
+      (click)="view()">View</span>
     <span *ngIf="!value" class="text-muted">N.A.</span>
   </ng-container>
   <ng-container *ngIf="type === 'Number' && !properties.currency">
@@ -98,17 +100,19 @@
     <span *ngIf="currencyType == 'USD'">&#36;</span>
     <span *ngIf="currencyType == 'EUR'">&#8364;</span>
     <span *ngIf="currencyType == 'GBP'">&#163;</span>
-    <span class="pl-2">{{value}}</span>
+    <span class="pl-2" [ngClass]="{'fw-600 text-dark':status=='Pending'}">{{value}}</span>
   </ng-container>
   <ng-container *ngIf="type === 'Date'">
     <ng-container *ngIf="properties.dateType == 'date'">
       <span class="text-muted" *ngIf="!parsedDate">N.A</span>
-      <span class="" *ngIf="parsedDate">{{parsedDate |date:'MMM dd, y'}} ({{timezoneValue}})</span>
+      <span class="" [ngClass]="{'fw-600 text-dark':status=='Pending'}" *ngIf="parsedDate">{{parsedDate |date:'MMM dd,
+        y'}} ({{timezoneValue}})</span>
 
     </ng-container>
     <ng-container *ngIf="properties.dateType != 'date'">
       <span class="text-muted" *ngIf="!parsedDate">N.A</span>
-      <span class="" *ngIf="parsedDate">{{parsedDate |date:'MMM dd, y, HH:mm:ss'}} ({{timezoneValue}})</span>
+      <span class="" [ngClass]="{'fw-600 text-dark':status=='Pending'}" *ngIf="parsedDate">{{parsedDate |date:'MMM dd,
+        y, HH:mm:ss'}} ({{timezoneValue}})</span>
     </ng-container>
   </ng-container>
   <ng-container *ngIf="type === 'Boolean'">
@@ -133,8 +137,8 @@
 
 
   <ng-container *ngIf="type === 'Geojson'">
-    <a [attr.href]="url" class="text-truncate high-zIndex" *ngIf="formattedAddress" target="_blank"
-      placement="top">{{formattedAddress}}</a>
+    <a [attr.href]="url" class="text-truncate high-zIndex" *ngIf="formattedAddress" target="_blank" placement="top"
+      [ngClass]="{'fw-600 text-dark':status=='Pending'}">{{formattedAddress}}</a>
     <span class="text-muted" *ngIf="!formattedAddress">N.A</span>
   </ng-container>
 
