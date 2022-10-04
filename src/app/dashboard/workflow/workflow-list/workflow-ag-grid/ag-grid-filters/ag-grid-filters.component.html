@@ -119,14 +119,16 @@
 </ng-container>
 
 <ng-container *ngIf="col?.dataType === 'others'">
-    <input *ngIf="(type==='String' && !longText && !richText || type==='Identifier')" type="text"
-        class="border rounded bg-white w-100" [(ngModel)]="workflowFilter" odpOnChange (textChange)="onChange($event)">
+    <!-- <input type="text" class="border rounded bg-white w-100" *ngIf="col?.type ==='String'" [(ngModel)]="workflowFilter"
+        (ngModelChange)="filterChange($event)"> -->
+    <input *ngIf="((type==='String' && !longText && !richText) || type==='Identifier')" type="text"
+        class="border rounded bg-white w-100" [(ngModel)]="workflowFilter" (ngModelChange)="onChange($event)">
     <input *ngIf="type==='Number'" type="number" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-        odpOnChange (textChange)="onChange($event)">
+        (ngModelChange)="onChange($event)">
     <input *ngIf="type==='File'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-        odpOnChange (textChange)="onChange($event)">
+        (ngModelChange)="onChange($event)">
     <input *ngIf="type==='Geojson'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-        odpOnChange (textChange)="onChange($event)">
+        (ngModelChange)="onChange($event)">
     <ng-container *ngIf="type==='Date'">
         <div ngbDropdown #dateDropdown="ngbDropdown" container="body" display="dynamic">
             <button ngbDropdownToggle
@@ -209,9 +211,9 @@
         </div>
     </ng-container>
     <input *ngIf="type==='Relation'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-        odpOnChange (textChange)="onChange($event)">
+        (ngModelChange)="onChange($event)">
     <input *ngIf="type==='User'" type="text" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
-        odpOnChange (textChange)="onChange($event)">
+        (ngModelChange)="onChange($event)">
     <select *ngIf="type==='Boolean'" class="border rounded bg-white w-100" [(ngModel)]="workflowFilter"
         (ngModelChange)="onChange($event)">
         <option value="">--All--</option>
