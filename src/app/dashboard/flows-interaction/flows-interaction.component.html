@@ -1,1 +1,30 @@
-<p>flows-interaction works!</p>
+<div class="p-4">
+    <div class="list-wrapper border rounded">
+        <div class="list-group list-group-flush">
+            <div class="list-group-item d-flex align-items-center bg-light fw-500 font-12 text-secondary">
+                <span class="item-id">ID</span>
+                <span class="item-txn-id">Txn ID</span>
+                <span class="item-remote-txn-id">Remote Txn ID</span>
+                <span class="item-status">Status</span>
+                <span class="item-content-type">Payload Type</span>
+                <span class="item-content-length">Payload Size</span>
+                <span class="item-real-ip">IP</span>
+            </div>
+            <ng-container *ngFor="let item of interactionList">
+                <div class="list-group-item d-flex align-items-center hover" [routerLink]="item._id">
+                    <span class="item-id">{{item._id}}</span>
+                    <pre class="m-0 item-txn-id">{{item.headers['data-stack-txn-id']}}</pre>
+                    <pre class="m-0 item-remote-txn-id">{{item.headers['data-stack-remote-txn-id']}}</pre>
+                    <span class="item-status fw-500 font-12" [ngClass]="getStatusClass(item)">{{item.status}}</span>
+                    <span class="item-content-type">{{getContentType(item.headers['content-type'])}}</span>
+                    <span class="item-content-length">{{item.headers['content-length'] | filesize}}</span>
+                    <span class="item-real-ip">{{item.headers['x-real-ip']}}</span>
+                </div>
+            </ng-container>
+            <div *ngIf="!interactionList || interactionList.length==0"
+                class="list-group-item d-flex align-items-center">
+                <p class="m-0">No Interaction Found</p>
+            </div>
+        </div>
+    </div>
+</div>

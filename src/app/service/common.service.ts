@@ -1533,6 +1533,9 @@ export class CommonService {
 
   connectSocket() {
     const self = this;
+    if (!environment.production) {
+      return;
+    }
     if (!self.socket && self.app && self.app._id) {
       const socketConfig = {
         query: {

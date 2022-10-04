@@ -1,1 +1,18 @@
-<p>flows-interaction-view works!</p>
+<div class="p-3">
+    <div class="header p-3 d-flex align-items-center justify-content-between bg-white rounded mb-3">
+        <div class="d-flex align-items-center font-13">
+            <span class="text-secondary mr-1">Remote Txn ID:</span>
+            <span class="text-dark">{{interactionData?.headers['data-stack-remote-txn-id']}}</span>
+        </div>
+        <div class="d-flex align-items-center font-13">
+            <span class="text-secondary mr-1">Txn ID:</span>
+            <span class="text-dark">{{interactionData?.headers['data-stack-txn-id']}}</span>
+        </div>
+        <div class="d-flex align-items-center font-13">
+            <span class="text-secondary mr-1">Status:</span>
+            <span class="text-dark" [ngClass]="getStatusClass(interactionData)">{{interactionData?.status}}</span>
+        </div>
+    </div>
+    <odp-flow-node-view *ngIf="flowData && flowData.inputNode" [currNode]="flowData.inputNode" [stateList]="interactionStateList" [flowData]="flowData">
+    </odp-flow-node-view>
+</div>
