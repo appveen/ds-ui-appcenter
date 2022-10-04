@@ -342,7 +342,7 @@ export class BulkUpdateComponent implements OnInit, OnDestroy, CanComponentDeact
       return;
     }
     const payload = self.form.value;
-    const url = self.api + '/bulkUpdate?id=' + self.bulkEditIds.join(',');
+    const url = self.api + '/utils/bulkUpdate?id=' + self.bulkEditIds.join(',');
     self.showLazyLoader = true;
     payload._workflow = {
       audit: [
