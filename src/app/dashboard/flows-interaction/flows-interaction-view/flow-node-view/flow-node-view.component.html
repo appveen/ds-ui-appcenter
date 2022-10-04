@@ -41,7 +41,7 @@
                 </ng-container>
                 <tr>
                     <th class="header-key">Status</th>
-                    <td class="header-value w-100 fw-500" [ngClass]="getStatusClass()">{{currState?.status}}</td>
+                    <td class="header-value w-100 fw-500" [ngClass]="getStatusClass()">{{currState?.status || 'PENDING'}}</td>
                 </tr>
                 <ng-container *ngIf="currState?.headers">
                     <tr>

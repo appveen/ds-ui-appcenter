@@ -32,7 +32,7 @@ export class FlowsInteractionViewComponent implements OnInit {
 
   getInteractions(params: any) {
     combineLatest([
-      this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.interactionId}`),
+      this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}`),
       this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}/state`),
       this.commonService.get('pm', `/${this.commonService.app._id}/flow/${params.flowId}`)
     ]).subscribe(res => {
