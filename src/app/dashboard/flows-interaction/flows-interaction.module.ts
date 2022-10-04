@@ -5,6 +5,9 @@ import { FlowsInteractionComponent } from './flows-interaction.component';
 import { FormsModule } from '@angular/forms';
 
 import { FlowsInteractionViewComponent } from './flows-interaction-view/flows-interaction-view.component';
+import { PipesModule } from 'src/app/pipes/pipes.module';
+import { FlowsInteractionService } from './flows-interaction.service';
+import { FlowNodeViewComponent } from './flows-interaction-view/flow-node-view/flow-node-view.component';
 
 const routes: Routes = [
   { path: ':flowId', pathMatch: 'full', component: FlowsInteractionComponent },
@@ -14,12 +17,15 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     FlowsInteractionComponent,
-    FlowsInteractionViewComponent
+    FlowsInteractionViewComponent,
+    FlowNodeViewComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    FormsModule
-  ]
+    FormsModule,
+    PipesModule
+  ],
+  providers: [FlowsInteractionService]
 })
 export class FlowsInteractionModule { }

@@ -1,0 +1,94 @@
+<div class="flow-node-block mb-3 rounded bg-white p-3">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th colspan="2" class="bg-light">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <span>Node Details</span>
+                            <button type="button" class="btn btn-link" (click)="downloadStateData()">
+                                Download Complete JSON
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="header-key">ID</th>
+                    <td class="header-value w-100">{{currNode._id}}</td>
+                </tr>
+                <tr>
+                    <th class="header-key">Type</th>
+                    <td class="header-value w-100">{{currNode.type}}</td>
+                </tr>
+                <ng-container *ngIf="currNode.type=='API'">
+                    <tr>
+                        <th class="header-key">Content Type</th>
+                        <td class="header-value w-100">{{getContentType(currNode?.options?.contentType)}}</td>
+                    </tr>
+                    <tr>
+                        <th class="header-key">Path</th>
+                        <td class="header-value w-100">{{currNode?.options?.path}}</td>
+                    </tr>
+                    <tr>
+                        <th class="header-key">HTTP Method</th>
+                        <td class="header-value w-100">{{currNode?.options?.method}}</td>
+                    </tr>
+                    <tr>
+                        <th class="header-key">Status Code</th>
+                        <td class="header-value w-100 fw-500" [ngClass]="getStatusClass()">{{currState?.statusCode}}
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr>
+                    <th class="header-key">Status</th>
+                    <td class="header-value w-100 fw-500" [ngClass]="getStatusClass()">{{currState?.status}}</td>
+                </tr>
+                <ng-container *ngIf="currState?.headers">
+                    <tr>
+                        <th colspan="2" class="bg-light">
+                            <div class="d-flex align-items-center justify-content-between w-100">
+                                <span>Headers ({{(currState?.headers | keyvalue).length}})</span>
+                                <button type="button" class="btn btn-link" (click)="toggleHeaders=!toggleHeaders">
+                                    {{toggleHeaders ? 'Hide':'Show'}} Header
+                                </button>
+                                <!-- <span class="dsi"
+                                    [ngClass]="{'dsi-drop-up':toggleHeaders,'dsi-drop-down':!toggleHeaders}"></span> -->
+                            </div>
+                        </th>
+                    </tr>
+                    <tr *ngFor="let item of currState?.headers | keyvalue" [ngClass]="{'d-none':!toggleHeaders}">
+                        <th class="header-key">{{item.key}}</th>
+                        <td class="header-value w-100">{{item.value}}</td>
+                    </tr>
+                </ng-container>
+                <tr>
+                    <th colspan="2" class="bg-light">Body</th>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <span>{{bodyDetails}}</span>
+                            <button type="button" class="btn btn-link" (click)="togglePayload=!togglePayload">
+                                Show Complete Payload
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngIf="togglePayload">
+                    <td colspan="2">
+                        <pre>{{currState?.body|json}}</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <pre>{{currState|json}}</pre>
+    <pre>{{currNode|json}}</pre>
+    <pre>{{completeData|json}}</pre> -->
+</div>
+
+<ng-container *ngFor="let next of currNode.onSuccess">
+    <odp-flow-node-view *ngIf="getNextNode(next)" [currNode]="getNextNode(next)" [stateList]="stateList"
+        [flowData]="flowData">
+    </odp-flow-node-view>
+</ng-container>
