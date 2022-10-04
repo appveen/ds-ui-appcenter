@@ -71,9 +71,10 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       const filterString = this.wfService.gridFilterModel[self.col.dataKey].filter;
       const filter = JSON.parse(filterString);
       let value: string = Object.values(filter)[0].toString();
-      const reg = /\//g
-      value = value.replace(reg, '')
-      self.workflowFilter = value || ''
+      const reg = /\//g;
+      this.value = value;
+      value = value.replace(reg, '');
+      self.workflowFilter = value || '';
     }
     if ((this.type === 'Date' || this.type === 'date')) {
       if (!!this.workflowFilter) {
@@ -121,6 +122,9 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       self.dateFilterSet = false;
       self.dateFilterType = 'equals';
       self.definition.value = self.workflowFilter;
+    }
+    else {
+      self.workflowFilter = self.value
     }
   }
   filterChange(event) {
@@ -424,7 +428,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
 
   get requestedByList() {
     const self = this;
-    return self.gridService.requestedByList?.filter(ele => ele._id);
+    return self.gridService.requestedByList?.filter(ele => ele._id && ele._id !== self.workflowFilter);
   }
   get respondedByList() {
     const self = this;
