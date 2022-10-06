@@ -39,6 +39,7 @@ export class FlowNodeViewComponent implements OnInit {
     if (this.currState) {
       return this.flowsService.getStatusClass(this.currState);
     }
+    return 'text-warning';
   }
 
   getNextNode(node: any) {

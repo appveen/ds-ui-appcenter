@@ -25,7 +25,7 @@ export class FlowsInteractionComponent implements OnInit {
   }
 
   getInteractions(flowId: string) {
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction`, { filter: { flowId } }).subscribe(res => {
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`).subscribe(res => {
       this.interactionList = res;
       console.log(res);
     }, err => {
