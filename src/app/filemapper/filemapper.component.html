@@ -145,7 +145,7 @@
           <span class="text-accent hover" *ngIf="!uploadObj.showUploadTag && !parseObj.showParseTag ">Re-Upload</span>
         </label> -->
         <div class="d-flex justify-content-between messsage">
-          <span class="text-muted font-sm">Supported file types (csv,xslx,xlx{{schema?.schemaFree?',json':''}})</span>
+          <span class="text-muted font-sm">Supported file types (csv,xslx,xls{{schema?.schemaFree?',json':''}})</span>
           <label class="text-muted font-sm">Having issue ?
             <span class="text-primary hover">
               <input type="file" name="logoFile" id="logoFile" class="d-none" (change)="selectAndUpload($event)">
