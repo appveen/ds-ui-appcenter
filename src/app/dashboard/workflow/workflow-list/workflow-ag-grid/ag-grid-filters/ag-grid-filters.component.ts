@@ -73,7 +73,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       let value: string = Object.values(filter)[0].toString();
       const reg = /\//g;
       value = value.replace(reg, '');
-      // this.value = value;
+      this.value = value;
       self.workflowFilter = value || '';
     }
     if ((this.type === 'Date' || this.type === 'date')) {
@@ -123,9 +123,9 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       self.dateFilterType = 'equals';
       self.definition.value = self.workflowFilter;
     }
-    // else {
-    //   self.workflowFilter = self.value
-    // }
+    else {
+      self.workflowFilter = self.value
+    }
   }
   filterChange(event) {
     const self = this;
