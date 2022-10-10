@@ -309,6 +309,8 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       self.apiConfig['select'] = self.appService.workflowFilter?.['select'];
       self.apiConfig['columns'] = self.appService.workflowFilter?.['columns'];
     }
+
+
     self.arrangeFilter();
     self.agGrid?.api?.showLoadingOverlay();
     self.currentRecordsCountPromise = self.commonService
@@ -351,13 +353,14 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       }
     }
     if (self.apiConfig?.filter?.$and?.length > 0) {
+
       const arr = self.apiConfig?.filter?.$and.map(ele => {
         if (!ele.operation && ele.status !== 'Draft') {
           return ele
         }
         return
       }).filter(ele => ele);
-      self.apiConfig.filter.$and = arr
+      self.apiConfig.filter.$and = self.wfService.gridFilterModel.workflowTab === self.appService.workflowTab ? arr : []
     }
     if (self.appService.workflowTab === 0) {
       self.apiConfig?.filter?.$and.unshift({
@@ -467,8 +470,9 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   }
 
   firstDataRendered() {
-    this.gridApi?.setFilterModel(this.wfService.gridFilterModel)
-    console.log(this.gridApi.getFilterModel())
+    if (this.wfService.gridFilterModel?.filterModel) {
+      this.gridApi?.setFilterModel(this.wfService.gridFilterModel.filterModel)
+    }
   }
   filterModified(event) {
     const self = this;
@@ -479,7 +483,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       self.agGrid.columnApi.moveColumn(e.dataKey, i);
     });
     self.filterModel = self.agGrid.api.getFilterModel();
-    this.wfService.gridFilterModel = this.filterModel
+    this.wfService.gridFilterModel['filterModel'] = this.filterModel
     if (self.filterModel) {
       Object.keys(self.filterModel).forEach(key => {
         try {
