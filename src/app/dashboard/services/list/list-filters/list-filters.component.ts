@@ -143,6 +143,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
         self.allColumns.splice(index, 1);
       }
     }
+    this.selectedColOrder = _.cloneDeep(this.allColumns);
   }
 
   search = (text$: Observable<string>) => {
