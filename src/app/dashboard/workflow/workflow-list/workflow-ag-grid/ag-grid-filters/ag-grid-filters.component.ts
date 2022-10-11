@@ -67,46 +67,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     self.definition = self.column.getColDef().refData;
     self.workflowFilter = self.definition.value;
     self.col = self.definition;
-    if (this.wfService.gridFilterModel && self.col?.dataKey && this.wfService.gridFilterModel[self.col.dataKey] && !(this.type === 'Date' || this.type === 'date')) {
-      const filterString = this.wfService.gridFilterModel[self.col.dataKey].filter;
-      const filter = JSON.parse(filterString);
-      let value: string = Object.values(filter)[0].toString();
-      const reg = /\//g;
-      value = value.replace(reg, '');
-      this.value = value;
-      self.workflowFilter = value || '';
-    }
-    if ((this.type === 'Date' || this.type === 'date')) {
-      if (!!this.workflowFilter) {
-        const obj = JSON.parse(this.workflowFilter);
-        this.dateFilterType = obj?.dateFilterType;
-        this.fromDate = obj?.fromDate;
-        this.toDate = obj?.toDate;
-        this.dateFilterSet = true;
-      }
-      else {
-        if (this.wfService.gridFilterModel[self.col.dataKey] && this.wfService.gridFilterModel[self.col.dataKey].filter && self.col.dataKey) {
-          const obj = JSON.parse(this.wfService.gridFilterModel[self.col.dataKey].filter)
-          let innerObj = obj[self.col.dataKey + '.utc']
-          if (innerObj) {
-            this.dateFilterType = innerObj?.filterType;
-            this.fromDate = moment(innerObj?.$gte || innerObj?.$gt || innerObj?.$lt).format('YYYY-MM-DD');
-            this.toDate = moment(innerObj?.$lte).format('YYYY-MM-DD');
-            this.dateFilterSet = true;
-          }
-          else {
-            if (obj[self.col.dataKey]) {
-              let innerObj = obj[self.col.dataKey]
-              this.dateFilterType = innerObj?.filterType;
-              this.fromDate = moment.utc(innerObj?.$gte || innerObj?.$gt || innerObj?.$lt).format('YYYY-MM-DDTHH:mm');
-              this.toDate = moment.utc(innerObj?.$lte).format('YYYY-MM-DDTHH:mm');
-              this.dateFilterSet = true;
-            }
-          }
-        }
-      }
-
-    }
+    this.checkInlineFilter()
     if (self.definition.properties.relatedTo) {
       self.fetchRelatedSchema();
     }
@@ -127,8 +88,56 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       self.workflowFilter = self.value
     }
   }
+
+
+  checkInlineFilter() {
+    const self = this
+    if (self.appService.workflowTab == this.wfService.gridFilterModel.workflowTab) {
+      if (this.wfService.gridFilterModel && self.col?.dataKey && this.wfService.gridFilterModel.filterModel && this.wfService.gridFilterModel.filterModel[self.col.dataKey] && !(this.type === 'Date' || this.type === 'date')) {
+        const filterString = this.wfService.gridFilterModel.filterModel[self.col.dataKey].filter;
+        const filter = JSON.parse(filterString);
+        let value: string = Object.values(filter)[0].toString();
+        const reg = /\//g;
+        value = value.replace(reg, '');
+        this.value = value;
+        self.workflowFilter = value || '';
+      }
+      if ((this.type === 'Date' || this.type === 'date')) {
+        if (!!this.workflowFilter) {
+          const obj = JSON.parse(this.workflowFilter);
+          this.dateFilterType = obj?.dateFilterType;
+          this.fromDate = obj?.fromDate;
+          this.toDate = obj?.toDate;
+          this.dateFilterSet = true;
+        }
+        else {
+          if (this.wfService.gridFilterModel.filterModel && this.wfService.gridFilterModel.filterModel[self.col.dataKey] && this.wfService.gridFilterModel.filterModel[self.col.dataKey].filter && self.col.dataKey) {
+            const obj = JSON.parse(this.wfService.gridFilterModel.filterModel[self.col.dataKey].filter)
+            let innerObj = obj[self.col.dataKey + '.utc']
+            if (innerObj) {
+              this.dateFilterType = innerObj?.filterType;
+              this.fromDate = moment(innerObj?.$gte || innerObj?.$gt || innerObj?.$lt).format('YYYY-MM-DD');
+              this.toDate = moment(innerObj?.$lte).format('YYYY-MM-DD');
+              this.dateFilterSet = true;
+            }
+            else {
+              if (obj[self.col.dataKey]) {
+                let innerObj = obj[self.col.dataKey]
+                this.dateFilterType = innerObj?.filterType;
+                this.fromDate = moment.utc(innerObj?.$gte || innerObj?.$gt || innerObj?.$lt).format('YYYY-MM-DDTHH:mm');
+                this.toDate = moment.utc(innerObj?.$lte).format('YYYY-MM-DDTHH:mm');
+                this.dateFilterSet = true;
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
   filterChange(event) {
     const self = this;
+    self.wfService.gridFilterModel['workflowTab'] = self.appService.workflowTab
     let temp = {};
     if (self.col.dataType === 'text') {
       temp[self.col.key] = `/${event}/`;
