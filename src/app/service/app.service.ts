@@ -68,6 +68,7 @@ export class AppService {
     currentFilter: any;
     completeFilterModel: any;
     countRefresh: Subject<any> = new Subject();
+    selectRecord: Subject<any> = new Subject();
     constructor() {
         const self = this;
         self.serviceChange = new EventEmitter();
@@ -892,6 +893,10 @@ export class AppService {
 
     refreshCount(service) {
         this.countRefresh.next(service)
+    }
+
+    loadSelected(type) {
+        this.selectRecord.next(type)
     }
 
     downloadText(filename: string, text: string) {

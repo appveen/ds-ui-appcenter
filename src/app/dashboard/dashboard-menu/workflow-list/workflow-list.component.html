@@ -7,19 +7,19 @@
     All Records - Workflow
 </div>
 <ng-container *ngFor=" let item of records | serviceSearch:searchText">
-    <div *ngIf="item?.name" class="menu-list-item d-flex align-items-center justify-content-between"
-        (click)="loadWorkflow(item, true)"
-        [ngClass]="{'text-dark':item?._id === activeId,'text-secondary':item?._id !== activeId}">
+    <div *ngIf="item?.name" class="menu-list-item d-flex align-items-center justify-content-between text-secondary"
+        (click)="loadWorkflow(item, true)" [ngClass]="{'text-dark hover':item._id === activeId && isWfSelected}">
         <div class="d-flex align-items-center">
             <!-- <div class="list-item-icon d-flex align-items-center">
                 <span class="dsi dsi-branch"></span>
             </div> -->
-            <div class="list-item-label d-flex align-items-center text-truncate" [odpTruncated]="item?.name">
+            <div class="list-item-label d-flex align-items-center text-truncate text-secondary"
+                [odpTruncated]="item?.name" [ngClass]="{'text-dark fw-600':item?._id === activeId && isWfSelected}">
                 {{item?.name}}
             </div>
         </div>
-        <div class=" d-flex align-items-center justify-content-center mr-4"
-            [ngClass]="{'text-dark':item?._id === activeId,'text-secondary':item?._id !== activeId}">
+        <div class=" d-flex align-items-center justify-content-center mr-4 text-secondary"
+            [ngClass]="{'text-dark fw-600':item?._id === activeId && isWfSelected}">
             <small>{{serviceDocsCount[item?._id] || 0}}</small>
         </div>
     </div>

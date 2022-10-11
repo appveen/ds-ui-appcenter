@@ -19,6 +19,7 @@ export class WorkflowListComponent implements OnInit {
   activeId: string;
   searchText: string;
   serviceDocsCount: any;
+  isWfSelected: boolean = false;
   @Output() toggleWorkflow: EventEmitter<any> = new EventEmitter();
 
   constructor(private appService: AppService,
@@ -54,6 +55,10 @@ export class WorkflowListComponent implements OnInit {
 
     this.appService.countRefresh.subscribe(service => {
       this.updateWorflowCount(service)
+    })
+
+    this.appService.selectRecord.subscribe(res => {
+      this.isWfSelected = res === 'wf'
     })
   }
 
@@ -144,6 +149,7 @@ export class WorkflowListComponent implements OnInit {
     } else {
       this.router.navigate(['/', this.commonService.app._id, 'workflow', workflow._id]);
     }
+    this.appService.loadSelected('wf')
   }
 
 

@@ -21,6 +21,7 @@ export class ServiceListComponent implements OnInit {
   prefId: string;
   preference: any;
   searchText: string;
+  isDsSelected: boolean = true;
   @Input() dsType: string;
   @Output() onStarredAction: EventEmitter<any> = new EventEmitter();
 
@@ -44,6 +45,9 @@ export class ServiceListComponent implements OnInit {
     this.dashboardService.appChanged.subscribe(app => {
       this.getPreferences();
     });
+    this.appService.selectRecord.subscribe(res => {
+      this.isDsSelected = res === 'ds'
+    })
   }
 
   setActiveId(url: string) {
@@ -150,6 +154,8 @@ export class ServiceListComponent implements OnInit {
         this.router.navigate(['/', this.commonService.app._id, 'services', service._id, 'list']);
       });
     }
+
+    this.appService.loadSelected('ds')
   }
 
   addToStaredList(serviceId) {

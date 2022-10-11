@@ -38,7 +38,7 @@
     <div class="menu-list-item d-flex align-items-center justify-content-between pr-4"
         (click)="loadDataService(item,true)" [attr.data-id]="item._id"
         *ngFor="let item of records | serviceSearch:searchText"
-        [ngClass]="{'text-dark hover':item._id === activeId,'text-secondary':item._id !== activeId}">
+        [ngClass]="{'text-dark hover':item._id === activeId && isDsSelected,'text-secondary':item._id !== activeId}">
         <div class="d-flex align-items-center">
             <!-- <div class="list-item-icon d-flex align-items-center">
             <span class="dsi dsi-data-service"></span>
@@ -49,7 +49,8 @@
             <span class="fa fa-star text-white mr-3 pinning-star" ngbTooltip="You can only pin upto 5 data services"
                 *ngIf="pinnedDs.length>=5" (click)="$event.stopPropagation();"></span>
             <div class="list-item-label d-flex align-items-center text-truncate text-secondary"
-                [odpTruncated]="item.name" [ngClass]="{'text-dark fw-600': appService?.serviceId === item._id}">
+                [odpTruncated]="item.name"
+                [ngClass]="{'text-dark fw-600': appService?.serviceId === item._id && isDsSelected}">
                 {{item.name}}
             </div>
         </div>
