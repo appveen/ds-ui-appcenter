@@ -28,7 +28,7 @@ export class FlowsInteractionService {
     } else if (_.lowerCase(item.status) == 'error') {
       return 'text-danger'
     } else {
-      return 'text-muted'
+      return 'text-warning'
     }
   }
 }
