@@ -3,10 +3,10 @@
         <div class="d-flex flex-column w-100">
             <div class="d-flex flex-column w-100">
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="w-100 bg-light p-3 rounded">
+                    <div class="w-100 bg-light-grey p-3 rounded">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <span class="fw-600">Node Details</span>
-                            <button type="button" class="btn btn-link" (click)="downloadStateData()">
+                            <button type="button" class="btn btn-dark btn-sm" (click)="downloadStateData()">
                                 Download Complete JSON
                             </button>
                         </div>
@@ -47,10 +47,10 @@
                 </div>
                 <ng-container *ngIf="currState?.headers">
                     <div class="d-flex align-items-center align-items-stretch mt-3">
-                        <div class="w-100 bg-light p-3 rounded">
+                        <div class="w-100 bg-light-grey p-3 rounded">
                             <div class="d-flex align-items-center justify-content-between w-100">
                                 <span class="fw-600">Headers ({{(currState?.headers | keyvalue).length}})</span>
-                                <button type="button" class="btn btn-link" (click)="toggleHeaders=!toggleHeaders">
+                                <button type="button" class="btn btn-dark btn-sm" (click)="toggleHeaders=!toggleHeaders">
                                     {{toggleHeaders ? 'Hide':'Show'}} Header
                                 </button>
                             </div>
@@ -65,7 +65,7 @@
                     </ng-container>
                 </ng-container>
                 <div class="d-flex align-items-center align-items-stretch mt-3">
-                    <div class="w-100 bg-light p-3 rounded">
+                    <div class="w-100 bg-light-grey p-3 rounded">
                         <span class="fw-600">Payload</span>
                     </div>
                 </div>
@@ -82,8 +82,8 @@
                     <div class="p-2 header-value w-100">{{currState?.payload?.totalRecords}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="w-100 py-2">
-                        <button type="button" class="btn btn-link" (click)="showPayload()">
+                    <div class="w-100 p-2">
+                        <button type="button" class="btn btn-dark btn-sm" (click)="showPayload()">
                             <span *ngIf="!togglePayload">Show Complete Payload</span>
                             <span *ngIf="togglePayload">Hide Complete Payload</span>
                         </button>
