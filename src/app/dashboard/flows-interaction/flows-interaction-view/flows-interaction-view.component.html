@@ -10,7 +10,7 @@
         </div>
         <div class="d-flex align-items-center font-13">
             <span class="text-secondary mr-1">Status:</span>
-            <span class="text-dark" [ngClass]="getStatusClass(interactionData)">{{interactionData?.status}}</span>
+            <span class="text fw-500" [ngClass]="getStatusClass(interactionData)">{{interactionData?.status}}</span>
         </div>
     </div>
     <odp-flow-node-view *ngIf="flowData && flowData.inputNode" [currNode]="flowData.inputNode" [stateList]="interactionStateList" [flowData]="flowData">

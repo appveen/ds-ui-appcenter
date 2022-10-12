@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AppService } from 'src/app/service/app.service';
+import { CommonService } from 'src/app/service/common.service';
 import { FlowsInteractionService } from '../../flows-interaction.service';
 
 @Component({
@@ -16,8 +17,10 @@ export class FlowNodeViewComponent implements OnInit {
   toggleHeaders: boolean;
   togglePayload: boolean;
   completeData: any;
+  fetchingData: boolean;
   constructor(private appService: AppService,
-    private flowsService: FlowsInteractionService) {
+    private flowsService: FlowsInteractionService,
+    private commonService: CommonService) {
     this.flowData = {};
     this.stateList = [];
   }
@@ -50,14 +53,21 @@ export class FlowNodeViewComponent implements OnInit {
     this.appService.downloadText(this.currNode._id + '.json', JSON.stringify(this.completeData, null, 4));
   }
 
-  get bodyDetails() {
-    if (this.currState && this.currState.body) {
-      if (Array.isArray(this.currState.body)) {
-        return 'Payload is an array with ' + this.currState.body.length + ' no of rows';
-      } else {
-        return 'Payload is an Object with ' + Object.keys(this.currState.body).length + ' no of keys/fields';
-      }
+  showPayload() {
+    this.togglePayload = !this.togglePayload;
+    if (this.togglePayload && !this.currState.body) {
+      this.fetchPayload();
     }
-    return 'Payload is in non-readable format';
+  }
+
+  fetchPayload() {
+    this.fetchingData = true;
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.currState.interactionId}/state/${this.currState.nodeId}/data`).subscribe(res => {
+      this.currState.body = res.body;
+      this.fetchingData = false;
+    }, err => {
+      this.fetchingData = false;
+      this.commonService.errorToast(err);
+    });
   }
 }
