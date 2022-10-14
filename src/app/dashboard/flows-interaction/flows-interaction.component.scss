@@ -3,8 +3,10 @@
 
 
 .list-wrapper {
-    overflow-y: auto;
-    max-height: calc(100vh - 112px);
+    // overflow-y: auto;
+    // min-height: calc(100vh - 112px);
+    // max-height: calc(100vh - 112px);
+    height: calc(100vh - 112px);
 }
 
 .item-id {
@@ -34,6 +36,16 @@
 }
 
 .item-real-ip {
+    min-width: 200px;
+    max-width: 200px;
+}
+
+.item-start-time {
+    min-width: 200px;
+    max-width: 200px;
+}
+
+.item-duration {
     min-width: 200px;
     max-width: 200px;
 }

@@ -32,96 +32,45 @@
   }
 }
 
-.dsi-app-panel {
+.dsi-api-reciever {
   &:before {
-    content: $dsi-app-panel;
+    content: $dsi-api-reciever;
   }
 }
 
-.dsi-user {
+.dsi-logs {
   &:before {
-    content: $dsi-user;
+    content: $dsi-logs;
   }
 }
 
-.dsi-nano-service {
+.dsi-mapping {
   &:before {
-    content: $dsi-nano-service;
+    content: $dsi-mapping;
   }
 }
 
-.dsi-group {
+.dsi-response {
   &:before {
-    content: $dsi-group;
-  }
-
-  &.dsi-bg {
-    background: #CBE7CE;
+    content: $dsi-response;
   }
 }
 
-.dsi-data-service {
+.dsi-connector {
   &:before {
-    content: $dsi-data-service;
+    content: $dsi-connector;
   }
 }
 
-.dsi-api-doc {
+.dsi-invoke-api {
   &:before {
-    content: $dsi-api-doc;
-  }
-}
-
-.dsi-library {
-  &:before {
-    content: $dsi-library;
-  }
-
-  &.dsi-bg {
-    background: #F7DEC2;
-  }
-}
-
-.dsi-bot {
-  &:before {
-    content: $dsi-bot;
-  }
-}
-
-.dsi-agent {
-  &:before {
-    content: $dsi-agent;
-  }
-}
-
-.dsi-function {
-  &:before {
-    content: $dsi-function;
-  }
-}
-
-.dsi-bookmark {
-  &:before {
-    content: $dsi-bookmark;
-  }
-}
-
-.dsi-flow {
-  &:before {
-    content: $dsi-flow;
-  }
-}
-
-.dsi-insight {
-  &:before {
-    content: $dsi-insight;
+    content: $dsi-invoke-api;
   }
 }
 
 .dsi-notification-active .path1 {
   &:before {
     content: $dsi-notification-active-path1;
-    color: rgb(0, 0, 0);
   }
 }
 
@@ -129,7 +78,6 @@
   &:before {
     content: $dsi-notification-active-path2;
     margin-left: -1em;
-    color: rgb(0, 0, 0);
   }
 }
 
@@ -141,405 +89,81 @@
   }
 }
 
-.dsi-notification-active .path4 {
+.dsi-minus-circle-fill {
   &:before {
-    content: $dsi-notification-active-path4;
-    margin-left: -1em;
-    color: rgb(255, 255, 255);
+    content: $dsi-minus-circle-fill;
   }
 }
 
-.dsi-notification {
+.dsi-plus-circle-fill {
   &:before {
-    content: $dsi-notification;
+    content: $dsi-plus-circle-fill;
   }
 }
 
-.dsi-stop {
+.dsi-id {
   &:before {
-    content: $dsi-stop;
+    content: $dsi-id;
   }
 }
 
-.dsi-sort {
+.dsi-date {
   &:before {
-    content: $dsi-sort;
+    content: $dsi-date;
   }
 }
 
-.dsi-pointer {
+.dsi-library-alt {
   &:before {
-    content: $dsi-pointer;
+    content: $dsi-library-alt;
   }
 }
 
-.dsi-file {
+.dsi-file-text {
   &:before {
-    content: $dsi-file;
+    content: $dsi-file-text;
   }
 }
 
-.dsi-collapse {
+.dsi-object {
   &:before {
-    content: $dsi-collapse;
+    content: $dsi-object;
   }
 }
 
-.dsi-expand {
+.dsi-array {
   &:before {
-    content: $dsi-expand;
+    content: $dsi-array;
   }
 }
 
-.dsi-admin {
+.dsi-relation {
   &:before {
-    content: $dsi-admin;
+    content: $dsi-relation;
   }
 }
 
-.dsi-join {
+.dsi-number {
   &:before {
-    content: $dsi-join;
+    content: $dsi-number;
   }
 }
 
-.dsi-redo {
+.dsi-location {
   &:before {
-    content: $dsi-redo;
+    content: $dsi-location;
   }
 }
 
-.dsi-undo {
+.dsi-Profile {
   &:before {
-    content: $dsi-undo;
+    content: $dsi-Profile;
   }
 }
 
-.dsi-align-left {
+.dsi-plus-circle {
   &:before {
-    content: $dsi-align-left;
-  }
-}
-
-.dsi-align-right {
-  &:before {
-    content: $dsi-align-right;
-  }
-}
-
-.dsi-save {
-  &:before {
-    content: $dsi-save;
-  }
-}
-
-.dsi-ban {
-  &:before {
-    content: $dsi-ban;
-  }
-}
-
-.dsi-play {
-  &:before {
-    content: $dsi-play;
-  }
-}
-
-.dsi-more-vertical {
-  &:before {
-    content: $dsi-more-vertical;
-  }
-}
-
-.dsi-attach {
-  &:before {
-    content: $dsi-attach;
-  }
-
-  &.dsi-bg {
-    background: #D7F5D1;
-  }
-}
-
-.dsi-refresh {
-  &:before {
-    content: $dsi-refresh;
-  }
-}
-
-.dsi-map-pin {
-  &:before {
-    content: $dsi-map-pin;
-  }
-}
-
-.dsi-dollar-sign {
-  &:before {
-    content: $dsi-dollar-sign;
-  }
-}
-
-.dsi-filter-alt {
-  &:before {
-    content: $dsi-filter-alt;
-  }
-}
-
-.dsi-cloud {
-  &:before {
-    content: $dsi-cloud;
-  }
-}
-
-.dsi-skip-forward {
-  &:before {
-    content: $dsi-skip-forward;
-  }
-}
-
-.dsi-more-vertical-6 {
-  &:before {
-    content: $dsi-more-vertical-6;
-  }
-}
-
-.dsi-remove {
-  &:before {
-    content: $dsi-remove;
-  }
-}
-
-.dsi-branch {
-  &:before {
-    content: $dsi-branch;
-  }
-}
-
-.dsi-calendar {
-  &:before {
-    content: $dsi-calendar;
-  }
-
-  &.dsi-bg {
-    background: #FFE6D8;
-  }
-}
-
-.dsi-json {
-  &:before {
-    content: $dsi-json;
-  }
-}
-
-.dsi-hide {
-  &:before {
-    content: $dsi-hide;
-  }
-}
-
-.dsi-done {
-  &:before {
-    content: $dsi-done;
-  }
-}
-
-.dsi-full-screen {
-  &:before {
-    content: $dsi-full-screen;
-  }
-}
-
-.dsi-upload {
-  &:before {
-    content: $dsi-upload;
-  }
-}
-
-.dsi-download {
-  &:before {
-    content: $dsi-download;
-  }
-}
-
-.dsi-check {
-  &:before {
-    content: $dsi-check;
-  }
-}
-
-.dsi-clock {
-  &:before {
-    content: $dsi-clock;
-  }
-}
-
-.dsi-mail {
-  &:before {
-    content: $dsi-mail;
-  }
-}
-
-.dsi-danger-circle {
-  &:before {
-    content: $dsi-danger-circle;
-  }
-}
-
-.dsi-info-circle {
-  &:before {
-    content: $dsi-info-circle;
-  }
-}
-
-.dsi-logout {
-  &:before {
-    content: $dsi-logout;
-  }
-}
-
-.dsi-edit {
-  &:before {
-    content: $dsi-edit;
-  }
-}
-
-.dsi-copy {
-  &:before {
-    content: $dsi-copy;
-  }
-}
-
-.dsi-arrow-left {
-  &:before {
-    content: $dsi-arrow-left;
-  }
-}
-
-.dsi-arrow-right {
-  &:before {
-    content: $dsi-arrow-right;
-  }
-}
-
-.dsi-view {
-  &:before {
-    content: $dsi-view;
-  }
-}
-
-.dsi-search {
-  &:before {
-    content: $dsi-search;
-  }
-}
-
-.dsi-minus {
-  &:before {
-    content: $dsi-minus;
-  }
-}
-
-.dsi-drop-down-alt {
-  &:before {
-    content: $dsi-drop-down-alt;
-  }
-}
-
-.dsi-trash {
-  &:before {
-    content: $dsi-trash;
-  }
-}
-
-.dsi-settings {
-  &:before {
-    content: $dsi-settings;
-  }
-}
-
-.dsi-close {
-  &:before {
-    content: $dsi-close;
-  }
-}
-
-.dsi-plus {
-  &:before {
-    content: $dsi-plus;
-  }
-}
-
-.dsi-console {
-  &:before {
-    content: $dsi-console;
-  }
-}
-
-.dsi-drop-down {
-  &:before {
-    content: $dsi-drop-down;
-  }
-}
-
-.dsi-drop-up {
-  &:before {
-    content: $dsi-drop-up;
-  }
-}
-
-.dsi-required .path1 {
-  &:before {
-    content: $dsi-required-path1;
-    color: rgb(224, 122, 95);
-  }
-}
-
-.dsi-required .path2 {
-  &:before {
-    content: $dsi-required-path2;
-    margin-left: -1em;
-    color: rgb(255, 255, 255);
-  }
-}
-
-.dsi-text {
-  &:before {
-    content: $dsi-text;
-  }
-
-  &.dsi-bg {
-    background: #E7CBD4;
-  }
-}
-
-.dsi-boolean {
-  &:before {
-    content: $dsi-boolean;
-  }
-
-  &.dsi-bg {
-    background: #CBE7CE;
-  }
-}
-
-.dsi-unique .path1 {
-  &:before {
-    content: $dsi-unique-path1;
-    color: rgb(129, 178, 154);
-  }
-}
-
-.dsi-unique .path2 {
-  &:before {
-    content: $dsi-unique-path2;
-    margin-left: -1em;
-    color: rgb(255, 255, 255);
-  }
-}
-
-.dsi-minus-circle {
-  &:before {
-    content: $dsi-minus-circle;
+    content: $dsi-plus-circle;
   }
 }
 
@@ -558,106 +182,458 @@
   }
 }
 
-.dsi-plus-circle {
+.dsi-minus-circle {
   &:before {
-    content: $dsi-plus-circle;
+    content: $dsi-minus-circle;
   }
 }
 
-.dsi-Profile {
+.dsi-unique .path1 {
   &:before {
-    content: $dsi-Profile;
+    content: $dsi-unique-path1;
+    color: rgb(129, 178, 154);
   }
 }
 
-.dsi-location {
+.dsi-unique .path2 {
   &:before {
-    content: $dsi-location;
-  }
-
-  &.dsi-bg {
-    background: #CAF0F3;
+    content: $dsi-unique-path2;
+    margin-left: -1em;
+    color: rgb(255, 255, 255);
   }
 }
 
-.dsi-number {
+.dsi-boolean {
   &:before {
-    content: $dsi-number;
-  }
-
-  &.dsi-bg {
-    background: #E7CBE6;
+    content: $dsi-boolean;
   }
 }
 
-.dsi-relation {
+.dsi-text {
   &:before {
-    content: $dsi-relation;
+    content: $dsi-text;
   }
 }
 
-.dsi-array {
+.dsi-required .path1 {
   &:before {
-    content: $dsi-array;
-  }
-
-  &.dsi-bg {
-    background: #D3E4FF;
+    content: $dsi-required-path1;
+    color: rgb(224, 122, 95);
   }
 }
 
-.dsi-object {
+.dsi-required .path2 {
   &:before {
-    content: $dsi-object;
+    content: $dsi-required-path2;
+    margin-left: -1em;
+    color: rgb(255, 255, 255);
   }
 }
 
-.dsi-file-text {
+.dsi-drop-up {
   &:before {
-    content: $dsi-file-text;
+    content: $dsi-drop-up;
   }
 }
 
-.dsi-library-alt {
+.dsi-drop-down {
   &:before {
-    content: $dsi-library-alt;
+    content: $dsi-drop-down;
   }
 }
 
-.dsi-date {
+.dsi-console {
   &:before {
-    content: $dsi-date;
+    content: $dsi-console;
   }
 }
 
-.dsi-id {
+.dsi-plus {
   &:before {
-    content: $dsi-id;
-  }
-
-  &.dsi-bg {
-    background: #C9D5E8;
+    content: $dsi-plus;
   }
 }
 
-.dsi-ds {
+.dsi-close {
   &:before {
-    content: $dsi-ds;
+    content: $dsi-close;
   }
 }
 
-.dsi-wf {
+.dsi-settings {
   &:before {
-    content: $dsi-wf;
+    content: $dsi-settings;
   }
 }
 
-.dsi-bookmark1 {
+.dsi-trash {
   &:before {
-    content: $dsi-bookmark1;
+    content: $dsi-trash;
   }
 }
 
-.tox-tinymce {
-  border-radius: 6px !important;
+.dsi-drop-down-alt {
+  &:before {
+    content: $dsi-drop-down-alt;
+  }
+}
+
+.dsi-minus {
+  &:before {
+    content: $dsi-minus;
+  }
+}
+
+.dsi-search {
+  &:before {
+    content: $dsi-search;
+  }
+}
+
+.dsi-view {
+  &:before {
+    content: $dsi-view;
+  }
+}
+
+.dsi-arrow-right {
+  &:before {
+    content: $dsi-arrow-right;
+  }
+}
+
+.dsi-arrow-left {
+  &:before {
+    content: $dsi-arrow-left;
+  }
+}
+
+.dsi-copy {
+  &:before {
+    content: $dsi-copy;
+  }
+}
+
+.dsi-edit {
+  &:before {
+    content: $dsi-edit;
+  }
+}
+
+.dsi-logout {
+  &:before {
+    content: $dsi-logout;
+  }
+}
+
+.dsi-info-circle {
+  &:before {
+    content: $dsi-info-circle;
+  }
+}
+
+.dsi-danger-circle {
+  &:before {
+    content: $dsi-danger-circle;
+  }
+}
+
+.dsi-mail {
+  &:before {
+    content: $dsi-mail;
+  }
+}
+
+.dsi-clock {
+  &:before {
+    content: $dsi-clock;
+  }
+}
+
+.dsi-check {
+  &:before {
+    content: $dsi-check;
+  }
+}
+
+.dsi-download {
+  &:before {
+    content: $dsi-download;
+  }
+}
+
+.dsi-upload {
+  &:before {
+    content: $dsi-upload;
+  }
+}
+
+.dsi-full-screen {
+  &:before {
+    content: $dsi-full-screen;
+  }
+}
+
+.dsi-done {
+  &:before {
+    content: $dsi-done;
+  }
+}
+
+.dsi-hide {
+  &:before {
+    content: $dsi-hide;
+  }
+}
+
+.dsi-json {
+  &:before {
+    content: $dsi-json;
+  }
+}
+
+.dsi-calendar {
+  &:before {
+    content: $dsi-calendar;
+  }
+}
+
+.dsi-branch {
+  &:before {
+    content: $dsi-branch;
+  }
+}
+
+.dsi-remove {
+  &:before {
+    content: $dsi-remove;
+  }
+}
+
+.dsi-more-vertical-6 {
+  &:before {
+    content: $dsi-more-vertical-6;
+  }
+}
+
+.dsi-skip-forward {
+  &:before {
+    content: $dsi-skip-forward;
+  }
+}
+
+.dsi-cloud {
+  &:before {
+    content: $dsi-cloud;
+  }
+}
+
+.dsi-filter-alt {
+  &:before {
+    content: $dsi-filter-alt;
+  }
+}
+
+.dsi-dollar-sign {
+  &:before {
+    content: $dsi-dollar-sign;
+  }
+}
+
+.dsi-map-pin {
+  &:before {
+    content: $dsi-map-pin;
+  }
+}
+
+.dsi-refresh {
+  &:before {
+    content: $dsi-refresh;
+  }
+}
+
+.dsi-attach {
+  &:before {
+    content: $dsi-attach;
+  }
+}
+
+.dsi-more-vertical {
+  &:before {
+    content: $dsi-more-vertical;
+  }
+}
+
+.dsi-play {
+  &:before {
+    content: $dsi-play;
+  }
+}
+
+.dsi-ban {
+  &:before {
+    content: $dsi-ban;
+  }
+}
+
+.dsi-save {
+  &:before {
+    content: $dsi-save;
+  }
+}
+
+.dsi-align-right {
+  &:before {
+    content: $dsi-align-right;
+  }
+}
+
+.dsi-align-left {
+  &:before {
+    content: $dsi-align-left;
+  }
+}
+
+.dsi-undo {
+  &:before {
+    content: $dsi-undo;
+  }
+}
+
+.dsi-redo {
+  &:before {
+    content: $dsi-redo;
+  }
+}
+
+.dsi-join {
+  &:before {
+    content: $dsi-join;
+  }
+}
+
+.dsi-admin {
+  &:before {
+    content: $dsi-admin;
+  }
+}
+
+.dsi-expand {
+  &:before {
+    content: $dsi-expand;
+  }
+}
+
+.dsi-collapse {
+  &:before {
+    content: $dsi-collapse;
+  }
+}
+
+.dsi-file {
+  &:before {
+    content: $dsi-file;
+  }
+}
+
+.dsi-pointer {
+  &:before {
+    content: $dsi-pointer;
+  }
+}
+
+.dsi-sort {
+  &:before {
+    content: $dsi-sort;
+  }
+}
+
+.dsi-stop {
+  &:before {
+    content: $dsi-stop;
+  }
+}
+
+.dsi-notification {
+  &:before {
+    content: $dsi-notification;
+  }
+}
+
+.dsi-insight {
+  &:before {
+    content: $dsi-insight;
+  }
+}
+
+.dsi-flow {
+  &:before {
+    content: $dsi-flow;
+  }
+}
+
+.dsi-bookmark {
+  &:before {
+    content: $dsi-bookmark;
+  }
+}
+
+.dsi-function {
+  &:before {
+    content: $dsi-function;
+  }
+}
+
+.dsi-agent {
+  &:before {
+    content: $dsi-agent;
+  }
+}
+
+.dsi-bot {
+  &:before {
+    content: $dsi-bot;
+  }
+}
+
+.dsi-library {
+  &:before {
+    content: $dsi-library;
+  }
+}
+
+.dsi-api-doc {
+  &:before {
+    content: $dsi-api-doc;
+  }
+}
+
+.dsi-data-service {
+  &:before {
+    content: $dsi-data-service;
+  }
+}
+
+.dsi-group {
+  &:before {
+    content: $dsi-group;
+  }
+}
+
+.dsi-nano-service {
+  &:before {
+    content: $dsi-nano-service;
+  }
+}
+
+.dsi-user {
+  &:before {
+    content: $dsi-user;
+  }
+}
+
+.dsi-app-panel {
+  &:before {
+    content: $dsi-app-panel;
+  }
 }

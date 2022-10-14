@@ -1,5 +1,9 @@
 <div class="p-3">
     <div class="header p-3 d-flex align-items-center justify-content-between bg-white rounded mb-3">
+        <button type="button" class="btn btn-link d-flex align-items-center" routerLink="../">
+            <span class="dsi dsi-arrow-left mr-2"></span>
+            <span class="text">Back</span>
+        </button>
         <div class="d-flex align-items-center font-13">
             <span class="text-secondary mr-1">Remote Txn ID:</span>
             <span class="text-dark">{{interactionData?.headers['data-stack-remote-txn-id']}}</span>
@@ -13,6 +17,7 @@
             <span class="text fw-500" [ngClass]="getStatusClass(interactionData)">{{interactionData?.status}}</span>
         </div>
     </div>
-    <odp-flow-node-view *ngIf="flowData && flowData.inputNode" [currNode]="flowData.inputNode" [stateList]="interactionStateList" [flowData]="flowData">
+    <odp-flow-node-view *ngIf="flowData && flowData.inputNode" [currNode]="flowData.inputNode"
+        [stateList]="interactionStateList" [flowData]="flowData">
     </odp-flow-node-view>
 </div>

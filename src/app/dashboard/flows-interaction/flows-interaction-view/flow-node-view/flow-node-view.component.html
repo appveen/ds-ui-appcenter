@@ -3,9 +3,51 @@
         <div class="d-flex flex-column w-100">
             <div class="d-flex flex-column w-100">
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="w-100 bg-light-grey p-3 rounded">
+                    <div class="w-100 border-bottom border-light-grey pb-3">
                         <div class="d-flex align-items-center justify-content-between w-100">
-                            <span class="fw-600">Node Details</span>
+                            <!-- <span class="fw-600">Node Details</span> -->
+                            <div class="d-flex align-items-center">
+                                <ng-container *ngIf="currNode.type=='FILE'">
+                                    <span class="node-icon dsi dsi-file"></span>
+                                    <span class="ml-3 fw-500 text-accent">File Agent</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='API' && currNode?.options?.path">
+                                    <span class="node-icon dsi dsi-api-reciever"></span>
+                                    <span class="ml-3 fw-500 text-accent">API Reciever</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='API' && currNode?.options?.url">
+                                    <span class="node-icon dsi dsi-invoke-api"></span>
+                                    <span class="ml-3 fw-500 text-accent">Invoke API</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='TIMER'">
+                                    <span class="node-icon dsi dsi-clock"></span>
+                                    <span class="ml-3 fw-500 text-accent">Timer</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='CONNECTOR'">
+                                    <span class="node-icon dsi dsi-connector"></span>
+                                    <span class="ml-3 fw-500 text-accent">Connector</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='DATASERVICE'">
+                                    <span class="node-icon dsi dsi-data-service"></span>
+                                    <span class="ml-3 fw-500 text-accent">Data Service</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='FUNCTION'">
+                                    <span class="node-icon dsi dsi-function"></span>
+                                    <span class="ml-3 fw-500 text-accent">Function</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='MAPPING'">
+                                    <span class="node-icon dsi dsi-mapping"></span>
+                                    <span class="ml-3 fw-500 text-accent">Mapping</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='UNWIND'">
+                                    <span class="node-icon dsi dsi-expand"></span>
+                                    <span class="ml-3 fw-500 text-accent">Unwind</span>
+                                </ng-container>
+                                <ng-container *ngIf="currNode.type=='RESPONSE'">
+                                    <span class="node-icon dsi dsi-response"></span>
+                                    <span class="ml-3 fw-500 text-accent">Response</span>
+                                </ng-container>
+                            </div>
                             <button type="button" class="btn btn-dark btn-sm" (click)="downloadStateData()">
                                 Download Complete JSON
                             </button>
@@ -37,9 +79,13 @@
                         <div class="p-2 header-key fw-600">Content Type</div>
                         <div class="p-2 header-value w-100">{{getContentType(currNode?.options?.contentType)}}</div>
                     </div>
-                    <div class="d-flex align-items-center align-items-stretch">
+                    <div *ngIf="currNode?.options?.path" class="d-flex align-items-center align-items-stretch">
                         <div class="p-2 header-key fw-600">Path</div>
                         <div class="p-2 header-value w-100">{{currNode?.options?.path}}</div>
+                    </div>
+                    <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch">
+                        <div class="p-2 header-key fw-600">URL</div>
+                        <div class="p-2 header-value w-100">{{currNode?.options?.url}}</div>
                     </div>
                     <div class="d-flex align-items-center align-items-stretch">
                         <div class="p-2 header-key fw-600">HTTP Method</div>
@@ -60,7 +106,7 @@
                 </div>
                 <ng-container *ngIf="currState?.headers">
                     <div class="d-flex align-items-center align-items-stretch mt-3">
-                        <div class="w-100 bg-light-grey p-3 rounded">
+                        <div class="w-100 border p-3 rounded">
                             <div class="d-flex align-items-center justify-content-between w-100">
                                 <span class="fw-600">Headers ({{(currState?.headers | keyvalue).length}})</span>
                                 <button type="button" class="btn btn-dark btn-sm"
@@ -79,7 +125,7 @@
                     </ng-container>
                 </ng-container>
                 <div class="d-flex align-items-center align-items-stretch mt-3">
-                    <div class="w-100 bg-light-grey p-3 rounded">
+                    <div class="w-100 border p-3 rounded">
                         <span class="fw-600">Payload</span>
                     </div>
                 </div>
