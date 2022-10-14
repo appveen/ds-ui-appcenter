@@ -47,6 +47,13 @@ export class FlowNodeViewComponent implements OnInit {
     return 'text-warning';
   }
 
+  getStatusBagdeClass() {
+    if (this.currState) {
+      return this.flowsService.getStatusBadgeClass(this.currState);
+    }
+    return 'text-warning';
+  }
+
   getNextNode(node: any) {
     return (this.flowData.nodes || []).find(e => e._id == node._id);
   }

@@ -54,4 +54,10 @@ export class FlowsInteractionViewComponent implements OnInit {
       return this.flowsService.getStatusClass(item);
     }
   }
+
+  getStatusBadgeClass(item: any) {
+    if (item) {
+      return this.flowsService.getStatusBadgeClass(item);
+    }
+  }
 }

@@ -5,48 +5,53 @@
                 <div class="d-flex align-items-center align-items-stretch">
                     <div class="w-100 border-bottom border-light-grey pb-3">
                         <div class="d-flex align-items-center justify-content-between w-100">
-                            <!-- <span class="fw-600">Node Details</span> -->
                             <div class="d-flex align-items-center">
-                                <ng-container *ngIf="currNode.type=='FILE'">
-                                    <span class="node-icon dsi dsi-file"></span>
-                                    <span class="ml-3 fw-500 text-accent">File Agent</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='API' && currNode?.options?.path">
-                                    <span class="node-icon dsi dsi-api-reciever"></span>
-                                    <span class="ml-3 fw-500 text-accent">API Reciever</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='API' && currNode?.options?.url">
-                                    <span class="node-icon dsi dsi-invoke-api"></span>
-                                    <span class="ml-3 fw-500 text-accent">Invoke API</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='TIMER'">
-                                    <span class="node-icon dsi dsi-clock"></span>
-                                    <span class="ml-3 fw-500 text-accent">Timer</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='CONNECTOR'">
-                                    <span class="node-icon dsi dsi-connector"></span>
-                                    <span class="ml-3 fw-500 text-accent">Connector</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='DATASERVICE'">
-                                    <span class="node-icon dsi dsi-data-service"></span>
-                                    <span class="ml-3 fw-500 text-accent">Data Service</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='FUNCTION'">
-                                    <span class="node-icon dsi dsi-function"></span>
-                                    <span class="ml-3 fw-500 text-accent">Function</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='MAPPING'">
-                                    <span class="node-icon dsi dsi-mapping"></span>
-                                    <span class="ml-3 fw-500 text-accent">Mapping</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='UNWIND'">
-                                    <span class="node-icon dsi dsi-expand"></span>
-                                    <span class="ml-3 fw-500 text-accent">Unwind</span>
-                                </ng-container>
-                                <ng-container *ngIf="currNode.type=='RESPONSE'">
-                                    <span class="node-icon dsi dsi-response"></span>
-                                    <span class="ml-3 fw-500 text-accent">Response</span>
-                                </ng-container>
+                                <div class="d-flex align-items-center">
+                                    <ng-container *ngIf="currNode.type=='FILE'">
+                                        <span class="node-icon dsi dsi-file"></span>
+                                        <span class="ml-3 fw-500 text-accent">File Agent</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='API' && currNode?.options?.path">
+                                        <span class="node-icon dsi dsi-api-reciever"></span>
+                                        <span class="ml-3 fw-500 text-accent">API Reciever</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='API' && currNode?.options?.url">
+                                        <span class="node-icon dsi dsi-invoke-api"></span>
+                                        <span class="ml-3 fw-500 text-accent">Invoke API</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='TIMER'">
+                                        <span class="node-icon dsi dsi-clock"></span>
+                                        <span class="ml-3 fw-500 text-accent">Timer</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='CONNECTOR'">
+                                        <span class="node-icon dsi dsi-connector"></span>
+                                        <span class="ml-3 fw-500 text-accent">Connector</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='DATASERVICE'">
+                                        <span class="node-icon dsi dsi-data-service"></span>
+                                        <span class="ml-3 fw-500 text-accent">Data Service</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='FUNCTION'">
+                                        <span class="node-icon dsi dsi-function"></span>
+                                        <span class="ml-3 fw-500 text-accent">Function</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='MAPPING'">
+                                        <span class="node-icon dsi dsi-mapping"></span>
+                                        <span class="ml-3 fw-500 text-accent">Mapping</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='UNWIND'">
+                                        <span class="node-icon dsi dsi-expand"></span>
+                                        <span class="ml-3 fw-500 text-accent">Unwind</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="currNode.type=='RESPONSE'">
+                                        <span class="node-icon dsi dsi-response"></span>
+                                        <span class="ml-3 fw-500 text-accent">Response</span>
+                                    </ng-container>
+                                </div>
+                                <span class="dsi dsi-more-vertical-6 mx-3"></span>
+                                <div class="px-2 py-1 fw-500 badge" [ngClass]="getStatusBagdeClass()">
+                                    {{currState?.status || 'PENDING'}}
+                                </div>
                             </div>
                             <button type="button" class="btn btn-dark btn-sm" (click)="downloadStateData()">
                                 Download Complete JSON
@@ -98,12 +103,12 @@
                         </div>
                     </div>
                 </ng-container>
-                <div class="d-flex align-items-center align-items-stretch">
+                <!-- <div class="d-flex align-items-center align-items-stretch">
                     <div class="p-2 header-key fw-600">Status</div>
                     <div class="p-2 header-value w-100 fw-500" [ngClass]="getStatusClass()">
                         {{currState?.status || 'PENDING'}}
                     </div>
-                </div>
+                </div> -->
                 <ng-container *ngIf="currState?.headers">
                     <div class="d-flex align-items-center align-items-stretch mt-3">
                         <div class="w-100 border p-3 rounded">

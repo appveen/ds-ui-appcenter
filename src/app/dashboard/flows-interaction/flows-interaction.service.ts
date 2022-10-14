@@ -31,4 +31,16 @@ export class FlowsInteractionService {
       return 'text-warning'
     }
   }
+
+  getStatusBadgeClass(item: any) {
+    if (_.lowerCase(item.status) == 'pending') {
+      return 'badge-warning'
+    } else if (_.lowerCase(item.status) == 'success') {
+      return 'badge-success'
+    } else if (_.lowerCase(item.status) == 'error') {
+      return 'badge-danger'
+    } else {
+      return 'badge-warning'
+    }
+  }
 }
