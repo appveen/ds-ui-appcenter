@@ -117,7 +117,7 @@
                     <div ngbDropdownItem *ngFor="let filter of savedViews" class="search-views p-3 hover"
                       (click)='selectSearch(filter)'>
                       <div class="d-flex">
-                        <div title="{{filter.name}}"
+                        <div [ngbTooltip]="filter.name" placement="bottom"
                           class="hover d-inline-block text-truncate max-width-100 font-14 text-dark"
                           [ngClass]="{'fw-500' : filter?.name === selectedSearch?.name, 'fw-400':filter?.name !== selectedSearch?.name }">
                           {{filter.name}}
