@@ -67,7 +67,7 @@ export class WorkflowOverviewComponent implements OnInit {
       .subscribe(res => {
         {
           self.services = res;
-          if (res.length > 1) {
+          if (res.length > 0) {
             res.forEach(ele => {
               this.getServiceDetails(ele)
             })
