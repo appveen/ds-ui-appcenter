@@ -410,7 +410,9 @@ export class CommonService {
       roleList = [];
     }
     roleList.forEach(e => {
-      e.operations = [];
+      if (!e.operations) {
+        e.operations = [];
+      }
     });
     const appGroup = {};
     roleList
@@ -428,7 +430,7 @@ export class CommonService {
     function fetch(app: string, serviceIds: Array<string>) {
       promises.push(
         new Promise<any>((resolve, reject) => {
-          self.subscriptions['getRolesDetails'] = self.get('sm', `/${self.app._id}/service`, {
+          self.subscriptions['getRolesDetails'] = self.get('sm', `/${app}/service`, {
             count: -1,
             select: 'role',
             filter: {
