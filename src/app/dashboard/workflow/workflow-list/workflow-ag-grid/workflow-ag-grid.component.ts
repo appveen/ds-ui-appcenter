@@ -121,6 +121,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   toggleColumns(view, dataColumns) {
     const selectedColumns = view.columns || [];
     const allColumns = this.gridColumnApi.getAllColumns().filter(ele => dataColumns.findIndex(col => col['dataKey'] === ele['colId']) > -1);
+
     // const staticValues = allColumns.filter(ar => !toRemove.find(rm => (rm.name === ar.name && ar.place === rm.place) ))
 
     dataColumns.forEach(ele => {
@@ -303,6 +304,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   getRecordsCount(first?: boolean) {
     const self = this;
+
     if (self.appService.workflowFilter) {
 
       self.apiConfig['filter'] = self.appService.workflowFilter?.['filter'];
@@ -339,29 +341,40 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   arrangeFilter() {
     const self = this;
-    if (!self.apiConfig.filter) {
-      self.apiConfig = {
-        count: 30,
-        page: 1,
-        expand: true,
-        select: self.gridService?.selectedSavedView?.select || '',
-        filter: {
-          serviceId: self.srvcId,
-          $and: [{ operation: 'POST', status: { $ne: 'Draft' } }]
-        },
-        serviceId: self.srvcId
-      }
-    }
     if (self.apiConfig?.filter?.$and?.length > 0) {
 
       const arr = self.apiConfig?.filter?.$and.map(ele => {
+        if (ele.filterType) {
+          delete ele.filterType
+        }
         if (!ele.operation && ele.status !== 'Draft') {
           return ele
         }
         return
       }).filter(ele => ele);
-      self.apiConfig.filter.$and = self.wfService.gridFilterModel.workflowTab === self.appService.workflowTab ? arr : []
+      self.apiConfig.filter.$and = self.wfService.gridFilterModel.workflowTab || 0 === self.appService.workflowTab ? arr : []
+      self.wfService.gridFilterModel['filter'] = _.cloneDeep(self.apiConfig.filter.$and)
     }
+
+    if (!self.apiConfig.filter) {
+      self.apiConfig = {
+        count: 30,
+        page: 1,
+        expand: true,
+        select: self.apiConfig.select ? self.gridService?.selectedSavedView?.select : '',
+        filter: {
+          serviceId: self.srvcId,
+          $and: []
+        },
+        serviceId: self.srvcId
+      }
+    }
+    if (self.wfService.gridFilterModel.workflowTab || 0 === self.appService.workflowTab) {
+      self.apiConfig.filter.$and = _.cloneDeep(self.wfService.gridFilterModel['filter']) || []
+    }
+
+
+
     if (self.appService.workflowTab === 0) {
       self.apiConfig?.filter?.$and.unshift({
         operation: 'POST',
@@ -378,6 +391,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.apiConfig.expandKeys = keys.join();
     self.apiConfig.serviceId = self.srvcId;
   }
+
   getRecords() {
     const self = this;
     return self.commonService.get('api', this.workflowApi, self.apiConfig);
