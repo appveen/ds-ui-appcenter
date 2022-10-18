@@ -23,7 +23,7 @@ export class FileTypeComponent implements OnInit, OnDestroy {
   progress: number;
   subscriptions: any;
   showUploadWindow: boolean;
-  showDownloadWindow: boolean;
+  showDownloadWindow: boolean = false;
   encryptionKey: string;
   constructor(private commonService: CommonService,
     private appService: AppService,
@@ -77,6 +77,7 @@ export class FileTypeComponent implements OnInit, OnDestroy {
     this.selectedFileName = file.name;
     this.selectedFile = file;
     this.selectedFileSize = file.size;
+    event.target.value = ''
   }
 
   removeFile() {
@@ -125,9 +126,6 @@ export class FileTypeComponent implements OnInit, OnDestroy {
 
   closeWindow() {
     this.showUploadWindow = false;
-    this.selectedFile = null;
-    this.selectedFileName = null;
-    this.selectedFileSize = null;
     this.encryptionKey = null;
     this.showDownloadWindow = false;
   }

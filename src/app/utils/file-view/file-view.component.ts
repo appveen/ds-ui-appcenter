@@ -42,10 +42,10 @@ export class FileViewComponent implements OnInit, OnDestroy {
     } else {
       self.contentType = null;
     }
-    if (self.definition && self.definition.value) {
-      self.filename = self.definition.value.metadata.filename;
-    } else if (self.value && self.value.metadata) {
+    if (self.value && self.value.metadata) {
       self.filename = self.value.metadata.filename;
+    } else if (self.definition && self.definition.value) {
+      self.filename = self.definition.value.metadata.filename;
     } else {
       self.filename = null;
     }
