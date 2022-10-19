@@ -301,7 +301,11 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     // self.selectedColOrder.forEach(e => e.dataKey = e.dataKey.replace('data.new.', ''));
     // self.selectedColOrder.forEach(e => e.dataKey = e.dataKey.replace('data.old.', ''));
     self.config.columns = self.selectedColOrder;
-    self.config.select = self.selectedColOrder.map(e => e.key).join(',');
+    self.config.select = self.selectedColOrder.map(e => e.dataKey).join(',');
+    if (self.selectedColOrder.length === self.allColumns.length) {
+      self.config.columns = null
+      self.config.select = null
+    }
 
     self.appService.workflowFilter = self.appService.cloneObject(self.config);
     self.filterString.emit({ view: self.config, close });
