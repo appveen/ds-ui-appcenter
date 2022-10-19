@@ -442,7 +442,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   }
   get respondedByList() {
     const self = this;
-    return self.gridService.respondedByList?.filter(ele => ele._id);
+    return self.gridService.respondedByList?.filter(ele => ele._id && ele._id !== self.workflowFilter);
   }
 
   get workflowtab() {
