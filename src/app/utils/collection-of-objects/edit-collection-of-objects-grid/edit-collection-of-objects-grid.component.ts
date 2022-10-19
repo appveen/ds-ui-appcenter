@@ -439,6 +439,9 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         // },
         onCellClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
+          if (params.value?.filename) {
+            return
+          }
           if (this.isEditable) {
             return this.editItem()
           }
@@ -457,6 +460,9 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         },
         onCellDoubleClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
+          if (params.value?.filename) {
+            return
+          }
           if (this.isEditable) {
             return this.editItem()
           }

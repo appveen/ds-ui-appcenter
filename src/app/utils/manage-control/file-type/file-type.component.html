@@ -73,7 +73,8 @@
 </div>
 
 <div *ngIf="showUploadWindow" class="overlay" (click)="closeWindow()"></div>
-<div [ngClass]="{'show':showUploadWindow}" class="upload-window position-fixed border-left bg-white p-3">
+<div *ngIf="showUploadWindow" class="overlay" [ngClass]="{'show':showUploadWindow}"
+  class="upload-window position-fixed border-left bg-white p-3">
   <div class="d-flex align-items-center justify-content-between">
     <h3>Upload File</h3>
     <button type="button" class="btn btn-link p-0" (click)="closeWindow()">
@@ -83,7 +84,7 @@
   <hr>
   <div class="mt-3">
     <p>Please select a File</p>
-    <label [attr.for]="definition.path" class="btn btn-sm btn-default d-flex align-items-center m-0 p-0"
+    <label [attr.for]="definition.path" class="btn btn-sm btn-default d-flex align-items-center m-0 p-0 text-truncate"
       [ngClass]="{'border-danger w-100':requiredError}">
       <button type="button" class="btn btn-link d-flex align-items-center p-0"
         [disabled]="arrayDefinition?.properties?.readonly || definition?.properties?.readonly || control.disabled"
@@ -118,7 +119,8 @@
 
 
 <div *ngIf="showDownloadWindow" class="overlay" (click)="closeWindow()"></div>
-<div [ngClass]="{'show':showDownloadWindow}" class="download-window position-fixed border-left bg-white p-3">
+<div *ngIf="showDownloadWindow" [ngClass]="{'show':showDownloadWindow}"
+  class="download-window position-fixed border-left bg-white p-3">
   <div class="d-flex align-items-center justify-content-between">
     <h3>Download File</h3>
     <button type="button" class="btn btn-link p-0" (click)="closeWindow()">

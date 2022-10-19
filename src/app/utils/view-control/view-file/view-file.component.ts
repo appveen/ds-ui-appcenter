@@ -32,6 +32,7 @@ export class ViewFileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
+    this.showDownloadWindow = false
   }
 
   ngOnDestroy() {
