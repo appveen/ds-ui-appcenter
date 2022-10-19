@@ -83,7 +83,8 @@
 </ng-template>
 
 <div *ngIf="showDownloadWindow" class="overlay" (click)="closeWindow()"></div>
-<div [ngClass]="{'show':showDownloadWindow}" class="download-window position-fixed border-left bg-white p-3">
+<div [ngClass]="{'show':showDownloadWindow}" class="download-window position-fixed border-left bg-white p-3"
+  *ngIf="showDownloadWindow">
   <div class="d-flex align-items-center justify-content-between">
     <h3>Download File</h3>
     <button type="button" class="btn btn-link p-0" (click)="closeWindow()">
