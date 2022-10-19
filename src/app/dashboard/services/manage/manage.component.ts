@@ -244,7 +244,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         self.currentState = self.initialState
       }
       const states = self.stateModelPath?.[self.currentState];
-      states.unshift(self.currentState)
+      // states.unshift(self.currentState)
       self.statusArray = self.ID ? states : self.initialState
       self.ogStatusArray = self.statusArray
 
