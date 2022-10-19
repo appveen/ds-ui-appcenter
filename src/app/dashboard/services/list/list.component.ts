@@ -575,6 +575,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const self = this
     if (this.isSchemaFree) {
       this.resetFilter();
+      this.filterId = null;
       this.listGrid.searchForm.patchValue({
         name: '',
         filter: '{}',
@@ -1743,7 +1744,7 @@ export class ListComponent implements OnInit, OnDestroy {
     }
     request.subscribe(res => {
       res.value = JSON.parse(res.value);
-      if (self.filterCreatedBy === currentUser._id) {
+      if (self.filterId && (self.filterCreatedBy === currentUser._id)) {
         self.ts.success('Filter Saved Successfully');
         const viewIndex = self.savedViews.findIndex(view => view._id == res._id);
         if (viewIndex >= 0) {
