@@ -1,6 +1,6 @@
 <ag-grid-angular #agGrid style="width: 100%; height: 100%;" class="ag-theme-balham bg-light" [columnDefs]="columnDefs"
     rowSelection="multiple" rowMultiSelectWithClick="true" rowDeselection="true" rowModelType="infinite"
-    [datasource]="dataSource" [floatingFilter]="true" cacheBlockSize="30" (rowDoubleClicked)="rowDoubleClicked($event)"
+    [datasource]="dataSource" [floatingFilter]="false" cacheBlockSize="30" (rowDoubleClicked)="rowDoubleClicked($event)"
     (rowSelected)="rowSelected($event)" (sortChanged)="sortChanged($event)" (columnResized)="columnResized($event)"
     (columnMoved)="columnMoved()" (cellContextMenu)="cellContextMenu($event)" (bodyScroll)="scrollEvent()"
     [overlayNoRowsTemplate]="noRowsTemplate" rowHeight="32" (gridReady)="onGridReady($event)" [context]="context">
