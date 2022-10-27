@@ -16,6 +16,7 @@ import { ListAgGridService } from './list-ag-grid.service';
 import { FormGroup } from '@angular/forms';
 import { AppService } from '../../../../service/app.service';
 import * as _ from 'lodash'
+import { ListComponent } from '../list.component';
 
 @Component({
   selector: 'odp-list-ag-grid',
@@ -60,6 +61,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private location: Location,
     private router: Router,
+    public ListComponent: ListComponent,
     private activatedRoute: ActivatedRoute,
     private appService: AppService
   ) {
