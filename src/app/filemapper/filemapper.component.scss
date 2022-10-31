@@ -228,8 +228,7 @@ $color: #65ff78;
 .header-list {
   min-width: 230px;
   max-width: 272px;
-  height: calc(100vh - 217px);
-  overflow-y: auto;
+  height: fit-content;
   .fileKeyContainer {
     min-width: 170px;
     max-width: 232px;
