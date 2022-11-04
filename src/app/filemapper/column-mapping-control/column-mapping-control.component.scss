@@ -2,15 +2,15 @@
 @import "src/assets/scss/bootstrap/_variables.scss";
 
 .column-container {
-    min-width: 550px;
-    max-width: 590px;
+    min-width: 480px;
+    max-width: 480px;
     min-height: 56px;
     display: block;
 
     // max-height: 56px;
     .propName {
-        min-width: 180px;
-        max-width: 180px;
+        min-width: 140px;
+        max-width: 140px;
         float: left;
     }
 
