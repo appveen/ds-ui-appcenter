@@ -169,9 +169,9 @@
     <div class="view-body p-4 w-100" [ngClass]="{'no-action':showSubHeader}">
       <ng-container *ngIf="!showLazyLoader">
         <ng-container *ngIf="!isSchemaFree">
-          <div class="actions float-right">
+          <div class="actions float">
             <div class="text-warning align-self-end" *ngIf="hasWorkflow"
-              [ngStyle]="{display : !hasWorkflow ? 'none' : 'flex'}" id="workflowReview">
+            [ngStyle]="hasWorkflow? {'display':'flex', 'padding-left':'16px'}:{'display':'none'}" id="workflowReview">
               {{ isEdit ? 'Any changes to this record will require approval(s).' :
               'Approval(s) will be required to publish this record.' }}
             </div>
