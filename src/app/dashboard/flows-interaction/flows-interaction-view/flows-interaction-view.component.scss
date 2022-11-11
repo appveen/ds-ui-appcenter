@@ -21,6 +21,10 @@
     &:nth-child(odd) {
         background: rgba($light, 0.6);
     }
+
+    &.text-danger {
+        color: $danger !important;
+    }
 }
 
 .status-badge {

@@ -75,4 +75,11 @@ export class FlowsInteractionViewComponent implements OnInit {
   getDuration(startTime: string, endTime: string) {
     return this.flowsService.getDuration(startTime, endTime);
   }
+
+  hasError(nodeId: string) {
+    const temp = this.interactionStateList.find(e => e.nodeId == nodeId);
+    if (temp && temp.status === 'ERROR') {
+      return true;
+    }
+  }
 }
