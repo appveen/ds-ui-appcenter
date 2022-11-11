@@ -87,7 +87,7 @@ export class FlowNodeViewComponent implements OnInit {
       return '-';
     }
     if (key == 'authorization') {
-      const arr = new Array(value.length - 11);
+      const arr = new Array(10);
       arr.fill('*');
       return arr.join('') + value.substring(value.length - 10, value.length);
     }
