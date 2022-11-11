@@ -97,13 +97,18 @@
                         <div class="p-2 header-key fw-400 font-12 text-secondary">HTTP Method</div>
                         <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.method}}</div>
                     </div>
-                    <div class="d-flex align-items-center align-items-stretch">
+                    <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch">
                         <div class="p-2 header-key fw-400 font-12 text-secondary">Status Code</div>
                         <div class="p-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
                             {{currState?.statusCode}}
                         </div>
                     </div>
                 </ng-container>
+                <div class="d-flex align-items-center align-items-stretch">
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Status</div>
+                    <div class="p-2 header-value w-100 fw-500 text-dark" [ngClass]="getStatusClass()">
+                        {{currState.status}}</div>
+                </div>
                 <!-- <div class="d-flex align-items-center align-items-stretch">
                     <div class="p-2 header-key fw-400 font-12 text-secondary">Status</div>
                     <div class="p-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
@@ -126,7 +131,8 @@
                         <div class="d-flex align-items-center align-items-stretch"
                             *ngFor="let item of currState?.headers | keyvalue">
                             <div class="p-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
-                            <div class="p-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}</div>
+                            <div class="p-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
+                            </div>
                         </div>
                     </ng-container>
                 </ng-container>
@@ -164,7 +170,8 @@
                         <div class="text-secondary mt-2">Processing...</div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3" *ngIf="togglePayload && currState?.body">
+                <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3"
+                    *ngIf="togglePayload && currState?.body">
                     <div class="w-100">
                         <pre class="m-0">{{currState?.body|json}}</pre>
                     </div>
