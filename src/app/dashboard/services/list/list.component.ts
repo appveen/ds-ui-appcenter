@@ -1782,7 +1782,6 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   toggleVisibility(event) {
-    console.log(event)
     this.searchForm.get('private').patchValue(!event);
     this.selectedSearch.private = !this.selectedSearch.private
   }

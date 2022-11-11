@@ -6,6 +6,7 @@ import * as moment from 'moment';
 
 import { FileSizePipe } from 'src/app/pipes/file-size.pipe';
 import { CommonService } from 'src/app/service/common.service';
+import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from './flows-interaction.service';
 
 @Component({
@@ -133,7 +134,9 @@ export class FlowsInteractionComponent implements OnInit {
   getInteractions(flowId: string) {
     this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, { sort: '-_metadata.createdAt', count: 50 }).subscribe(res => {
       this.interactionList = res;
-      console.log(res);
+      if (!environment.production) {
+        console.log(res);
+      }
     }, err => {
       console.error(err);
     })

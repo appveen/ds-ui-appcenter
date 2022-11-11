@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { CommonService } from 'src/app/service/common.service';
+import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from '../flows-interaction.service';
 
 @Component({
@@ -40,7 +41,9 @@ export class FlowsInteractionViewComponent implements OnInit {
       this.interactionStateList = res[1];
       this.flowData = res[2];
       this.selectedNodeId = this.flowData.inputNode._id;
-      console.log(res);
+      if (!environment.production) {
+        console.log(res);
+      }
     }, err => {
       console.error(err);
     })
