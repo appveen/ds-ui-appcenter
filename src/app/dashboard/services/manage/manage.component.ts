@@ -756,18 +756,20 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       payload = this.schemaFreeCode ? this.schemaFreeCode : {};
     }
     let response;
-    payload._workflow = {
-      audit: [
-        {
-          by: 'user',
-          id: this.commonService.userDetails._id,
-          action: draft ? 'Draft' : 'Submit',
-          remarks: self.workflowModalOptions.remarks,
-          timestamp: Date.now(),
-          attachments: self.workflowUploadedFiles
-        }
-      ]
-    };
+    if(self.hasWorkflow){
+      payload._workflow = {
+        audit: [
+          {
+            by: 'user',
+            id: this.commonService.userDetails._id,
+            action: draft ? 'Draft' : 'Submit',
+            remarks: self.workflowModalOptions.remarks,
+            timestamp: Date.now(),
+            attachments: self.workflowUploadedFiles
+          }
+        ]
+      };
+    }
     if (self.isEdit) {
       let url = self.api + '/' + self.ID;
       if (draft) {
