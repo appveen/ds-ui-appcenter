@@ -1,0 +1,30 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.content {
+    overflow: hidden;
+}
+
+.content-height {
+    min-height: calc(100vh - 280px);
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+}
+
+.side-nav {
+    width: 266px;
+}
+
+.node-list-item {
+    border-left: 3px solid transparent;
+
+    &:nth-child(odd) {
+        background: rgba($light, 0.6);
+    }
+}
+
+.status-badge {
+    border-radius: 10px;
+    height: 20px;
+    padding-top: 1px;
+}

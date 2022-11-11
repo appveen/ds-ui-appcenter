@@ -1,150 +1,152 @@
-<div class="flow-node-block mb-3 rounded bg-white p-3">
+<div *ngIf="selectedNodeId==currNode._id" class="flow-node-block mb-3 bg-white p-3">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex flex-column w-100">
             <div class="d-flex flex-column w-100">
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="w-100 border-bottom border-light-grey pb-3">
+                    <div class="w-100 mb-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center">
                                     <ng-container *ngIf="currNode.type=='FILE'">
-                                        <span class="node-icon dsi dsi-file"></span>
-                                        <span class="ml-3 fw-500 text-accent">File Agent</span>
+                                        <span class="node-icon dsi dsi-file font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">File Agent</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='API' && currNode?.options?.path">
-                                        <span class="node-icon dsi dsi-api-reciever"></span>
-                                        <span class="ml-3 fw-500 text-accent">API Reciever</span>
+                                        <span class="node-icon dsi dsi-api-reciever font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">API Reciever</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='API' && currNode?.options?.url">
-                                        <span class="node-icon dsi dsi-invoke-api"></span>
-                                        <span class="ml-3 fw-500 text-accent">Invoke API</span>
+                                        <span class="node-icon dsi dsi-invoke-api font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Invoke API</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='TIMER'">
-                                        <span class="node-icon dsi dsi-clock"></span>
-                                        <span class="ml-3 fw-500 text-accent">Timer</span>
+                                        <span class="node-icon dsi dsi-clock font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Timer</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='CONNECTOR'">
-                                        <span class="node-icon dsi dsi-connector"></span>
-                                        <span class="ml-3 fw-500 text-accent">Connector</span>
+                                        <span class="node-icon dsi dsi-connector font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Connector</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='DATASERVICE'">
-                                        <span class="node-icon dsi dsi-data-service"></span>
-                                        <span class="ml-3 fw-500 text-accent">Data Service</span>
+                                        <span class="node-icon dsi dsi-data-service font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Data Service</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='FUNCTION'">
-                                        <span class="node-icon dsi dsi-function"></span>
-                                        <span class="ml-3 fw-500 text-accent">Function</span>
+                                        <span class="node-icon dsi dsi-function font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Function</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='MAPPING'">
-                                        <span class="node-icon dsi dsi-mapping"></span>
-                                        <span class="ml-3 fw-500 text-accent">Mapping</span>
+                                        <span class="node-icon dsi dsi-mapping font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Mapping</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='UNWIND'">
-                                        <span class="node-icon dsi dsi-expand"></span>
-                                        <span class="ml-3 fw-500 text-accent">Unwind</span>
+                                        <span class="node-icon dsi dsi-expand font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Change Root</span>
                                     </ng-container>
                                     <ng-container *ngIf="currNode.type=='RESPONSE'">
-                                        <span class="node-icon dsi dsi-response"></span>
-                                        <span class="ml-3 fw-500 text-accent">Response</span>
+                                        <span class="node-icon dsi dsi-response font-16"></span>
+                                        <span class="ml-3 font-14 fw-700 text-dark">Response</span>
                                     </ng-container>
                                 </div>
-                                <span class="dsi dsi-more-vertical-6 mx-3"></span>
+                                <!-- <span class="dsi dsi-more-vertical-6 mx-3"></span>
                                 <div class="px-2 py-1 fw-500 badge" [ngClass]="getStatusBagdeClass()">
                                     {{currState?.status || 'PENDING'}}
-                                </div>
+                                </div> -->
                             </div>
-                            <button type="button" class="btn btn-dark btn-sm" (click)="downloadStateData()">
+                            <button type="button" class="btn btn-link btn-sm" (click)="downloadStateData()">
                                 Download Complete JSON
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">ID</div>
-                    <div class="p-2 header-value w-100">{{currNode._id}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">ID</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode._id}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Type</div>
-                    <div class="p-2 header-value w-100">{{currNode.type}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Type</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode.type}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Start Time</div>
-                    <div class="p-2 header-value w-100">{{startTime}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Start Time</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{startTime}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">End Time</div>
-                    <div class="p-2 header-value w-100">{{endTime}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">End Time</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{endTime}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Duration</div>
-                    <div class="p-2 header-value w-100">{{duration}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Duration</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{duration}}</div>
                 </div>
                 <ng-container *ngIf="currNode.type=='API'">
                     <div class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-600">Content Type</div>
-                        <div class="p-2 header-value w-100">{{getContentType(currNode?.options?.contentType)}}</div>
+                        <div class="p-2 header-key fw-400 font-12 text-secondary">Content Type</div>
+                        <div class="p-2 header-value w-100 fw-400 text-dark">
+                            {{getContentType(currNode?.options?.contentType)}}</div>
                     </div>
                     <div *ngIf="currNode?.options?.path" class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-600">Path</div>
-                        <div class="p-2 header-value w-100">{{currNode?.options?.path}}</div>
+                        <div class="p-2 header-key fw-400 font-12 text-secondary">Path</div>
+                        <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.path}}</div>
                     </div>
                     <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-600">URL</div>
-                        <div class="p-2 header-value w-100">{{currNode?.options?.url}}</div>
+                        <div class="p-2 header-key fw-400 font-12 text-secondary">URL</div>
+                        <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.url}}</div>
                     </div>
                     <div class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-600">HTTP Method</div>
-                        <div class="p-2 header-value w-100">{{currNode?.options?.method}}</div>
+                        <div class="p-2 header-key fw-400 font-12 text-secondary">HTTP Method</div>
+                        <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.method}}</div>
                     </div>
                     <div class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-600">Status Code</div>
-                        <div class="p-2 header-value w-100 fw-500" [ngClass]="getStatusClass()">
+                        <div class="p-2 header-key fw-400 font-12 text-secondary">Status Code</div>
+                        <div class="p-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
                             {{currState?.statusCode}}
                         </div>
                     </div>
                 </ng-container>
                 <!-- <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Status</div>
-                    <div class="p-2 header-value w-100 fw-500" [ngClass]="getStatusClass()">
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Status</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
                         {{currState?.status || 'PENDING'}}
                     </div>
                 </div> -->
                 <ng-container *ngIf="currState?.headers">
-                    <div class="d-flex align-items-center align-items-stretch mt-3">
-                        <div class="w-100 border p-3 rounded">
-                            <div class="d-flex align-items-center justify-content-between w-100">
+                    <div class="d-flex align-items-center align-items-stretch my-3 ml-1">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <div class="d-flex align-items-center">
+                                <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
                                 <span class="fw-600">Headers ({{(currState?.headers | keyvalue).length}})</span>
-                                <button type="button" class="btn btn-dark btn-sm"
-                                    (click)="toggleHeaders=!toggleHeaders">
-                                    {{toggleHeaders ? 'Hide':'Show'}} Header
-                                </button>
                             </div>
+                            <button type="button" class="btn btn-link btn-sm" (click)="toggleHeaders=!toggleHeaders">
+                                {{toggleHeaders ? 'Hide':'Show'}} Header
+                            </button>
                         </div>
                     </div>
                     <ng-container *ngIf="toggleHeaders">
                         <div class="d-flex align-items-center align-items-stretch"
                             *ngFor="let item of currState?.headers | keyvalue">
-                            <div class="p-2 header-key fw-600">{{item.key}}</div>
-                            <div class="p-2 header-value w-100">{{item.value}}</div>
+                            <div class="p-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
+                            <div class="p-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}</div>
                         </div>
                     </ng-container>
                 </ng-container>
-                <div class="d-flex align-items-center align-items-stretch mt-3">
-                    <div class="w-100 border p-3 rounded">
+                <div class="d-flex align-items-center align-items-stretch my-3 ml-1">
+                    <div class="w-100 d-flex align-items-center">
+                        <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
                         <span class="fw-600">Payload</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Type</div>
-                    <div class="p-2 header-value w-100">{{currState?.payload?.type}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Type</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.type}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Attributes</div>
-                    <div class="p-2 header-value w-100">{{currState?.payload?.attributes}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Attributes</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.attributes}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-600">Total Records</div>
-                    <div class="p-2 header-value w-100">{{currState?.payload?.totalRecords}}</div>
+                    <div class="p-2 header-key fw-400 font-12 text-secondary">Total Records</div>
+                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.totalRecords}}</div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch">
                     <div class="w-100 p-2">
@@ -162,9 +164,9 @@
                         <div class="text-secondary mt-2">Processing...</div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch" *ngIf="togglePayload && currState?.body">
+                <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3" *ngIf="togglePayload && currState?.body">
                     <div class="w-100">
-                        <pre>{{currState?.body|json}}</pre>
+                        <pre class="m-0">{{currState?.body|json}}</pre>
                     </div>
                 </div>
             </div>
@@ -177,6 +179,6 @@
 
 <ng-container *ngFor="let next of currNode.onSuccess">
     <odp-flow-node-view *ngIf="getNextNode(next)" [currNode]="getNextNode(next)" [stateList]="stateList"
-        [flowData]="flowData">
+        [flowData]="flowData" [selectedNodeId]="selectedNodeId">
     </odp-flow-node-view>
 </ng-container>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,32 @@ export class FlowsInteractionService {
     } else {
       return 'badge-warning'
     }
+  }
+
+  getStatusClassSuffix(item: any) {
+    if (_.lowerCase(item.status) == 'pending') {
+      return 'warning'
+    } else if (_.lowerCase(item.status) == 'success') {
+      return 'success'
+    } else if (_.lowerCase(item.status) == 'error') {
+      return 'danger'
+    } else {
+      return 'warning'
+    }
+  }
+
+  getDuration(startTime: string, endTime: string) {
+    let text = '';
+    if (startTime && endTime) {
+      let startT = new Date(startTime).getTime();
+      let endT = new Date(endTime).getTime();
+      const duration = moment.duration(endT - startT);
+      text = duration.minutes() + ' min, ' + duration.seconds() + ' sec, ' + duration.milliseconds() + ' ms';
+      if (duration.hours() > 0) {
+        text = `${duration.hours()} hr, ` + text;
+      }
+      return text;
+    }
+    return '-';
   }
 }

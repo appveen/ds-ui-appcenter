@@ -14,6 +14,7 @@ export class FlowsInteractionViewComponent implements OnInit {
   interactionData: any;
   flowData: any;
   interactionStateList: Array<any>;
+  selectedNodeId: string;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService) {
@@ -25,7 +26,6 @@ export class FlowsInteractionViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      console.log(params);
       this.getInteractions(params);
     });
   }
@@ -39,6 +39,7 @@ export class FlowsInteractionViewComponent implements OnInit {
       this.interactionData = res[0]
       this.interactionStateList = res[1];
       this.flowData = res[2];
+      this.selectedNodeId = this.flowData.inputNode._id;
       console.log(res);
     }, err => {
       console.error(err);
@@ -59,5 +60,19 @@ export class FlowsInteractionViewComponent implements OnInit {
     if (item) {
       return this.flowsService.getStatusBadgeClass(item);
     }
+  }
+
+  getStatusClassSuffix(item: any) {
+    if (item) {
+      return this.flowsService.getStatusClassSuffix(item);
+    }
+  }
+
+  getNextNode(node: any) {
+    return (this.flowData.nodes || []).find(e => e._id == node._id);
+  }
+
+  getDuration(startTime: string, endTime: string) {
+    return this.flowsService.getDuration(startTime, endTime);
   }
 }
