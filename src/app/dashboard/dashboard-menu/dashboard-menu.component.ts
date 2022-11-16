@@ -90,6 +90,18 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
 
   togglePanel(panel) {
     this.openPanel[panel] = !this.openPanel[panel];
+    if(panel=='ds'){
+      this.openPanel['workflow']=false;
+      this.openPanel['interaction']=false;
+    }
+    else if(panel=='workflow'){
+      this.openPanel['ds']=false;
+      this.openPanel['interaction']=false;
+    }
+    else if(panel=='interaction'){
+      this.openPanel['ds']=false;
+      this.openPanel['workflow']=false;
+    }
   }
 
   toggleWorkflow(value) {
