@@ -1,5 +1,5 @@
 <div class="menu-list border-right">
-    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
+    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover "
         (click)="togglePanel('pinnedDs')">
         <div class="d-flex align-items-center">
             <span class="fa fa-star font-14 mr-3" [ngClass]="{'pinned': openPanel['pinnedDs']}"></span>
@@ -11,10 +11,10 @@
         </span>
     </div>
 
-    <div class="border-top" *ngIf="openPanel['pinnedDs']">
+    <div  *ngIf="openPanel['pinnedDs']">
         <odp-service-list [dsType]="'pinnedDs'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
     </div>
-    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
+    <div class="px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('ds')">
         <div class="d-flex align-items-center">
             <span class="dsi dsi-data-service text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['ds'],'text-secondary': 
@@ -25,13 +25,13 @@
         <span class="dsi"
             [ngClass]="{'dsi-drop-up text-secondary': openPanel['ds'],'dsi-drop-down text-muted': !openPanel['ds']}"></span>
     </div>
-    <div class="border-top" *ngIf="openPanel['ds']">
+    <div *ngIf="openPanel['ds']">
         <odp-service-list [dsType]="'ds'" (onStarredAction)="onStarredAction($event)"></odp-service-list>
     </div>
-    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
+    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('workflow')" *ngIf="!hideWorkflows">
         <div class="d-flex align-items-center">
-            <span class="dsi dsi-wf text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
+            <span class="dsi dsi-data-service text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}"></span>
             <span class="font-12 fw-500 text-uppercase" [ngClass]="{'text-dark': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}">Workflows</span>
@@ -39,15 +39,15 @@
         <span class="dsi"
             [ngClass]="{'dsi-drop-up text-secondary': openPanel['workflow'],'dsi-drop-down text-muted': !openPanel['workflow']}"></span>
     </div>
-    <div class="border-top" *ngIf="openPanel['workflow'] && !hideWorkflows">
+    <div  *ngIf="openPanel['workflow'] && !hideWorkflows">
         <odp-workflow-list #wfList (toggleWorkflow)="toggleWorkflow($event)"></odp-workflow-list>
     </div>
 
 
-    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover border-top"
+    <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('interaction')" *ngIf="!hideInteraction">
         <div class="d-flex align-items-center">
-            <span class="dsi dsi-wf text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['interaction'],'text-secondary': 
+            <span class="dsi dsi-data-service text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['Interaction'],'text-secondary': 
             !openPanel['interaction']}"></span>
             <span class="font-12 fw-500 text-uppercase" [ngClass]="{'text-dark': openPanel['interaction'],'text-secondary': 
             !openPanel['interaction']}">Interactions</span>
@@ -55,7 +55,7 @@
         <span class="dsi"
             [ngClass]="{'dsi-drop-up text-secondary': openPanel['interaction'],'dsi-drop-down text-muted': !openPanel['interaction']}"></span>
     </div>
-    <div class="border-top" *ngIf="openPanel['interaction'] && !hideInteraction">
+    <div *ngIf="openPanel['interaction'] && !hideInteraction">
         <odp-integration-list></odp-integration-list>
     </div>
 
