@@ -2,8 +2,9 @@
     display: grid;
     width: 100%;
     // border: 1px solid #ECECEC;
-    max-height: 273px;
-    min-height: 250px;
+    max-height: 550px;
+    min-height: 550px;
+    // height: calc(100vh-180px);
     overflow: hidden;
 }
 
