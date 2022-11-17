@@ -10,6 +10,9 @@ export class FlowsInteractionService {
   constructor() { }
 
   getContentType(contentType: string) {
+    if (!contentType) {
+      return 'JSON'
+    }
     if (contentType.startsWith('multipart/form-data')) {
       return 'File'
     }
