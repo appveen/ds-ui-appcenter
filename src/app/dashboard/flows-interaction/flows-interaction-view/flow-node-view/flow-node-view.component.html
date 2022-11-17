@@ -63,70 +63,71 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">ID</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode._id}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Name</div>
+                    <div *ngIf="currNode.name" class="px-2 header-value w-100 fw-500 text-dark">{{currNode.name}}</div>
+                    <div *ngIf="!currNode.name" class="px-2 header-value w-100 fw-400 text-muted">N.A.</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Name</div>
-                    <div *ngIf="currNode.name" class="p-2 header-value w-100 fw-400 text-dark">{{currNode.name}}</div>
-                    <div *ngIf="!currNode.name" class="p-2 header-value w-100 fw-400 text-muted">N.A.</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">ID</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{currNode._id}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Type</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode.type}}</div>
-                    <div *ngIf="showNameOfNodeType" class="p-2 header-value w-100 fw-400 text-primary ml-2">{{nameOfNodeType}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Type</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{currNode.type}}</div>
+                    <div *ngIf="showNameOfNodeType" class="px-2 header-value w-100 fw-400 text-primary ml-2">
+                        {{nameOfNodeType}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Start Time</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{startTime}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Start Time</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{startTime}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">End Time</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{endTime}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">End Time</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{endTime}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Duration</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{duration}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Duration</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{duration}}</div>
                 </div>
                 <ng-container *ngIf="currNode.type=='API'">
-                    <div class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-400 font-12 text-secondary">Content Type</div>
-                        <div class="p-2 header-value w-100 fw-400 text-dark">
+                    <div class="d-flex align-items-center align-items-stretch mb-1">
+                        <div class="px-2 header-key fw-400 font-12 text-secondary">Content Type</div>
+                        <div class="px-2 header-value w-100 fw-400 text-dark">
                             {{getContentType(currNode?.options?.contentType)}}</div>
                     </div>
-                    <div *ngIf="currNode?.options?.path" class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-400 font-12 text-secondary">Path</div>
-                        <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.path}}</div>
+                    <div *ngIf="currNode?.options?.path" class="d-flex align-items-center align-items-stretch mb-1">
+                        <div class="px-2 header-key fw-400 font-12 text-secondary">Path</div>
+                        <div class="px-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.path}}</div>
                     </div>
-                    <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-400 font-12 text-secondary">URL</div>
-                        <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.url}}</div>
+                    <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch mb-1">
+                        <div class="px-2 header-key fw-400 font-12 text-secondary">URL</div>
+                        <div class="px-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.url}}</div>
                     </div>
-                    <div class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-400 font-12 text-secondary">HTTP Method</div>
-                        <div class="p-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.method}}</div>
+                    <div class="d-flex align-items-center align-items-stretch mb-1">
+                        <div class="px-2 header-key fw-400 font-12 text-secondary">HTTP Method</div>
+                        <div class="px-2 header-value w-100 fw-400 text-dark">{{currNode?.options?.method}}</div>
                     </div>
-                    <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch">
-                        <div class="p-2 header-key fw-400 font-12 text-secondary">Status Code</div>
-                        <div class="p-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
+                    <div *ngIf="currNode?.options?.url" class="d-flex align-items-center align-items-stretch mb-1">
+                        <div class="px-2 header-key fw-400 font-12 text-secondary">Status Code</div>
+                        <div class="px-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
                             {{currState?.statusCode}}
                         </div>
                     </div>
                 </ng-container>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Status</div>
-                    <div class="p-2 header-value w-100 fw-500 text-dark" [ngClass]="getStatusClass()">
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Status</div>
+                    <div class="px-2 header-value w-100 fw-500 text-dark" [ngClass]="getStatusClass()">
                         {{currState.status}}</div>
                 </div>
-                <!-- <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Status</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
+                <!-- <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Status</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark fw-500" [ngClass]="getStatusClass()">
                         {{currState?.status || 'PENDING'}}
                     </div>
                 </div> -->
                 <ng-container *ngIf="currState?.headers">
-                    <div class="d-flex align-items-center align-items-stretch my-3 ml-1">
+                    <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <div class="d-flex align-items-center">
                                 <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
@@ -138,34 +139,34 @@
                         </div>
                     </div>
                     <ng-container *ngIf="toggleHeaders">
-                        <div class="d-flex align-items-center align-items-stretch"
+                        <div class="d-flex align-items-center align-items-stretch mb-1"
                             *ngFor="let item of currState?.headers | keyvalue">
-                            <div class="p-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
-                            <div class="p-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
+                            <div class="px-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
+                            <div class="px-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
                             </div>
                         </div>
                     </ng-container>
                 </ng-container>
-                <div class="d-flex align-items-center align-items-stretch my-3 ml-1">
+                <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                     <div class="w-100 d-flex align-items-center">
                         <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
                         <span class="fw-600">Payload</span>
                     </div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Type</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.type}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Type</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.type}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Attributes</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.attributes}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Attributes</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.attributes}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="p-2 header-key fw-400 font-12 text-secondary">Total Records</div>
-                    <div class="p-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.totalRecords}}</div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="px-2 header-key fw-400 font-12 text-secondary">Total Records</div>
+                    <div class="px-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.totalRecords}}</div>
                 </div>
-                <div class="d-flex align-items-center align-items-stretch">
-                    <div class="w-100 p-2">
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="w-100 px-2">
                         <button type="button" class="btn btn-link btn-sm px-0" (click)="showPayload()">
                             <span *ngIf="!togglePayload">Show Complete Payload</span>
                             <span *ngIf="togglePayload">Hide Complete Payload</span>

@@ -49,7 +49,7 @@
 </div>
 
 <ng-template #nodeList let-node="node">
-    <div class="node-list-item p-3 d-flex align-items-center hover" (click)="selectedNodeId=node._id"
+    <div class="node-list-item p-3 d-flex flex-column align-items-start hover" (click)="selectedNodeId=node._id"
         [ngClass]="{'border-primary':selectedNodeId==node._id}">
         <div class="d-flex align-items-center">
             <ng-container *ngIf="node.type=='FILE'">
@@ -124,6 +124,7 @@
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
             </ng-container>
         </div>
+        <div *ngIf="node.name" class="d-flex font-11 fw-400 text-grey mt-2 ml-34">{{node.name}}</div>
     </div>
     <ng-container *ngFor="let next of node.onSuccess">
         <ng-template *ngTemplateOutlet="nodeList;context:{node:getNextNode(next)}"></ng-template>
