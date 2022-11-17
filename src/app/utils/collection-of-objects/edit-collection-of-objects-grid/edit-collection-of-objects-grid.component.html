@@ -26,14 +26,10 @@
     </div>
 </div>
 <div>
-    <div class="grid-container row border-top" [ngStyle]="gridStyle">
+    <div class="grid-container rounded border my-4" style="height: 500px; ">
         <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable"
             [frameworkComponents]="frameworkComponents">
         </ag-grid-angular>
-    </div>
-    <div class="d-flex mt-2" *ngIf="rowData.length > 3">
-        <span class="text-secondary mr-2">Showing 4 of {{rowData.length}}</span>
-        <span class="text-decoration-underline fw-600 hover" (click)="openModal()">View All</span>
     </div>
 </div>
 <ng-template #newModal>
@@ -52,7 +48,7 @@
                 <span class="text">Remove selected ({{selectedRecordsCount}})</span>
             </button>
         </div>
-        <div class="grid-container-modal rounded border my-4">
+        <div class="grid-container-modal rounded border my-4" style="height: 500px;">
             <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"
                 [frameworkComponents]="frameworkComponents">
             </ag-grid-angular>
