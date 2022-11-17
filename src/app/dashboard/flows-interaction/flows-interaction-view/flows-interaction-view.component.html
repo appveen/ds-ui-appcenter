@@ -6,7 +6,9 @@
                 <!-- <span class="text">Back</span> -->
             </button>
             <span class="text-dark font-24 fw-600">{{interactionData?._id}}</span>
-            <div class="status-badge font-11 bg-transparent border border-{{getStatusClassSuffix(interactionData)}} text-{{getStatusClassSuffix(interactionData)}} px-2 ml-3">{{interactionData?.status}}</div>
+            <div
+                class="status-badge font-11 bg-transparent border border-{{getStatusClassSuffix(interactionData)}} text-{{getStatusClassSuffix(interactionData)}} px-2 ml-3">
+                {{interactionData?.status}}</div>
         </div>
     </div>
     <div class="header p-3 d-flex align-items-center justify-content-between bg-white rounded my-3">
@@ -28,7 +30,8 @@
         </div>
         <div class="d-flex flex-column align-items-start font-13">
             <span class="font-11 fw-500 text-secondary mr-1">Duration</span>
-            <span class="font-12 fw-500 text-dark">{{getDuration(interactionData?._metadata?.createdAt,interactionData?._metadata?.lastUpdated)}}</span>
+            <span
+                class="font-12 fw-500 text-dark">{{getDuration(interactionData?._metadata?.createdAt,interactionData?._metadata?.lastUpdated)}}</span>
         </div>
     </div>
     <div class="content d-flex align-items-start bg-white rounded">
@@ -55,65 +58,71 @@
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">File
                     Agent</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='API' && node?.options?.path">
                 <span class="node-icon dsi dsi-api-reciever"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">API
                     Reciever</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='API' && node?.options?.url">
                 <span class="node-icon dsi dsi-invoke-api"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Invoke
                     API</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='TIMER'">
                 <span class="node-icon dsi dsi-clock"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Timer</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='CONNECTOR'">
                 <span class="node-icon dsi dsi-connector"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Connector</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="node.type=='CODEBLOCK'">
+                <span class="node-icon dsi dsi-object"></span>
+                <span class="ml-3 font-14"
+                    [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Code Block</span>
+                <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
+            </ng-container>
             <ng-container *ngIf="node.type=='DATASERVICE'">
                 <span class="node-icon dsi dsi-data-service"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Data
                     Service</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='FUNCTION'">
                 <span class="node-icon dsi dsi-function"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Function</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='MAPPING'">
                 <span class="node-icon dsi dsi-mapping"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Mapping</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='UNWIND'">
                 <span class="node-icon dsi dsi-expand"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Change
                     Root</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
             <ng-container *ngIf="node.type=='RESPONSE'">
                 <span class="node-icon dsi dsi-response"></span>
                 <span class="ml-3 font-14"
                     [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Response</span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
-                </ng-container>
+            </ng-container>
         </div>
     </div>
     <ng-container *ngFor="let next of node.onSuccess">

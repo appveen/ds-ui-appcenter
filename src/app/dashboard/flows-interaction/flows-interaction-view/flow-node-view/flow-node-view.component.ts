@@ -35,6 +35,9 @@ export class FlowNodeViewComponent implements OnInit {
     this.completeData.data = JSON.parse(JSON.stringify(this.currState));
     delete this.completeData.onSuccess;
     delete this.completeData.dataStructure;
+    if (this.currNode.type == 'DATASERVICE' && !this.currNode.options.name) {
+      this.commonService.getService(this.currNode.options._id)
+    }
 
   }
 
@@ -92,6 +95,26 @@ export class FlowNodeViewComponent implements OnInit {
       return arr.join('') + value.substring(value.length - 10, value.length);
     }
     return value;
+  }
+
+  get showNameOfNodeType() {
+    if (this.currNode.type == 'DATASERVICE' || this.currNode.type == 'FUNCTION' || this.currNode.type == 'FLOW') {
+      return true;
+    }
+    return false;
+  }
+
+  get nameOfNodeType() {
+    if (this.currNode.type == 'DATASERVICE') {
+      return this.currNode.options.dataService.name;
+    }
+    if (this.currNode.type == 'FUNCTION') {
+      return this.currNode.options.faas.name;
+    }
+    if (this.currNode.type == 'FLOW') {
+      return this.currNode.options.flow.name;
+    }
+    return 'N.A.';
   }
 
   get duration() {
