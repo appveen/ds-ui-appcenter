@@ -8,7 +8,7 @@
     <textarea #textarea class="form-control" *ngIf="control?.disabled && !control?.value" rows="7"
         [attr.id]="definition.key" [disabled]="control?.disabled"></textarea>
 
-    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary" *ngIf="requiredError"
+    <div class="d-flex flex-column align-items-start bg-light p-2 mt-1 text-secondary rounded" *ngIf="requiredError"
         [ngClass]="{'bg-error':requiredError}">
         <ng-container *ngIf="!definition.properties.errorMessage">
             <div *ngIf="requiredError">
