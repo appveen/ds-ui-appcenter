@@ -4,13 +4,13 @@
       <span class="dsi dsi-filter-alt"></span>
     </button>
     <button type="button" class="btn btn-white border d-flex align-items-center font-12 ignore-outside"
-      (click)="showColumnsWindow=!showColumnsWindow">
+      (click)="showColumnsWindow=!showColumnsWindow; !showColumnsWindow && applyFilter()">
       <span class="text ignore-outside">View Columns</span>
       <span class="dsi ml-3 ignore-outside" [class.dsi-drop-down]="!showColumnsWindow"
         [class.dsi-drop-up]="showColumnsWindow"></span>
     </button>
     <div *ngIf="showColumnsWindow" class="columns-wrapper position-absolute bg-white rounded" odpClickOutside
-      (outside)="showColumnsWindow=false">
+      (outside)="showColumnsWindow=false; applyFilter()">
       <div class="px-3 py-2 d-flex align-items-center bg-light">
         <odp-round-check class="mr-3 ml-1" [(checked)]="checkAllColumn"></odp-round-check>
         <input class="form-control" type="text" [(ngModel)]="searchTerm" odpAutoFocus>

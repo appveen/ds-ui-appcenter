@@ -168,7 +168,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     } else {
       this.removeItem(index);
     }
-    self.applyFilter();
+    // self.applyFilter();
     self.name = '';
   }
 
@@ -454,7 +454,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
   }
 
   get checkAllColumn() {
-    return this.selectedColOrder.length == this.allColumns.length;
+    return this.selectedColOrder.length == this.allColumns.filter(ele => ele.key !== '_checkbox').length;
   }
 
   set checkAllColumn(flag: boolean) {
@@ -479,7 +479,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     //     }
     //   }
     // });
-    this.applyFilter();
+    // this.applyFilter();
   }
 
   get filterList() {
