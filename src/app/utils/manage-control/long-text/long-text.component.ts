@@ -79,4 +79,8 @@ export class LongTextComponent implements OnInit, AfterViewInit {
     const self = this;
     return self.control.hasError('required') && self.control.touched;
   }
+
+  tabOut(){
+    this.control.markAsTouched();
+  }
 }
