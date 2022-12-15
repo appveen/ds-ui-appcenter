@@ -551,7 +551,8 @@ export class ListComponent implements OnInit, OnDestroy {
   }
   resetFilter(showAdvancedFilter = false) {
     const self = this;
-    this.clearFilter()
+    this.clearFilter();
+    this.clearGridFilters()
 
     this.hasFilterFromUrl = false;
     if (self.listGrid) {
@@ -1138,8 +1139,8 @@ export class ListComponent implements OnInit, OnDestroy {
     if (self.listGrid) {
       self.listGrid.clearFilter();
     }
-    this.gridService.onFloatingFilterChange(null);
-    this.listGrid.agGrid.api.refreshInfiniteCache()
+    this.gridService?.onFloatingFilterChange(null);
+    this.listGrid?.agGrid?.api?.refreshInfiniteCache()
   }
 
   clearSort() {
