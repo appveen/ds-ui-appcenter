@@ -423,7 +423,7 @@
             <span class="text">Export ({{recordChecked}})</span>
           </button>
           <button type="button" class="btn btn-link d-flex align-items-center d-flex w-100"
-            *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit" (click)="bulkEdit()" id="bulkEditButton">
+            *ngIf="recordChecked > 1 && hasPermission('PUT') && canEdit && !isSchemaFree" (click)="bulkEdit()" id="bulkEditButton">
             <span class="dsi dsi-edit mr-2"></span>
             <span class="text">Bulk Edit ({{recordChecked}})</span>
           </button>
