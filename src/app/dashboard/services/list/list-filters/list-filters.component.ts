@@ -144,6 +144,11 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
       }
     }
     this.selectedColOrder = _.cloneDeep(this.allColumns);
+
+
+    this.gridService.filterSubject.subscribe(data => {
+      this.clearFilter(true);
+    })
   }
 
   search = (text$: Observable<string>) => {
@@ -267,7 +272,7 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.queryObject.sort = self.gridService.sortModel;
   }
 
-  clearFilter(fromParent = false) {
+  clearFilter(triggered = false) {
     const self = this;
     self.selectedColOrder = [];
     self.sortingColumns = [];
@@ -284,8 +289,10 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     self.hasOptions = true;
     this.appService.setFilterModel({})
     // this.selectFilter(null)
+    if (!triggered) {
+      this.filterCleared.emit(true)
+    }
 
-    this.filterCleared.emit(true)
 
 
   }
