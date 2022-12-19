@@ -1582,7 +1582,7 @@ export class ListComponent implements OnInit, OnDestroy {
     let position = {};
     let top = 290;
     if (self.recordChecked > 1) {
-      top = 230;
+      top = 280;
     }
 
     if (self.selectedRow) {
