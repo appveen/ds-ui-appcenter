@@ -264,7 +264,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     }
     const filter = self.apiConfig.filter || self.gridService.filter;
 
-    self.subscription['currentRecordsCountPromise'] = self.commonService
+    self.currentRecordsCountPromise = self.commonService
       .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
       .pipe(
         catchError(err => of(err)),
@@ -649,8 +649,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (clearGridModel) {
       self.agGrid.api.setFilterModel(null);
     }
-    this.agGrid?.api?.refreshInfiniteCache();
-    self.initRows(true);
+    // this.agGrid?.api?.refreshInfiniteCache();
+    self.initRows();
   }
 
   clearSavedView() {
@@ -778,7 +778,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         // if (self.subscription['currentRecordsCountPromise']) {
         //   self.subscription['currentRecordsCountPromise'].unsubscribe()
         // }
-        self.subscription['currentRecordsCountPromise'].then(count => {
+        self.currentRecordsCountPromise.then(count => {
           if (params.endRow - 30 < self.currentRecordsCount) {
             // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
             self.apiConfig.page = Math.ceil(params.endRow / 30);

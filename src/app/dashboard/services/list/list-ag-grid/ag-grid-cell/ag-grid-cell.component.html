@@ -1,7 +1,7 @@
 <div (contextmenu)="onRightClick()">
     <ng-container *ngIf="value   || type === 'Checkbox' || type === 'Array' || type === 'Object' || type === 'Boolean'">
         <ng-container *ngIf="type === 'Identifier'">
-            <a [routerLink]="['/' , currentAppId, 'services', serviceId, 'view', data._id]">{{value}}</a>
+            <a [routerLink]="['/' , currentAppId, 'services', serviceId, 'view', id]">{{value}}</a>
         </ng-container>
         <ng-container *ngIf="type === 'Checkbox'">
             <div class="d-flex align-items-center mt-1">
