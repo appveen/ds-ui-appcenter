@@ -12,6 +12,11 @@
   }
 }
 
+.list{
+  max-height: 300px;
+  overflow: auto;
+}
+
 .list-page-wrapper {
   min-height: calc(100vh - 200px);
 
