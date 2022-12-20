@@ -102,7 +102,7 @@
             <div class='d-flex align-items-center justify-content-between'>
               <div ngbDropdown class="d-inline-block ">
                 <div class="d-flex" ngbDropdownToggle>
-                  <span class="fw-500 font-12" *ngIf="!selectedSearch">New Filter</span>
+                  <span class="fw-500 font-12 hover" *ngIf="!selectedSearch">New Filter</span>
                   <div class="d-flex">
                     <span class="fw-400 font-12" *ngIf="selectedSearch">Applied Filter : </span>
                     <span class="fw-500 font-12 hover" *ngIf="selectedSearch">{{selectedSearch?.name}}</span>
@@ -111,7 +111,7 @@
                 <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 300px">
                   <div ngbDropdownItem class='search-views p-3 hover border-bottom font-14'
                     (click)='resetAll();isCollapsed?collapse.toggle():""'>New Search View</div>
-                  <div class=" mt-2">
+                  <div class=" mt-2 list">
                     <span class="font-11 fw-500 text-secondary m-3" *ngIf="savedViews.length > 0">Saved
                       Searches</span>
                     <div ngbDropdownItem *ngFor="let filter of savedViews" class="search-views p-3 hover"
