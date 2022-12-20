@@ -170,8 +170,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     this.gridService.filterSubject.subscribe(data => {
       this.clearFilter(false);
       let final = {};
-      const filter = self.apiConfig.filter;
-      const temp = filter?.['$and'] || [];
+      const filter = self.apiConfig.filter || self.gridService.filter;
+      const temp = filter?.['$and'] || filter?.['$or'] || [];
       if (data) {
         if (temp && temp.length > 0) {
           if (temp.find(ele => Object.keys(ele)[0] === Object.keys(data)[0])) {
@@ -182,12 +182,17 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             })
           }
           else {
-            temp.push(data);
+            let tempData = data['$or']?.length > 0 ? data['$or'] : data
+            if (Array.isArray(tempData) && tempData.length === 1) {
+              tempData = tempData[0];
+            }
+            temp.push(tempData);
             final['$and'] = temp
           }
         }
         else {
-          temp.push(data)
+          const tempData = data['$or']?.length > 0 ? data['$or'] : data
+          temp.push(tempData)
           final['$and'] = temp
         }
       }
@@ -259,7 +264,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     }
     const filter = self.apiConfig.filter || self.gridService.filter;
 
-    self.currentRecordsCountPromise = self.commonService
+    self.subscription['currentRecordsCountPromise'] = self.commonService
       .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
       .pipe(
         catchError(err => of(err)),
@@ -288,9 +293,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             //   }
             // }
 
-            if (first) {
-              self.totalRecordsCount = count;
-            }
+            // if (first) {
+            //   self.totalRecordsCount = count;
+            // }
             self.currentRecordsCount = count;
             self.recordsInfo.emit({
               loaded: 0,
@@ -599,6 +604,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     this.gridService.setSortModel(self.apiConfig.sort)
     self.agGrid.api.setSortModel(null);
     self.gridService.setSortModel(null)
+    this.filterModified(null, null)
     // self.initRows(true);
   }
 
@@ -610,7 +616,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       Object.keys(filterModel).forEach(key => {
         try {
           if (filterModel[key].filter) {
-            filter.push(JSON.parse(filterModel[key].filter));
+            let tempData = JSON.parse(filterModel[key].filter)
+            if (tempData['$or'] && tempData['$or'].length === 1) {
+              tempData = tempData['$or'][0]
+            }
+            filter.push(tempData);
           }
         } catch (e) {
           console.error(e);
@@ -629,7 +639,6 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     }
     // self.removedSavedView.emit(true);
     self.filterModel = self.apiConfig.filter || modFilter;
-
     this.initRows()
   }
 
@@ -640,7 +649,8 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (clearGridModel) {
       self.agGrid.api.setFilterModel(null);
     }
-    self.initRows();
+    this.agGrid?.api?.refreshInfiniteCache();
+    self.initRows(true);
   }
 
   clearSavedView() {
@@ -765,7 +775,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.agGrid.api.showLoadingOverlay();
         self.showLoading = true;
         self.selectedRecords.emit([]);
-        self.currentRecordsCountPromise.then(count => {
+        // if (self.subscription['currentRecordsCountPromise']) {
+        //   self.subscription['currentRecordsCountPromise'].unsubscribe()
+        // }
+        self.subscription['currentRecordsCountPromise'].then(count => {
           if (params.endRow - 30 < self.currentRecordsCount) {
             // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
             self.apiConfig.page = Math.ceil(params.endRow / 30);
@@ -798,7 +811,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                 if (loaded === self.currentRecordsCount) {
                   params.successCallback(records, self.currentRecordsCount);
                 } else {
-                  params.successCallback(records);
+                  params.successCallback(records, self.currentRecordsCount);
                 }
                 self.rowSelected(null);
               },
