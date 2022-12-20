@@ -31,7 +31,7 @@
     <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('workflow')" *ngIf="!hideWorkflows">
         <div class="d-flex align-items-center">
-            <span class="dsi dsi-data-service text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
+            <span class="dsi dsi-app-panel text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}"></span>
             <span class="font-12 fw-500 text-uppercase" [ngClass]="{'text-dark': openPanel['workflow'],'text-secondary': 
             !openPanel['workflow']}">Workflows</span>
@@ -47,7 +47,7 @@
     <div class=" px-4 menu-item d-flex align-items-center justify-content-between hover"
         (click)="togglePanel('interaction')" *ngIf="!hideInteraction">
         <div class="d-flex align-items-center">
-            <span class="dsi dsi-data-service text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['Interaction'],'text-secondary': 
+            <span class="dsi dsi-flow text-secondary font-18 mr-3" [ngClass]="{'text-primary': openPanel['Interaction'],'text-secondary': 
             !openPanel['interaction']}"></span>
             <span class="font-12 fw-500 text-uppercase" [ngClass]="{'text-dark': openPanel['interaction'],'text-secondary': 
             !openPanel['interaction']}">Interactions</span>
