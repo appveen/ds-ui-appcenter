@@ -1390,7 +1390,7 @@ export class ListComponent implements OnInit, OnDestroy {
       id = self.selectedRows[0]._id;
     }
     if (id) {
-      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'view', id]);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'view', encodeURIComponent(id)]);
     } else {
       return;
     }
@@ -1402,7 +1402,7 @@ export class ListComponent implements OnInit, OnDestroy {
       id = self.selectedRows[0]._id;
     }
     if (id) {
-      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'manage', id]);
+      self.router.navigate(['/', this.commonService.app._id, 'services', self.appService.serviceId, 'manage', encodeURIComponent(id)]);
     } else {
       return;
     }

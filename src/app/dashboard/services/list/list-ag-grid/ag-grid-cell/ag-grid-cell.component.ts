@@ -50,7 +50,7 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
   agInit(params: ICellRendererParams): void {
     this.params = params;
     this.data = params.data || {};
-    this.id = this.data._id;
+    this.id = encodeURIComponent(this.data._id);
     this.value = params.value;
     this.definition = params.colDef.refData;
     this.init();
@@ -72,7 +72,7 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
     }
     this.serviceId = this.appService.serviceId;
     this.isenrichTextWithLinkRequired = this.checkForLink(this.value);
-    if(this.isenrichTextWithLinkRequired) {
+    if (this.isenrichTextWithLinkRequired) {
       this.textWithLink = this.enrichTextWithLink(this.value);
     }
     if (this.value && typeof this.value === 'object') {
