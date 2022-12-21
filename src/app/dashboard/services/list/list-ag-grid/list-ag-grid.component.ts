@@ -649,8 +649,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (clearGridModel) {
       self.agGrid.api.setFilterModel(null);
     }
-    // this.agGrid?.api?.refreshInfiniteCache();
-    self.initRows();
+    self.initRows(true);
   }
 
   clearSavedView() {
@@ -811,7 +810,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                 if (loaded === self.currentRecordsCount) {
                   params.successCallback(records, self.currentRecordsCount);
                 } else {
-                  params.successCallback(records);
+                  params.successCallback(records, loaded + 1);
                 }
                 self.rowSelected(null);
               },
