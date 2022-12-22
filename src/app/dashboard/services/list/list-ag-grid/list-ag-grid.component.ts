@@ -148,7 +148,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
         }, 1000);
       }
-      self.getRecordsCount(true);
+      if (self.subscription['recordsCount']) {
+        self.subscription['recordsCount'].unsubscribe()
+      }
+      self.subscription['recordsCount'] = self.getRecordsCount(true).subscribe();
     });
     self.widthChange.pipe(debounceTime(500)).subscribe(ev => {
       self.setPrefrences(ev);
@@ -248,7 +251,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   initRows(emptyFilter?: boolean) {
     const self = this;
     if (!emptyFilter) {
-      self.getRecordsCount();
+      if (self.subscription['recordsCount']) {
+        self.subscription['recordsCount'].unsubscribe()
+      }
+      self.subscription['recordsCount'] = self.getRecordsCount().subscribe();
     }
     // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
     self.apiConfig.page = 1;
@@ -264,49 +270,43 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     }
     const filter = self.apiConfig.filter || self.gridService.filter;
 
-    self.currentRecordsCountPromise = self.commonService
+    return self.commonService
       .get('api', self.apiEndpoint + '/utils/count', { filter, expand: true })
-      .pipe(
-        catchError(err => of(err)),
-        map(count => {
-          if (typeof count == 'object') {
-            self.commonService.errorToast(count);
-            self.currentRecordsCount = 0;
-            self.recordsInfo.emit({
-              loaded: 0,
-              total: 0
-            });
-            return 0;
-          }
-          else {
-            // if (self.schema.schemaFree && self.searchView && (self.searchView.count || self.searchView.page)) {
-            //   let min_records = (self.apiConfig.count) * (self.apiConfig.page - 1);
-            //   let max_records = self.apiConfig.count + min_records;
-            //   if (count < min_records) {
-            //     count = 0;
-            //   }
-            //   else if (count >= max_records) {
-            //     count = self.apiConfig.count;
-            //   }
-            //   else if (count >= min_records && count < max_records) {
-            //     count = count - min_records;
-            //   }
-            // }
+      .pipe(map(count => {
+        if (typeof count == 'object') {
+          self.commonService.errorToast(count);
+          self.currentRecordsCount = 0;
+          self.recordsInfo.emit({
+            loaded: 0,
+            total: 0
+          });
+          return 0;
+        }
+        else {
+          // if (self.schema.schemaFree && self.searchView && (self.searchView.count || self.searchView.page)) {
+          //   let min_records = (self.apiConfig.count) * (self.apiConfig.page - 1);
+          //   let max_records = self.apiConfig.count + min_records;
+          //   if (count < min_records) {
+          //     count = 0;
+          //   }
+          //   else if (count >= max_records) {
+          //     count = self.apiConfig.count;
+          //   }
+          //   else if (count >= min_records && count < max_records) {
+          //     count = count - min_records;
+          //   }
+          // }
 
-            // if (first) {
-            //   self.totalRecordsCount = count;
-            // }
-            self.currentRecordsCount = count;
-            self.recordsInfo.emit({
-              loaded: 0,
-              total: count
-            });
-
-            return count;
-          }
-        }),
-      )
-      .toPromise();
+          // if (first) {
+          //   self.totalRecordsCount = count;
+          // }
+          self.currentRecordsCount = count;
+          self.recordsInfo.emit({
+            loaded: 0,
+            total: count
+          })
+        }
+      }));
   }
 
   getRecords() {
@@ -649,8 +649,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (clearGridModel) {
       self.agGrid.api.setFilterModel(null);
     }
-    // this.agGrid?.api?.refreshInfiniteCache();
-    self.initRows();
+    self.initRows(true);
   }
 
   clearSavedView() {
@@ -775,10 +774,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         self.agGrid.api.showLoadingOverlay();
         self.showLoading = true;
         self.selectedRecords.emit([]);
-        // if (self.subscription['currentRecordsCountPromise']) {
-        //   self.subscription['currentRecordsCountPromise'].unsubscribe()
-        // }
-        self.currentRecordsCountPromise.then(count => {
+        if (self.subscription['recordsCount']) {
+          self.subscription['recordsCount'].unsubscribe()
+        }
+        self.subscription['recordsCount'] = self.getRecordsCount().subscribe(count => {
           if (params.endRow - 30 < self.currentRecordsCount) {
             // if ((!self.searchView) || (self.searchView && !self.searchView.count && !self.searchView.page)) {
             self.apiConfig.page = Math.ceil(params.endRow / 30);
@@ -811,7 +810,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                 if (loaded === self.currentRecordsCount) {
                   params.successCallback(records, self.currentRecordsCount);
                 } else {
-                  params.successCallback(records, self.currentRecordsCount);
+                  params.successCallback(records, loaded + 1);
                 }
                 self.rowSelected(null);
               },

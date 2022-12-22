@@ -54,13 +54,15 @@ export class SearchForComponent implements OnInit {
   // filterModels: Array<FilterModel>;
   constructor(private appService: AppService) {
     const self = this;
-    // self.filterModels = [];
     self.filterModel = [];
     self.filterModelChange = new EventEmitter<any>();
   }
 
   ngOnInit() {
     const self = this;
+    if (!self.filterModel) {
+      self.filterModel = [];
+    }
   }
 
   addColForSearch() {
