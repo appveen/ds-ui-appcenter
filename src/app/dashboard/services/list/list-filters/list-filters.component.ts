@@ -499,9 +499,14 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     this.queryObject.filter = val
 
   }
-  procesFilter(ele) {
+  procesFilter(data) {
     const obj = {}
-    obj['filterObject'] = ele;
+    const filterData = data['$or'] ? data['$or'][0] : data['$and'] ? data['$and'][0] : data;
+    const key = Object.keys(filterData)[0].replace(/._id/, '');
+    const value = Object.values(filterData)[0];
+    const ele = {};
+    ele[key] = value
+    obj['filterObject'] = filterData;
     obj['dataKey'] = Object.keys(ele)[0]
     obj['filterValue'] = Object.values(ele)[0]
     if (typeof obj['filterValue'] === 'string') {
@@ -516,6 +521,22 @@ export class ListFiltersComponent implements OnInit, OnDestroy {
     else if (typeof obj['filterValue'] === 'boolean') {
       obj['filterType'] = true ? 'yes' : 'no'
       obj['filterValue'] = null
+    }
+    else if (obj['filterValue']['$gt']) {
+      obj['filterType'] = 'greaterThan'
+      obj['filterValue'] = obj['filterValue']['$gt']
+    }
+    else if (obj['filterValue']['$lt']) {
+      obj['filterType'] = 'lessThan'
+      obj['filterValue'] = obj['filterValue']['$lt']
+    }
+    else if (obj['filterValue']['$gte'] === obj['filterValue']['$lte']) {
+      obj['filterType'] = 'equals'
+      obj['filterValue'] = obj['filterValue']['$gte']
+    }
+    else if (obj['filterValue']['$gte'] && obj['filterValue']['$lte']) {
+      obj['filterType'] = 'inRange'
+      obj['filterValue'] = `["${obj['filterValue']['$gte']}", "${obj['filterValue']['$lte']}"]`
     }
     else {
       if (obj['filterValue']['$ne']) {
