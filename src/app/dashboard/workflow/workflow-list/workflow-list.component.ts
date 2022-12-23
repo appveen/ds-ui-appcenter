@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Definition } from 'src/app/interfaces/definition';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
@@ -129,7 +129,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   hoveredRow: any;
   workflowUploadedFiles: Array<any>;
   workflowFilesList: Array<any>;
-  respondControl: FormControl;
+  respondControl: UntypedFormControl;
 
   workflowApi: string;
   activeId: string;
@@ -173,7 +173,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.workflowUploadedFiles = [];
     this.workflowFilesList = [];
 
-    this.respondControl = new FormControl();
+    this.respondControl = new UntypedFormControl();
     this.workflowList = [];
 
   }

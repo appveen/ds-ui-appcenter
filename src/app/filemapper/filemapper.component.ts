@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild, TemplateRef } from '@angular/c
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HttpEventType } from '@angular/common/http';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import Fuse from 'fuse.js';
 
@@ -38,7 +38,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
   };
   schema: any;
   mappingData: any;
-  form: FormGroup;
+  form: UntypedFormGroup;
   createObj: any;
   uploading: number;
   prgressInVal: any;
@@ -61,7 +61,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
     private router: Router,
     private appService: AppService,
     private formService: FormService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     const self = this;
     self.activeStep = 0;

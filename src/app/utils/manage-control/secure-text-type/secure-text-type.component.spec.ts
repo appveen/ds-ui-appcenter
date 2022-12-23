@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecureTextTypeComponent } from './secure-text-type.component';
 import { FormService } from 'src/app/service/form.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, Validators } from '@angular/forms';
 
 describe('SecureTextTypeComponent', () => {
   let component: SecureTextTypeComponent;
@@ -39,7 +39,7 @@ describe('SecureTextTypeComponent', () => {
         _description: 'gfg fgfgfg', type: 'String'
       }, value: null
     };
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
 
     fixture.detectChanges();
   });
@@ -49,60 +49,60 @@ describe('SecureTextTypeComponent', () => {
   });
 
   it('should patch empty string to the control if the control value is null', () => {
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
     component.ngOnInit();
     expect(component.control.value).toBe('');
   })
 
   it('should patch value to the password attribute', () => {
-    component.control = new FormControl({ value: 'sow@12345' });
+    component.control = new UntypedFormControl({ value: 'sow@12345' });
     component.ngOnInit();
     expect(component.password).toBe('sow@12345');
   })
 
   it('should return true if required error is there', () => {
-    component.control = new FormControl('', Validators.required);
+    component.control = new UntypedFormControl('', Validators.required);
     component.control.markAsTouched();
     expect(component.requiredError).toBe(true);
   })
 
   it('should return false if required error is not there', () => {
-    component.control = new FormControl('12345', Validators.required);
+    component.control = new UntypedFormControl('12345', Validators.required);
     component.control.markAsTouched();
     expect(component.requiredError).toBe(false);
   })
 
   it('should return true if pattern error is there', () => {
-    component.control = new FormControl('1234', Validators.pattern("[a-zA-Z ]*"));
+    component.control = new UntypedFormControl('1234', Validators.pattern("[a-zA-Z ]*"));
     component.control.markAsTouched();
     expect(component.patternError).toBe(true);
   })
 
   it('should return false if pattern error is not there', () => {
-    component.control = new FormControl('sow', Validators.pattern("[a-zA-Z ]*"));
+    component.control = new UntypedFormControl('sow', Validators.pattern("[a-zA-Z ]*"));
     component.control.markAsTouched();
     expect(component.patternError).toBe(false);
   })
   it('should return true if minLength error is there', () => {
-    component.control = new FormControl('1234', Validators.minLength(5));
+    component.control = new UntypedFormControl('1234', Validators.minLength(5));
     component.control.markAsTouched();
     expect(component.minLengthError).toBe(true);
   })
 
   it('should return false if minLength error is not there', () => {
-    component.control = new FormControl('sow', Validators.minLength(3));
+    component.control = new UntypedFormControl('sow', Validators.minLength(3));
     component.control.markAsTouched();
     expect(component.minLengthError).toBe(false);
   })
 
   it('should return true if maxLength error is there', () => {
-    component.control = new FormControl('1234444', Validators.maxLength(5));
+    component.control = new UntypedFormControl('1234444', Validators.maxLength(5));
     component.control.markAsTouched();
     expect(component.maxLengthError).toBe(true);
   })
 
   it('should return false if maxLength error is not there', () => {
-    component.control = new FormControl('sow', Validators.maxLength(3));
+    component.control = new UntypedFormControl('sow', Validators.maxLength(3));
     component.control.markAsTouched();
     expect(component.maxLengthError).toBe(false);
   })

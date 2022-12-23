@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NumberTypeComponent } from 'src/app/utils/manage-control/number-type/number-type.component';
 import { FormService } from 'src/app/service/form.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, Validators } from '@angular/forms';
 
 describe('NumberTypeComponent', () => {
   let component: NumberTypeComponent;
@@ -25,7 +25,7 @@ describe('NumberTypeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NumberTypeComponent);
     component = fixture.componentInstance;
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
     component.definition = {
       camelCase: "numbAttr",
       key: "numbAttr",
@@ -102,37 +102,37 @@ describe('NumberTypeComponent', () => {
   });
 
   it('should return true if required error is there', () => {
-    component.control = new FormControl(null, Validators.required);
+    component.control = new UntypedFormControl(null, Validators.required);
     component.control.markAsTouched();
     expect(component.requiredError).toBe(true);
   });
   
   it('should return false if required error is not there', () => {
-    component.control = new FormControl(12, Validators.required);
+    component.control = new UntypedFormControl(12, Validators.required);
     component.control.markAsTouched();
     expect(component.requiredError).toBe(false);
   })
 
   it('should return true if min error is there', () => {
-    component.control = new FormControl(3, Validators.min(5));
+    component.control = new UntypedFormControl(3, Validators.min(5));
     component.control.markAsTouched();
     expect(component.minError).toBe(true);
   })
 
   it('should return false if min error is not there', () => {
-    component.control = new FormControl(6, Validators.min(5));
+    component.control = new UntypedFormControl(6, Validators.min(5));
     component.control.markAsTouched();
     expect(component.minError).toBe(false);
   })
 
   it('should return true if max error is there', () => {
-    component.control = new FormControl(6, Validators.max(5));
+    component.control = new UntypedFormControl(6, Validators.max(5));
     component.control.markAsTouched();
     expect(component.maxError).toBe(true);
   })
 
   it('should return false if max error is not there', () => {
-    component.control = new FormControl(2, Validators.max(5));
+    component.control = new UntypedFormControl(2, Validators.max(5));
     component.control.markAsTouched();
     expect(component.maxError).toBe(false);
   })

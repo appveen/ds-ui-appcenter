@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ElementRef, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormControl, FormBuilder } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
@@ -26,7 +26,7 @@ export class ColumnMappingControlComponent implements OnInit {
   constructor(private elem: ElementRef,
     private appservice: AppService,
     private formService: FormService,
-    private fb: FormBuilder,) {
+    private fb: UntypedFormBuilder,) {
     const self = this;
     self.showInput = false;
     self.emitData = new EventEmitter();
@@ -116,11 +116,11 @@ export class ColumnMappingControlComponent implements OnInit {
     const self = this;
     self.tempArray[index] = null;
     if (self.definition.definition['0'].properties.relatedTo || self.definition.definition['0'].type !== 'User') {
-      (self.form as FormArray).controls[index].patchValue({ _id: null });
+      (self.form as UntypedFormArray).controls[index].patchValue({ _id: null });
     } else if (self.definition.definition['0'].type === 'Object') {
-      (self.form as FormArray).controls[index].patchValue({ value: null });
+      (self.form as UntypedFormArray).controls[index].patchValue({ value: null });
     } else {
-      (self.form as FormArray).controls[index].patchValue(null);
+      (self.form as UntypedFormArray).controls[index].patchValue(null);
     }
   }
 
@@ -159,31 +159,31 @@ export class ColumnMappingControlComponent implements OnInit {
 
   selectArrayData(event, index) {
     const self = this;
-    (self.form as FormArray).controls[index].patchValue(event.item.name);
+    (self.form as UntypedFormArray).controls[index].patchValue(event.item.name);
   }
   selectArrayDataRel(event, index) {
     const self = this;
-    (self.form as FormArray).controls[index].patchValue({ _id: event.item.name });
+    (self.form as UntypedFormArray).controls[index].patchValue({ _id: event.item.name });
   }
   selectArraySTData(event, index) {
     const self = this;
-    (self.form as FormArray).controls[index].patchValue({ value: event.item.name });
+    (self.form as UntypedFormArray).controls[index].patchValue({ value: event.item.name });
   }
 
   addControl() {
     const self = this;
     if (self.definition.definition[0].type === 'Object') {
       const form = self.fb.group(self.formService.createMappingForm(self.definition.definition[0].definition));
-      (self.form as FormArray).push(form);
+      (self.form as UntypedFormArray).push(form);
     } else {
-      (self.form as FormArray).push(new FormControl());
+      (self.form as UntypedFormArray).push(new UntypedFormControl());
 
     }
     self.tempArray.push();
   }
   removeControl(index) {
     const self = this;
-    (self.form as FormArray).removeAt(index);
+    (self.form as UntypedFormArray).removeAt(index);
     self.tempArray.splice(index, 1);
   }
   onChanges(): void {
@@ -235,11 +235,11 @@ export class ColumnMappingControlComponent implements OnInit {
       } else {
         self.tempArray[index] = this.mappingData.headers.fileKeys.find(e => e.name === self.appservice.draggedItem.name);
         if (self.definition.definition['0'].properties.relatedTo || self.definition.definition['0'].type === 'User') {
-          (self.form as FormArray).controls[index].patchValue({ _id: self.appservice.draggedItem.name });
+          (self.form as UntypedFormArray).controls[index].patchValue({ _id: self.appservice.draggedItem.name });
         } else if (self.definition.definition['0'].properties.password && !(self.definition.definition['0'].properties?.richText || self.definition.definition['0'].properties?.longText)) {
-          (self.form as FormArray).controls[index].patchValue({ value: self.appservice.draggedItem.name });
+          (self.form as UntypedFormArray).controls[index].patchValue({ value: self.appservice.draggedItem.name });
         } else {
-          (self.form as FormArray).controls[index].patchValue(self.appservice.draggedItem.name);
+          (self.form as UntypedFormArray).controls[index].patchValue(self.appservice.draggedItem.name);
         }
 
       }

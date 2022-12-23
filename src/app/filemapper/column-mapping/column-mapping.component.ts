@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormService } from 'src/app/service/form.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { AppService } from 'src/app/service/app.service';
 
 @Component({
@@ -15,13 +15,13 @@ export class ColumnMappingComponent implements OnInit {
   @Input() defnitionArray: Array<any>;
   @Output() emitData: EventEmitter<any>;
   @Output() emitDataToParent: EventEmitter<any>;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
   @Input() parentDef: any;
   @Input() schemaName: string;
   @Input() tempAttrList: any;
   constructor(
     private formService: FormService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private appService: AppService
 
   ) {

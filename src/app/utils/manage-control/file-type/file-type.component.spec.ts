@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FileTypeComponent } from 'src/app/utils/manage-control/file-type/file-type.component';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbTooltipConfig, NgbTooltip, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('FileTypeComponent', () => {
@@ -23,7 +23,7 @@ describe('FileTypeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FileTypeComponent);
     component = fixture.componentInstance;
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
     fixture.detectChanges();
   });
 

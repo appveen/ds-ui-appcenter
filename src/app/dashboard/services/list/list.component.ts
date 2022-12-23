@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, ElementRef, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Validators, FormControl, FormBuilder, FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
+import { Validators, UntypedFormControl, UntypedFormBuilder, UntypedFormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -130,7 +130,7 @@ export class ListComponent implements OnInit, OnDestroy {
   showContextMenu: boolean;
   hasFilterFromUrl = false;
   isSchemaFree = false;
-  searchForm: FormGroup;
+  searchForm: UntypedFormGroup;
   filterPayload: any;
   filterId: any;
   filterCreatedBy: any;
@@ -153,7 +153,7 @@ export class ListComponent implements OnInit, OnDestroy {
     private shortcutService: ShortcutService,
     private ngbToolTipConfig: NgbTooltipConfig,
     private activatedRoute: ActivatedRoute,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public gridService: ListAgGridService,
   ) {
     const self = this;
@@ -168,7 +168,7 @@ export class ListComponent implements OnInit, OnDestroy {
     self.subscriptions = {};
     self.apiCalls = {};
     self.definition = [];
-    self.respondControl = new FormControl('', Validators.required);
+    self.respondControl = new UntypedFormControl('', Validators.required);
     self.selectAll = new EventEmitter();
     self.applySavedView = new EventEmitter();
     self.savedViews = [];
@@ -1796,7 +1796,7 @@ export interface RefineQuery {
 }
 
 export function validJSON(): ValidatorFn {
-  return (control: FormControl) => {
+  return (control: UntypedFormControl) => {
     if (!control.value) {
       return null;
     }
@@ -1813,7 +1813,7 @@ export function validJSON(): ValidatorFn {
 };
 
 export function validSearch(type): ValidatorFn {
-  return (control: FormControl) => {
+  return (control: UntypedFormControl) => {
     if (!control.value) {
       return null;
     }
