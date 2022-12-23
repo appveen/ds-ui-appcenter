@@ -58,7 +58,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -83,7 +82,6 @@
           "options": {
             "browserTarget": "odp-ui-appcenter:build",
             "proxyConfig": "proxy.conf.json",
-            "baseHref": "/",
             "port": 4201
           },
           "configurations": {
@@ -108,17 +106,6 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {

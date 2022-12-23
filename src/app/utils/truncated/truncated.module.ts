@@ -4,15 +4,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TruncatedDirective, TruncatedTooltipComponent } from './truncated.directive';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    NgbModule
-  ],
-  declarations: [
-    TruncatedDirective,
-    TruncatedTooltipComponent
-  ],
-  exports: [TruncatedDirective],
-  entryComponents: [TruncatedTooltipComponent]
+    imports: [
+        CommonModule,
+        NgbModule
+    ],
+    declarations: [
+        TruncatedDirective,
+        TruncatedTooltipComponent
+    ],
+    exports: [TruncatedDirective]
 })
 export class TruncatedModule { }
