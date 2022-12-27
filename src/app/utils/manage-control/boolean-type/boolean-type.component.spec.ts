@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BooleanTypeComponent } from 'src/app/utils/manage-control/boolean-type/boolean-type.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 
 describe('BooleanTypeComponent', () => {
   let component: BooleanTypeComponent;
@@ -23,7 +23,7 @@ describe('BooleanTypeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BooleanTypeComponent);
     component = fixture.componentInstance;
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
 
     // fixture.detectChanges();
   });

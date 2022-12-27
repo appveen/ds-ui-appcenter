@@ -13,7 +13,7 @@ import { AgGridCellComponent } from './ag-grid-cell/ag-grid-cell.component';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { RelationTooltipComponent } from './ag-grid-cell/relation-tooltip/relation-tooltip.component';
 import { ListAgGridService } from './list-ag-grid.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { AppService } from '../../../../service/app.service';
 import * as _ from 'lodash'
 import { ListComponent } from '../list.component';
@@ -30,7 +30,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   @Input() columns: Array<any>;
   @Input() applySavedView: EventEmitter<any>;
   @Input() selectAll: EventEmitter<any>;
-  @Input() searchForm: FormGroup;
+  @Input() searchForm: UntypedFormGroup;
   @Output() removedSavedView: EventEmitter<any>;
   @Output() selectedRecords: EventEmitter<Array<any>>;
   @Output() viewRecord: EventEmitter<any>;

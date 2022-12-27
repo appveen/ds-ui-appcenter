@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
 import { ICellEditorParams } from 'ag-grid-community';
 
@@ -24,7 +24,7 @@ export class TextEditor implements ICellEditorAngularComp, AfterViewInit {
   private params: any;
   public value;
   public type;
-  public formArray: FormArray;
+  public formArray: UntypedFormArray;
   public controlPath;
 
   @ViewChild('input', { read: ViewContainerRef })

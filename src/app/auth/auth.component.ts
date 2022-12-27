@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, AfterContentChecked, ViewChild, TemplateRef, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
@@ -20,7 +20,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
 
     @ViewChild('clearSessionModal', { static: false }) clearSessionModal: TemplateRef<HTMLElement>;
     @ViewChild('usernameControl', { static: false }) usernameControl: ElementRef;
-    form: FormGroup;
+    form: UntypedFormGroup;
     message: string;
     loader: boolean;
     subscriptions: any;
@@ -32,7 +32,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
     authType: string;
     azureLoginLoader: boolean;
 
-    constructor(private fb: FormBuilder,
+    constructor(private fb: UntypedFormBuilder,
         private commonService: CommonService,
         private appService: AppService,
         private sessionService: SessionService,

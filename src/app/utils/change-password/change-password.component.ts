@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from 'src/app/service/common.service';
 import { ToastrService } from 'ngx-toastr';
@@ -14,14 +14,14 @@ export class ChangePasswordComponent implements OnInit {
   @ViewChild('changePasswordModal', { static: true }) changePasswordModal: TemplateRef<HTMLElement>;
   @Input() toggleModal: boolean;
   @Output() toggleModalChange: EventEmitter<boolean>;
-  changePasswordForm: FormGroup;
+  changePasswordForm: UntypedFormGroup;
   changePasswordModalRef: NgbModalRef;
   message: string;
   showPassword = {};
   constructor(private commonService: CommonService,
     private modalService: NgbModal,
     private ts: ToastrService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
     const self = this;
     self.toggleModalChange = new EventEmitter();
     self.changePasswordForm = self.fb.group({

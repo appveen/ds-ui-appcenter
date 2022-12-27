@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, AbstractControl } from '@angular/forms';
 
 import { AppService } from 'src/app/service/app.service';
 import { Definition } from 'src/app/interfaces/definition';
@@ -12,7 +12,7 @@ import { EditCollectionOfObjectsGridComponent } from '../../collection-of-object
 	styleUrls: ['./array-control.component.scss']
 })
 export class ArrayControlComponent implements OnInit {
-	@Input() form: FormArray;
+	@Input() form: UntypedFormArray;
 	@Input() definition: any;
 	@Input() arrayDefinition: any;
 	@Input() markEnable: boolean;
@@ -43,7 +43,7 @@ export class ArrayControlComponent implements OnInit {
 		return self.form?.controls;
 	}
 
-	constructor(private fb: FormBuilder,
+	constructor(private fb: UntypedFormBuilder,
 		private formService: FormService,
 		private appService: AppService) {
 	}
@@ -64,7 +64,7 @@ export class ArrayControlComponent implements OnInit {
 			index = self.form?.length;
 		}
 
-		tempControl = new FormControl(
+		tempControl = new UntypedFormControl(
 			self.definition.properties.default !== null ? self.definition.properties.default : null,
 			self.formService.createValidatorList(self.definition)
 		);

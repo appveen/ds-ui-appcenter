@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operato
   styleUrls: ['./user-type.component.scss']
 })
 export class UserTypeComponent implements OnInit {
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Output('keyupEvent') keyupEvent: EventEmitter<KeyboardEvent>;

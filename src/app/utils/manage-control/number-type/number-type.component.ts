@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { FormService } from 'src/app/service/form.service';
 
@@ -11,7 +11,7 @@ import { FormService } from 'src/app/service/form.service';
 })
 export class NumberTypeComponent implements OnInit, AfterViewInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Output('keyupEvent') keyupEvent: EventEmitter<KeyboardEvent>;

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'odp-long-text',
@@ -8,7 +8,7 @@ import { FormControl } from '@angular/forms';
 })
 export class LongTextComponent implements OnInit, AfterViewInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Output('keyupEvent') keyupEvent: EventEmitter<KeyboardEvent>;

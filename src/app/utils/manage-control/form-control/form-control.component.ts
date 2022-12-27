@@ -6,7 +6,7 @@ import {
   EventEmitter,
   Output,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'odp-form-control',
@@ -15,7 +15,7 @@ import { FormControl } from '@angular/forms';
 })
 export class FormControlComponent implements OnInit, OnDestroy {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Input() arrayDefinition: any;
