@@ -6,7 +6,7 @@
                 (keyup)="onEnter($event)" (focus)="onFocus($event)" (blur)="onBlur()" [(ngModel)]="selectedValue"
                 [disabled]="control.disabled">
                 <option *ngIf="!definition.properties.required" value="">---select---</option>
-                <option *ngFor="let row of records" [value]="row._id">{{formatter(row)}}</option>
+                <option *ngFor="let row of records" [value]="row._id">{{row._id}}</option>
             </select>
             <input *ngIf="recordsCount>10 || isSerachFieldSecureTxt " class="form-control"
                 [ngClass]="{'is-invalid':requiredError}" [ngModel]="selectedValue"
