@@ -291,6 +291,8 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
       retValue
     ) {
       retValue = this.datePipe.transform(retValue, 'dd-MM-yyyy');
+    }else{
+      retValue=obj._id
     }
 
     return retValue;
