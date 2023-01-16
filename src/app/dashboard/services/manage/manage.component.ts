@@ -756,7 +756,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       payload = this.schemaFreeCode ? this.schemaFreeCode : {};
     }
     let response;
-    if(self.hasWorkflow){
+    if (self.hasWorkflow) {
       payload._workflow = {
         audit: [
           {
@@ -1045,21 +1045,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const self = this;
     if (self.form.dirty) {
       return new Promise((resolve, reject) => {
-        if (self.pageChangeModalTemplateRef) {
-          self.pageChangeModalTemplateRef.close(false);
-        }
         self.pageChangeModalTemplateRef = self.modalService.open(self.pageChangeModalTemplate, { centered: true });
-        self.pageChangeModalTemplateRef.result.then(
-          close => {
-            resolve(close);
-          },
-          dismiss => {
-            resolve(false);
-          }
-        );
+        self.pageChangeModalTemplateRef.result.then(close => {
+          resolve(close);
+        }, dismiss => {
+          resolve(false);
+        });
       });
     }
     return true;
+
   }
 
   get showSubHeader() {

@@ -265,7 +265,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     const self = this;
     if (this.searchForm) {
       this.apiConfig['filter'] = JSON.parse(this.searchForm.get('filter').value)
-      this.apiConfig['project'] = JSON.parse(this.searchForm.get('project').value)
+      let projectObj=JSON.parse(this.searchForm.get('project').value)
+      if(!projectObj.hasOwnProperty("_metadata") && Object.values(projectObj).find(ele=> ele==1)){
+        projectObj["_metadata"]=1;
+      }
+      this.apiConfig['project'] = projectObj
       this.apiConfig['sort'] = JSON.parse(this.searchForm.get('sort').value)
     }
     const filter = self.apiConfig.filter || self.gridService.filter;
