@@ -265,9 +265,9 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     const self = this;
     if (this.searchForm) {
       this.apiConfig['filter'] = JSON.parse(this.searchForm.get('filter').value)
-      let projectObj=JSON.parse(this.searchForm.get('project').value)
-      if(!projectObj.hasOwnProperty("_metadata") && Object.values(projectObj).find(ele=> ele==1)){
-        projectObj["_metadata"]=1;
+      let projectObj = JSON.parse(this.searchForm.get('project').value)
+      if (!projectObj.hasOwnProperty("_metadata") && Object.values(projectObj).find(ele => ele == 1)) {
+        projectObj["_metadata"] = 1;
       }
       this.apiConfig['project'] = projectObj
       this.apiConfig['sort'] = JSON.parse(this.searchForm.get('sort').value)
@@ -315,8 +315,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   getRecords() {
     const self = this;
-    if (self.apiConfig.sort === null) {
+    if (self.sortModel === null) {
       delete self.apiConfig.sort
+    } else {
+      self.apiConfig.sort = self.sortModel
     }
     return self.commonService.get('api', self.apiEndpoint, self.apiConfig);
   }
