@@ -59,7 +59,7 @@ export class ProfileComponent  implements OnInit, OnDestroy {
         this.passwordChange.message = null;
         delete value.confirmpassword;
         this.subscriptions.changePassword = this.commonService
-            .put('user', '/auth/change-password', value).subscribe(res => {
+            .put('user', '/auth/change-password/'+this.commonService.userDetails.username, value).subscribe(res => {
                 this.passwordChange.loading = false;
                 this.passwordChange.status = true;
                 this.passwordChange.message = 'Password changed successfully';
