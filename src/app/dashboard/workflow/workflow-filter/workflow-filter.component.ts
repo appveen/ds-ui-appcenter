@@ -470,7 +470,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
 
       item.fieldName.forEach(_relCol => {
         const tempObj1 = {
-          [prefix + _relCol]: { $nin: [item['filterValue'], null] }
+          [prefix + _relCol]: { $nin: [item['filterValue']] }
         };
         queryObj['$or'].push(tempObj1);
         self.insertDataInHelperArr(queryObj);
@@ -556,7 +556,7 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
       }
       item.fieldName.forEach(_relCol => {
         const tempObj1 = {
-          [prefix + _relCol]: { $nin: [item['filterValue'], null] }
+          [prefix + _relCol]: { $nin: [item['filterValue']] }
         };
         self.insertDataInHelperArr(tempObj1);
       });
