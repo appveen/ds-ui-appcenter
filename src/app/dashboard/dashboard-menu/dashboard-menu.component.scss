@@ -1,7 +1,7 @@
 .menu-list {
   min-height: calc(100vh - 90px);
   max-height: calc(100vh - 90px);
-  overflow-y: auto;
+  overflow: hidden;
 
   .pinned {
     color: #fcd452 !important;
@@ -14,7 +14,23 @@
   .menu-item {
     min-height: 48px;
     max-height: 48px;
+    min-width: 270px;
+    max-width: 270px;
   }
+}
+
+.menu-list:hover{
+  overflow-y: auto;
+}
+
+.menu-list::-webkit-scrollbar {
+  width: 0.5em;
+  background-color: #efeeee;
+}
+
+.menu-list::-webkit-scrollbar-thumb {
+  background-color: #b8b6b6;
+  border-radius: 10px;
 }
 
 .bg-v-light {
