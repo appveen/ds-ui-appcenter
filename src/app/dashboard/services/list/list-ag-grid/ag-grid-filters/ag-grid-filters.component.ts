@@ -212,7 +212,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     } else if (self.definition.type === 'String' && self.definition.properties.password) {
       temp[self.definition.dataKey + '.value'] = value;
     } else {
-      temp[self.definition.dataKey] = '/' + value + '/';
+      temp[self.definition.dataKey] = '/' + encodeURIComponent(value) + '/';
     }
     if (!value || !value.trim()) {
       temp = null;
