@@ -293,7 +293,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
                 }
               })
               const groupKey=element.properties.dataKey;
-              self.form.controls[groupKey].patchValue(mapObj1)
+              self.form.get(groupKey).patchValue(mapObj1)
             }
           });
           self.form.patchValue(mapObj);
