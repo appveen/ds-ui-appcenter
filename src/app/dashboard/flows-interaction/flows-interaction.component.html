@@ -33,9 +33,9 @@
             <span class="text-grey font-16">No Interaction Found.
             </span>
         </div> -->
-        <ag-grid-angular  style="width: 100%; height: 100%;"
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;"
             class="list-wrapper ag-theme-balham" [datasource]="dataSource" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" rowHeight="40"
-            (rowDoubleClicked)="rowDoubleClicked($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate">
+            (rowDoubleClicked)="rowDoubleClicked($event)" (sortChanged)="sortChanged($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate">
         </ag-grid-angular>
     </div>
 </div>

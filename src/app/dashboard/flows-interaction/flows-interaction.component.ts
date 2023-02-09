@@ -29,6 +29,7 @@ export class FlowsInteractionComponent implements OnInit {
   subscription: any={};
   noRowsTemplate;
   currentRecordsCount: number;
+  sortModel: any;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
@@ -48,7 +49,6 @@ export class FlowsInteractionComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.flowId=params.flowId;
-      // this.apiConfig.page=1;
       this.getRecordsCount()
       this.onGridReady()
     });
@@ -159,6 +159,21 @@ export class FlowsInteractionComponent implements OnInit {
       return this.getDuration(params.data)||'';
     }
     this.columnDefs.push(col);
+  }
+
+  sortChanged(event) {
+    const self = this;
+    const sortModel = self.agGrid?.api?.getSortModel();
+    console.log(sortModel)
+    let sort = '';
+    if (sortModel) {
+      sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
+    }
+    self.apiConfig.sort = sort;
+    self.sortModel = sort;
+    if (!environment.production) {
+      console.log('Sort Modified', sortModel);
+    }
   }
 
   getInteractions(flowId: string) {
