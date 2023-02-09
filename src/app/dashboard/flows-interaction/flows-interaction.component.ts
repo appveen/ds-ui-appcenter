@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AgGridColumn } from 'ag-grid-angular';
+import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
+import { GridOptions, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import * as moment from 'moment';
 
 import { FileSizePipe } from 'src/app/pipes/file-size.pipe';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from './flows-interaction.service';
 
@@ -19,6 +20,16 @@ export class FlowsInteractionComponent implements OnInit {
 
   interactionList: Array<any>;
   columnDefs: Array<AgGridColumn>;
+  apiConfig: GetOptions;
+  @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
+  gridOptions: GridOptions
+  flowId;
+  dataSource: IDatasource;
+  showLoading: boolean;
+  subscription: any={};
+  noRowsTemplate;
+  currentRecordsCount: number;
+  sortModel: any;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
@@ -27,13 +38,30 @@ export class FlowsInteractionComponent implements OnInit {
     private router: Router) {
     this.interactionList = [];
     this.columnDefs = [];
+    this.noRowsTemplate = '<span>No Interaction Found.</span>';
+    this.apiConfig={
+      sort:'-_metadata.createdAt',
+      count : 30,
+      page:1
+    }
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.getInteractions(params.flowId);
+      this.flowId=params.flowId;
+      this.getRecordsCount()
+      this.onGridReady()
     });
     this.configureColumns();
+  }
+
+  ngOnDestroy() {
+    const self = this;
+    Object.keys(self.subscription).forEach(key => {
+      if (self.subscription[key]) {
+        self.subscription[key].unsubscribe();
+      }
+    });
   }
 
   configureColumns() {
@@ -55,8 +83,8 @@ export class FlowsInteractionComponent implements OnInit {
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 360;
-    col.valueGetter = (params) => {
-      return params.data.headers['data-stack-txn-id'];
+    col.valueFormatter = (params) => {
+      return params.data?.headers['data-stack-txn-id'] || '';
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -67,8 +95,8 @@ export class FlowsInteractionComponent implements OnInit {
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 360;
-    col.valueGetter = (params) => {
-      return params.data.headers['data-stack-remote-txn-id']
+    col.valueFormatter = (params) => {
+      return params.data?.headers['data-stack-remote-txn-id'] || ''
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -80,7 +108,9 @@ export class FlowsInteractionComponent implements OnInit {
     col.suppressMovable = true;
     col.width = 140;
     col.cellClass = (params) => {
-      return this.getStatusClass(params.data) + ' fw-500';
+      if(params.data){
+        return this.getStatusClass(params.data) + ' fw-500';
+      }
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -91,8 +121,8 @@ export class FlowsInteractionComponent implements OnInit {
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
-    col.valueGetter = (params) => {
-      return this.getContentType(params.data.headers['content-type']);
+    col.valueFormatter = (params) => {
+      return this.getContentType(params.data?.headers['content-type'] || '');
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -103,8 +133,8 @@ export class FlowsInteractionComponent implements OnInit {
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
-    col.valueGetter = (params) => {
-      return this.fileSizePipe.transform(params.data.headers['content-length']);
+    col.valueFormatter = (params) => {
+      return this.fileSizePipe.transform(params.data?.headers['content-length'] || '');
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -114,8 +144,8 @@ export class FlowsInteractionComponent implements OnInit {
     col.filter = 'agTextColumnFilter';
     col.resizable = true;
     col.suppressMovable = true;
-    col.valueGetter = (params) => {
-      return this.datePipe.transform(params.data._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss');
+    col.valueFormatter = (params) => {
+      return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss')||'';
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -125,21 +155,81 @@ export class FlowsInteractionComponent implements OnInit {
     col.filter = 'agTextColumnFilter';
     col.resizable = true;
     col.suppressMovable = true;
-    col.valueGetter = (params) => {
-      return this.getDuration(params.data);
+    col.valueFormatter = (params) => {
+      return this.getDuration(params.data)||'';
     }
     this.columnDefs.push(col);
   }
 
+  sortChanged(event) {
+    const self = this;
+    const sortModel = self.agGrid?.api?.getSortModel();
+    console.log(sortModel)
+    let sort = '';
+    if (sortModel) {
+      sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
+    }
+    self.apiConfig.sort = sort;
+    self.sortModel = sort;
+    if (!environment.production) {
+      console.log('Sort Modified', sortModel);
+    }
+  }
+
   getInteractions(flowId: string) {
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, { sort: '-_metadata.createdAt', count: 50 }).subscribe(res => {
-      this.interactionList = res;
+    console.log(this.apiConfig)
+    return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
+  }
+
+  getRecordsCount(){
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=ture`)
+    .subscribe(res => {
+      this.currentRecordsCount=res;
       if (!environment.production) {
-        console.log(res);
+        console.log(this.currentRecordsCount);
       }
-    }, err => {
-      console.error(err);
     })
+  }
+
+  onGridReady(event?) {
+    const self = this;
+    self.dataSource = {
+      getRows: (params: IGetRowsParams) => {
+        if (!environment.production) {
+          console.log('getRows', params);
+        }
+        self.agGrid?.api?.showLoadingOverlay();
+        self.showLoading = true;
+        self.apiConfig.page = Math.ceil(params.endRow / 30);
+        self.subscription['records'] = self.getInteractions(this.flowId).subscribe(records => {
+          if (params.endRow - 30 < self.currentRecordsCount) {
+            let loaded = params.endRow;
+            if (loaded > self.currentRecordsCount) {
+              loaded = self.currentRecordsCount;
+            }
+            self.agGrid?.api?.hideOverlay();
+            self.showLoading = false;
+            if (loaded === self.currentRecordsCount) {
+              params.successCallback(records, self.currentRecordsCount);
+            } else {
+              params.successCallback(records, loaded + 1);
+            }
+          } else {
+            self.agGrid?.api?.hideOverlay();
+            if (self.currentRecordsCount == 0) {
+              self.agGrid?.api?.showNoRowsOverlay();
+            }
+            params.successCallback([], self.currentRecordsCount);
+          }
+        }, err => {
+          self.commonService.errorToast(err);
+          self.showLoading = false;
+          self.agGrid?.api?.hideOverlay();
+          self.currentRecordsCount = 0;
+          self.agGrid?.api?.showNoRowsOverlay();
+        });
+      }
+    };
   }
 
   getContentType(contentType: string) {
