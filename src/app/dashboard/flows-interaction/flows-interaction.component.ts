@@ -30,6 +30,7 @@ export class FlowsInteractionComponent implements OnInit {
   noRowsTemplate;
   currentRecordsCount: number;
   sortModel: any;
+  filterModel: any;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
@@ -49,8 +50,9 @@ export class FlowsInteractionComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.flowId=params.flowId;
-      this.getRecordsCount()
-      this.onGridReady()
+      this.agGrid?.api?.setFilterModel(null);
+      this.agGrid?.api?.setSortModel(null);
+      this.getRecordsCount();
     });
     this.configureColumns();
   }
@@ -169,6 +171,7 @@ export class FlowsInteractionComponent implements OnInit {
     if (sortModel) {
       sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
     }
+    console.log(sort)
     self.apiConfig.sort = sort;
     self.sortModel = sort;
     if (!environment.production) {
@@ -176,15 +179,53 @@ export class FlowsInteractionComponent implements OnInit {
     }
   }
 
+  filterChanged(event, modFilter?) {
+    const self = this;
+    const filter = [];
+    const filterModel = self.agGrid && self.agGrid.api && self.agGrid.api.getFilterModel();
+    if (filterModel) {
+      Object.keys(filterModel).forEach(key => {
+        try {
+          if (filterModel[key].filter) {
+            let tempData = JSON.parse(filterModel[key].filter)
+            if (tempData['$or'] && tempData['$or'].length === 1) {
+              tempData = tempData['$or'][0]
+            }
+            filter.push({[key]:'/'+tempData+'/'});
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+    if (filter.length > 0) {
+      self.apiConfig.filter = { $and: filter };
+      self.filterModel = self.apiConfig.filter;
+    } else {
+      this.filterModel=null;
+    }
+    if (!environment.production) {
+      console.log('Filter Modified', filterModel);
+    }
+    self.getRecordsCount()
+  }
+
   getInteractions(flowId: string) {
-    console.log(this.apiConfig)
+    if(!this.filterModel){
+      delete this.apiConfig.filter
+    }
     return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
   }
 
   getRecordsCount(){
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=ture`)
+    var filter={}
+    if(this.filterModel){
+      filter = this.apiConfig.filter
+    }
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=ture`,{ filter, expand: true })
     .subscribe(res => {
       this.currentRecordsCount=res;
+      this.onGridReady();
       if (!environment.production) {
         console.log(this.currentRecordsCount);
       }
