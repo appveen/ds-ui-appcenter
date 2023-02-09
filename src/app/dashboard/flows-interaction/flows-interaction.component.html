@@ -28,14 +28,14 @@
                 <p class="m-0">No Interaction Found</p>
             </div>
         </div> -->
-        <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!interactionList || interactionList.length==0">
+        <!-- <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!dataSource">
             <div class="no-records-img mx-auto"></div>
             <span class="text-grey font-16">No Interaction Found.
             </span>
-        </div>
-        <ag-grid-angular *ngIf="interactionList && interactionList.length>0" style="width: 100%; height: 100%;"
-            class="list-wrapper ag-theme-balham" [rowData]="interactionList" [columnDefs]="columnDefs" rowHeight="40"
-            (rowDoubleClicked)="rowDoubleClicked($event)">
+        </div> -->
+        <ag-grid-angular  style="width: 100%; height: 100%;"
+            class="list-wrapper ag-theme-balham" [datasource]="dataSource" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" rowHeight="40"
+            (rowDoubleClicked)="rowDoubleClicked($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate">
         </ag-grid-angular>
     </div>
 </div>
