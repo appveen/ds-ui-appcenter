@@ -171,7 +171,6 @@ export class FlowsInteractionComponent implements OnInit {
     if (sortModel) {
       sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
     }
-    console.log(sort)
     self.apiConfig.sort = sort;
     self.sortModel = sort;
     if (!environment.production) {
