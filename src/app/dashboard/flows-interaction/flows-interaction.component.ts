@@ -191,7 +191,15 @@ export class FlowsInteractionComponent implements OnInit {
             if (tempData['$or'] && tempData['$or'].length === 1) {
               tempData = tempData['$or'][0]
             }
-            filter.push({[key]:'/'+tempData+'/'});
+            if(filterModel[key].type=="contains"){
+              filter.push({[key]:'/'+tempData+'/'});
+            }else if(filterModel[key].type=="notContains"){
+              filter.push({[key]:{$not:'/'+tempData+'/'}});
+            }else if(filterModel[key].type=="equals"){
+              filter.push({[key]:tempData});
+            } else if(filterModel[key].type=="notEqual"){
+              filter.push({[key]:{$ne:tempData}});
+            }
           }
         } catch (e) {
           console.error(e);
@@ -213,6 +221,9 @@ export class FlowsInteractionComponent implements OnInit {
   getInteractions(flowId: string) {
     if(!this.filterModel){
       delete this.apiConfig.filter
+    }
+    if(!environment.production){
+      console.log(this.filterModel)
     }
     return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
   }
