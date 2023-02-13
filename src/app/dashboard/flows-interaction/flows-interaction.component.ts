@@ -78,7 +78,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.width = 120;
     this.columnDefs.push(col);
     col = new AgGridColumn();
-    col.field = 'headers';
+    col.field = 'headers.data-stack-txn-id';
     col.headerName = 'Txn ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
@@ -90,7 +90,7 @@ export class FlowsInteractionComponent implements OnInit {
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
-    col.field = 'headers';
+    col.field = 'headers.data-stack-remote-txn-id';
     col.headerName = 'Remote ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
@@ -116,7 +116,7 @@ export class FlowsInteractionComponent implements OnInit {
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
-    col.field = 'headers';
+    col.field = 'headers.content-type';
     col.headerName = 'Payload Type';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
@@ -128,7 +128,7 @@ export class FlowsInteractionComponent implements OnInit {
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
-    col.field = 'headers';
+    col.field = 'headers.content-length';
     col.headerName = 'Payload Size';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
@@ -186,7 +186,8 @@ export class FlowsInteractionComponent implements OnInit {
       Object.keys(filterModel).forEach(key => {
         try {
           if (filterModel[key].filter) {
-            let tempData = JSON.parse(filterModel[key].filter)
+            var temp = JSON.stringify(filterModel[key].filter);
+            let tempData = JSON.parse(temp)
             if (tempData['$or'] && tempData['$or'].length === 1) {
               tempData = tempData['$or'][0]
             }
