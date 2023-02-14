@@ -58,3 +58,11 @@
         }
     }
 }
+
+.refresh{
+    opacity: 0.6;
+    transition: 0.2s;
+    &:hover{
+        opacity: 1;
+    }
+}
