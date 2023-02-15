@@ -67,11 +67,18 @@ export class FlowsInteractionComponent implements OnInit {
   }
 
   configureColumns() {
+    const filterOp={
+      filterOptions:[
+        'contains','notContains','equals','notEqual'
+      ],
+      suppressAndOrCondition: true
+    };
     let col = new AgGridColumn();
     col.field = '_id';
     col.headerName = 'ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.cellClass = 'fw-500';
@@ -82,6 +89,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Txn ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 360;
@@ -94,6 +102,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Remote ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 360;
@@ -106,6 +115,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Status';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
@@ -120,6 +130,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Payload Type';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
@@ -132,6 +143,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Payload Size';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
@@ -144,6 +156,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Start Time';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.valueFormatter = (params) => {
@@ -155,6 +168,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Duration';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
+    col.filterParams= filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.valueFormatter = (params) => {
@@ -216,6 +230,13 @@ export class FlowsInteractionComponent implements OnInit {
       console.log('Filter Modified', filterModel);
     }
     self.getRecordsCount()
+  }
+
+  clearFilter(){
+    const self = this;
+    if (self.agGrid) {
+      this.agGrid.api.setFilterModel(null);
+    }
   }
 
   getInteractions(flowId: string) {

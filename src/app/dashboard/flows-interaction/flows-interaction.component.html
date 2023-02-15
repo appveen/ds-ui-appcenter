@@ -1,6 +1,12 @@
 <div class="p-2">
-    <span title="Refresh" (click)="getRecordsCount()" class="dsi dsi-refresh ml-2 hover refresh"></span>
-    <div class="list-wrapper border rounded bg-white">
+    <div class="d-flex align-items-center">
+        <span title="Refresh" (click)="getRecordsCount()" class="dsi dsi-refresh ml-2 hover refresh align-items-center mr-2"></span>
+        <button *ngIf="filterModel" type="button" class="btn btn-link text-accent py-0" (click)="clearFilter()">
+        <span class="fa fa-times mr-2"></span>
+        <span class="text">Clear Filters</span>
+        </button>
+    </div>
+    <div class="list-wrapper border rounded bg-white mt-2">
         <!-- <div class="list-group list-group-flush">
             <div class="list-group-item d-flex align-items-center bg-light fw-500 font-12 text-secondary">
                 <span class="item-id">ID</span>
