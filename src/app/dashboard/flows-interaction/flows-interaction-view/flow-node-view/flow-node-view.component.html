@@ -152,6 +152,14 @@
                         <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
                         <span class="fw-600">Payload</span>
                     </div>
+                    <div class="d-flex align-items-center align-items-stretch mb-1">
+                        <div class="w-100 px-2">
+                            <button type="button" class="btn btn-link btn-sm px-0" (click)="showPayload()">
+                                <span *ngIf="!togglePayload">Show Complete Payload</span>
+                                <span *ngIf="togglePayload">Hide Complete Payload</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch mb-1">
                     <div class="px-2 header-key fw-400 font-12 text-secondary">Type</div>
@@ -164,14 +172,6 @@
                 <div class="d-flex align-items-center align-items-stretch mb-1">
                     <div class="px-2 header-key fw-400 font-12 text-secondary">Total Records</div>
                     <div class="px-2 header-value w-100 fw-400 text-dark">{{currState?.payload?.totalRecords}}</div>
-                </div>
-                <div class="d-flex align-items-center align-items-stretch mb-1">
-                    <div class="w-100 px-2">
-                        <button type="button" class="btn btn-link btn-sm px-0" (click)="showPayload()">
-                            <span *ngIf="!togglePayload">Show Complete Payload</span>
-                            <span *ngIf="togglePayload">Hide Complete Payload</span>
-                        </button>
-                    </div>
                 </div>
                 <div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="fetchingData">
                     <div class="align-self-center text-center">
