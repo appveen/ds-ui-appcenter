@@ -77,7 +77,7 @@ export class FlowNodeViewComponent implements OnInit {
   fetchPayload() {
     this.fetchingData = true;
     this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.currState.interactionId}/state/${this.currState.nodeId}/data`).subscribe(res => {
-      this.currState.body = res?.body;
+      this.currState.body = res?.body || {};
       this.fetchingData = false;
     }, err => {
       this.fetchingData = false;
