@@ -1491,11 +1491,8 @@ export class CommonService {
     const self = this;
     if (self.permissions && self.permissions.length > 0) {
       return self.permissions
-        .filter(e => e.app === self.app._id)
+        .filter(e => e.app === self.app._id && e.id.match(/^INTR_.*$/))
         .map(e => e.entity)
-        .filter(e => e.match(/^INTR_.*$/))
-        .map(e => e.split('_'[1]))
-        .filter((e, i, a) => a.indexOf(e) === i);
     }
     return [];
   }

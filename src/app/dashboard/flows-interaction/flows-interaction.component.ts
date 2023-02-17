@@ -26,7 +26,7 @@ export class FlowsInteractionComponent implements OnInit {
   flowId;
   dataSource: IDatasource;
   showLoading: boolean;
-  subscription: any={};
+  subscription: any = {};
   noRowsTemplate;
   currentRecordsCount: number;
   sortModel: any;
@@ -40,16 +40,16 @@ export class FlowsInteractionComponent implements OnInit {
     this.interactionList = [];
     this.columnDefs = [];
     this.noRowsTemplate = '<span>No Interaction Found.</span>';
-    this.apiConfig={
-      sort:'-_metadata.createdAt',
-      count : 30,
-      page:1
+    this.apiConfig = {
+      sort: '-_metadata.createdAt',
+      count: 30,
+      page: 1
     }
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.flowId=params.flowId;
+      this.flowId = params.flowId;
       this.agGrid?.api?.setFilterModel(null);
       this.agGrid?.api?.setSortModel(null);
       this.getRecordsCount();
@@ -67,9 +67,9 @@ export class FlowsInteractionComponent implements OnInit {
   }
 
   configureColumns() {
-    const filterOp={
-      filterOptions:[
-        'contains','notContains','equals','notEqual'
+    const filterOp = {
+      filterOptions: [
+        'contains', 'notContains', 'equals', 'notEqual'
       ],
       suppressAndOrCondition: true
     };
@@ -78,7 +78,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.cellClass = 'fw-500';
@@ -89,7 +89,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Txn ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 360;
@@ -102,7 +102,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Remote ID';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 360;
@@ -115,12 +115,12 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Status';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
     col.cellClass = (params) => {
-      if(params.data){
+      if (params.data) {
         return this.getStatusClass(params.data) + ' fw-500';
       }
     }
@@ -130,7 +130,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Payload Type';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
@@ -143,7 +143,7 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Payload Size';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.width = 140;
@@ -156,11 +156,11 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Start Time';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.valueFormatter = (params) => {
-      return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss')||'';
+      return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss') || '';
     }
     this.columnDefs.push(col);
     col = new AgGridColumn();
@@ -168,11 +168,11 @@ export class FlowsInteractionComponent implements OnInit {
     col.headerName = 'Duration';
     col.sortable = true;
     col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
+    col.filterParams = filterOp;
     col.resizable = true;
     col.suppressMovable = true;
     col.valueFormatter = (params) => {
-      return this.getDuration(params.data)||'';
+      return this.getDuration(params.data) || '';
     }
     this.columnDefs.push(col);
   }
@@ -205,14 +205,14 @@ export class FlowsInteractionComponent implements OnInit {
             if (tempData['$or'] && tempData['$or'].length === 1) {
               tempData = tempData['$or'][0]
             }
-            if(filterModel[key].type=="contains"){
-              filter.push({[key]:'/'+tempData+'/'});
-            }else if(filterModel[key].type=="notContains"){
-              filter.push({[key]:{$not:'/'+tempData+'/'}});
-            }else if(filterModel[key].type=="equals"){
-              filter.push({[key]:tempData});
-            } else if(filterModel[key].type=="notEqual"){
-              filter.push({[key]:{$ne:tempData}});
+            if (filterModel[key].type == "contains") {
+              filter.push({ [key]: '/' + tempData + '/' });
+            } else if (filterModel[key].type == "notContains") {
+              filter.push({ [key]: { $not: '/' + tempData + '/' } });
+            } else if (filterModel[key].type == "equals") {
+              filter.push({ [key]: tempData });
+            } else if (filterModel[key].type == "notEqual") {
+              filter.push({ [key]: { $ne: tempData } });
             }
           }
         } catch (e) {
@@ -224,7 +224,7 @@ export class FlowsInteractionComponent implements OnInit {
       self.apiConfig.filter = { $and: filter };
       self.filterModel = self.apiConfig.filter;
     } else {
-      this.filterModel=null;
+      this.filterModel = null;
     }
     if (!environment.production) {
       console.log('Filter Modified', filterModel);
@@ -232,7 +232,7 @@ export class FlowsInteractionComponent implements OnInit {
     self.getRecordsCount()
   }
 
-  clearFilter(){
+  clearFilter() {
     const self = this;
     if (self.agGrid) {
       this.agGrid.api.setFilterModel(null);
@@ -240,28 +240,28 @@ export class FlowsInteractionComponent implements OnInit {
   }
 
   getInteractions(flowId: string) {
-    if(!this.filterModel){
+    if (!this.filterModel) {
       delete this.apiConfig.filter
     }
-    if(!environment.production){
+    if (!environment.production) {
       console.log(this.filterModel)
     }
     return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
   }
 
-  getRecordsCount(){
-    var filter={}
-    if(this.filterModel){
+  getRecordsCount() {
+    var filter = {}
+    if (this.filterModel) {
       filter = this.apiConfig.filter
     }
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=ture`,{ filter, expand: true })
-    .subscribe(res => {
-      this.currentRecordsCount=res;
-      this.onGridReady();
-      if (!environment.production) {
-        console.log(this.currentRecordsCount);
-      }
-    })
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=true`, { filter, expand: true })
+      .subscribe(res => {
+        this.currentRecordsCount = res;
+        this.onGridReady();
+        if (!environment.production) {
+          console.log(this.currentRecordsCount);
+        }
+      })
   }
 
   onGridReady(event?) {
