@@ -47,7 +47,7 @@ export class IntegrationListComponent implements OnInit {
   }
 
   getFlows() {
-    const filter: any = { status: 'Active', app: this.commonService.app._id };
+    const filter: any = { status: 'Active' };
     const options: GetOptions = {
       count: -1,
       filter,

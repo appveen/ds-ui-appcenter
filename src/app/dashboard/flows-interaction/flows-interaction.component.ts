@@ -246,7 +246,6 @@ export class FlowsInteractionComponent implements OnInit {
     if (!environment.production) {
       console.log(this.filterModel)
     }
-    this.apiConfig.filter = { ...this.apiConfig.filter, app: this.commonService.app._id }
     return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
   }
 
@@ -255,7 +254,6 @@ export class FlowsInteractionComponent implements OnInit {
     if (this.filterModel) {
       filter = this.apiConfig.filter
     }
-    filter = { ...filter, app: this.commonService.app._id }
     this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=true`, { filter, expand: true })
       .subscribe(res => {
         this.currentRecordsCount = res;

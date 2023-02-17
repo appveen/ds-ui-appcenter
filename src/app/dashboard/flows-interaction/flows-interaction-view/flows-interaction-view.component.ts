@@ -32,11 +32,10 @@ export class FlowsInteractionViewComponent implements OnInit {
   }
 
   getInteractions(params: any) {
-    const filter = { app: this.commonService.app._id }
     combineLatest([
-      this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}`, { filter }),
-      this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}/state`, { filter }),
-      this.commonService.get('pm', `/${this.commonService.app._id}/flow/${params.flowId}`, { filter })
+      this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}`),
+      this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}/state`),
+      this.commonService.get('pm', `/${this.commonService.app._id}/flow/${params.flowId}`)
     ]).subscribe(res => {
       this.interactionData = res[0]
       this.interactionStateList = res[1];
