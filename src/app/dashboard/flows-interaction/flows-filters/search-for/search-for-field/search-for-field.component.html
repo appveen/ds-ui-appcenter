@@ -1,0 +1,74 @@
+<div class="d-flex align-items-center row-content">
+  <div class="dsi dsi-more-vertical-6 text-muted mr-2 hover"></div>
+  <div class="input-group col-name-dd mr-2">
+    <select class="custom-select" [(ngModel)]="filterModel.dataKey" (change)="onFieldChange()">
+      <option *ngFor="let col of allFields;" [value]="col.dataKey">
+        {{ col.field }}</option>
+    </select>
+  </div>
+  <div class="col-filter mr-2 d-flex">
+    <div class="options-dd d-flex align-items-center text-dark position-relative border-right pr-2">
+      <!-- <span class="dsi dsi-drop-down text-dark position-absolute angle-pos"></span> -->
+      <select #filterTypeEle [(ngModel)]="filterModel.filterType" (change)="valueChange()">
+        <option *ngFor="let option of filterTypeOptions" [value]="option.value">
+          {{option.name}}
+        </option>
+      </select>
+    </div>
+    <ng-container *ngIf="selectedFieldType !== 'Date' && selectedFieldType !== 'Boolean'">
+      <input *ngIf="selectedFieldType !== 'Number'" type="text" class="w-100 p-2 filter-txt font-sm"
+        [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
+      <input *ngIf="selectedFieldType === 'Number' && filterModel.filterType !== 'inRange'" type="number"
+        class="w-100 p-2 filter-txt font-sm" [(ngModel)]="filterModel.filterValue" (change)="valueChange()">
+    </ng-container>
+    <input *ngIf="selectedFieldType === 'Boolean'" type="text"
+      class="w-100 p-2 filter-txt-disabled text-secondary font-sm" [value]="filterTypeEle.value" disabled>
+    <div *ngIf="selectedFieldType === 'Date'" class="d-flex align-items-center w-100">
+      <div class="d-flex align-items-center h-100 px-2 bg-white"
+        [ngClass]="{'date-picker-from w-50': filterModel.filterType === 'inRange', 'w-100': filterModel.filterType != 'inRange'}"
+        (click)="toggleFromDate = true; toggleToDate = false; $event.stopPropagation();">
+        <div class="d-flex align-items-center">
+          <span class="dsi dsi-calendar mr-2 text-dark"></span>
+          <span class="text-dark">{{ filterModel.filterType === 'inRange' ? 'From' : 'Date' }}</span>
+        </div>
+        <span class="timestamp font-sm ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ startDate ? ( startDate |
+          date: 'd MMM y') : '' }}</span>
+        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ startDate ? ( startDate
+          | date: 'd MMM y, HH:mm:ss') : '' }}</span>
+        <span class="dsi dsi-drop-down text-dark"></span>
+        <div class="position-absolute">
+          <odp-date-picker *ngIf="toggleFromDate" [togglePicker]="toggleFromDate"
+            (togglePickerChange)="toggleFromDate = $event" [from]="startDate" (fromChange)="setStartDate($event)"
+            [options]="{floating:true,buttons:true,type:dateFieldType}" style="position: absolute; top: 100px">
+          </odp-date-picker>
+        </div>
+      </div>
+      <div *ngIf="filterModel.filterType === 'inRange'"
+        class="date-picker d-flex align-items-center w-50 h-100 px-2 bg-white"
+        (click)="toggleToDate = true; toggleFromDate = false; $event.stopPropagation();">
+        <div class="d-flex align-items-center">
+          <span class="dsi dsi-calendar mr-2 text-dark"></span>
+          <span class="text-dark">To</span>
+        </div>
+        <span class="timestamp font-sm ml-auto mr-auto" *ngIf="dateFieldType === 'date'">{{ endDate ? (endDate | date:
+          'd MMM y') : '' }}</span>
+        <span class="timestamp font-xs ml-auto mr-auto" *ngIf="dateFieldType === 'date-time'">{{ endDate ? (endDate |
+          date: 'd MMM y, HH:mm:ss') : '' }}</span>
+        <span class="dsi dsi-drop-down text-dark"></span>
+        <div class="position-absolute">
+          <odp-date-picker *ngIf="toggleToDate" [togglePicker]="toggleToDate"
+            (togglePickerChange)="toggleToDate = $event" [from]="endDate" (fromChange)="setEndDate($event)"
+            [options]="{floating:true,buttons:true,type: dateFieldType}" style="position: absolute; top: 100px">
+          </odp-date-picker>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="selectedFieldType === 'Number' && filterModel.filterType === 'inRange'"
+      class="d-flex align-items-center w-100">
+      <input type="number" placeholder="From" style="border-right: 1px solid #bdbdbd !important"
+        class="w-50 p-2 filter-txt font-sm" [(ngModel)]="fromNumber" (blur)="fromNumberChange()">
+      <input type="number" placeholder="To" class="w-50 p-2 filter-txt font-sm" [(ngModel)]="toNumber"
+        (blur)="toNumberChange()">
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
 import { GridOptions, IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -9,6 +9,12 @@ import { FileSizePipe } from 'src/app/pipes/file-size.pipe';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from './flows-interaction.service';
+import { FloatingFilterComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
+import { FlowsFiltersComponent } from './flows-filters/flows-filters.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SessionService } from 'src/app/service/session.service';
+import { validJSON, validSearch } from '../services/list/list.component';
+import { AppService } from 'src/app/service/app.service';
 
 @Component({
   selector: 'odp-flows-interaction',
@@ -19,9 +25,11 @@ import { FlowsInteractionService } from './flows-interaction.service';
 export class FlowsInteractionComponent implements OnInit {
 
   interactionList: Array<any>;
-  columnDefs: Array<AgGridColumn>;
+  columnDefs: Array<any>;
   apiConfig: GetOptions;
   @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
+  @ViewChild('listFilters', { static: false })
+  listFilters: FlowsFiltersComponent;
   gridOptions: GridOptions
   flowId;
   dataSource: IDatasource;
@@ -31,23 +39,74 @@ export class FlowsInteractionComponent implements OnInit {
   currentRecordsCount: number;
   sortModel: any;
   filterModel: any;
+  hasFilterFromUrl: boolean;
+  showSaveViewDropDown: boolean;
+  savedViews: Array<any>;
+  allFilters: Array<any>;
+  showSearchSavedView: boolean;
+  selectedSavedView: any;
+  showPrivateViews: boolean;
+  savedViewApiConfig: GetOptions;
+  loadFilter: boolean;
+  searchForm: FormGroup;
+  filterPayload: any;
+  filterId: any;
+  filterCreatedBy: any;
+  isCollapsed: any;
+  selectedSearch: any;
+  savedViewSearchTerm: any;
+  advanceFilter: boolean;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
     private datePipe: DatePipe,
     private fileSizePipe: FileSizePipe,
-    private router: Router) {
+    private router: Router,
+    private fb: FormBuilder,
+    private sessionService: SessionService,
+    public appService: AppService,) {
+    const self=this;
     this.interactionList = [];
     this.columnDefs = [];
+    // self.applySavedView = new EventEmitter();
+    self.savedViews = [];
+    // self.selectedRows = [];
+    // self.totalRecords = 0;
+    self.savedViewApiConfig = {
+      page: 1,
+      count: 10
+    };
     this.noRowsTemplate = '<span>No Interaction Found.</span>';
     this.apiConfig={
       sort:'-_metadata.createdAt',
       count : 30,
-      page:1
+      page:1,
     }
+    // self.searchForm = self.fb.group({
+    //   name: ['', [Validators.required]],
+    //   filter: ['{}', [validJSON()]],
+    //   project: ['{}', [validJSON(), validSearch('project')]],
+    //   sort: ['{}', [validJSON(), validSearch('sort')]],
+    //   private: [false, [Validators.required]],
+    //   count: ['', Validators.min(1)],
+    //   page: ['', Validators.min(1)]
+    // });
+    self.filterPayload = {
+      serviceId: '',
+      name: '',
+      private: false,
+      value: '',
+      app: self.commonService.app._id,
+      createdBy: self.sessionService.getUser(true)._id,
+      type: 'dataService'
+    };
+    self.filterId = null;
+    self.isCollapsed = true;
+    self.selectedSearch = "";
   }
 
   ngOnInit(): void {
+    const self=this;
     this.route.params.subscribe(params => {
       this.flowId=params.flowId;
       this.agGrid?.api?.setFilterModel(null);
@@ -55,6 +114,39 @@ export class FlowsInteractionComponent implements OnInit {
       this.getRecordsCount();
     });
     this.configureColumns();
+
+    this.flowsService.filterSubject.subscribe(data => {
+      this.clearFilter(false);
+      let final = {};
+      const filter = self.apiConfig.filter || self.flowsService.filter;
+      console.log()
+      const temp = filter?.['$and'] || filter?.['$or'] || [];
+      if (data) {
+        if (temp && temp.length > 0) {
+          if (temp.find(ele => Object.keys(ele)[0] === Object.keys(data)[0])) {
+            temp.forEach(ele => {
+              if (Object.keys(ele)[0] === Object.keys(data)[0]) {
+                ele = data
+              }
+            })
+          }
+          else {
+            let tempData = data['$or']?.length > 0 ? data['$or'] : data
+            if (Array.isArray(tempData) && tempData.length === 1) {
+              tempData = tempData[0];
+            }
+            temp.push(tempData);
+            final['$and'] = temp
+          }
+        }
+        else {
+          const tempData = data['$or']?.length > 0 ? data['$or'] : data
+          temp.push(tempData)
+          final['$and'] = temp
+        }
+      }
+      this.filterModified(null, final)
+    })
   }
 
   ngOnDestroy() {
@@ -66,115 +158,462 @@ export class FlowsInteractionComponent implements OnInit {
     });
   }
 
-  configureColumns() {
-    const filterOp={
-      filterOptions:[
-        'contains','notContains','equals','notEqual'
-      ],
-      suppressAndOrCondition: true
-    };
-    let col = new AgGridColumn();
-    col.field = '_id';
-    col.headerName = 'ID';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.cellClass = 'fw-500';
-    col.width = 120;
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = 'headers.data-stack-txn-id';
-    col.headerName = 'Txn ID';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.width = 360;
-    col.valueFormatter = (params) => {
-      return params.data?.headers['data-stack-txn-id'] || '';
+  filterModified(event, modFilter?) {
+    const self = this;
+    const filter = [];
+    const filterModel = self.agGrid && self.agGrid.api && self.agGrid.api.getFilterModel();
+    if (filterModel) {
+      Object.keys(filterModel).forEach(key => {
+        try {
+          if (filterModel[key].filter) {
+            let tempData = JSON.parse(filterModel[key].filter)
+            if (tempData['$or'] && tempData['$or'].length === 1) {
+              tempData = tempData['$or'][0]
+            }
+            filter.push(tempData);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
     }
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = 'headers.data-stack-remote-txn-id';
-    col.headerName = 'Remote ID';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.width = 360;
-    col.valueFormatter = (params) => {
-      return params.data?.headers['data-stack-remote-txn-id'] || ''
+    if (filter.length > 0) {
+      self.apiConfig.filter = { $and: filter };
+      self.flowsService.inlineFilterActive = true;
+    } else {
+      self.flowsService.inlineFilterActive = false;
+      self.apiConfig.filter = modFilter;
     }
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = 'status';
-    col.headerName = 'Status';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.width = 140;
-    col.cellClass = (params) => {
-      if(params.data){
-        return this.getStatusClass(params.data) + ' fw-500';
+    if (!environment.production) {
+      console.log('Filter Modified', filterModel);
+    }
+    self.filterModel = self.apiConfig.filter || modFilter;
+    // this.initRows()
+  }
+
+  selectSavedView(evnt) {
+    const view = evnt.query || evnt;
+    const self = this;
+    if (!environment.production) {
+      console.log('selectSavedView', view);
+    }
+
+    if (view._id) {
+      self.setLastFilterApplied(view);
+      self.selectedSavedView = view;
+      // self.agGrid.applyView(view);
+      self.listFilters.selectFilter(view, true);
+      self.appService.existingFilter = view;
+    } else {
+      if (view.filter || view.sort || view.select) {
+        self.selectedSavedView = { value: view };
+        // self.agGrid.applyView({ value: view });
+        self.listFilters.selectFilter({ value: view }, true);
+        self.appService.existingFilter = { value: view };
       }
     }
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = 'headers.content-type';
-    col.headerName = 'Payload Type';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.width = 140;
-    col.valueFormatter = (params) => {
-      return this.getContentType(params.data?.headers['content-type'] || '');
+    if (evnt.close) {
+      self.advanceFilter = false;
     }
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = 'headers.content-length';
-    col.headerName = 'Payload Size';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.width = 140;
-    col.valueFormatter = (params) => {
-      return this.fileSizePipe.transform(params.data?.headers['content-length'] || '');
+  }
+
+  setLastFilterApplied(data: any) {
+    const self = this;
+    let response;
+    const payload = {
+      // userId: self.commonService.userDetails._id,
+      // type: 'last-filter',
+      // key: self.schema._id,
+      // value: JSON.stringify(data)
+    };
+    // if (self.lastFilterAppliedPrefId) {
+    //   response = self.commonService.put('user', '/data/preferences/' + self.lastFilterAppliedPrefId, payload);
+    // } else {
+    //   response = self.commonService.post('user', '/data/preferences', payload);
+    // }
+    // response.subscribe(
+    //   prefRes => {
+    //     self.lastFilterAppliedPrefId = prefRes._id;
+    //   },
+    //   prefErr => {
+    //     self.commonService.errorToast(prefErr, 'Unable to save preference');
+    //   }
+    // );
+  }
+
+  onRefine(event) {
+    if (event.refresh) {
+      this.getSavedViews(true);
     }
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = '_metadata.createAt';
-    col.headerName = 'Start Time';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.valueFormatter = (params) => {
-      return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss')||'';
+    if (!event.query.filter) {
+      this.hasFilterFromUrl = false;
+
     }
-    this.columnDefs.push(col);
-    col = new AgGridColumn();
-    col.field = 'duration';
-    col.headerName = 'Duration';
-    col.sortable = true;
-    col.filter = 'agTextColumnFilter';
-    col.filterParams= filterOp;
-    col.resizable = true;
-    col.suppressMovable = true;
-    col.valueFormatter = (params) => {
-      return this.getDuration(params.data)||'';
+    this.agGrid.api.refreshInfiniteCache();
+    this.selectSavedView(event);
+
+  }
+
+  
+  getUserName(filter) {
+    const self = this;
+    self.commonService
+      .getUser(filter.createdBy)
+      .then(user => {
+        filter.user = user.basicDetails.name;
+      })
+      .catch(err => {
+        filter.user = filter.createdBy;
+        console.error('Unable to fetch name of User:', filter.createdBy);
+      });
+  }
+
+  getSavedViews(getAll?: boolean) {
+    const self = this;
+    if (!!self.savedViewApiConfig?.filter?.createdBy) {
+      delete self.savedViewApiConfig.filter.createdBy;
     }
-    this.columnDefs.push(col);
+    self.savedViewApiConfig.filter = {
+      // serviceId: self.schema._id,
+      // app: self.commonService.app._id,
+      // type: { $ne: 'workflow' }
+    };
+    this.loadFilter = true;
+    if (true) {
+      if (!getAll) {
+        if (self.showPrivateViews) {
+          self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+          self.savedViewApiConfig.filter.private = true;
+        } else {
+          self.savedViewApiConfig.filter.private = false;
+        }
+        if (self.savedViewSearchTerm) {
+          self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+        }
+        self.commonService.get('user', '/data/filter/', self.savedViewApiConfig).subscribe(data => {
+          self.savedViews = [];
+          data.forEach(view => {
+            self.fixSavedView(view);
+            if (view.value && view.type === 'dataService') {
+              if (typeof view.value === 'string') {
+                view.value = JSON.parse(view.value);
+              }
+              if (view.value.filter && view.value.filter.length > 0) {
+                view.value.filter.forEach(item => {
+                  item.dataKey = item.dataKey;
+                  delete item.headerName;
+                  delete item.fieldName;
+                  delete item.fieldType;
+                });
+              }
+            }
+            self.getUserName(view);
+            if (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id)) {
+              self.savedViews.push(view);
+            }
+          });
+          if (self.showPrivateViews) {
+            const publicViews = self.allFilters.filter(f => !f.private);
+            self.allFilters = [...self.savedViews, ...publicViews];
+          } else {
+            const privateViews = self.allFilters.filter(f => f.private);
+            self.allFilters = [...privateViews, ...self.savedViews];
+          }
+          this.loadFilter = false;
+
+        });
+      } else {
+        for (let i = 0; i < 2; i++) {
+          if (i === 0) {
+            self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+            self.savedViewApiConfig.filter.private = true;
+            self.savedViews = [];
+            self.allFilters = [];
+          } else {
+            self.savedViewApiConfig.filter.private = false;
+          }
+          self.commonService.get('user', '/data/filter/', self.savedViewApiConfig).subscribe(data => {
+            data.forEach(view => {
+              self.fixSavedView(view);
+              if (view.value && view.type === 'dataService') {
+                if (typeof view.value === 'string') {
+                  view.value = JSON.parse(view.value);
+                }
+                if (view.value.filter && view.value.filter.length > 0) {
+                  view.value.filter.forEach(item => {
+                    item.dataKey = item.dataKey;
+                    delete item.headerName;
+                    delete item.fieldName;
+                    delete item.fieldType;
+                  });
+                }
+              }
+              self.getUserName(view);
+              self.allFilters.push(view);
+              if (i === 0 && self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+                self.savedViews.push(view);
+              }
+              if (i === 1 && !self.showPrivateViews && (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id))) {
+                self.savedViews.push(view);
+              }
+            });
+          });
+        }
+        this.loadFilter = false;
+      }
+    }
+    // else {
+    //   self.savedViewApiConfig.filter.createdBy = self.sessionService.getUser(true)._id;
+    //   self.savedViewApiConfig.filter.private = true;
+    //   self.savedViewApiConfig.filter.name = self.savedViewSearchTerm;
+
+    //   let publicSavedViewConfig = JSON.parse(JSON.stringify(self.savedViewApiConfig));
+    //   publicSavedViewConfig.filter.private = false;
+    //   delete publicSavedViewConfig.filter.createdBy;
+    //   let privateSavedViewApi = self.commonService.get('user', '/data/filter/', self.savedViewApiConfig);
+    //   let publicSavedViewApipublic = self.commonService.get('user', '/data/filter/', publicSavedViewConfig);
+
+    //   forkJoin([privateSavedViewApi, publicSavedViewApipublic]).subscribe((data) => {
+    //     self.savedViews = [];
+
+    //     let allViews = [...data[0], ...data[1]];
+    //     allViews.forEach(view => {
+    //       self.fixSavedView(view);
+    //       if (view.value && view.type === 'dataService') {
+    //         if (typeof view.value === 'string') {
+    //           view.value = JSON.parse(view.value);
+    //         }
+    //         if (view.value.filter && view.value.filter.length > 0) {
+    //           view.value.filter.forEach(item => {
+    //             item.dataKey = item.dataKey;
+    //             delete item.headerName;
+    //             delete item.fieldName;
+    //             delete item.fieldType;
+    //           });
+    //         }
+    //       }
+    //       self.getUserName(view);
+    //       if (!self.savedViews.length || self.savedViews.every(itm => itm._id !== view._id)) {
+    //         self.savedViews.push(view);
+    //       }
+    //     });
+
+    //   })
+    //   this.loadFilter = false;
+    // }
+
+  }
+  
+  resetFilter(){
+    
+  }
+
+  fixSavedView(viewData) {
+    const self = this;
+    if (!viewData.type) {
+      self.commonService.put('user', `/data/filter/${viewData._id}`, { type: 'dataService' }).subscribe(
+        res => { },
+        err => {
+          console.error('Unable to Update Filter:', viewData.name);
+        }
+      );
+    }
+    if (!viewData.value) {
+      self.commonService.delete('user', `/data/filter/${viewData._id}`).subscribe(
+        res => { },
+        err => {
+          console.error('Unable to Delete Filter:', viewData.name);
+        }
+      );
+    }
+    viewData.hasOptions = viewData.createdBy === this.commonService.userDetails._id;
+    // Sort Fix code for later release
+    if (viewData.value) {
+      if (typeof viewData.value === 'string') {
+        viewData.value = JSON.parse(viewData.value);
+      }
+      self.commonService.delete('user', `/data/filter/${viewData._id}`).subscribe((res) => { }, err => {
+        console.error('Unable to Delete Filter:', viewData.name);
+      });
+    }
+  }
+
+
+  configureColumns() {
+    const filterOp={
+      // filterOptions:[
+      //   'contains','notContains','equals','notEqual'
+      // ],
+      suppressAndOrCondition: true
+    };
+    this.columnDefs=[
+      {
+        field : '_id',
+        headerName : 'ID',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        cellClass : 'fw-500',
+        show: true,
+        key: '_id',
+        dataKey: '_id',
+        type: '_id',
+        width: 120,
+        properties: {
+          name: '_id'
+        },
+        dataType: 'text'
+      },
+      {
+        field : 'headers.data-stack-txn-id',
+        headerName : 'Txn ID',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        width : 360,
+        valueFormatter : (params) => {
+          return params.data?.headers['data-stack-txn-id'] || '';
+        },
+        show: true,
+        key: 'headers.data-stack-txn-id',
+        dataKey: 'headers.data-stack-txn-id',
+        type: '_id',
+        properties: {
+          name: 'Txn ID'
+        },
+        dataType: 'text'
+      },
+      {
+        field : 'headers.data-stack-remote-txn-id',
+        headerName : 'Remote ID',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        width : 360,
+        valueFormatter : (params) => {
+          return params.data?.headers['data-stack-remote-txn-id'] || ''
+        },
+        show: true,
+        key: 'headers.data-stack-remote-txn-id',
+        dataKey: 'headers.data-stack-remote-txn-id',
+        type: '_id',
+        properties: {
+          name: 'Remote ID'
+        },
+        dataType: 'text'
+      },
+      {
+        field : 'status',
+        headerName : 'Status',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        width : 140,
+        cellClass : (params) => {
+          if(params.data){
+            return this.getStatusClass(params.data) + ' fw-500';
+          }
+        },
+        show: true,
+        key: 'status',
+        dataKey: 'status',
+        type: 'status',
+        properties: {
+          name: 'status'
+        },
+        dataType: 'select'
+      },
+      {
+        field : 'headers.content-type',
+        headerName : 'Payload Type',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        width : 140,
+        valueFormatter : (params) => {
+          return this.getContentType(params.data?.headers['content-type'] || '');
+        },
+        show: true,
+        key: 'headers.content-type',
+        dataKey: 'headers.content-type',
+        type: 'Payload',
+        properties: {
+          name: 'Payload Type'
+        },
+        dataType: 'select'
+      },
+      {
+        field : 'headers.content-length',
+        headerName : 'Payload Size',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        width : 140,
+        valueFormatter : (params) => {
+          return this.fileSizePipe.transform(params.data?.headers['content-length'] || '');
+        },
+        show: true,
+        key: 'headers.content-length',
+        dataKey: 'headers.content-length',
+        type: 'length',
+        properties: {
+          name: 'Payload Size'
+        },
+        dataType: 'select'
+      },
+      {
+        field : '_metadata.createAt',
+        headerName : 'Start Time',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        valueFormatter : (params) => {
+          return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss')||'';
+        },
+        show: true,
+        key: '_metadata.createAt',
+        dataKey: '_metadata.createAt',
+        type: 'Date',
+        properties: {
+          name: 'Start Time'
+        },
+        dataType: 'Date'
+      },
+      {
+        field : 'duration',
+        headerName : 'Duration',
+        sortable : true,
+        filter : 'agTextColumnFilter',
+        filterParams: filterOp,
+        resizable : true,
+        suppressMovable : true,
+        valueFormatter : (params) => {
+          return this.getDuration(params.data)||'';
+        },
+        show: true,
+        key: 'duration',
+        dataKey: 'duration',
+        type: 'Date',
+        properties: {
+          name: 'Duration'
+        },
+        dataType: 'Date'
+      }
+    ]
   }
 
   sortChanged(event) {
@@ -232,11 +671,14 @@ export class FlowsInteractionComponent implements OnInit {
     self.getRecordsCount()
   }
 
-  clearFilter(){
+  clearFilter(clearGridModel = true) {
     const self = this;
-    if (self.agGrid) {
-      this.agGrid.api.setFilterModel(null);
+    self.apiConfig.filter = null;
+    self.filterModel = null;
+    if (clearGridModel) {
+      self.agGrid.api.setFilterModel(null);
     }
+    // self.initRows(true);
   }
 
   getInteractions(flowId: string) {
@@ -246,6 +688,7 @@ export class FlowsInteractionComponent implements OnInit {
     if(!environment.production){
       console.log(this.filterModel)
     }
+    console.log(this.apiConfig)
     return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
   }
 

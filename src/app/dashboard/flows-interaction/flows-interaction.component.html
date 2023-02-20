@@ -1,5 +1,8 @@
 <div class="p-2">
-    <div class="d-flex align-items-center">
+    <odp-flows-filters #listFilters [allColumns]="columnDefs" [allFilters]="allFilters" (filterCleared)="resetFilter()"
+    (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
+  </odp-flows-filters>
+    <div class="d-flex align-items-center pt-2">
         <span title="Refresh" (click)="getRecordsCount()" class="dsi dsi-refresh ml-2 hover refresh align-items-center mr-2"></span>
         <button *ngIf="filterModel" type="button" class="btn btn-link text-accent py-0" (click)="clearFilter()">
         <span class="fa fa-times mr-2"></span>
