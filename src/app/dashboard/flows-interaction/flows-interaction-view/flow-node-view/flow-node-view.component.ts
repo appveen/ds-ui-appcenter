@@ -17,8 +17,7 @@ export class FlowNodeViewComponent implements OnInit {
   @Input() flowData: any;
   @Input() stateList: Array<any>;
   currState: any;
-  toggleHeaders: boolean;
-  togglePayload: boolean;
+  toggle: any;
   completeData: any;
   fetchingData: boolean;
   constructor(private appService: AppService,
@@ -26,7 +25,8 @@ export class FlowNodeViewComponent implements OnInit {
     private commonService: CommonService) {
     this.flowData = {};
     this.stateList = [];
-    this.toggleHeaders = true;
+    this.toggle = {};
+    this.toggle['headers'] = true;
   }
 
   ngOnInit(): void {
@@ -68,8 +68,8 @@ export class FlowNodeViewComponent implements OnInit {
   }
 
   showPayload() {
-    this.togglePayload = !this.togglePayload;
-    if (this.togglePayload && !this.currState.body) {
+    this.toggle['payload'] = !this.toggle['payload'];
+    if (this.toggle['payload'] && !this.currState.body) {
       this.fetchPayload();
     }
   }

@@ -133,12 +133,13 @@
                                 <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
                                 <span class="fw-600">Headers ({{(currState?.headers | keyvalue).length}})</span>
                             </div>
-                            <button type="button" class="btn btn-link btn-sm" (click)="toggleHeaders=!toggleHeaders">
-                                {{toggleHeaders ? 'Hide':'Show'}} Header
+                            <button type="button" class="btn btn-link btn-sm"
+                                (click)="toggle['headers']=!toggle['headers']">
+                                {{toggle['headers'] ? 'Hide':'Show'}} Header
                             </button>
                         </div>
                     </div>
-                    <ng-container *ngIf="toggleHeaders">
+                    <ng-container *ngIf="toggle['headers']">
                         <div class="d-flex align-items-center align-items-stretch mb-1"
                             *ngFor="let item of currState?.headers | keyvalue">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
@@ -147,16 +148,34 @@
                         </div>
                     </ng-container>
                 </ng-container>
+
+                <ng-container *ngIf="currState?.retry && currState?.retry.length > 0">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Retry Count</th>
+                            <th>Timestamp</th>
+                            <th>Retry Result</th>
+                        </tr>
+                        <tr *ngFor="let item of currState.retry">
+                            <td>{{item.retryCount}}</td>
+                            <td>{{item.timestamp|date:'yyyy MMM dd, HH:mm:ss'}}</td>
+                            <td>
+                                <pre>{{item.error|json}}</pre>
+                            </td>
+                        </tr>
+                    </table>
+                </ng-container>
+
                 <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                     <div class="w-100 d-flex align-items-center">
                         <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
-                        <span class="fw-600">Payload</span>
+                        <span class="fw-600">Request Payload</span>
                     </div>
                     <div class="d-flex align-items-center align-items-stretch mb-1">
                         <div class="w-100 px-2">
                             <button type="button" class="btn btn-link btn-sm px-0" (click)="showPayload()">
-                                <span *ngIf="!togglePayload">Show Complete Payload</span>
-                                <span *ngIf="togglePayload">Hide Complete Payload</span>
+                                <span *ngIf="!toggle['payload']">Show Complete Payload</span>
+                                <span *ngIf="toggle['payload']">Hide Complete Payload</span>
                             </button>
                         </div>
                     </div>
@@ -182,10 +201,31 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3"
-                    *ngIf="togglePayload && currState?.body">
+                    *ngIf="toggle['payload'] && currState?.body">
                     <div class="w-100">
                         <pre class="m-0">{{currState?.body|json}}</pre>
                     </div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
+                <div class="w-100 d-flex align-items-center">
+                    <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
+                    <span class="fw-600">Response Data</span>
+                </div>
+                <div class="d-flex align-items-center align-items-stretch mb-1">
+                    <div class="w-100 px-2">
+                        <button type="button" class="btn btn-link btn-sm px-0" (click)="toggle['responseBody']=!toggle['responseBody']">
+                            <span *ngIf="!toggle['responseBody']">Show Complete Payload</span>
+                            <span *ngIf="toggle['responseBody']">Hide Complete Payload</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3"
+                *ngIf="toggle['responseBody'] && currState?.responseBody">
+                <div class="w-100">
+                    <pre class="m-0">{{currState?.responseBody|json}}</pre>
                 </div>
             </div>
         </div>
