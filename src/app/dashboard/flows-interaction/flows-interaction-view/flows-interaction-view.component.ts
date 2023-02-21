@@ -44,6 +44,7 @@ export class FlowsInteractionViewComponent implements OnInit {
       if (!environment.production) {
         console.log(res);
       }
+      this.flowData.inputNode.interactionId = this.interactionData._id;
       const temp = this.interactionStateList.find(e => e.nodeId == this.flowData.inputNode._id);
       if (temp) {
         this.flowData.inputNode.state = temp;
@@ -53,6 +54,7 @@ export class FlowsInteractionViewComponent implements OnInit {
         if (temp) {
           node.state = temp;
         }
+        node.interactionId = this.interactionData._id;
       });
     }, err => {
       console.error(err);

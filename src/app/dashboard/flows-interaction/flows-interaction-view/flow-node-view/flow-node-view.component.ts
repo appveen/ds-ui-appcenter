@@ -71,15 +71,15 @@ export class FlowNodeViewComponent implements OnInit {
 
   showPayload() {
     this.toggle['payload'] = !this.toggle['payload'];
-    if (this.toggle['payload'] && !this.node.body) {
+    if (this.toggle['payload'] && !this.node.state.body) {
       this.fetchPayload();
     }
   }
 
   fetchPayload() {
     this.fetchingData = true;
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node.nodeId}/data`).subscribe(res => {
-      this.node.body = res?.body || {};
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node._id}/data`).subscribe(res => {
+      this.node.state.body = res?.body || {};
       this.fetchingData = false;
     }, err => {
       this.fetchingData = false;
