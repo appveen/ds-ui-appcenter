@@ -12,11 +12,8 @@ import { FlowsInteractionService } from '../../flows-interaction.service';
 })
 export class FlowNodeViewComponent implements OnInit {
 
-  @Input() selectedNodeId: string;
-  @Input() currNode: any;
+  @Input() node: any;
   @Input() flowData: any;
-  @Input() stateList: Array<any>;
-  currState: any;
   toggle: any;
   completeData: any;
   fetchingData: boolean;
@@ -24,19 +21,17 @@ export class FlowNodeViewComponent implements OnInit {
     private flowsService: FlowsInteractionService,
     private commonService: CommonService) {
     this.flowData = {};
-    this.stateList = [];
     this.toggle = {};
     this.toggle['headers'] = true;
   }
 
   ngOnInit(): void {
-    this.currState = this.stateList.find(e => e.nodeId == this.currNode._id) || {};
-    this.completeData = JSON.parse(JSON.stringify(this.currNode));
-    this.completeData.data = JSON.parse(JSON.stringify(this.currState));
+    this.completeData = JSON.parse(JSON.stringify(this.node));
+    this.completeData.data = JSON.parse(JSON.stringify(this.node.state));
     delete this.completeData.onSuccess;
     delete this.completeData.dataStructure;
-    if (this.currNode.type == 'DATASERVICE' && !this.currNode.options.name) {
-      this.commonService.getService(this.currNode.options._id)
+    if (this.node.type == 'DATASERVICE' && !this.node.options.name) {
+      this.commonService.getService(this.node.options._id)
     }
 
   }
@@ -46,38 +41,45 @@ export class FlowNodeViewComponent implements OnInit {
   }
 
   getStatusClass() {
-    if (this.currState) {
-      return this.flowsService.getStatusClass(this.currState);
+    if (this.node.state) {
+      return this.flowsService.getStatusClass(this.node.state);
     }
     return 'text-warning';
   }
 
   getStatusBagdeClass() {
-    if (this.currState) {
-      return this.flowsService.getStatusBadgeClass(this.currState);
+    if (this.node.state) {
+      return this.flowsService.getStatusBadgeClass(this.node.state);
     }
     return 'text-warning';
   }
 
   getNextNode(node: any) {
-    return (this.flowData.nodes || []).find(e => e._id == node._id);
+    if (node._id == this.node._id) {
+      return null;
+    }
+    let temp = (this.flowData.nodes || []).find(e => e._id == node._id && !e.visited);
+    if (temp) {
+      temp.visited = true;
+    }
+    return temp;
   }
 
   downloadStateData() {
-    this.appService.downloadText(this.currNode._id + '.json', JSON.stringify(this.completeData, null, 4));
+    this.appService.downloadText(this.node._id + '.json', JSON.stringify(this.completeData, null, 4));
   }
 
   showPayload() {
     this.toggle['payload'] = !this.toggle['payload'];
-    if (this.toggle['payload'] && !this.currState.body) {
+    if (this.toggle['payload'] && !this.node.body) {
       this.fetchPayload();
     }
   }
 
   fetchPayload() {
     this.fetchingData = true;
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.currState.interactionId}/state/${this.currState.nodeId}/data`).subscribe(res => {
-      this.currState.body = res?.body || {};
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node.nodeId}/data`).subscribe(res => {
+      this.node.body = res?.body || {};
       this.fetchingData = false;
     }, err => {
       this.fetchingData = false;
@@ -97,45 +99,79 @@ export class FlowNodeViewComponent implements OnInit {
     return value;
   }
 
+  getPayloadType(data: any) {
+    if (!data) {
+      return 'Object';
+    }
+    return Array.isArray(data) ? 'Array' : 'Object';
+  }
+
+  getPayloadAttributes(data: any) {
+    if (!data) {
+      return 0;
+    }
+    let temp = data;
+    if (Array.isArray(data)) {
+      temp = data[0];
+    }
+    if (!temp) {
+      return 0;
+    }
+    if (typeof temp == 'object') {
+      return Object.keys(temp).length;
+    }
+    return 1;
+  }
+
+  getTotalRecords(data: any) {
+    if (!data) {
+      return 0;
+    }
+    if (Array.isArray(data)) {
+      return data.length;
+    }
+    return 1;
+  }
+
   get showNameOfNodeType() {
-    if (this.currNode.type == 'DATASERVICE' || this.currNode.type == 'FUNCTION' || this.currNode.type == 'FLOW') {
+    if (this.node.type == 'DATASERVICE' || this.node.type == 'FUNCTION' || this.node.type == 'FLOW') {
       return true;
     }
     return false;
   }
 
   get nameOfNodeType() {
-    if (this.currNode.type == 'DATASERVICE') {
-      return this.currNode.options.dataService.name;
+    if (this.node.type == 'DATASERVICE') {
+      return this.node.options.dataService.name;
     }
-    if (this.currNode.type == 'FUNCTION') {
-      return this.currNode.options.faas.name;
+    if (this.node.type == 'FUNCTION') {
+      return this.node.options.faas.name;
     }
-    if (this.currNode.type == 'FLOW') {
-      return this.currNode.options.flow.name;
+    if (this.node.type == 'FLOW') {
+      return this.node.options.flow.name;
     }
     return 'N.A.';
   }
 
   get duration() {
-    if (this.currState && this.currState._metadata && this.currState._metadata.createdAt && this.currState._metadata.lastUpdated) {
-      return this.flowsService.getDuration(this.currState._metadata.createdAt, this.currState._metadata.lastUpdated);
+    if (this.node.state && this.node.state._metadata && this.node.state._metadata.createdAt && this.node.state._metadata.lastUpdated) {
+      return this.flowsService.getDuration(this.node.state._metadata.createdAt, this.node.state._metadata.lastUpdated);
     }
     return '-';
   }
 
   get startTime() {
-    if (this.currState && this.currState._metadata && this.currState._metadata.createdAt) {
-      return moment(this.currState._metadata.createdAt).format("DD MM YYYY hh:mm:ss a");
+    if (this.node.state && this.node.state._metadata && this.node.state._metadata.createdAt) {
+      return moment(this.node.state._metadata.createdAt).format("DD MM YYYY hh:mm:ss a");
     }
     return 'Not Yet started.';
   }
 
   get endTime() {
-    if (this.currState && this.currState._metadata && this.currState._metadata.lastUpdated) {
-      return moment(this.currState._metadata.lastUpdated).format("DD MM YYYY hh:mm:ss a");
+    if (this.node.state && this.node.state._metadata && this.node.state._metadata.lastUpdated) {
+      return moment(this.node.state._metadata.lastUpdated).format("DD MM YYYY hh:mm:ss a");
     }
-    if (!(this.currState && this.currState._metadata && this.currState._metadata.createdAt)) {
+    if (!(this.node.state && this.node.state._metadata && this.node.state._metadata.createdAt)) {
       return 'Not Yet started.';
     }
     return 'In Progress...';
