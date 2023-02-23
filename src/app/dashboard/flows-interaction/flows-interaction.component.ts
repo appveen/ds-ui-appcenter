@@ -87,7 +87,6 @@ export class FlowsInteractionComponent implements OnInit {
       // this.agGrid?.api?.setFilterModel(null);
       // this.agGrid?.api?.setSortModel(null);
       this.resetFilter();
-      this.getRecordsCount();
     });
     this.configureColumns();
 
