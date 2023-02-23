@@ -92,7 +92,7 @@ export class FlowsFiltersComponent implements OnInit {
     self.queryObject = {
       select: null,
       filter: null,
-      sort: null
+      sort: '-_metadata.createdAt'
     };
     self.filterPayload = {
       serviceId: self.appService.serviceId,
@@ -256,14 +256,14 @@ export class FlowsFiltersComponent implements OnInit {
   createQueryString() {
     const self = this;
     self.queryObject.select = self.selectedColOrder.map(e => e.key).join(',') || self.appliedFilter?.value?.select;
-    // self.queryObject.sort = self.gridService.sortModel;
+    self.queryObject.sort = self.flowsService.sortModel;
   }
 
   clearFilter(triggered = false) {
     const self = this;
-    self.selectedColOrder = [];
+    // self.selectedColOrder = [];
     self.sortingColumns = [];
-    self.queryObject = {};
+    self.queryObject = {sort: '-_metadata.createdAt'};
     self.filterModel = [];
     self.filterId = null;
     self.filterPayload.name = '';
@@ -278,15 +278,12 @@ export class FlowsFiltersComponent implements OnInit {
     if (!triggered) {
       this.filterCleared.emit(true)
     }
-
-
-
   }
 
   applyFilter(close?: boolean, fromParent = false) {
     const self = this;
     self.createQueryString();
-    if ((self.queryObject.sort && self.queryObject.sort.length > 0)
+    if ((self.queryObject.sort && self.queryObject.sort.length > 1)
       || self.queryObject.select || self.queryObject.filter) {
       self.appService.existingFilter = {
         value: JSON.stringify(self.queryObject)
@@ -339,7 +336,6 @@ export class FlowsFiltersComponent implements OnInit {
         filterVal = filterValue;
       }
       self.filterModel = _.cloneDeep(filterVal.filter) || [];
-      console.log(self.filterModel)
       self.filterModel.forEach((item, i) => {
         if (item.filterObject.hasOwnProperty('$or') && Array.isArray(item.filterObject['$or'])) {
           const dk = Object.keys(item.filterObject['$or'][0])[0].split('.');
@@ -454,18 +450,16 @@ export class FlowsFiltersComponent implements OnInit {
     }
     else {
       this.queryObject['select'] = '';
-      this.appliedFilter.value['select'] = ''
+      // this.appliedFilter.value['select'] = ''
       this.removeAllItems()
     }
   }
 
   get filterList() {
-    console.log(this.queryObject.filter);
     return this.queryObject.filter
 
   }
   set filterList(val) {
-    console.log(this.queryObject.filter);
     this.queryObject.filter = val
 
   }

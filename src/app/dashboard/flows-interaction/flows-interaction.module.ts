@@ -10,7 +10,6 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { FlowsInteractionService } from './flows-interaction.service';
 import { FlowNodeViewComponent } from './flows-interaction-view/flow-node-view/flow-node-view.component';
 import { FlowsGridFilterComponent } from './flows-grid-filter/flows-grid-filter.component';
-import { FlowsAgGridComponent } from './flows-ag-grid/flows-ag-grid.component';
 import { FlowsFiltersComponent } from './flows-filters/flows-filters.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outside.module';
@@ -28,6 +27,9 @@ import { SwitchModule } from 'src/app/utils/switch/switch.module';
 import { SearchForComponent } from './flows-filters/search-for/search-for.component';
 import { SearchForFieldComponent } from './flows-filters/search-for/search-for-field/search-for-field.component';
 import { DatePickerComponent } from 'src/app/utils/date-picker/date-picker.component';
+import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
+import { UserViewModule } from 'src/app/utils/user-view/user-view.module';
+import { RelationViewModule } from 'src/app/utils/relation-view/relation-view.module';
 
 const routes: Routes = [
   { path: ':flowId', pathMatch: 'full', component: FlowsInteractionComponent },
@@ -42,7 +44,6 @@ const routes: Routes = [
     SearchForComponent,
     SearchForFieldComponent,
     FlowsGridFilterComponent,
-    FlowsAgGridComponent,
     FlowsFiltersComponent
   ],
   imports: [
@@ -63,7 +64,10 @@ const routes: Routes = [
     AutoFocusModule,
     PdfViewerModule,
     SwitchModule,
-    AgGridModule
+    AgGridModule,
+    FileViewModule,
+    UserViewModule,
+    RelationViewModule
   ],
   providers: [FlowsInteractionService,DatePipe],
   exports: [

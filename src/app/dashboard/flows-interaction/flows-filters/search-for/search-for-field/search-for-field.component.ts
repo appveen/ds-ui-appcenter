@@ -570,7 +570,6 @@ export class SearchForFieldComponent implements OnInit, OnDestroy {
           colPlaceholderArr.push(col);
         }
       });
-      console.log(colPlaceholderArr)
       return colPlaceholderArr;
     }
     return [];
