@@ -33,7 +33,7 @@ export class FlowsInteractionComponent implements OnInit {
   flowId;
   dataSource: IDatasource;
   showLoading: boolean;
-  subscription: any={};
+  subscription: any = {};
   noRowsTemplate;
   currentRecordsCount: number;
   sortModel: any;
@@ -73,10 +73,10 @@ export class FlowsInteractionComponent implements OnInit {
     //   count: 10
     // };
     this.noRowsTemplate = '<span>No Interaction Found.</span>';
-    this.apiConfig={
-      sort:'-_metadata.createdAt',
-      count : 30,
-      page:1,
+    this.apiConfig = {
+      sort: '-_metadata.createdAt',
+      count: 30,
+      page: 1
     }
    }
 
@@ -227,12 +227,13 @@ export class FlowsInteractionComponent implements OnInit {
   }
 
   configureColumns() {
-    const filterOp={
-      filterOptions:[
-        'contains','notContains','equals','notEqual'
+    const filterOp = {
+      filterOptions: [
+        'contains', 'notContains', 'equals', 'notEqual'
       ],
       suppressAndOrCondition: true
     };
+    
     this.columnDefs=[
       {
         field : '_id',
@@ -431,14 +432,14 @@ export class FlowsInteractionComponent implements OnInit {
             if (tempData['$or'] && tempData['$or'].length === 1) {
               tempData = tempData['$or'][0]
             }
-            if(filterModel[key].type=="contains"){
-              filter.push({[key]:'/'+tempData+'/'});
-            }else if(filterModel[key].type=="notContains"){
-              filter.push({[key]:{$not:'/'+tempData+'/'}});
-            }else if(filterModel[key].type=="equals"){
-              filter.push({[key]:tempData});
-            } else if(filterModel[key].type=="notEqual"){
-              filter.push({[key]:{$ne:tempData}});
+            if (filterModel[key].type == "contains") {
+              filter.push({ [key]: '/' + tempData + '/' });
+            } else if (filterModel[key].type == "notContains") {
+              filter.push({ [key]: { $not: '/' + tempData + '/' } });
+            } else if (filterModel[key].type == "equals") {
+              filter.push({ [key]: tempData });
+            } else if (filterModel[key].type == "notEqual") {
+              filter.push({ [key]: { $ne: tempData } });
             }
           }
         } catch (e) {
@@ -450,38 +451,38 @@ export class FlowsInteractionComponent implements OnInit {
       self.apiConfig.filter = { $and: filter };
       self.filterModel = self.apiConfig.filter;
     } else {
-      this.filterModel=null;
+      this.filterModel = null;
     }
     if (!environment.production) {
       console.log('Filter Modified', filterModel);
     }
     self.getRecordsCount()
   }
-
+  
   getInteractions(flowId: string) {
-    if(!this.filterModel){
+    if (!this.filterModel) {
       delete this.apiConfig.filter
     }
-    if(!environment.production){
+    if (!environment.production) {
       console.log(this.filterModel)
     }
     console.log(this.apiConfig)
     return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${flowId}`, this.apiConfig)
   }
 
-  getRecordsCount(){
-    var filter={}
-    if(this.filterModel){
+  getRecordsCount() {
+    var filter = {}
+    if (this.filterModel) {
       filter = this.apiConfig.filter
     }
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=ture`,{ filter, expand: true })
-    .subscribe(res => {
-      this.currentRecordsCount=res;
-      this.onGridReady();
-      if (!environment.production) {
-        console.log(this.currentRecordsCount);
-      }
-    })
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=true`, { filter, expand: true })
+      .subscribe(res => {
+        this.currentRecordsCount = res;
+        this.onGridReady();
+        if (!environment.production) {
+          console.log(this.currentRecordsCount);
+        }
+      })
   }
 
   onGridReady(event?) {
