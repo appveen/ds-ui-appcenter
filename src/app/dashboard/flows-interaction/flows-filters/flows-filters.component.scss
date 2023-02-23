@@ -1,0 +1,198 @@
+@import 'src/assets/scss/bootstrap/_functions.scss';
+@import 'src/assets/scss/bootstrap/_variables.scss';
+
+.columns-wrapper {
+  overflow-y: auto;
+  max-height: 300px;
+  top: 50px;
+  left: 78px;
+  z-index: 2;
+  box-shadow: 0px 0px 3px rgb(0, 0, 0, 0.4);
+
+  .form-control {
+    height: 28px;
+  }
+}
+
+.selected-filter-list {
+  overflow-x: auto;
+  max-width: calc(100vw - 700px);
+  height: 40px;
+}
+
+.selected-filter-item {
+  white-space: nowrap;
+  height: 28px;
+}
+
+.custom-filter-container {
+  position: relative;
+  min-height: 270px;
+  border-radius: 4px 0 4px 4px;
+  -webkit-box-shadow: 0 0 4px rgba($black, .2);
+  -moz-box-shadow: 0 0 4px rgba($black, .2);
+  box-shadow: 0 0 10px rgba($black, .2);
+
+  &::before {
+    position: absolute;
+    content: '';
+    height: 8px;
+    width: 32px;
+    background-color: $white;
+    right: 0;
+    top: -8px;
+    margin-left: -32px;
+    box-shadow: -2px 0 0 0 rgba($black, 0.15), 2px 0 0 0 rgba($black, 0.15);
+  }
+
+  .label-text {
+    width: 125px;
+  }
+
+  .filter-options {
+    width: 200px;
+  }
+
+  .filter-container {
+    max-height: 250px;
+    border-radius: 4px;
+    border: 1px solid $border;
+    box-shadow: 0 2px 6px rgba($black, .5);
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 10;
+    top: 22px;
+
+    .filter-name {
+      &:hover {
+        background-color: $light;
+      }
+    }
+  }
+
+  #columns {
+    padding-left: 2rem !important;
+  }
+
+  #addColumn {
+    top: 11px;
+    left: 10px;
+  }
+
+  #colContainer {
+    //margin-bottom: -45px;
+  }
+
+  .col-name {
+    min-height: 28px;
+    max-height: 36px;
+    border-radius: 4px;
+    cursor: grabbing;
+    color: $dark;
+    border: 1px solid $border;
+    background-color: $gray-200;
+
+    &:hover {
+      background-color: $white;
+    }
+
+    padding: 8px;
+  }
+
+  .remove-col {
+    color: $secondary;
+
+    &:hover {
+      color: $red;
+    }
+  }
+
+  .row-content {
+    .new-row {
+      opacity: 0;
+    }
+
+    &:hover .new-row {
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
+
+  .custom-select {
+    min-width: 190px;
+
+    option {
+      color: $gray-medium  !important;
+    }
+  }
+
+  .options-dd {
+    .angle-pos {
+      left: 85%;
+      pointer-events: none;
+    }
+
+    select {
+      -webkit-appearance: button;
+      outline: none;
+      padding-left: 30px;
+      width: 130px;
+      height: 35px;
+      color: $text-muted;
+      font-weight: bold;
+      border: 1px solid $border;
+      border-radius: 4px;
+      background-color: $white;
+      text-indent: 26px;
+
+      option {
+        font-weight: bold;
+        color: $gray-medium;
+      }
+    }
+  }
+
+  .drag-boundary {
+    max-width: 68vw;
+  }
+
+  .options {
+    min-height: 50px;
+  }
+
+  .save-filter {
+    background-color: $save-filter-green;
+  }
+
+  .filter-type {
+    width: 32px;
+    height: 32px;
+    border: 1px solid $border;
+  }
+
+  .left-radius {
+    @extend .filter-type;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .right-radius {
+    @extend .filter-type;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    left: -1px;
+  }
+
+  .icon-pos {
+    top: 8px;
+    left: 8px;
+  }
+}
+
+.advanced-filter-section {
+  min-height: 40px;
+}
+
+.filter-body {
+  min-height: 300px;
+}
