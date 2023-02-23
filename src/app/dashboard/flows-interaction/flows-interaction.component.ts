@@ -207,6 +207,7 @@ export class FlowsInteractionComponent implements OnInit {
     });
     self.selectedSavedView = null;
     self.appService.existingFilter = null;
+    this.getRecordsCount();
     // self.initRows();
     // self.savedViews = [];
     // self.advanceFilter = showAdvancedFilter;
