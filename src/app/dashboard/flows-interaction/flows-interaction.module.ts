@@ -9,7 +9,6 @@ import { FlowsInteractionViewComponent } from './flows-interaction-view/flows-in
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { FlowsInteractionService } from './flows-interaction.service';
 import { FlowNodeViewComponent } from './flows-interaction-view/flow-node-view/flow-node-view.component';
-import { FlowsGridFilterComponent } from './flows-grid-filter/flows-grid-filter.component';
 import { FlowsFiltersComponent } from './flows-filters/flows-filters.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outside.module';
@@ -43,7 +42,6 @@ const routes: Routes = [
     FlowNodeViewComponent,
     SearchForComponent,
     SearchForFieldComponent,
-    FlowsGridFilterComponent,
     FlowsFiltersComponent
   ],
   imports: [
