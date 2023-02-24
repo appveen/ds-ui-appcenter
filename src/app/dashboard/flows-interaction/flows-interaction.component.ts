@@ -149,7 +149,7 @@ export class FlowsInteractionComponent implements OnInit {
       });
       if (!!column) {
         this.agGrid.columnApi.setColumnVisible(column, true);
-        this.agGrid.columnApi.moveColumn(column, index);
+        Object.keys(column).forEach(e=>this.agGrid.columnApi.moveColumn(e, index));
       }
     });
 
@@ -202,7 +202,7 @@ export class FlowsInteractionComponent implements OnInit {
     const columnIds = self.agGrid?.columnApi?.getAllColumns().map(e => e.getColId());
     self.agGrid?.columnApi?.setColumnsVisible(columnIds, true);
     columnIds?.forEach((e, i) => {
-      self.agGrid.columnApi.moveColumn(e['dataKey'], i);
+      self.agGrid.columnApi.moveColumn(e, i);
     });
     self.selectedSavedView = null;
     self.appService.existingFilter = null;
