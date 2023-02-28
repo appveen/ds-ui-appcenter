@@ -84,44 +84,9 @@ export class FlowsInteractionComponent implements OnInit {
     const self=this;
     this.route.params.subscribe(params => {
       this.flowId=params.flowId;
-      // this.agGrid?.api?.setFilterModel(null);
-      // this.agGrid?.api?.setSortModel(null);
       this.resetFilter();
     });
     this.configureColumns();
-
-    // this.flowsService.filterSubject.subscribe(data => {
-    //   this.clearFilter(false);
-    //   let final = {};
-    //   const filter = self.apiConfig.filter || self.flowsService.filter;
-    //   console.log()
-    //   const temp = filter?.['$and'] || filter?.['$or'] || [];
-    //   if (data) {
-    //     if (temp && temp.length > 0) {
-    //       if (temp.find(ele => Object.keys(ele)[0] === Object.keys(data)[0])) {
-    //         temp.forEach(ele => {
-    //           if (Object.keys(ele)[0] === Object.keys(data)[0]) {
-    //             ele = data
-    //           }
-    //         })
-    //       }
-    //       else {
-    //         let tempData = data['$or']?.length > 0 ? data['$or'] : data
-    //         if (Array.isArray(tempData) && tempData.length === 1) {
-    //           tempData = tempData[0];
-    //         }
-    //         temp.push(tempData);
-    //         final['$and'] = temp
-    //       }
-    //     }
-    //     else {
-    //       const tempData = data['$or']?.length > 0 ? data['$or'] : data
-    //       temp.push(tempData)
-    //       final['$and'] = temp
-    //     }
-    //   }
-    //   this.filterModified(null, final)
-    // })
   }
 
   ngOnDestroy() {
@@ -244,7 +209,6 @@ export class FlowsInteractionComponent implements OnInit {
         resizable : true,
         suppressMovable : true,
         cellClass : 'fw-500',
-        show: true,
         key: '_id',
         dataKey: '_id',
         type: '_id',
@@ -266,7 +230,6 @@ export class FlowsInteractionComponent implements OnInit {
         valueFormatter : (params) => {
           return params.data?.headers['data-stack-txn-id'] || '';
         },
-        show: true,
         key: 'headers.data-stack-txn-id',
         dataKey: 'headers.data-stack-txn-id',
         type: '_id',
@@ -287,7 +250,6 @@ export class FlowsInteractionComponent implements OnInit {
         valueFormatter : (params) => {
           return params.data?.headers['data-stack-remote-txn-id'] || ''
         },
-        show: true,
         key: 'headers.data-stack-remote-txn-id',
         dataKey: 'headers.data-stack-remote-txn-id',
         type: '_id',
@@ -310,7 +272,6 @@ export class FlowsInteractionComponent implements OnInit {
             return this.getStatusClass(params.data) + ' fw-500';
           }
         },
-        show: true,
         key: 'status',
         dataKey: 'status',
         type: 'status',
@@ -331,7 +292,6 @@ export class FlowsInteractionComponent implements OnInit {
         valueFormatter : (params) => {
           return this.getContentType(params.data?.headers['content-type'] || '');
         },
-        show: true,
         key: 'headers.content-type',
         dataKey: 'headers.content-type',
         type: 'Payload',
@@ -352,7 +312,6 @@ export class FlowsInteractionComponent implements OnInit {
         valueFormatter : (params) => {
           return this.fileSizePipe.transform(params.data?.headers['content-length'] || '');
         },
-        show: true,
         key: 'headers.content-length',
         dataKey: 'headers.content-length',
         type: 'length',
@@ -365,14 +324,17 @@ export class FlowsInteractionComponent implements OnInit {
         field : '_metadata.createdAt',
         headerName : 'Start Time',
         sortable : true,
-        filter : 'agTextColumnFilter',
-        filterParams: filterOp,
+        filter : 'agDateColumnFilter',
+        filterParams: { filterOptions: [
+          'equals', 'greaterThan', 'lessThan', 'inRange'
+        ],
+          suppressAndOrCondition: true
+        },
         resizable : true,
         suppressMovable : true,
         valueFormatter : (params) => {
           return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss')||'';
         },
-        show: true,
         key: '_metadata.createdAt',
         dataKey: '_metadata.createdAt',
         type: 'Date',
@@ -392,7 +354,6 @@ export class FlowsInteractionComponent implements OnInit {
         valueFormatter : (params) => {
           return this.getDuration(params.data)||'';
         },
-        show: true,
         key: 'duration',
         dataKey: 'duration',
         type: 'Date',
@@ -429,9 +390,6 @@ export class FlowsInteractionComponent implements OnInit {
           if (filterModel[key].filter) {
             var temp = JSON.stringify(filterModel[key].filter);
             let tempData = JSON.parse(temp)
-            if (tempData['$or'] && tempData['$or'].length === 1) {
-              tempData = tempData['$or'][0]
-            }
             if (filterModel[key].type == "contains") {
               filter.push({ [key]: '/' + tempData + '/' });
             } else if (filterModel[key].type == "notContains") {
@@ -440,6 +398,27 @@ export class FlowsInteractionComponent implements OnInit {
               filter.push({ [key]: tempData });
             } else if (filterModel[key].type == "notEqual") {
               filter.push({ [key]: { $ne: tempData } });
+            }
+          }else if(filterModel[key].filterType=='date'){
+            const dateFrom= new Date(filterModel[key].dateFrom)
+            const toDate=new Date(filterModel[key].dateFrom);
+            toDate.setDate(toDate.getDate() + 1);
+            const frmDateZone=dateFrom.getTimezoneOffset()
+            const toDateZone=toDate.getTimezoneOffset()
+            dateFrom.setHours(Math.floor(Math.abs(frmDateZone)/60), Math.abs(frmDateZone)%60, 0, 0);
+            toDate.setHours(Math.floor(Math.abs(toDateZone)/60), Math.abs(toDateZone)%60, 0, 0);
+            toDate.setMilliseconds(toDate.getMilliseconds() - 1);
+            if(filterModel[key].type=="equals"){
+              filter.push({[key]:{"$gte":dateFrom,"$lte":toDate}});
+            }else if(filterModel[key].type=="greaterThan"){
+              filter.push({[key]:{"$gt":dateFrom}});
+            }else if(filterModel[key].type=="lessThan"){
+              filter.push({[key]:{"$lt":dateFrom}});
+            }else if(filterModel[key].type=="inRange"){
+              const dateTo=new Date(filterModel[key].dateTo)
+              const dateToZone=dateTo.getTimezoneOffset()
+              dateTo.setHours(Math.floor(Math.abs(dateToZone)/60), Math.abs(dateToZone)%60, 0, 0);
+              filter.push({[key]:{"$gte":dateFrom,"$lte":dateTo}});
             }
           }
         } catch (e) {

@@ -3,7 +3,7 @@
   <div class="input-group col-name-dd mr-2">
     <select class="custom-select" [(ngModel)]="filterModel.dataKey" (change)="onFieldChange()">
       <option *ngFor="let col of allFields;" [value]="col.dataKey">
-        {{ col.field }}</option>
+        {{ col.properties.name }}</option>
     </select>
   </div>
   <div class="col-filter mr-2 d-flex">
