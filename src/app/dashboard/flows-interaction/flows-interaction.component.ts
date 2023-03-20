@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
 import { GridOptions, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import * as moment from 'moment';
+import * as _ from 'lodash'
 
 import { FileSizePipe } from 'src/app/pipes/file-size.pipe';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
@@ -55,6 +56,7 @@ export class FlowsInteractionComponent implements OnInit {
   selectedSearch: any;
   savedViewSearchTerm: any;
   advanceFilter: boolean;
+  breadcrumb: any;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
@@ -84,6 +86,18 @@ export class FlowsInteractionComponent implements OnInit {
     const self=this;
     this.route.params.subscribe(params => {
       this.flowId=params.flowId;
+      this.route.data.subscribe(data => {
+        if (data.breadcrumb) {
+          this.breadcrumb = _.cloneDeep(data.breadcrumb)
+          this.commonService.get('pm', `/${this.commonService.app._id}/flow/`+this.flowId).subscribe(res => {
+            if(this.breadcrumb.length>2){
+              this.breadcrumb.pop();
+            }
+            this.breadcrumb.push(res.name)
+            this.commonService.breadcrumbPush(this.breadcrumb)
+          })
+        }
+      })
       this.resetFilter();
     });
     this.configureColumns();

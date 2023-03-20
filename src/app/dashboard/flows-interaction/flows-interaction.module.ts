@@ -31,8 +31,8 @@ import { UserViewModule } from 'src/app/utils/user-view/user-view.module';
 import { RelationViewModule } from 'src/app/utils/relation-view/relation-view.module';
 
 const routes: Routes = [
-  { path: ':flowId', pathMatch: 'full', component: FlowsInteractionComponent },
-  { path: ':flowId/:interactionId', component: FlowsInteractionViewComponent }
+  { path: ':flowId', pathMatch: 'full', component: FlowsInteractionComponent, data: { breadcrumb: ['Flow']} },
+  { path: ':flowId/:interactionId', component: FlowsInteractionViewComponent, data: { breadcrumb: ['Flow']} }
 ];
 
 @NgModule({
