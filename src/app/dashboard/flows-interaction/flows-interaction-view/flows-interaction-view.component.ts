@@ -4,6 +4,7 @@ import { combineLatest } from 'rxjs';
 import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from '../flows-interaction.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'odp-flows-interaction-view',
@@ -16,6 +17,7 @@ export class FlowsInteractionViewComponent implements OnInit {
   flowData: any;
   interactionStateList: Array<any>;
   selectedNodeId: string;
+  breadcrumb: Array<any>
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService) {
@@ -27,6 +29,16 @@ export class FlowsInteractionViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
+      this.route.data.subscribe(data => {
+        if (data.breadcrumb) {
+            this.breadcrumb = _.cloneDeep(data.breadcrumb)
+            this.commonService.get('pm', `/${this.commonService.app._id}/flow/`+params.flowId).subscribe(res => {
+              this.breadcrumb.push(res.name)
+              this.breadcrumb.push(params.interactionId)
+              this.commonService.breadcrumbPush(this.breadcrumb)
+            })
+        }
+      })
       this.getInteractions(params);
     });
   }
