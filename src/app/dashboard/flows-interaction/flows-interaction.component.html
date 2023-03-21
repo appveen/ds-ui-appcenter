@@ -1,7 +1,12 @@
 <div class="p-2">
-    <div class="d-flex align-items-center">
-        <span title="Refresh" (click)="getRecordsCount()" class="dsi dsi-refresh ml-2 hover refresh align-items-center mr-2"></span>
-        <button *ngIf="filterModel" type="button" class="btn btn-link text-accent py-0" (click)="clearFilter()">
+    <div class="d-flex align-items-center pt-2">
+        <button class="btn btn-white border d-flex align-items-center font-12 mr-3" (click)="getRecordsCount()">
+            <span class="dsi dsi-refresh"></span>
+        </button>
+        <odp-flows-filters #listFilters [allColumns]="columnDefs" [allFilters]="allFilters" (filterCleared)="resetFilter()"
+        (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
+        </odp-flows-filters>
+        <button *ngIf="selectedSavedView || filterModel" type="button" class="btn btn-link text-accent py-0" (click)="resetFilter()">
         <span class="fa fa-times mr-2"></span>
         <span class="text">Clear Filters</span>
         </button>
@@ -42,7 +47,7 @@
         </div> -->
         <ag-grid-angular #agGrid style="width: 100%; height: 100%;"
             class="list-wrapper ag-theme-balham" [datasource]="dataSource" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" rowHeight="40"
-            (rowDoubleClicked)="rowDoubleClicked($event)" (sortChanged)="sortChanged($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate" (filterChanged)="filterChanged($event)">
+            (rowDoubleClicked)="rowDoubleClicked($event)" (sortChanged)="sortChanged($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate" (filterChanged)="filterModified($event)">
         </ag-grid-angular>
     </div>
 </div>

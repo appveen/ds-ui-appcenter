@@ -1,13 +1,28 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlowsInteractionService {
+  filterSubject: Subject<any> = new Subject()
+  filter: any;
+  sortModel: any;
+  inlineFilterActive: any;
+  selectedSavedView: any;
 
   constructor() { }
+
+  onFloatingFilterChange(filter) {
+    this.filter = filter;
+    this.filterSubject.next(this.filter)
+  }
+
+  setSortModel(model) {
+    this.sortModel == model
+  }
 
   getContentType(contentType: string) {
     if (!contentType) {

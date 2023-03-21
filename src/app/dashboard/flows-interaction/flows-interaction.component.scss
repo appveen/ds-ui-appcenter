@@ -6,7 +6,7 @@
     // overflow-y: auto;
     // min-height: calc(100vh - 112px);
     // max-height: calc(100vh - 112px);
-    height: calc(100vh - 112px);
+    height: calc(100vh - 136px);
 }
 
 .item-id {
@@ -59,10 +59,10 @@
     }
 }
 
-.refresh{
-    opacity: 0.6;
-    transition: 0.2s;
-    &:hover{
-        opacity: 1;
-    }
-}
+// .refresh{
+//     opacity: 0.6;
+//     transition: 0.2s;
+//     &:hover{
+//         opacity: 1;
+//     }
+// }

@@ -292,7 +292,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
       retValue = this.datePipe.transform(retValue, 'dd-MM-yyyy');
     } else {
-      retValue = obj?._id || ''
+      retValue = obj?.[self.definition.properties.relatedSearchField] || obj?._id || ''
     }
 
     return retValue;
