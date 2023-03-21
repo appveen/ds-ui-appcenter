@@ -76,10 +76,18 @@ export class FlowNodeViewComponent implements OnInit {
     }
   }
 
+  showResponseBody() {
+    this.toggle['responseBody'] = !this.toggle['responseBody'];
+    if (this.toggle['responseBody'] && !this.node.state.responseBody) {
+      this.fetchPayload();
+    }
+  }
+
   fetchPayload() {
     this.fetchingData = true;
     this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node._id}/data`).subscribe(res => {
       this.node.state.body = res?.body || {};
+      this.node.state.responseBody = res?.responseBody || {};
       this.fetchingData = false;
     }, err => {
       this.fetchingData = false;
