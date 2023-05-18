@@ -53,7 +53,7 @@ export class ColumnFilterComponent implements AgFilterComponent {
     } else if (this.definition.type === 'Date') {
       try {
         const cellValue = this.valueGetter(params.node);
-        const cellDate = new Date(cellValue.rawData);
+        const cellDate = new Date(cellValue.rawData ? cellValue.rawData : cellValue);
         const compareDates = this.getDateQuery(this.value);
         return !!compareDates && cellDate >= compareDates.fromDate && cellDate <= compareDates.toDate;
       } catch (e) {

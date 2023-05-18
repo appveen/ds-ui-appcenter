@@ -43,7 +43,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
     return false;
   }
 
-  constructor(private appService: AppService, private commonService: CommonService) { }
+  constructor(public appService: AppService, private commonService: CommonService) { }
 
   refresh(): boolean {
     return false;

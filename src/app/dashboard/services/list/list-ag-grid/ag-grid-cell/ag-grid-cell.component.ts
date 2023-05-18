@@ -86,9 +86,10 @@ export class AgGridCellComponent implements OnInit, ICellRendererAngularComp {
       this.parsedDate = this.appService.getUTCString(this.value.rawData, this.value.tzInfo);
       this.timezoneValue = this.value.tzInfo;
       this.showTimezone = true;
-    } else if (this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt') {
+    } else if (this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt' || this.type === 'Date') {
       this.parsedDate = this.value;
       this.timezoneValue = this.appService.getLocalTimezone();
+      this.showTimezone = !(this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt');
     }
     if (this.value && this.value.geometry && this.value.geometry.coordinates) {
       this.url = `https://www.google.co.in/maps?q=MyLoc@${this.value.geometry.coordinates[1]},${this.value.geometry.coordinates[0]}`;
