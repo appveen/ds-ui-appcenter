@@ -72,7 +72,7 @@ export class ValueRendererComponent implements ICellRendererAngularComp {
       }
       else {
         this.parsedDate = this.value;
-        this.timezoneValue = this.appService.getLocalTimezone();
+        this.timezoneValue = this.definition.properties.defaultTimezone;
         this.showTimezone = true;
       }
     }
@@ -81,7 +81,7 @@ export class ValueRendererComponent implements ICellRendererAngularComp {
     }
     if (this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt') {
       this.parsedDate = this.value;
-      this.timezoneValue = this.appService.getLocalTimezone();
+      this.timezoneValue = this.definition.properties.defaultTimezone;
     }
   }
 

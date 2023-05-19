@@ -44,6 +44,7 @@ export interface Properties {
     precision?: number;
     _description?: string;
     _typeChanged?: string;
+    defaultTimezone?: string;
 }
 
 export enum Currency {

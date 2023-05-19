@@ -29,12 +29,12 @@ export class ViewDateComponent implements OnInit {
       this.timezone = this.definition.value.tzInfo;
     }
     if (this.value && this.definition.type === 'Date') {
-      this.dateString = this.appService.getUTCString(this.value, this.appService.getLocalTimezone())
-      this.timezone = this.appService.getLocalTimezone();
+      this.dateString = this.appService.getUTCString(this.value, this.definition?.properties?.defaultTimezone)
+      this.timezone = this.definition?.properties?.defaultTimezone;
     }
     if (this.definition.value && this.definition.type === 'Date') {
-      this.dateString = this.appService.getUTCString(this.definition.value, this.appService.getLocalTimezone())
-      this.timezone = this.appService.getLocalTimezone();
+      this.dateString = this.appService.getUTCString(this.definition.value, this.definition?.properties?.defaultTimezone)
+      this.timezone = this.definition?.properties?.defaultTimezone;
     }
   }
 

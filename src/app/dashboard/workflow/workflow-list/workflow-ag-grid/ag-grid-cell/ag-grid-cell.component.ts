@@ -67,7 +67,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     }
     else if (this.value && this.type === 'Date') {
       this.parsedDate = this.value;
-      this.timezoneValue = this.appService.getLocalTimezone();
+      this.timezoneValue = this.definition.properties.defaultTimezone;
     }
   }
 
