@@ -66,10 +66,12 @@
         </ng-container>
         <ng-container *ngIf="type === 'Date'">
             <ng-container *ngIf="properties.dateType != 'date'">
-                {{ (value.rawData | date:'MMM d, y, H:mm:ss') + ', ' + value.tzInfo }}
+                {{ (value.rawData ? value.rawData : value | date:'MMM d, y, H:mm:ss') + ', ' + value.tzInfo ?
+                value.tzInfo : appService.getLocalTimezone() }}
             </ng-container>
             <ng-container *ngIf="properties.dateType == 'date'">
-                {{ (value.rawData | date:'mediumDate') + ', ' + value.tzInfo }}
+                {{ (value.rawData ? value.rawData : value | date:'mediumDate') + ', ' + value.tzInfo ? value.tzInfo :
+                appService.getLocalTimezone() }}
             </ng-container>
         </ng-container>
         <ng-container *ngIf="type === 'Boolean'">

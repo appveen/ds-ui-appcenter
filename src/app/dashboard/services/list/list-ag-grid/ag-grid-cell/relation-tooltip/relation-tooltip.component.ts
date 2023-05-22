@@ -93,13 +93,13 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
         value: self.getHtmlContent(value)
       };
     } else if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.dateType === 'date' && value) {
-      let dateString = this.appService.getUTCString(value.rawData, value.tzInfo);
+      let dateString = this.appService?.serviceData?.simpleDate ? this.appService.getUTCString(value, this.definition.properties.defaultTimezone) : this.appService.getUTCString(value.rawData, value.tzInfo);
       retValue = {
         name: relsrvcDef.properties.name,
         value: dateString
       };
     } else if (relsrvcDef && relsrvcDef.properties && relsrvcDef.properties.dateType === 'datetime-local' && value) {
-      let dateString = this.appService.getUTCString(value.rawData, value.tzInfo);
+      let dateString = this.appService?.serviceData?.simpleDate ? this.appService.getUTCString(value, this.definition.properties.defaultTimezone) : this.appService.getUTCString(value.rawData, value.tzInfo);
       retValue = {
         name: relsrvcDef.properties.name,
         value: dateString

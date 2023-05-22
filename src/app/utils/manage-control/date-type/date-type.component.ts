@@ -53,10 +53,15 @@ export class DateTypeComponent implements OnInit, OnDestroy {
         this.selectedTimezone = this.control.value.tzInfo;
       } else {
         this.initialDateStr = this.appService.getUTCString(this.control.value, this.selectedTimezone);
-        this.control.patchValue({
-          rawData: this.initialDateStr,
-          tzInfo: this.selectedTimezone
-        })
+        if (this.appService?.serviceData?.simpleDate) {
+          this.control.patchValue(this.initialDateStr);
+        }
+        else {
+          this.control.patchValue({
+            rawData: this.initialDateStr,
+            tzInfo: this.selectedTimezone
+          });
+        }
         // this.selectedTimezone = this.control.value.tzInfo;
       }
     }
@@ -78,10 +83,15 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   formatDate(event) {
     const dateVal = event.target.value;
     const dateStr = new Date(dateVal).toString()
-    this.control.patchValue({
-      rawData: dateStr,
-      tzInfo: this.selectedTimezone
-    });
+    if (this.appService?.serviceData?.simpleDate) {
+      this.control.patchValue(dateStr);
+    }
+    else {
+      this.control.patchValue({
+        rawData: dateStr,
+        tzInfo: this.selectedTimezone
+      });
+    }
     this.control.markAsDirty();
   }
 
@@ -108,10 +118,15 @@ export class DateTypeComponent implements OnInit, OnDestroy {
     if (this.initialDateStr) {
       const momentDate = this.appService.getMoment(this.initialDateStr);
       const dateStr = this.appService.getTimezoneString(momentDate, val);
-      this.control.patchValue({
-        rawData: dateStr,
-        tzInfo: val
-      });
+      if (this.appService?.serviceData?.simpleDate) {
+        this.control.patchValue(dateStr);
+      }
+      else {
+        this.control.patchValue({
+          rawData: dateStr,
+          tzInfo: this.selectedTimezone
+        });
+      }
       this.control.markAsTouched();
       this.control.markAsDirty();
     }
@@ -120,10 +135,15 @@ export class DateTypeComponent implements OnInit, OnDestroy {
   setDefault(event) {
     const dateStr = new Date(this.defaultValue).toString()
     this.initialDateStr = new Date(this.defaultValue).toISOString();
-    this.control.patchValue({
-      rawData: dateStr,
-      tzInfo: this.selectedTimezone
-    });
+    if (this.appService?.serviceData?.simpleDate) {
+      this.control.patchValue(dateStr);
+    }
+    else {
+      this.control.patchValue({
+        rawData: dateStr,
+        tzInfo: this.selectedTimezone
+      });
+    }
   }
 
   get selectedDate() {
@@ -157,10 +177,16 @@ export class DateTypeComponent implements OnInit, OnDestroy {
     this.initialDateStr = val;
     const momentDate = this.appService.getMoment(val);
     const dateStr = this.appService.getTimezoneString(momentDate, this.selectedTimezone);
-    this.control.patchValue({
-      rawData: dateStr,
-      tzInfo: this.selectedTimezone
-    });
+    if (this.appService?.serviceData?.simpleDate) {
+      this.control.patchValue(dateStr);
+    }
+    else {
+      this.control.patchValue({
+        rawData: dateStr,
+        tzInfo: this.selectedTimezone
+      });
+    }
+
     this.control.markAsTouched();
     this.control.markAsDirty();
   }

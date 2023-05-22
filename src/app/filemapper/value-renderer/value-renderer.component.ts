@@ -70,13 +70,18 @@ export class ValueRendererComponent implements ICellRendererAngularComp {
         this.timezoneValue = this.value.tzInfo;
         this.showTimezone = true;
       }
+      else {
+        this.parsedDate = this.value;
+        this.timezoneValue = this.definition.properties.defaultTimezone;
+        this.showTimezone = true;
+      }
     }
     if (this.type === 'Boolean') {
       this.isBooleanValue = typeof this.value === 'boolean';
     }
     if (this.definition.key === '_metadata.lastUpdated' || this.definition.key === '_metadata.createdAt') {
       this.parsedDate = this.value;
-      this.timezoneValue = this.appService.getLocalTimezone();
+      this.timezoneValue = this.definition.properties.defaultTimezone;
     }
   }
 
