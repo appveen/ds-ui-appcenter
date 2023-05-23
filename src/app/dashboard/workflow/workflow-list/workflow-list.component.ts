@@ -779,7 +779,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         temp.dataType = 'text';
         tempArr.unshift(temp);
       } else {
-        if (defObj.type === 'Object') {
+        if (defObj.type === 'Object' && !defObj.properties.schemaFree) {
           const tempName = parentName ? parentName + '.' + defObj.properties.name : defObj.properties.name;
           const tempKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
           tempArr = tempArr.concat(this.parseDefinition(defObj.definition, tempKey, tempName));
@@ -832,10 +832,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
             if (selfObj.properties.relatedSearchField !== '_id') {
               this.expandList.push(def.properties.dataKey + '.' + selfObj.properties.relatedSearchField);
             }
-          } else if (selfObj.type === 'Object') {
+          } else if (selfObj.type === 'Object' && !selfObj.properties.schemaFree) {
             this.getExpandList(selfObj.definition, par);
           }
-        } else if (def.type && def.type === 'Object') {
+        } else if (def.type && def.type === 'Object' && !def.properties.schemaFree) {
           this.getExpandList(def.definition, def.key);
         }
       });

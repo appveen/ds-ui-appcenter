@@ -56,7 +56,7 @@ export class ViewColOfObjsComponent implements AgRendererComponent, OnDestroy {
       this.expandedDefinitions.push(
         {
           definition: this.parentContext.definition.definition.map(def => {
-            if (def.type === 'Object') {
+            if (def.type === 'Object' && !def.properties.schemaFree) {
               const selfDefinition = this.getDefinitionWithValue(def, this.arrayValues[i], i, this.parentContext.definition.path);
               selfDefinition.value = this.arrayValues[i][selfDefinition.key];
               selfDefinition.definition = selfDefinition.definition.map(d => {

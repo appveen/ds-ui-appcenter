@@ -51,7 +51,7 @@ export class ErrorRecordsComponent implements OnInit {
         delete def.definition;
       } else if (def.type === 'Array') {
         self.fixSchema(def.definition);
-      } else if (def.type === 'Object') {
+      } else if (def.type === 'Object' && !def.properties.schemaFree) {
         self.fixSchema(def.definition);
       }
     });
@@ -133,7 +133,7 @@ export class ErrorRecordsComponent implements OnInit {
         col.width = 200;
         col.resizable = true;
         col.cellRendererFramework = ValueRendererComponent;
-        if (def.type === 'Object') {
+        if (def.type === 'Object' && !def.properties.schemaFree) {
           columns = columns.concat(self.parseDefinition(def.definition, dataKey, dataName));
         } else {
           columns.push(col);

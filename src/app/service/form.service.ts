@@ -27,7 +27,7 @@ export class FormService {
     }
     const path = parent ? parent + '.' + key : key;
     const camelCase = path.split('.').join(' ').split('#').join(' ').camelCase();
-    if (definition.type === 'Object') {
+    if (definition.type === 'Object' && !definition.properties.schemaFree) {
       const objDef = definition.definition;
       if (options && options.flatten) {
         objDef.forEach(def => {
@@ -120,7 +120,7 @@ export class FormService {
         temp.definition = [];
         tempArr.unshift(temp);
       } else {
-        if (defObj.type === 'Object') {
+        if (defObj.type === 'Object' && !defObj.properties.schemaFree) {
           const tempName = parentName ? parentName + '.' + defObj.properties.name : defObj.properties.name;
           const tempKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
           tempArr = tempArr.concat(self.parseDefinitionFM(defObj.definition, tempKey, tempName));
@@ -279,7 +279,11 @@ export class FormService {
     let _control: AbstractControl;
     _fields.forEach(_def => {
       if (_def.type === 'Object') {
-        _control = new FormBuilder().group(self.createForm(_def.definition));
+        if (!_def.properties.schemaFree) {
+          _control = new FormBuilder().group(self.createForm(_def.definition));
+        } else {
+          _control = new FormControl(_def.value || null);
+        }
       } else {
         if (_def.type === 'Array') {
           _control = new FormArray([]);
@@ -287,7 +291,7 @@ export class FormService {
             _def.value.forEach(element => {
               if (_def.definition[0].type === 'array') {
                 // has to be implemented
-              } else if (_def.definition[0].type === 'Object') {
+              } else if (_def.definition[0].type === 'Object' && !_def.properties.schemaFree) {
                 const control = new FormBuilder().group(self.createForm(_def.definition[0].definition));
                 (<FormGroup>control).patchValue(element);
                 if (_def.properties.readonly) {
@@ -461,7 +465,7 @@ export class FormService {
       if (typeof readonly === 'boolean' && def.properties) {
         def.properties.readonly = readonly;
       }
-      if (def.key !== '_id' && def.type === 'Object') {
+      if (def.key !== '_id' && def.type === 'Object' && !def.properties.schemaFree) {
         this.fixReadonly(def.definition, def.properties.readonly);
       }
     });

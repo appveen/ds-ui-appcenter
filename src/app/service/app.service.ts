@@ -198,7 +198,7 @@ export class AppService {
             const self = this;
             if (definition) {
                 definition.forEach(def => {
-                    if (def.type === 'Object' && payload[def.key]) {
+                    if (def.type === 'Object' && !def.properties.schemaFree && payload[def.key]) {
                         self.cleanPayload(payload[def.key], def.definition, isEdit);
                     } else if (payload[def.key] && Array.isArray(payload[def.key])) {
                         if (def.definition[0].type !== 'Object') {
@@ -215,7 +215,7 @@ export class AppService {
                         if (payload[def.key]) {
                             payload[def.key] = payload[def.key].filter(e => e !== null && e !== '' && e !== undefined);
                         }
-                        if (payload[def.key] && def.definition[0].type === 'Object') {
+                        if (payload[def.key] && def.definition[0].type === 'Object' && !def.properties.schemaFree) {
                             payload[def.key].forEach(obj => self.cleanPayload(obj, def.definition[0].definition, isEdit));
                             payload[def.key] = payload[def.key].filter(e =>
                                 Object.keys(e).reduce((pv, cv) => pv || (e[cv] !== null && e[cv] !== ''), false)
@@ -268,7 +268,7 @@ export class AppService {
         const self = this;
         if (definition && payload) {
             definition.forEach(def => {
-                if (def.type === 'Object' && payload[def.key]) {
+                if (def.type === 'Object' && !def.properties.schemaFree && payload[def.key]) {
                     self.fixArrayInPayload(payload[def.key], def.definition, isEdit);
                 } else if (def.type === 'Array' && !payload[def.key]) {
                     payload[def.key] = [];
@@ -795,7 +795,7 @@ export class AppService {
             const self = this;
             if (definition) {
                 definition.forEach(def => {
-                    if (def.type === 'Object' && payload[def.key]) {
+                    if (def.type === 'Object' && !def.properties.schemaFree && payload[def.key]) {
                         self.cleanArray(payload[def.key], def.definition);
                     } else {
                         delete payload._id;

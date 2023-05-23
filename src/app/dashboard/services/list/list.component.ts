@@ -865,7 +865,7 @@ export class ListComponent implements OnInit, OnDestroy {
         delete def.definition;
       } else if (def.type === 'Array') {
         this.fixSchema(def.definition);
-      } else if (def.type === 'Object') {
+      } else if (def.type === 'Object' && !def.properties.schemaFree) {
         this.fixSchema(def.definition);
       }
     });
@@ -968,7 +968,7 @@ export class ListComponent implements OnInit, OnDestroy {
         temp.definition = [];
         tempArr.unshift(temp);
       } else {
-        if (defObj.type === 'Object') {
+        if (defObj.type === 'Object' && !defObj.properties.schemaFree) {
           const tempName = parentName ? parentName + '.' + defObj.properties.name : defObj.properties.name;
           const tempKey = parentKey ? parentKey + '.' + defObj.key : defObj.key;
           tempArr = tempArr.concat(self.parseDefinition(defObj.definition, tempKey, tempName));

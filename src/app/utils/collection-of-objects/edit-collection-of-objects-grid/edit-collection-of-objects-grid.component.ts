@@ -138,7 +138,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         if (parent) {
           properties.name = parent.properties.name + '.' + properties.name;
         }
-        if (tempDef.type === 'Object') {
+        if (tempDef.type === 'Object' && !tempDef.properties.schemaFree) {
           self.flattenDefinition(definitionList, tempDef.definition, tempDef);
         } else {
           definitionList.push({
@@ -346,7 +346,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     if (definition.properties && definition.properties.readonly) {
       definition.definition.forEach(element => {
         element.properties.readonly = true;
-        if (element.type === 'Object') {
+        if (element.type === 'Object' && !element.properties.schemaFree) {
           this.makeAttributesReadOnly(element);
         }
       });

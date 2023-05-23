@@ -1005,7 +1005,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   createData(oldData, newData, def) {
     def.forEach(element => {
-      if (element.type === 'Object') {
+      if (element.type === 'Object' && !element.properties.schemaFree) {
         this.createData(oldData[element.key], newData[element.key], element.definition);
       }
       if (this.isEdit) {
@@ -1025,7 +1025,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       if (attribute.type === 'Array') {
         const collectionType = attribute.definition[0].type;
         const controlName = attribute.path;
-        if (collectionType === 'Object') {
+        if (collectionType === 'Object' && !attribute.definition[0].properties.schemaFree) {
           const temp = self.appService.getValue(attribute.key, resData);
           (self.form.get(controlName) as FormArray).controls.splice(0);
           if (temp) {

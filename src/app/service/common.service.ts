@@ -1343,7 +1343,7 @@ export class CommonService {
     const i = selectedCol.findIndex(e => e === def.key);
     if (i > -1 && def.type === 'Checkbox') {
       selectedCol.splice(i, 1);
-    } else if (def.type === 'Object' && def.definition.length > 0) {
+    } else if (def.type === 'Object' && !def.properties.schemaFree && def.definition.length > 0) {
       def.definition.forEach((d: any) => {
         self.checkForNestedArr(d, selectedCol);
       });

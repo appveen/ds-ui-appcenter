@@ -30,7 +30,7 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     const self = this;
-    if(self.type == 'password' && (changes.oldValue || changes.newValue)){
+    if (self.type == 'password' && (changes.oldValue || changes.newValue)) {
       this.showPassword = {};
       this.decryptedValue = {};
     }
@@ -171,7 +171,7 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
         if (parent) {
           properties.name = parent.properties.name + '.' + properties.name;
         }
-        if (def.type === 'Object') {
+        if (def.type === 'Object' && !def.properties.schemaFree) {
           this.flattenDefinition(definitionList, def.definition, def);
         } else {
           definitionList.push({
@@ -189,8 +189,8 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
     }
   }
 
-  get isCollectionSecureRichLongText(){
-    if(this.definition.properties.name == '_self' && (this.definition.properties?.longText || this.definition.properties?.richText)){
+  get isCollectionSecureRichLongText() {
+    if (this.definition.properties.name == '_self' && (this.definition.properties?.longText || this.definition.properties?.richText)) {
       return true;
     }
     return false;
@@ -199,8 +199,8 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
 
   showDecryptedValue(value, index, type) {
     if (!this.showPassword[index + type]) {
-      if(this.isCollectionSecureRichLongText){
-        value = { 'value': value};
+      if (this.isCollectionSecureRichLongText) {
+        value = { 'value': value };
       }
       let cksm = Md5.hashStr(value.value);
       if (value.checksum && value.checksum === cksm) {
@@ -232,7 +232,7 @@ export class ArrayVersionComponent implements OnInit, OnDestroy {
     if (this.newVal && this.oldVal) {
       const cleanNewvalue = this.appService.cloneObject(this.newVal);
       const cleanOldvalue = this.appService.cloneObject(this.oldVal);
-      if (this.type === 'Object') {
+      if (this.type === 'Object' && !this.definition.properties.schemaFree) {
         cleanNewvalue.forEach((element, index) => {
           this.appService.cleanArray(element, this.definition.definition);
         });
