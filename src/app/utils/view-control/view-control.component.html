@@ -35,8 +35,8 @@
       </odp-view-control>
     </ng-container>
     <ng-container *ngIf="definition.properties.schemaFree">
-      <pre *ngIf="value">{{definition.value | json}}</pre>
-      <p *ngIf="!value">N.A.</p>
+      <pre *ngIf="definition.value">{{definition.value | json}}</pre>
+      <p *ngIf="!definition.value">N.A.</p>
     </ng-container>
   </div>
 </div>
