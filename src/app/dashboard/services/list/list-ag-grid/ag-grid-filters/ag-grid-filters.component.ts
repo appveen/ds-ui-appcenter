@@ -131,7 +131,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
           if (def.type === 'Number') {
             tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField] = +value;
           } else if (def.type === 'Date') {
-            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + '.utc'] = self.getDateQuery();
+            const suffix = self.appService.serviceData.simpleDate ? '' : '.utc'
+            tempObj[self.definition.dataKey + '.' + self.definition.properties.relatedSearchField + suffix] = self.getDateQuery();
             if (!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
               value = JSON.stringify({
                 dateFilterType: this.dateFilterType,
@@ -184,7 +185,8 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       if (['_metadata.createdAt', '_metadata.lastUpdated'].includes(this.params?.column?.getColDef().field)) {
         temp[self.definition.dataKey] = self.getDateQuery(true);
       } else {
-        temp[self.definition.dataKey + '.utc'] = self.getDateQuery();
+        const suffix = self.appService.serviceData.simpleDate ? '' : '.utc'
+        temp[self.definition.dataKey + suffix] = self.getDateQuery();
       }
       if (!!this.fromDate && (this.dateFilterType !== 'inRange' || !!this.toDate)) {
         value = JSON.stringify({
