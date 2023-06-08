@@ -53,16 +53,16 @@ export class DateTypeComponent implements OnInit, OnDestroy {
         this.selectedTimezone = this.control.value.tzInfo;
       } else {
         this.initialDateStr = this.appService.getUTCString(this.control.value, this.selectedTimezone);
-        if (this.appService?.serviceData?.simpleDate) {
-          this.control.patchValue(this.initialDateStr);
-        }
-        else {
-          this.control.patchValue({
-            rawData: this.initialDateStr,
-            tzInfo: this.selectedTimezone
-          });
-        }
         // this.selectedTimezone = this.control.value.tzInfo;
+      }
+      if (this.appService?.serviceData?.simpleDate) {
+        this.control.patchValue(this.initialDateStr);
+      }
+      else {
+        this.control.patchValue({
+          rawData: this.initialDateStr,
+          tzInfo: this.selectedTimezone
+        });
       }
     }
   }
