@@ -50,7 +50,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   agInit(params: ICellRendererParams): void {
     const self = this;
     self.params = params;
-    const type = this.definition.type;
+    // const type = this.definition?.type || '';
     self.data = params.data || {};
     self.id = self.data._id;
     self.values = params.value;
@@ -147,7 +147,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
 
   get type() {
     const self = this;
-    return self.definition.type;
+    return self.definition?.type || '';
   }
 
   get wfType() {

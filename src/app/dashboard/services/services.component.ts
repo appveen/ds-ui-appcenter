@@ -24,8 +24,8 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router,
     private route: ActivatedRoute,
-    private commonService: CommonService,
-    private appService: AppService,
+    public commonService: CommonService,
+    public appService: AppService,
     private orderBy: OrderByPipe,
     private shortcutsService: ShortcutService) {
     const self = this;

@@ -21,8 +21,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   activeId: string;
   workflowApi: string;
   breadcrumb: any;
-  constructor(private commonService: CommonService,
-    private appService: AppService,
+  constructor(public commonService: CommonService,
+    public appService: AppService,
     private router: Router,
     private route: ActivatedRoute,
   ) {
