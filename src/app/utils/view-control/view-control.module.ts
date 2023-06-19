@@ -28,6 +28,7 @@ import { ViewColOfObjsComponent } from '../collection-of-objects/view-col-of-obj
 import { ColOfObjsGridCellModule } from '../collection-of-objects/col-of-objs-grid-cell/col-of-objs-grid-cell.module';
 import { GridColumnFilterModule } from '../collection-of-objects/grid-column-filter/grid-column-filter.module';
 import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view-collection-of-objects-grid/view-collection-of-objects-grid.module';
+import { PayloadViewerModule } from '../payload-viewer/payload-viewer.module';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view
     ColOfObjsGridCellModule,
     GridColumnFilterModule,
     ViewCollectionOfObjectsGridModule,
-    FormsModule
+    FormsModule,
+    PayloadViewerModule
   ],
   declarations: [
     ViewControlComponent,

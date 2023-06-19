@@ -1,0 +1,4 @@
+<ng-container *ngFor="let item of fieldList;let i=index">
+    <odp-payload-field [index]="i" [fieldList]="fieldList" [data]="getData(i)" (dataChange)="setData($event,i)"
+        [parentArray]="true"></odp-payload-field>
+</ng-container>

@@ -1,0 +1,63 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.field-wrapper {
+    overflow: hidden;
+    padding-bottom: 0px !important;
+}
+
+.key-holder {
+    border: 0px;
+    // border-left: 1px solid #ddd;
+}
+
+.type-holder {
+    width: 100px;
+    border: 0px;
+    border-left: 1px solid #ddd;
+}
+
+.value-holder {
+    width: 260px;
+    border: 0px;
+    border-left: 1px solid #ddd;
+    height: 100%;
+}
+
+.action-holder {
+    width: 64px;
+    border-left: 1px solid #ddd;
+    // border-right: 1px solid #ddd;
+
+    .icon {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.object-array {
+    // margin-left: 30px;
+    padding-left: 16px;
+}
+
+.negative-margin {
+    margin-bottom: -1px;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+.styled-wrapper {
+    position: absolute;
+    height: 32px;
+    width: 260px;
+}
+
+.white-bg {
+    background: $white;
+}
+
+.disabled-bg {
+    background: $gray-200;
+}

@@ -50,8 +50,8 @@
     <ng-container *ngFor="let def of definition.definition;let i = index;">
       <odp-manage-control [markEnable]="markEnable" [form]="objectForm" [definition]="def"></odp-manage-control>
     </ng-container>
-    <textarea *ngIf="definition.properties.schemaFree" class="form-control" cols="30" rows="10"
-      [ngModel]="jsonData" (change)="onJSONChange($event.target.value)" [class.is-invalid]="invalidJSON"></textarea>
+    <odp-payload-creator *ngIf="definition.properties && definition.properties.schemaFree"
+      [(data)]="schemaFreeData"></odp-payload-creator>
   </div>
 </div>
 

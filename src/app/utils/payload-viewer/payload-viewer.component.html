@@ -1,0 +1,4 @@
+<div class="d-flex flex-column w-100">
+    <odp-payload-view-object *ngIf="globalType=='object'" [data]="data"></odp-payload-view-object>
+    <odp-payload-view-array *ngIf="globalType=='array'" [data]="data"></odp-payload-view-array>
+</div>

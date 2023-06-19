@@ -1,0 +1,13 @@
+<div class="">
+    <div class="form-group" [ngClass]="{'d-flex':field.type=='object' || field.type=='array'}">
+        <label [attr.for]="field.key" class="text text-secondary font-14 fw-400">{{field.key}}</label>
+        <div class="value-wrapper fw-500 font-14" [ngClass]="{'ml-4':field.type=='object' || field.type=='array'}">
+            <span *ngIf="!(field.type=='object' || field.type=='array')" class="value-width">{{field.value}}</span>
+            <span *ngIf="(field.type=='object' || field.type=='array')" class="value-width">({{field.value}})</span>
+        </div>
+    </div>
+    <div *ngIf="field.type=='object' || field.type=='array'" class="object-array rounded ml-2 pl-3">
+        <odp-payload-view-object *ngIf="field.type=='object'" [data]="data"></odp-payload-view-object>
+        <odp-payload-view-array *ngIf="field.type=='array'" [data]="data"></odp-payload-view-array>
+    </div>
+</div>
