@@ -18,25 +18,15 @@ export class ManageControlComponent implements OnInit, OnDestroy {
     @ViewChild('arrayControl', { static: false }) arrayControlRef: ArrayControlComponent;
     canEnable: boolean;
     checkboxKey: string;
-    jsonData: any;
-    invalidJSON: boolean;
-    constructor(
-        private appService: AppService
-    ) {
-        const self = this;
-        self.canEnable = true;
+    constructor(private appService: AppService) {
+        this.canEnable = true;
     }
 
     ngOnInit() {
-        const self = this;
-        if (self.definition.key === '_id' || self.definition.properties.unique || self.definition.properties.readonly) {
-            self.canEnable = false;
+        if (this.definition.key === '_id' || this.definition.properties.unique || this.definition.properties.readonly) {
+            this.canEnable = false;
         }
-        self.checkboxKey = self.definition.path + '_' + Date.now();
-        if (this.definition.properties.schemaFree) {
-            let data = this.form.get(this.definition.key).value;
-            this.jsonData = JSON.stringify(data);
-        }
+        this.checkboxKey = this.definition.path + '_' + Date.now();
     }
 
     ngOnDestroy() {
@@ -64,61 +54,51 @@ export class ManageControlComponent implements OnInit, OnDestroy {
         });
     }
 
-    onJSONChange(data: any) {
-        try {
-            if (data && typeof data == 'object') {
-                this.jsonData = JSON.stringify(data);
-                return;
-            }
-            this.jsonData = data;
-            let parsedJSON = JSON.parse(data);
-            this.form.get(this.definition.key).patchValue(parsedJSON);
-            this.invalidJSON = false;
-        } catch (err) {
-            this.invalidJSON = true;
-        }
-    }
-
     get objectForm() {
-        const self = this;
-        return self.form?.get(self.definition.key) as FormGroup;
+        return this.form?.get(this.definition.key) as FormGroup;
     }
 
     get arrayForm() {
-        const self = this;
-        return self.form?.get(self.definition.key) as FormArray;
+        return this.form?.get(this.definition.key) as FormArray;
     }
 
     get toggleEnable() {
-        const self = this;
-        return self.form?.get(self.definition.key)?.enabled;
+        return this.form?.get(this.definition.key)?.enabled;
     }
 
     set toggleEnable(val) {
-        const self = this;
         if (val) {
             if (this.definition.type === 'Object' && !this.definition.properties.schemaFree) {
-                self.enableFieldsIndividually(this.definition, self.form?.get(self.definition.key));
+                this.enableFieldsIndividually(this.definition, this.form?.get(this.definition.key));
             } else {
-                self.form?.get(self.definition.key).enable();
+                this.form?.get(this.definition.key).enable();
             }
         } else {
-            self.form?.get(self.definition.key).reset();
-            self.form?.get(self.definition.key).disable();
+            this.form?.get(this.definition.key).reset();
+            this.form?.get(this.definition.key).disable();
         }
     }
 
     get controlType() {
-        const self = this;
-        if (self.definition.definition[0].type === 'Geojson') {
+        if (this.definition.definition[0].type === 'Geojson') {
             return 'map';
-        } else if (self.definition.definition[0].type === 'Object') {
+        } else if (this.definition.definition[0].type === 'Object') {
             return 'object';
-        } else if (self.definition.definition[0].type === 'Array') {
+        } else if (this.definition.definition[0].type === 'Array') {
             return 'array';
         } else {
             return 'others';
         }
     }
 
+    get schemaFreeData() {
+        if (this.definition.properties.schemaFree) {
+            return this.definition.value;
+        }
+        return null;
+    }
+    set schemaFreeData(data: any) {
+        this.definition.value = data;
+        this.form.get(this.definition.key).patchValue(data);
+    }
 }

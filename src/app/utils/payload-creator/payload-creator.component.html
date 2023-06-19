@@ -1,0 +1,24 @@
+<div class="d-flex flex-column w-100">
+    <div class="field-header d-flex border rounded negative-margin w-100 bg-light text-muted font-12">
+        <span class="key-holder flex-fill px-2">Key</span>
+        <span class="type-holder px-2">Type</span>
+        <span class="value-holder px-2">Value</span>
+        <span class="action-holder px-2"></span>
+    </div>
+    <div class="field-wrapper d-flex border rounded negative-margin w-100">
+        <input type="text" class="key-holder flex-fill px-2" value="ROOT" disabled="true">
+        <select id="type" class="type-holder px-2" [(ngModel)]="globalType">
+            <option value="object">Object</option>
+            <option value="array">Array</option>
+        </select>
+        <input type="text" class="value-holder px-2" [ngModel]="globalValue" disabled="true">
+        <div class="d-flex align-items-center justify-content-end action-holder">
+            <span class="d-flex align-items-center justify-content-center icon ml-2 hover dsi dsi-plus-circle"
+                (click)="addFromRoot()"></span>
+        </div>
+    </div>
+    <odp-payload-object *ngIf="globalType=='object'" [data]="data" (dataChange)="onDataChange($event)"
+        [addChild]="triggerAddChild"></odp-payload-object>
+    <odp-payload-array *ngIf="globalType=='array'" [data]="data" (dataChange)="onDataChange($event)"
+        [addChild]="triggerAddChild"></odp-payload-array>
+</div>

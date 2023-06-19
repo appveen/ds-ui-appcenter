@@ -24,12 +24,9 @@ import { EditColOfObjsComponent } from '../collection-of-objects/edit-col-of-obj
 import { EditCollectionOfObjectsGridComponent } from '../collection-of-objects/edit-collection-of-objects-grid/edit-collection-of-objects-grid.component';
 import { RoundCheckModule } from '../round-check/round-check.module';
 import { GridCheckboxComponent } from "../collection-of-objects/grid-checkbox/grid-checkbox.component";
-import { ColOfObjsGridCellComponent } from '../collection-of-objects/col-of-objs-grid-cell/col-of-objs-grid-cell/col-of-objs-grid-cell.component';
 import { ColOfObjsGridCellModule } from '../collection-of-objects/col-of-objs-grid-cell/col-of-objs-grid-cell.module';
 import { GridColumnFilterModule } from '../collection-of-objects/grid-column-filter/grid-column-filter.module';
 import { LoadingPlaceholderModule } from '../loading-placeholder/loading-placeholder.module';
-import { FloatingFilterComponent } from '../collection-of-objects/grid-column-filter/floating-filter/floating-filter.component';
-import { ColumnFilterComponent } from '../collection-of-objects/grid-column-filter/column-filter/column-filter.component';
 import { ViewCollectionOfObjectsGridModule } from '../collection-of-objects/view-collection-of-objects-grid/view-collection-of-objects-grid.module';
 import { ColOfObjsHeaderCellModule } from '../collection-of-objects/col-of-objs-header-cell/col-of-objs-header-cell.module';
 import { RouterModule } from '@angular/router';
@@ -37,6 +34,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { TextEditor } from '../cell-editor/text-editor.component';
 import { SelectEditor } from '../cell-editor/select-editor.component';
 import { ViewControlModule } from '../view-control/view-control.module';
+import { PayloadCreatorModule } from '../payload-creator/payload-creator.module';
 
 @NgModule({
   imports: [
@@ -57,7 +55,8 @@ import { ViewControlModule } from '../view-control/view-control.module';
     AgGridModule,
     RouterModule,
     PipesModule,
-    ViewControlModule
+    ViewControlModule,
+    PayloadCreatorModule
   ],
   declarations: [
     ManageControlComponent,
