@@ -1343,7 +1343,7 @@ export class CommonService {
     const i = selectedCol.findIndex(e => e === def.key);
     if (i > -1 && def.type === 'Checkbox') {
       selectedCol.splice(i, 1);
-    } else if (def.type === 'Object' && def.definition.length > 0) {
+    } else if (def.type === 'Object' && !def.properties.schemaFree && def.definition.length > 0) {
       def.definition.forEach((d: any) => {
         self.checkForNestedArr(d, selectedCol);
       });
@@ -1491,11 +1491,8 @@ export class CommonService {
     const self = this;
     if (self.permissions && self.permissions.length > 0) {
       return self.permissions
-        .filter(e => e.app === self.app._id)
+        .filter(e => e.app === self.app._id && e.id.match(/^INTR_.*$/))
         .map(e => e.entity)
-        .filter(e => e.match(/^INTR_.*$/))
-        .map(e => e.split('_'[1]))
-        .filter((e, i, a) => a.indexOf(e) === i);
     }
     return [];
   }

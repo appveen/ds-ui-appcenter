@@ -24,12 +24,13 @@
 
   .version-list-content {
     height: 390px;
-    overflow: auto;
-    width: 400px;
+    overflow-y: auto;
+    width: 370px;
     direction: rtl;
+    overflow-x: hidden;
 
     .version-data {
-      width: 400px;
+      width: 350px;
       direction: ltr;
 
       &:hover {

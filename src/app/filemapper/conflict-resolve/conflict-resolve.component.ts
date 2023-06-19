@@ -79,7 +79,7 @@ export class ConflictResolveComponent implements OnInit, OnDestroy {
         delete def.definition;
       } else if (def.type === 'Array') {
         self.fixSchema(def.definition);
-      } else if (def.type === 'Object') {
+      } else if (def.type === 'Object' && !def.properties.schemaFree) {
         self.fixSchema(def.definition);
       }
     });
@@ -228,7 +228,7 @@ export class ConflictResolveComponent implements OnInit, OnDestroy {
         col.width = 200;
         col.resizable = true;
         col.cellRendererFramework = ValueRendererComponent;
-        if (def.type === 'Object') {
+        if (def.type === 'Object' && !def.properties.schemaFree) {
           columns = columns.concat(self.parseDefinition(def.definition, dataKey, dataName));
         } else {
           columns.push(col);

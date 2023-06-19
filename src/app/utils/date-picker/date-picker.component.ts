@@ -451,8 +451,10 @@ export class DatePickerComponent implements OnInit, OnDestroy, AfterViewInit, Co
   done() {
     const self = this;
     if (self.options && self.options.type === 'date') {
-      self.fromDate.setHours(0, 0, 0, 0);
-      self.toDate.setHours(0, 0, 0, 0);
+      const frmDateZone=self.fromDate.getTimezoneOffset()
+      const toDateZone=self.toDate.getTimezoneOffset()
+      self.fromDate.setHours(Math.floor(Math.abs(frmDateZone)/60), Math.abs(frmDateZone)%60, 0, 0);
+      self.toDate.setHours(Math.floor(Math.abs(toDateZone)/60), Math.abs(toDateZone)%60, 0, 0);
     }
     if (self.fromChanged) {
       if (self.valueChange) {

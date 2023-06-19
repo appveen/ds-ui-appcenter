@@ -47,11 +47,20 @@ export class IntegrationListComponent implements OnInit {
   }
 
   getFlows() {
+    const filter: any = {};
     const options: GetOptions = {
       count: -1,
+      filter,
       select: 'name app',
       sort: 'name'
     };
+
+    if (!this.commonService.userDetails.isSuperAdmin
+      && this.commonService.interationsWithAccess.length > 0 && !this.commonService.isAppAdmin()) {
+      filter._id = {
+        $in: this.commonService.interationsWithAccess
+      };
+    }
     this.showLazyLoader = true;
     if (this.subscriptions.getFlows) {
       this.subscriptions.getFlows.unsubscribe();

@@ -191,10 +191,10 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
 
     get requiredError() {
         const self = this;
-        return (self.control?.hasError('required')||self.control?.value?.indexOf('<p>')<0) && self.control?.touched;
+        return (self.control?.hasError('required') || self.control?.value?.indexOf('<p>') < 0) && self.control?.touched;
     }
 
-    tabOut(){
+    tabOut() {
         this.control.markAsTouched();
     }
 }

@@ -1,5 +1,17 @@
-<div class="p-4">
-    <div class="list-wrapper border rounded bg-white">
+<div class="p-2">
+    <div class="d-flex align-items-center pt-2">
+        <button class="btn btn-white border d-flex align-items-center font-12 mr-3" (click)="getRecordsCount()">
+            <span class="dsi dsi-refresh"></span>
+        </button>
+        <odp-flows-filters #listFilters [allColumns]="columnDefs" [allFilters]="allFilters" (filterCleared)="resetFilter()"
+        (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
+        </odp-flows-filters>
+        <button *ngIf="selectedSavedView || filterModel" type="button" class="btn btn-link text-accent py-0" (click)="resetFilter()">
+        <span class="fa fa-times mr-2"></span>
+        <span class="text">Clear Filters</span>
+        </button>
+    </div>
+    <div class="list-wrapper border rounded bg-white mt-2">
         <!-- <div class="list-group list-group-flush">
             <div class="list-group-item d-flex align-items-center bg-light fw-500 font-12 text-secondary">
                 <span class="item-id">ID</span>
@@ -28,14 +40,14 @@
                 <p class="m-0">No Interaction Found</p>
             </div>
         </div> -->
-        <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!interactionList || interactionList.length==0">
+        <!-- <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!dataSource">
             <div class="no-records-img mx-auto"></div>
             <span class="text-grey font-16">No Interaction Found.
             </span>
-        </div>
-        <ag-grid-angular *ngIf="interactionList && interactionList.length>0" style="width: 100%; height: 100%;"
-            class="list-wrapper ag-theme-balham" [rowData]="interactionList" [columnDefs]="columnDefs" rowHeight="40"
-            (rowDoubleClicked)="rowDoubleClicked($event)">
+        </div> -->
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;"
+            class="list-wrapper ag-theme-balham" [datasource]="dataSource" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" rowHeight="40"
+            (rowDoubleClicked)="rowDoubleClicked($event)" (sortChanged)="sortChanged($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate" (filterChanged)="filterModified($event)">
         </ag-grid-angular>
     </div>
 </div>

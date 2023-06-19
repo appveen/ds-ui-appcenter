@@ -68,7 +68,7 @@ export class ServiceListComponent implements OnInit {
     const options: GetOptions = {
       count: -1,
       filter,
-      select: 'name,app,api',
+      select: 'name,app,api,simpleDate',
       sort: 'name'
     };
     this.showLazyLoader = true;
@@ -148,6 +148,7 @@ export class ServiceListComponent implements OnInit {
 
   loadDataService(service: any, force?: boolean) {
     this.appService.serviceId = service?._id;
+    this.appService.serviceData = service
     this.dashboardService.selectedService.emit(service);
     if (!this.activeId || force) {
       this.router.navigateByUrl(['', this.commonService.app._id, 'services'].join('/')).then(() => {

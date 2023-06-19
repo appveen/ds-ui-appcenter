@@ -197,7 +197,7 @@ export class ViewComponent implements OnInit, OnDestroy {
                 delete def.definition;
             } else if (def.type === 'Array') {
                 this.updateSchema(def.definition);
-            } else if (def.type === 'Object') {
+            } else if (def.type === 'Object' && !def.properties.schemaFree) {
                 this.updateSchema(def.definition);
             }
         });
@@ -714,7 +714,7 @@ export class ViewComponent implements OnInit, OnDestroy {
 
     createData(oldData, newData, def) {
         def.forEach(element => {
-            if (element.type === 'Object') {
+            if (element.type === 'Object' && !element.properties.schemaFree) {
                 if (!oldData[element.key]) {
                     oldData[element.key] = {};
                 }

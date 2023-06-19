@@ -18,6 +18,8 @@ export class ManageControlComponent implements OnInit, OnDestroy {
     @ViewChild('arrayControl', { static: false }) arrayControlRef: ArrayControlComponent;
     canEnable: boolean;
     checkboxKey: string;
+    jsonData: any;
+    invalidJSON: boolean;
     constructor(
         private appService: AppService
     ) {
@@ -31,6 +33,10 @@ export class ManageControlComponent implements OnInit, OnDestroy {
             self.canEnable = false;
         }
         self.checkboxKey = self.definition.path + '_' + Date.now();
+        if (this.definition.properties.schemaFree) {
+            let data = this.form.get(this.definition.key).value;
+            this.jsonData = JSON.stringify(data);
+        }
     }
 
     ngOnDestroy() {
@@ -58,6 +64,21 @@ export class ManageControlComponent implements OnInit, OnDestroy {
         });
     }
 
+    onJSONChange(data: any) {
+        try {
+            if (data && typeof data == 'object') {
+                this.jsonData = JSON.stringify(data);
+                return;
+            }
+            this.jsonData = data;
+            let parsedJSON = JSON.parse(data);
+            this.form.get(this.definition.key).patchValue(parsedJSON);
+            this.invalidJSON = false;
+        } catch (err) {
+            this.invalidJSON = true;
+        }
+    }
+
     get objectForm() {
         const self = this;
         return self.form?.get(self.definition.key) as UntypedFormGroup;
@@ -76,7 +97,7 @@ export class ManageControlComponent implements OnInit, OnDestroy {
     set toggleEnable(val) {
         const self = this;
         if (val) {
-            if (this.definition.type === 'Object') {
+            if (this.definition.type === 'Object' && !this.definition.properties.schemaFree) {
                 self.enableFieldsIndividually(this.definition, self.form?.get(self.definition.key));
             } else {
                 self.form?.get(self.definition.key).enable();

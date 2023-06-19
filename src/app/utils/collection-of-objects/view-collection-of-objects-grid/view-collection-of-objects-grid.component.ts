@@ -82,7 +82,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
         if (parent) {
           properties.name = parent.properties.name + '.' + properties.name;
         }
-        if (def.type === 'Object') {
+        if (def.type === 'Object' && !def.properties.schemaFree) {
           this.flattenDefinition(definitionList, def.definition, def);
         } else {
           definitionList.push({

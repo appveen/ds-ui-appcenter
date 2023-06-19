@@ -50,6 +50,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   agInit(params: ICellRendererParams): void {
     const self = this;
     self.params = params;
+    const type = this.definition.type;
     self.data = params.data || {};
     self.id = self.data._id;
     self.values = params.value;
@@ -63,6 +64,10 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     } else if (this.value && this.value.rawData) {
       this.parsedDate = this.appService.getUTCString(this.value.rawData, this.value.tzInfo);
       this.timezoneValue = this.value.tzInfo;
+    }
+    else if (this.value && this.type === 'Date') {
+      this.parsedDate = this.value;
+      this.timezoneValue = this.definition.properties.defaultTimezone;
     }
   }
 

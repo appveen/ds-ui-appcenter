@@ -1,7 +1,7 @@
 <div *ngIf="toggle" class="version-list d-flex bg-white rounded border" odpClickOutside (outside)="close()"
     (mouseleave)="activeAudit=null">
     <div class="d-flex flex-column">
-        <span class="fw-600 p-2">Edited Records ({{auditList.length}})</span>
+        <span class="fw-600 p-2">Edited Records ({{auditList.length}}/{{auditCount}})</span>
         <!-- <div class="d-flex p-2">
             <div class="d-inline font-13 font-weight-bold ignore-outside">
                 <span class="mr-2">{{auditCount}} Results found</span>

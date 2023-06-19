@@ -756,7 +756,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       payload = this.schemaFreeCode ? this.schemaFreeCode : {};
     }
     let response;
-    if(self.hasWorkflow){
+    if (self.hasWorkflow) {
       payload._workflow = {
         audit: [
           {
@@ -1005,7 +1005,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
 
   createData(oldData, newData, def) {
     def.forEach(element => {
-      if (element.type === 'Object') {
+      if (element.type === 'Object' && !element.properties.schemaFree) {
         this.createData(oldData[element.key], newData[element.key], element.definition);
       }
       if (this.isEdit) {
@@ -1025,7 +1025,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
       if (attribute.type === 'Array') {
         const collectionType = attribute.definition[0].type;
         const controlName = attribute.path;
-        if (collectionType === 'Object') {
+        if (collectionType === 'Object' && !attribute.definition[0].properties.schemaFree) {
           const temp = self.appService.getValue(attribute.key, resData);
           (self.form.get(controlName) as UntypedFormArray).controls.splice(0);
           if (temp) {
@@ -1045,21 +1045,16 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     const self = this;
     if (self.form.dirty) {
       return new Promise((resolve, reject) => {
-        if (self.pageChangeModalTemplateRef) {
-          self.pageChangeModalTemplateRef.close(false);
-        }
         self.pageChangeModalTemplateRef = self.modalService.open(self.pageChangeModalTemplate, { centered: true });
-        self.pageChangeModalTemplateRef.result.then(
-          close => {
-            resolve(close);
-          },
-          dismiss => {
-            resolve(false);
-          }
-        );
+        self.pageChangeModalTemplateRef.result.then(close => {
+          resolve(close);
+        }, dismiss => {
+          resolve(false);
+        });
       });
     }
     return true;
+
   }
 
   get showSubHeader() {

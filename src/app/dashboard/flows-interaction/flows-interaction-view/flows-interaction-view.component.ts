@@ -4,6 +4,7 @@ import { combineLatest } from 'rxjs';
 import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from '../flows-interaction.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'odp-flows-interaction-view',
@@ -16,6 +17,7 @@ export class FlowsInteractionViewComponent implements OnInit {
   flowData: any;
   interactionStateList: Array<any>;
   selectedNodeId: string;
+  breadcrumb: Array<any>
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService) {
@@ -27,6 +29,16 @@ export class FlowsInteractionViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
+      this.route.data.subscribe(data => {
+        if (data.breadcrumb) {
+            this.breadcrumb = _.cloneDeep(data.breadcrumb)
+            this.commonService.get('pm', `/${this.commonService.app._id}/flow/`+params.flowId).subscribe(res => {
+              this.breadcrumb.push(res.name)
+              this.breadcrumb.push(params.interactionId)
+              this.commonService.breadcrumbPush(this.breadcrumb)
+            })
+        }
+      })
       this.getInteractions(params);
     });
   }
@@ -44,6 +56,18 @@ export class FlowsInteractionViewComponent implements OnInit {
       if (!environment.production) {
         console.log(res);
       }
+      this.flowData.inputNode.interactionId = this.interactionData._id;
+      const temp = this.interactionStateList.find(e => e.nodeId == this.flowData.inputNode._id);
+      if (temp) {
+        this.flowData.inputNode.state = temp;
+      }
+      this.flowData.nodes.forEach((node: any) => {
+        const temp = this.interactionStateList.find(e => e.nodeId == node._id);
+        if (temp) {
+          node.state = temp;
+        }
+        node.interactionId = this.interactionData._id;
+      });
     }, err => {
       console.error(err);
     })
@@ -84,5 +108,28 @@ export class FlowsInteractionViewComponent implements OnInit {
     if (temp && temp.status === 'ERROR') {
       return true;
     }
+    return false;
+  }
+
+  hasExecuted(nodeId: string) {
+    const temp = this.interactionStateList.find(e => e.nodeId == nodeId);
+    if (temp) {
+      return true;
+    }
+    return false;
+  }
+
+  get nodeList() {
+    let nodes = [];
+    if (this.flowData && this.flowData.inputNode) {
+      nodes.push(this.flowData.inputNode);
+    }
+    if (this.flowData && this.flowData.nodes) {
+      nodes = nodes.concat(this.flowData.nodes.filter(e => e.state));
+    }
+    nodes.sort((a, b) => {
+      return new Date(a.state._metadata.createdAt).getTime() - new Date(b.state._metadata.createdAt).getTime();
+    });
+    return nodes;
   }
 }

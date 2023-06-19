@@ -709,7 +709,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   createData(oldData, newData, def) {
     const isEdit = this.selectedData.operation === 'PUT' ? true : false;
     def.forEach(element => {
-      if (element.type === 'Object') {
+      if (element.type === 'Object' && !element.properties.schemaFree) {
         this.createData(oldData[element.key], newData[element.key], element.definition);
       }
       if (isEdit) {
@@ -770,10 +770,10 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
             if (selfObj.properties.relatedSearchField !== '_id') {
               self.expandList.push(def.properties.dataKey + '.' + selfObj.properties.relatedSearchField);
             }
-          } else if (selfObj.type === 'Object') {
+          } else if (selfObj.type === 'Object' && !selfObj.properties.schemaFree) {
             self.getExpandList(selfObj.definition, par);
           }
-        } else if (def.type && def.type === 'Object') {
+        } else if (def.type && def.type === 'Object' && !def.properties.schemaFree) {
           self.getExpandList(def.definition, def.key);
         }
       });

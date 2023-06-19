@@ -284,6 +284,17 @@ export class FilemapperComponent implements OnInit, OnDestroy {
             if (temp && temp.length > 0) {
               mapObj[element.properties.dataKey] = temp[0].item['name'];
             }
+            if(element.definition){
+              let mapObj1 = {};
+              element.definition.forEach(ele=>{
+                const temp = fuse.search(ele.properties.name);
+                if (temp && temp.length > 0) {
+                  mapObj1[ele.properties.dataKey] = temp[0].item['name'];
+                }
+              })
+              const groupKey=element.properties.dataKey;
+              self.form.get(groupKey).patchValue(mapObj1)
+            }
           });
           self.form.patchValue(mapObj);
         },
@@ -424,7 +435,7 @@ export class FilemapperComponent implements OnInit, OnDestroy {
         delete def.definition;
       } else if (def.type === 'Array') {
         this.updateSchema(def.definition);
-      } else if (def.type === 'Object') {
+      } else if (def.type === 'Object' && !def.properties.schemaFree) {
         this.updateSchema(def.definition);
       }
     });

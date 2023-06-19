@@ -31,7 +31,7 @@
                 <label style="margin-top: 20px">Email</label>
                 <input type="text" class="form-control form-control-lg input-text" formControlName="username"
                   id="username" #usernameControl placeholder="name@email.com" odpAutoFocus
-                  (keyup.enter)="onSubmit($event)" />
+                  (keyup.enter)="onSubmit($event)" autocomplete="off" />
                 <label style="margin-top: 20px">Password</label>
                 <input type="password" class="form-control form-control-lg input-text" formControlName="password"
                   id="password" #password placeholder="xxxxxxxxx" (keyup.enter)="onSubmit($event)" />
