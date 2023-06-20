@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ComponentRef, TemplateRef } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormArray } from '@angular/forms';
 import { ArrayControlComponent } from './array-control/array-control.component';
 import { AppService } from 'src/app/service/app.service';
 
@@ -10,7 +10,7 @@ import { AppService } from 'src/app/service/app.service';
 })
 export class ManageControlComponent implements OnInit, OnDestroy {
 
-    @Input() form: FormGroup;
+    @Input() form: UntypedFormGroup;
     @Input() definition: any;
     @Input() first: boolean;
     @Input() last: boolean;
@@ -55,11 +55,14 @@ export class ManageControlComponent implements OnInit, OnDestroy {
     }
 
     get objectForm() {
-        return this.form?.get(this.definition.key) as FormGroup;
+        const self = this;
+        return self.form?.get(self.definition.key) as UntypedFormGroup;
     }
 
     get arrayForm() {
-        return this.form?.get(this.definition.key) as FormArray;
+        const self = this;
+        return self.form?.get(self.definition.key) as UntypedFormArray;
+       
     }
 
     get toggleEnable() {

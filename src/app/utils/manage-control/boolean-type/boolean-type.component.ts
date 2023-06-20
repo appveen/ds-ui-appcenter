@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { FormControl } from '@angular/forms';
 })
 export class BooleanTypeComponent implements OnInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   controlId: string;

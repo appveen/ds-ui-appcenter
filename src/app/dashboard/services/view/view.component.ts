@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { HttpEventType } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import * as _ from 'lodash';
@@ -60,7 +60,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     toggleAllActionsDropDown: boolean;
     showHeaderOnly: boolean;
     showRespondView: boolean;
-    respondControl: FormControl;
+    respondControl: UntypedFormControl;
     showVersionHistory: boolean;
     showVersionHistoryWF: boolean;
     auditAvailable: boolean;
@@ -103,7 +103,7 @@ export class ViewComponent implements OnInit, OnDestroy {
             SentForRework: 'Rework',
             Draft: 'Draft'
         };
-        self.respondControl = new FormControl('', Validators.required);
+        self.respondControl = new UntypedFormControl('', Validators.required);
         self.stateModelName = '';
         self.isSchemaFree = null;
         this.selectedEditorTheme = 'vs-light';

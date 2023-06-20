@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { CommonService } from 'src/app/service/common.service';
 import { AppService } from 'src/app/service/app.service';
@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class FileTypeComponent implements OnInit, OnDestroy {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Input() arrayDefinition: any;

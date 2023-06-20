@@ -1,5 +1,5 @@
 import { Component, AfterContentInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 
 declare let google;
@@ -11,7 +11,7 @@ declare let google;
 })
 export class MapComponent implements AfterContentInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Input() edit: boolean;

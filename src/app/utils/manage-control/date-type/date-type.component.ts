@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ElementRef, OnDestroy, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
@@ -15,7 +15,7 @@ import { CommonService } from 'src/app/service/common.service';
 })
 export class DateTypeComponent implements OnInit, OnDestroy {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Output() keyupEvent: EventEmitter<KeyboardEvent>;

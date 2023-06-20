@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, AbstractControl, ValidatorFn, UntypedFormControl } from '@angular/forms';
 import { CommonService } from 'src/app/service/common.service';
 
 
@@ -10,7 +10,7 @@ import { CommonService } from 'src/app/service/common.service';
 })
 export class ProfileComponent  implements OnInit, OnDestroy {
     user: any;
-    passwordForm: FormGroup;
+    passwordForm: UntypedFormGroup;
     name: string;
     passwordChange: {
         status: boolean;
@@ -24,7 +24,7 @@ export class ProfileComponent  implements OnInit, OnDestroy {
     cfp = false;
     np = false;
     subscriptions: any = {};
-    constructor(private fb: FormBuilder,
+    constructor(private fb: UntypedFormBuilder,
         private commonService: CommonService,
         ) {
         this.passwordForm = this.fb.group({
@@ -90,7 +90,7 @@ export class ProfileComponent  implements OnInit, OnDestroy {
 }
 
 export function matchPassword(newPassword: AbstractControl): ValidatorFn {
-    return (control: FormControl) => {
+    return (control: UntypedFormControl) => {
         if (!newPassword.value || !control.value) {
             return { match: 'Passwords do not match' };
         }

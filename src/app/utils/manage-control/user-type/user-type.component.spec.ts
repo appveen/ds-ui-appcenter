@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core
 
 import { UserTypeComponent } from './user-type.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { CommonService } from 'src/app/service/common.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -37,7 +37,7 @@ describe('UserTypeComponent', () => {
     component = fixture.componentInstance;
     commonService = TestBed.get(CommonService);
     appService = TestBed.get(AppService);
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
     commonService.app = { _id: 'sowbhagya' };
     component.definition = {
       camelCase: "usr",
@@ -73,7 +73,7 @@ describe('UserTypeComponent', () => {
       username: "jugnu@appveen.com",
       _id: "USR1389"
     };
-    component.control = new FormControl();
+    component.control = new UntypedFormControl();
     spyOn(commonService, 'get').and.returnValue(of(user))
     spyOn(component, 'getNoOfRecords').and.returnValue(Promise.resolve(1));
     // expect(component.documents.length).toBe(0);
@@ -89,7 +89,7 @@ describe('UserTypeComponent', () => {
       username: "jugnu@appveen.com",
       _id: "USR1389"
     };
-    component.control = new FormControl({ _id: 'USR1389' });
+    component.control = new UntypedFormControl({ _id: 'USR1389' });
     spyOn(component, 'getNoOfRecords').and.returnValue(Promise.resolve(1));
     spyOn(commonService, 'get').and.returnValue(of(user))
     component.getUserData();

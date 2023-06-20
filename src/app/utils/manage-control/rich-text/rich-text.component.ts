@@ -7,7 +7,7 @@ import {
     Input,
     Output
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 import 'tinymce';
 import 'tinymce/themes/silver/theme.js';
@@ -52,7 +52,7 @@ declare let tinymce: any;
 })
 export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    @Input() control: FormControl;
+    @Input() control: UntypedFormControl;
     @Input() definition: any;
     @Input() first: boolean;
     @Output() keyupEvent: EventEmitter<KeyboardEvent>;

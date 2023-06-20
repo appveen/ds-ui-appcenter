@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy, AfterViewInit, ElementRef, Output, EventEmitter } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment';
 })
 export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Output() keyupEvent: EventEmitter<KeyboardEvent>;

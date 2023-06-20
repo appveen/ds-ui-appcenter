@@ -6,7 +6,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FormService } from 'src/app/service/form.service';
 import { WorkflowService } from '../workflow.service';
-import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { ShortcutService } from 'src/app/shortcut/shortcut.service';
 import { filter } from 'rxjs/operators';
@@ -32,7 +32,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   @ViewChild('workflowModalDelete', { static: false })
   workflowModalDelete: TemplateRef<HTMLElement>;
   @ViewChild('inputBox', { static: false }) ele: ElementRef;
-  form: FormGroup;
+  form: UntypedFormGroup;
   workflowModalDeleteRef: NgbModalRef;
   confirmCancelModalRef: NgbModalRef;
   discardModalRef: NgbModalRef;
@@ -54,7 +54,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
   definition: Array<any>;
   showLazyLoader: boolean;
   currentStep = 0;
-  respondControl: FormControl;
+  respondControl: UntypedFormControl;
   respondModalOptions: any;
   workflowUploadedFiles: Array<any>;
   workflowModalOptions: any;
@@ -86,7 +86,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     public wfService: WorkflowService,
     private wfView: ElementRef,
     private renderer: Renderer2,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private shortcutService: ShortcutService
   ) {
     const self = this;
@@ -103,7 +103,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     self.respondModalOptions = {};
     self.active = {};
     self.active[0] = true;
-    self.respondControl = new FormControl();
+    self.respondControl = new UntypedFormControl();
     this.stateModelAttr = null;
     self.stateModelName = '';
   }
@@ -275,7 +275,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
         const isEdit = self.selectedData.operation === 'PUT' ? true : false;
         const tempDef = self.formService.parseDefinition(self.schema, self.value, { isEdit });
         self.form = self.fb.group(self.formService.createForm(tempDef));
-        self.respondControl = new FormControl('', Validators.required);
+        self.respondControl = new UntypedFormControl('', Validators.required);
       });
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 import { FormService } from 'src/app/service/form.service';
@@ -14,7 +14,7 @@ import { CommonService } from '../../../service/common.service';
 })
 export class SecureTextTypeComponent implements OnInit, AfterViewInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() definition: any;
   @Input() first: boolean;
   @Output() keyupEvent: EventEmitter<KeyboardEvent>;

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, Renderer2, ElementRef, HostListener, TemplateRef } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbTooltipConfig, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -41,7 +41,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
   definition: Array<any>;
   active: any;
   wizard: Array<any>;
-  form: FormGroup;
+  form: UntypedFormGroup;
   cancelUrl: string;
   currentStep: number;
   subscriptions: any;
@@ -89,7 +89,7 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
     private formService: FormService,
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private ts: ToastrService,
     private shortcutService: ShortcutService,
     private ngbToolTipConfig: NgbTooltipConfig,
@@ -1027,11 +1027,11 @@ export class ManageComponent implements OnInit, OnDestroy, CanComponentDeactivat
         const controlName = attribute.path;
         if (collectionType === 'Object' && !attribute.definition[0].properties.schemaFree) {
           const temp = self.appService.getValue(attribute.key, resData);
-          (self.form.get(controlName) as FormArray).controls.splice(0);
+          (self.form.get(controlName) as UntypedFormArray).controls.splice(0);
           if (temp) {
             for (let i = 0; i < temp.length; i++) {
               const datum = self.formService.createForm(attribute.definition[0].definition);
-              (self.form.get(controlName) as FormArray).push(self.fb.group(datum));
+              (self.form.get(controlName) as UntypedFormArray).push(self.fb.group(datum));
             }
           }
         } else if (collectionType === 'Array') {

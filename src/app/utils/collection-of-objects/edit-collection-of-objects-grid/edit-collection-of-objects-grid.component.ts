@@ -1,5 +1,5 @@
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { GridOptions, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
 import { Component, OnInit, Input, TemplateRef, ViewChild, OnChanges, SimpleChanges, OnDestroy, Output, EventEmitter } from '@angular/core';
 
@@ -31,7 +31,7 @@ import { CommonService } from '../../../service/common.service';
 })
 export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input() formArray: FormArray;
+  @Input() formArray: UntypedFormArray;
   @Input() definition: any;
   @Input() collectionFieldName: string;
   @Input() showIndexColumn: boolean = false;
@@ -53,7 +53,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   tempRowIndex = 0;
   addedIndex = null;
   selectedRowIndex = 0;
-  bulkEditForm: FormGroup = null;
+  bulkEditForm: UntypedFormGroup = null;
   frameworkComponents: any;
   showModalBackdrop = false;
   rowData;
@@ -95,7 +95,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     return !!this.gridApi && this.gridApi.isAnyFilterPresent()
   }
 
-  constructor(private ngbModal: NgbModal, private fb: FormBuilder, private formService: FormService, private appService: AppService, private commonService: CommonService) { }
+  constructor(private ngbModal: NgbModal, private fb: UntypedFormBuilder, private formService: FormService, private appService: AppService, private commonService: CommonService) { }
 
   ngOnInit() {
     this.flattenDefinition(this.definitionList, this.definition.definition);
@@ -226,7 +226,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       const indexArray = selectedNodes.map(node => node.rowIndex);
       // this.gridApi.updateRowData({ remove: selectedNodes.map(node => node.data) });
 
-      this.formArray = new FormArray(this.formArray.controls.filter((ctrl, index) => !indexArray.includes(index)));
+      this.formArray = new UntypedFormArray(this.formArray.controls.filter((ctrl, index) => !indexArray.includes(index)));
       this.formArray.markAsDirty();
       this.rowData = this.formArray.value;
       this.modifyForm.emit(this.formArray.value);

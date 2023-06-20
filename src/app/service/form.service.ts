@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
-import { ValidatorFn, Validators, AbstractControl, FormControl, FormBuilder, FormArray, FormGroup } from '@angular/forms';
+import { ValidatorFn, Validators, AbstractControl, UntypedFormControl, UntypedFormBuilder, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 import { Definition } from 'src/app/interfaces/definition';
@@ -280,27 +280,27 @@ export class FormService {
     _fields.forEach(_def => {
       if (_def.type === 'Object') {
         if (!_def.properties.schemaFree) {
-          _control = new FormBuilder().group(self.createForm(_def.definition));
+          _control = new UntypedFormBuilder().group(self.createForm(_def.definition));
         } else {
-          _control = new FormControl(_def.value || null);
+          _control = new UntypedFormControl(_def.value || null);
         }
       } else {
         if (_def.type === 'Array') {
-          _control = new FormArray([]);
+          _control = new UntypedFormArray([]);
           if (_def.value && _def.value.length) {
             _def.value.forEach(element => {
               if (_def.definition[0].type === 'array') {
                 // has to be implemented
               } else if (_def.definition[0].type === 'Object' && !_def.properties.schemaFree) {
-                const control = new FormBuilder().group(self.createForm(_def.definition[0].definition));
-                (<FormGroup>control).patchValue(element);
+                const control = new UntypedFormBuilder().group(self.createForm(_def.definition[0].definition));
+                (<UntypedFormGroup>control).patchValue(element);
                 if (_def.properties.readonly) {
                   control.disable();
                 }
-                (<FormArray>_control).push(control);
+                (<UntypedFormArray>_control).push(control);
               } else {
-                (<FormArray>_control).push(
-                  new FormControl({
+                (<UntypedFormArray>_control).push(
+                  new UntypedFormControl({
                     value: element !== null ? element : null,
                     disabled: _def.properties.readonly
                   })
@@ -315,7 +315,7 @@ export class FormService {
           }
         } else {
           if (_def.properties.readonly) {
-            _control = new FormControl({
+            _control = new UntypedFormControl({
               value:
                 _def.value
                   ? _def.value
@@ -326,22 +326,22 @@ export class FormService {
             });
           } else {
             if (_def.type === 'Number' || _def.type === 'Boolean') {
-              _control = new FormControl(_def.value !== null && _def.value !== undefined ? _def.value : _def.properties.default);
+              _control = new UntypedFormControl(_def.value !== null && _def.value !== undefined ? _def.value : _def.properties.default);
             } else {
               if (_def.properties.default) {
                 if (_def.properties.relatedTo) {
-                  _control = new FormControl({
+                  _control = new UntypedFormControl({
                     _id: _def.value ? _def.value._id : _def.properties.default
                   });
                 } else if (_def.type === 'User') {
-                  _control = new FormControl({
+                  _control = new UntypedFormControl({
                     _id: _def.value ? _def.value._id : _def.properties.default
                   });
                 } else {
-                  _control = new FormControl(_def.value ? _def.value : _def.properties.default);
+                  _control = new UntypedFormControl(_def.value ? _def.value : _def.properties.default);
                 }
               } else {
-                _control = new FormControl(_def.value || null);
+                _control = new UntypedFormControl(_def.value || null);
               }
             }
           }
@@ -362,59 +362,59 @@ export class FormService {
     let _control: AbstractControl;
     _fields.forEach(_def => {
       if (_def.type === 'Object' && !(_def.properties && _def.properties.password)) {
-        _control = new FormBuilder().group(self.createMappingForm(_def.definition));
+        _control = new UntypedFormBuilder().group(self.createMappingForm(_def.definition));
       } else {
         if (_def.type === 'Array') {
-          _control = new FormArray([]);
+          _control = new UntypedFormArray([]);
           if (_def.value && _def.value.length) {
             _def.value.forEach(element => {
               if (_def.definition[0].type === 'array') {
                 // has to be implemented
               } else if (_def.definition[0].type === 'Object') {
-                const control = new FormBuilder().group(self.createMappingForm(_def.definition[0].definition));
+                const control = new UntypedFormBuilder().group(self.createMappingForm(_def.definition[0].definition));
                 // (<FormGroup>control).patchValue();
-                (<FormArray>_control).push(control);
+                (<UntypedFormArray>_control).push(control);
               } else if (_def.definition[0].type === 'User') {
-                const control = new FormBuilder().group({ _id: null });
-                (<FormArray>_control).push(control);
+                const control = new UntypedFormBuilder().group({ _id: null });
+                (<UntypedFormArray>_control).push(control);
               } else {
-                (<FormArray>_control).push(new FormControl(null));
+                (<UntypedFormArray>_control).push(new UntypedFormControl(null));
               }
             });
           } else {
             if (_def.definition[0].type === 'array') {
               // has to be implemented
             } else if (_def.definition[0].type === 'Object') {
-              const control = new FormBuilder().group(self.createMappingForm(_def.definition[0].definition));
+              const control = new UntypedFormBuilder().group(self.createMappingForm(_def.definition[0].definition));
               // (<FormGroup>control).patchValue();
-              (<FormArray>_control).push(control);
+              (<UntypedFormArray>_control).push(control);
             } else if (_def.definition[0].type === 'User') {
-              const control = new FormBuilder().group({ _id: null });
-              (<FormArray>_control).push(control);
+              const control = new UntypedFormBuilder().group({ _id: null });
+              (<UntypedFormArray>_control).push(control);
             } else {
-              (<FormArray>_control).push(new FormControl(null));
+              (<UntypedFormArray>_control).push(new UntypedFormControl(null));
             }
           }
         } else {
           if (_def.properties.readonly) {
-            _control = new FormControl({
+            _control = new UntypedFormControl({
               value: _def.value || null,
               disabled: true
             });
           } else {
             if (_def.type === 'Number' || _def.type === 'Boolean') {
-              _control = new FormControl(null);
+              _control = new UntypedFormControl(null);
             } else {
               if (_def.properties.default) {
                 if (_def.properties.relatedTo) {
-                  _control = new FormControl({ _id: _def.properties.default });
+                  _control = new UntypedFormControl({ _id: _def.properties.default });
                 } else if (_def.type === 'User') {
-                  _control = new FormControl({ _id: _def.properties.default });
+                  _control = new UntypedFormControl({ _id: _def.properties.default });
                 } else {
-                  _control = new FormControl(_def.value ? _def.value : _def.properties.default);
+                  _control = new UntypedFormControl(_def.value ? _def.value : _def.properties.default);
                 }
               } else {
-                _control = new FormControl(_def.value || null);
+                _control = new UntypedFormControl(_def.value || null);
               }
             }
           }
@@ -472,14 +472,14 @@ export class FormService {
   }
 }
 
-export function email(control: FormControl) {
+export function email(control: UntypedFormControl) {
   if (!control.value || !control.value.trim() || (control.value && control.value.match(/[\w]+@[a-zA-Z0-9-]{2,}(\.[a-z]{2,})+$/))) {
     return null;
   }
   return { email: true };
 }
 
-export function natural(control: FormControl) {
+export function natural(control: UntypedFormControl) {
   if (control.value && !control.value.toString().match(/^[0-9]+$/)) {
     const val = control.value.toString().replace(/[^0-9]+/g, '');
     control.patchValue(val ? parseInt(val, 10) : null);
@@ -487,7 +487,7 @@ export function natural(control: FormControl) {
   return null;
 }
 
-export function decimal(control: FormControl) {
+export function decimal(control: UntypedFormControl) {
   if (control.value && !control.value.toString().match(/^(-|)[0-9]*\.?[0-9]*$/)) {
     let val = control.value.toString();
     const indexOfDot = val.indexOf('.');
