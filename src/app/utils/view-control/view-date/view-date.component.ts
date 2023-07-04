@@ -24,17 +24,21 @@ export class ViewDateComponent implements OnInit {
       this.dateString = this.appService.getUTCString(this.value.rawData, this.value.tzInfo)
       this.timezone = this.value.tzInfo;
     }
-    if (this.definition.value && this.definition.value.rawData) {
+    else if (this.definition.value && this.definition.value.rawData) {
       this.dateString = this.appService.getUTCString(this.definition.value.rawData, this.definition.value.tzInfo)
       this.timezone = this.definition.value.tzInfo;
     }
-    if (this.value && this.definition.type === 'Date') {
-      this.dateString = this.appService.getUTCString(this.value, this.definition?.properties?.defaultTimezone)
-      this.timezone = this.definition?.properties?.defaultTimezone;
-    }
-    if (this.definition.value && this.definition.type === 'Date') {
+    // if (this.value && this.definition.type === 'Date') {
+    //   this.dateString = this.appService.getUTCString(this.value, this.definition?.properties?.defaultTimezone)
+    //   this.timezone = this.definition?.properties?.defaultTimezone;
+    // }
+    else if (this.definition.value && this.definition.type === 'Date') {
       this.dateString = this.appService.getUTCString(this.definition.value, this.definition?.properties?.defaultTimezone)
       this.timezone = this.definition?.properties?.defaultTimezone;
+    }
+    else if(!this.definition.value){
+      this.dateString = null
+      this.timezone = null
     }
   }
 
