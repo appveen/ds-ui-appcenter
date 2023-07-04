@@ -140,6 +140,14 @@
                     class="dsi dsi-done text-success ml-2"></span>
                 <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
             </ng-container>
+            <ng-container *ngIf="node.type=='CONVERT_JSON_JSON'">
+                <span class="node-icon dsi dsi-refresh text-secondary"></span>
+                <span class="ml-3 font-14"
+                    [ngClass]="{'fw-600 text-dark':selectedNodeId==node._id,'fw-400 text-secondary':selectedNodeId!=node._id}">Converter</span>
+                <span *ngIf="!hasError(node._id) && hasExecuted(node._id)"
+                    class="dsi dsi-done text-success ml-2"></span>
+                <span *ngIf="hasError(node._id)" class="dsi dsi-danger-circle text-danger ml-2"></span>
+            </ng-container>
             <ng-container *ngIf="node.type=='UNWIND'">
                 <span class="node-icon dsi dsi-expand"></span>
                 <span class="ml-3 font-14"
