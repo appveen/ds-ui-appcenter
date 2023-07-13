@@ -141,6 +141,13 @@ export class FlowNodeViewComponent implements OnInit {
     return 1;
   }
 
+  getURLActualValue() {
+    if (this.completeData.data && this.completeData.data.url) {
+      return this.completeData.data.url;
+    }
+    return this.node.options.url;
+  }
+
   get showNameOfNodeType() {
     if (this.node.type == 'DATASERVICE' || this.node.type == 'FUNCTION' || this.node.type == 'FLOW') {
       return true;
