@@ -54,7 +54,7 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
         try {
             self.commonService.apiCalls.componentLoading = false;
             self.version = environment.version;
-            self.titleService.setTitle('data.stack: App Center');
+            self.titleService.setTitle('datanimbus.io: App Center');
             self.redirectLink = window.location.protocol + '//' + window.location.hostname + '/author';
             self.appService.setFocus.subscribe(val => {
                 if (self.usernameControl && self.usernameControl.nativeElement) {
@@ -95,12 +95,12 @@ export class AuthComponent implements OnInit, AfterViewInit, AfterContentChecked
 
     ngAfterViewInit() {
         const self = this;
-        self.titleService.setTitle('data.stack: App Center');
+        self.titleService.setTitle('datanimbus.io: App Center');
     }
 
     ngAfterContentChecked() {
         const self = this;
-        self.titleService.setTitle('data.stack: App Center');
+        self.titleService.setTitle('datanimbus.io: App Center');
     }
 
     ngOnDestroy() {

@@ -54,6 +54,18 @@ $green: #2FC48F !default;
 $teal: #20c997 !default;
 $cyan: #17a2b8 !default;
 
+$primary10: #001849 !default;
+$primary20: #002B75 !default;
+$primary30: #204291 !default;
+$primary40: #3B5AAA !default;
+$primary50: #5674C5 !default;
+$primary60: #708EE1 !default;
+$primary70: #8BA8FE !default;
+$primary80: #B3C5FF !default;
+$primary90: #DBE1FF !default;
+$primary95: #EEF0FF !default;
+
+
 $capiot-blue: #44A8F1 !default;
 $capiot-blue-dark: #1383c6 !default;
 
@@ -74,8 +86,8 @@ $colors: map-merge(("blue": $blue,
       "gray-dark": $gray-900), $colors
 );
 
-$primary: $capiot-blue  !default;
-$primary-dark: $capiot-blue-dark  !default;
+$primary: $primary40 !default;
+$primary-dark: $primary30 !default;
 $secondary: $gray-600  !default;
 
 $success: $green  !default;
@@ -87,7 +99,7 @@ $dark: #181818 !default;
 
 $border: #ECECEC !default;
 $gray-medium: #747E8D;
-$default-color: $capiot-blue  !default;
+$default-color: $primary !default;
 
 $theme-colors: (
   ) !default;
@@ -104,7 +116,7 @@ $theme-colors: map-merge(("primary": $primary,
       "grey": $gray-500,
       "mid-grey": $gray-400,
       "light-grey": $gray-300,
-      "default-color":$capiot-blue), $theme-colors
+      "default-color":$primary), $theme-colors
 );
 // stylelint-enable
 
@@ -257,7 +269,7 @@ $transition-collapse: height .35s ease !default;
 // Font, line-height, and color for body text, headings, and more.
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif: 'Inter', sans-serif !default;
+$font-family-sans-serif: 'Manrope', sans-serif !default;
 $font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 $font-family-base: $font-family-sans-serif  !default;
 // stylelint-enable value-keyword-case

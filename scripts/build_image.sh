@@ -3,8 +3,8 @@ set -e
 
 if [ -f $WORKSPACE/../TOGGLE ]; then
     echo "****************************************************"
-    echo "data.stack:sm :: Toggle mode is on, terminating build"
-    echo "data.stack:sm :: BUILD CANCLED"
+    echo "datanimbus.io:sm :: Toggle mode is on, terminating build"
+    echo "datanimbus.io:sm :: BUILD CANCLED"
     echo "****************************************************"
     exit 0
 fi
@@ -19,8 +19,8 @@ fi
 
 if [ ! $REL ]; then
     echo "****************************************************"
-    echo "data.stack:sm :: Please Create file DATA_STACK_RELEASE with the releaese at $WORKSPACE or provide it as 1st argument of this script."
-    echo "data.stack:sm :: BUILD FAILED"
+    echo "datanimbus.io:sm :: Please Create file DATA_STACK_RELEASE with the releaese at $WORKSPACE or provide it as 1st argument of this script."
+    echo "datanimbus.io:sm :: BUILD FAILED"
     echo "****************************************************"
     exit 0
 fi

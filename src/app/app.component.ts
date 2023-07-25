@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterCont
     private shortcutService: ShortcutService
   ) {
     const self = this;
-    self.titleService.setTitle('data.stack: App Center');
+    self.titleService.setTitle('datanimbus.io: App Center');
     self.subscriptions = {};
   }
 
@@ -60,7 +60,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, AfterCont
       if (!self.commonService.loginComponent) {
         self.sessionExpired = true;
       }
-      self.titleService.setTitle('Session Expired! - data.stack: App Center');
+      self.titleService.setTitle('Session Expired! - datanimbus.io: App Center');
     });
     self.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
