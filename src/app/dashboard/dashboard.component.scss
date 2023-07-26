@@ -8,6 +8,14 @@
   margin-left: 8px;
 }
 
+.logo {
+  width: 200px;
+  height: 64px;
+  background-repeat: no-repeat;
+  background-size: 200px;
+  background-position: -18px;
+}
+
 .sidenav-odp {
   min-width: 264px;
   max-width: 264px;
@@ -40,13 +48,7 @@
     background-size: contain;
     background-repeat: no-repeat;
 
-    .logo {
-      width: 200px;
-      height: 64px;
-      background-repeat: no-repeat;
-      background-size: 200px;
-      background-position: -18px;
-    }
+  
   }
 
   .icons-holder {
@@ -219,7 +221,8 @@
     }
 
     .user-details-footer {
-      min-height: 50px;
+      min-height: 64px;
+      position: relative;
 
       .powered-by,
       .info {
@@ -231,12 +234,18 @@
         background-size: 174px;
         background-position: -10px -28px;
         background-repeat: no-repeat;
-
+        margin-left: 50px;
         small {
           font-size: 12px;
           top: 18px;
           right: 12px;
         }
+      }
+
+      .logo-info {
+        position: absolute;
+        top: 0px;
+        left: 10px
       }
     }
   }
