@@ -577,7 +577,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
 
   getDefinition(field: string) {
     const self = this;
-    let def = self.definition.find(e => e.key === field);
+    let def = self.definition?.find(e => e.key === field);
     if (self.stateModelAttr && def) {
       if (def.key != self.stateModelAttr) {
         return def;
